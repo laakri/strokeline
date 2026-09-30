@@ -104,6 +104,22 @@ TYPEs: `TEXT`, `CIRCLE`, `RECTANGLE`, `LINE`. (Freehand strokes use `INK`; conne
 
 **Multi-line text** does not exist: create one TEXT object per line, spaced 1.3 x SIZE apart (SIZE 44 gives about 58 px between line centers).
 
+### 3.2.1 ICONS: CHECK BEFORE DRAWING
+
+Icons are the default for recognizable people, tools, devices, places, and concepts. Before drawing any pictogram from circles, rectangles, lines, or `INK`, search the supported ICON names/autocomplete and use the closest match. If a supported match exists, using it is required: do not redraw a built-in icon as primitive shapes or a hand sketch. For repeated entities, reuse the same icon with consistent size and color. Draw custom shapes only for a unique diagram, an unsupported concept, or a visual that needs meaningful animation unavailable to ICON.
+
+Canonical syntax:
+```wbs
+CREATE brain AS ICON
+  POSITION 960 540
+  SIZE 120
+  NAME brain
+  COLOR #5B8DEF
+END
+```
+
+Use exact supported names only; search autocomplete if unsure. Make an icon inventory from the requested subject before planning the scene, then include the matching icons in the visual plan. Keep labels as separate `TEXT` objects near their icons. Do not replace an icon with a text emoji, Unicode symbol, or hand-drawn imitation.
+
 ### 3.3 Connectors
 
 ```
@@ -616,7 +632,7 @@ Before writing, infer the audience and the one takeaway. Plan a short narrative 
 ## Build with the available DSL
 
 - Start with `VERSION 1.0`, `CANVAS 1920 1080`, and a suitable `THEME`; optionally set `BACKGROUND`, `BOARD`, `STYLE`, `FONT`, `STROKE`, and `HAND on|off`.
-- Use `CREATE` objects, shapes, icons, `INK`, and reusable macros. Available themes include classic, chalk, cosmic, suspense, parchment, blueprint, and cream. Boards include chalkboard, whiteboard, blueprint, kraft, paper, graph, dotted, and glass. Pen styles include handdrawn, chalk, marker, pencil, and brush; `PEN` can override the style on an object.
+- Treat supported `ICON`s as the required first choice for recognizable subjects; check names/autocomplete before drawing any pictogram from primitive shapes or `INK`. Use custom drawing only for unsupported or genuinely unique visuals. Use `CREATE` objects, `INK`, and reusable macros for the rest. Available themes include classic, chalk, cosmic, suspense, parchment, blueprint, and cream. Boards include chalkboard, whiteboard, blueprint, kraft, paper, graph, dotted, and glass. Pen styles include handdrawn, chalk, marker, pencil, and brush; `PEN` can override the style on an object.
 - Keep full rendered text bounds inside x=120..1800 and y=100..980; prefer x=240..1680 and y=160..900. Use SIZE >=28, `MAXWIDTH` above 60 characters, contrast >=4.5:1, non-overlapping labels, and at most 12 visible text objects.
 - Reuse a defined visual with `DEFINE name PARAMS ... END` and `USE name AS unique_id AT x y WITH key value ...`. Prefixes should be unique. Built-ins include stick, speech, thought, sticky, badge, checklist, tick, brackets, callout, curvedarrow, timeline, and progress. Animate a used macro by animating its instance id.
 - Use `BARCHART`, `LINECHART`, or `PIECHART` with `POSITION`, `SIZE`, and `DATA label value` rows for real comparisons and trends. Label axes and explain what the data means in the surrounding scene.
@@ -645,7 +661,7 @@ Create a polished visual explanation, not a stack of captions. Choose one clear 
 
 Use the website's strongest supported features when they improve the explanation:
 - Set a fitting BOARD or THEME, then choose a cohesive STYLE, PEN, FONT, and ink palette. Keep contrast high and visual treatment consistent.
-- Compose with the built-in shapes, ICONs, library macros, speech or thought bubbles, notes, badges, callouts, arrows, timelines, and progress marks. Prefer a meaningful visual over another paragraph of text.
+- Compose with relevant supported ICONs first, then built-in shapes, library macros, speech or thought bubbles, notes, badges, callouts, arrows, timelines, and progress marks. For each scene, check its key nouns against autocomplete and use a matching icon instead of drawing that symbol yourself. Prefer a meaningful visual over another paragraph of text.
 - For quantitative ideas, use BARCHART, LINECHART, or PIECHART with clear labels and an animated build. Never invent data; label illustrative numbers as examples.
 - Use REVEAL, ENTER, EXIT, EASE, and PARALLEL STAGGER to guide attention. Vary motion to fit the meaning; use LOOP only for ongoing motion. Use CAMERA DRIFT, SHAKE, FOLLOW, and scene transitions with restraint and purpose.
 - Use HAND, texture, lighting, and particles only when they suit the board and do not compete with the content. Keep hands away from text.
