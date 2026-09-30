@@ -1,0 +1,15 @@
+VERSION 1.0
+CANVAS 1920 1080
+SCENE 1
+  CREATE phrase AS TEXT
+    POSITION 400 400
+    COLOR #333333
+    TEXT "handwritten script"
+    DRAW 1s
+  END
+  INK UNDERLINE phrase
+    COLOR #2E86AB
+    WIDTH 4
+    DRAW 1s
+  END
+END SCENE

@@ -1,0 +1,40 @@
+VERSION 1.0
+CANVAS 1920 1080
+
+SCENE 1 "Relative placement"
+  CREATE title AS TEXT
+    TEXT "Measured heading"
+    POSITION 700 260
+    SIZE 60
+    DRAW 0.5s
+  END
+
+  CREATE caption AS TEXT
+    TEXT "Placed below the measured title"
+    SIZE 38
+    MAXWIDTH 360
+    BELOW title GAP 30
+    DRAW 0.5s
+  END
+
+  CREATE card AS RECTANGLE
+    WIDTH 200
+    HEIGHT 120
+    RIGHTOF title GAP 40
+    DRAW 0.5s
+  END
+
+  CREATE aligned AS TEXT
+    TEXT "Aligned x"
+    POSITION 1200 700
+    SIZE 32
+    ALIGNX title
+    DRAW 0.5s
+  END
+
+  CREATE centered AS CIRCLE
+    RADIUS 30
+    CENTERON title
+    DRAW 0.5s
+  END
+END SCENE

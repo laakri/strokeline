@@ -1,0 +1,12 @@
+VERSION 1.0
+CANVAS 1920 1080
+
+SCENE 1 "Multiline text"
+  CREATE note AS TEXT
+    TEXT "A line one\nA line two"
+    POSITION 960 500
+    SIZE 40
+    MAXWIDTH 260
+    DRAW 1s
+  END
+END SCENE

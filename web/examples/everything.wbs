@@ -1,0 +1,114 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FAFAFA
+STYLE handdrawn
+FONT handwritten
+STROKE 4
+
+SCENE 1 "Sketch the idea"
+  CREATE headline AS TEXT
+    TEXT "Sketch an idea\nThen make it move"
+    POSITION 960 190
+    SIZE 68
+    MAXWIDTH 760
+    COLOR #2E86AB
+    DRAW 0.8s
+  END
+
+  CREATE brain AS ICON
+    NAME "brain"
+    POSITION 620 560
+    SIZE 150
+    COLOR #E76F51
+    DRAW 0.8s
+  END
+
+  CREATE card AS RECTANGLE
+    POSITION 1120 550
+    WIDTH 380
+    HEIGHT 250
+    COLOR #2E86AB
+    FILL #E8F2F5
+    TEXT "A clear thought"
+    DRAW 0.8s
+  END
+
+  CREATE marker AS CIRCLE
+    POSITION 1120 550
+    RADIUS 185
+    COLOR #FFD93D
+    DRAW 0.5s
+  END
+
+  CREATE connector AS LINE
+    FROM 730 560
+    TO 920 560
+    COLOR #555555
+    DRAW 0.5s
+  END
+
+  INK UNDERLINE headline
+    COLOR #FFD93D
+    WIDTH 5
+    DRAW 0.5s
+  END
+
+  INK trail
+    POINTS 300 850, 430 820, 560 850, 690 820
+    COLOR #E76F51
+    WIDTH 4
+    DRAW 0.6s
+  END
+
+  ANIMATE brain ROTATE TO 12 DURATION 0.8s EASE easeOut
+  ANIMATE card SCALE TO 1.08 DURATION 0.8s EASE easeInOut
+  ANIMATE marker HIGHLIGHT
+    COLOR #FFD93D
+    DURATION 1s
+
+  CAMERA ZOOM
+    TARGET headline
+    DURATION 0.6s
+
+  TRANSITION fade DURATION 0.6s
+END SCENE
+
+SCENE 2 "Add a second mark"
+  CREATE person AS ICON
+    ICON "user"
+    POSITION 760 500
+    SIZE 180
+    COLOR #2E86AB
+    DRAW 0.8s
+  END
+
+  CREATE caption AS TEXT
+    TEXT "One more point of view"
+    POSITION 1120 500
+    SIZE 58
+    MAXWIDTH 520
+    COLOR #333333
+    DRAW 0.8s
+  END
+
+  ANIMATE person MOVE TO 900 500 DURATION 1s EASE easeInOut
+  ANIMATE caption FADE 0.35 DURATION 0.7s
+  CAMERA ZOOM
+    TARGET person
+    DURATION 0.5s
+
+  TRANSITION wipe DURATION 0.5s
+END SCENE
+
+SCENE 3 "The finished thought"
+  CREATE ending AS TEXT
+    TEXT "Ideas, explained."
+    POSITION 960 520
+    SIZE 88
+    COLOR #2E86AB
+    DRAW 1s
+  END
+
+  ANIMATE ending FADE 0 DURATION 0.8s
+  TRANSITION none DURATION 0.2s
+END SCENE

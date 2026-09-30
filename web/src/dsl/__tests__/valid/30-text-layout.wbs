@@ -1,0 +1,16 @@
+VERSION 1.0
+CANVAS 1920 1080
+
+SCENE 1 "Measured text layout"
+  CREATE heading AS TEXT
+    TEXT "Wide WWWW and narrow iiii\nTwo balanced lines"
+    POSITION 960 450
+    SIZE 72
+    ALIGN right
+    MAXWIDTH 220
+    LINEHEIGHT 1.5
+    FIT WIDTH 260 HEIGHT 120
+    COLOR #2E86AB
+    DRAW 0.8s
+  END
+END SCENE

@@ -1,0 +1,22 @@
+VERSION 1.0
+CANVAS 1920 1080
+
+SCENE 1 "Anchored positions"
+  CREATE leftCard AS RECTANGLE
+    POSITION 100 120
+    WIDTH 160
+    HEIGHT 80
+    ANCHOR left
+    COLOR #2E86AB
+    DRAW 0.5s
+  END
+
+  CREATE cornerLabel AS TEXT
+    TEXT "WWWWiiii"
+    POSITION 760 700
+    SIZE 48
+    ANCHOR bottomright
+    COLOR #E76F51
+    DRAW 0.5s
+  END
+END SCENE

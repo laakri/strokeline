@@ -1,0 +1,4476 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 01-text.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Text",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 6,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 5,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "title",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 150,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 64,
+              "strokeWidth": 4,
+            },
+            "text": "Hello",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 02-circle.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "dot",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 100,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 03-rectangle.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "box",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 1400,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 220,
+              "width": 300,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 04-line.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "stroke",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 200,
+              "y": 200,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 0,
+              "width": 400,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "line",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 05-arrow.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "a",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 50,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 13,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 12,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 11,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "b",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 800,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 100,
+              "width": 200,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 9,
+          },
+          "t": 1,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "LABEL",
+                "DRAW",
+              ],
+              "fromId": "a",
+              "toId": "b",
+            },
+            "groupId": undefined,
+            "id": "arrow_1",
+            "label": "request",
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 0,
+              "y": 0,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#222222",
+              "strokeWidth": 4,
+            },
+            "type": "arrow",
+          },
+          "source": {
+            "col": 3,
+            "line": 15,
+          },
+          "t": 2,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 06-move.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "dot",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 50,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 2,
+            "ease": "easeOut",
+            "to": {
+              "position": {
+                "x": 700,
+                "y": 500,
+              },
+            },
+            "verb": "move",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 9,
+          },
+          "t": 1,
+          "targetId": "dot",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 07-fade-scale.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "box",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 300,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 100,
+              "width": 100,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "to": {
+              "opacity": 0,
+            },
+            "verb": "fade",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 10,
+          },
+          "t": 1,
+          "targetId": "box",
+        },
+        {
+          "anim": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "to": {
+              "scale": 2,
+            },
+            "verb": "scale",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 11,
+          },
+          "t": 2,
+          "targetId": "box",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 08-zoom.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "box",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 300,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 100,
+              "width": 100,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "camera": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "position": undefined,
+            "scale": 1.8,
+            "targetId": "box",
+            "verb": "zoom",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 10,
+          },
+          "t": 1,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 09-pan-reset.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "camera": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "position": {
+              "x": 500,
+              "y": 400,
+            },
+            "scale": undefined,
+            "targetId": undefined,
+            "verb": "pan",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "camera": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "position": undefined,
+            "scale": undefined,
+            "targetId": undefined,
+            "verb": "reset",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 7,
+          },
+          "t": 1,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 10-parallel.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 2,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 7,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 7,
+                  "line": 6,
+                },
+                "RADIUS": {
+                  "col": 7,
+                  "line": 7,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "a",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 50,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 5,
+            "line": 5,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 7,
+                  "line": 13,
+                },
+                "POSITION": {
+                  "col": 7,
+                  "line": 11,
+                },
+                "RADIUS": {
+                  "col": 7,
+                  "line": 12,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "b",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 700,
+              "y": 500,
+            },
+            "radius": 50,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 5,
+            "line": 10,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 21,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 20,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 18,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 19,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "after",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 100,
+              "y": 100,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 0,
+              "width": 100,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "line",
+          },
+          "source": {
+            "col": 3,
+            "line": 17,
+          },
+          "t": 2.5,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 11-group.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 7,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 7,
+                  "line": 6,
+                },
+                "RADIUS": {
+                  "col": 7,
+                  "line": 7,
+                },
+              },
+            },
+            "groupId": "network",
+            "id": "node",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 50,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 5,
+            "line": 5,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 12-worked-example.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Intro",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 12,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 13,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 11,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 9,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "title",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 150,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 64,
+              "strokeWidth": 4,
+            },
+            "text": "How does a website work?",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 8,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "COLOR",
+                "LABEL",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 7,
+                  "line": 20,
+                },
+                "DRAW": {
+                  "col": 7,
+                  "line": 22,
+                },
+                "LABEL": {
+                  "col": 7,
+                  "line": 21,
+                },
+                "POSITION": {
+                  "col": 7,
+                  "line": 18,
+                },
+                "RADIUS": {
+                  "col": 7,
+                  "line": 19,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "browser",
+            "label": "Browser",
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 100,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 5,
+            "line": 17,
+          },
+          "t": 1.5,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "COLOR",
+                "TEXT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 7,
+                  "line": 28,
+                },
+                "DRAW": {
+                  "col": 7,
+                  "line": 30,
+                },
+                "HEIGHT": {
+                  "col": 7,
+                  "line": 27,
+                },
+                "POSITION": {
+                  "col": 7,
+                  "line": 25,
+                },
+                "TEXT": {
+                  "col": 7,
+                  "line": 29,
+                },
+                "WIDTH": {
+                  "col": 7,
+                  "line": 26,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "server",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 1400,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 220,
+              "width": 300,
+            },
+            "style": {
+              "color": "#E76F51",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": "SERVER",
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 5,
+            "line": 24,
+          },
+          "t": 1.5,
+        },
+        {
+          "draw": {
+            "duration": 1.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "LABEL",
+                "DRAW",
+              ],
+              "fromId": "browser",
+              "toId": "server",
+            },
+            "groupId": undefined,
+            "id": "arrow_1",
+            "label": "HTTP Request",
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 0,
+              "y": 0,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#222222",
+              "strokeWidth": 4,
+            },
+            "type": "arrow",
+          },
+          "source": {
+            "col": 3,
+            "line": 34,
+          },
+          "t": 3,
+        },
+        {
+          "camera": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "position": undefined,
+            "scale": 1.8,
+            "targetId": "server",
+            "verb": "zoom",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 38,
+          },
+          "t": 5.5,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 13-animate-multiline-scale.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+              ],
+              "_sourcePropertyLocations": {
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "server",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 540,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 140,
+              "width": 260,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 0.4,
+            "ease": "easeInOut",
+            "to": {
+              "scale": 1.1,
+            },
+            "verb": "scale",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 9,
+          },
+          "t": 1,
+          "targetId": "server",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 14-animate-multiline-fade.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "TEXT",
+              ],
+              "_sourcePropertyLocations": {
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "notice",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 200,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": "Done",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 0.25,
+            "ease": "easeOut",
+            "to": {
+              "opacity": 0,
+            },
+            "verb": "fade",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 8,
+          },
+          "t": 1,
+          "targetId": "notice",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 15-animate-multiline-move.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+              ],
+              "_sourcePropertyLocations": {
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "dot",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 100,
+              "y": 100,
+            },
+            "radius": 24,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 2,
+            "ease": "easeIn",
+            "to": {
+              "position": {
+                "x": 700,
+                "y": 500,
+              },
+            },
+            "verb": "move",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 8,
+          },
+          "t": 1,
+          "targetId": "dot",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 16-line-orientation.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "FROM",
+                "TO",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "FROM": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "TO": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+              "from": {
+                "x": 200,
+                "y": 500,
+              },
+              "to": {
+                "x": 1600,
+                "y": 700,
+              },
+            },
+            "groupId": undefined,
+            "id": "divider",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 900,
+              "y": 600,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#555555",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "line",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 17-duplicate.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "source",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 300,
+              "y": 500,
+            },
+            "radius": 60,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 12,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 11,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "copy",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 900,
+              "y": 500,
+            },
+            "radius": 60,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 10,
+          },
+          "t": 1,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 18-delete.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "ghost",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 500,
+              "y": 500,
+            },
+            "radius": 60,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#E76F51",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 1.5,
+            "ease": "easeInOut",
+            "verb": "erase",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 11,
+          },
+          "t": 1.5,
+          "targetId": "ghost",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 19-rotate.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "square",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 600,
+              "y": 540,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 200,
+              "width": 200,
+            },
+            "style": {
+              "color": "#E76F51",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "duration": 2,
+            "ease": "easeOut",
+            "to": {
+              "rotation": 45,
+            },
+            "verb": "rotate",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 11,
+          },
+          "t": 1,
+          "targetId": "square",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 20-highlight.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "TEXT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "server",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 1400,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 220,
+              "width": 300,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": "SERVER",
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "anim": {
+            "color": "#FFD966",
+            "duration": 2,
+            "ease": "easeInOut",
+            "verb": "highlight",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 11,
+          },
+          "t": 1,
+          "targetId": "server",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 21-all-five.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "All five",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "COLOR",
+                "TEXT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 13,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 15,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 12,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 14,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 11,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "source",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 400,
+              "y": 400,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 160,
+              "width": 240,
+            },
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": "SOURCE",
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 9,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 20,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 19,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "copy",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 980,
+              "y": 400,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 160,
+              "width": 240,
+            },
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": "SOURCE",
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 18,
+          },
+          "t": 1,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "FROM",
+                "TO",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 25,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 26,
+                },
+                "FROM": {
+                  "col": 5,
+                  "line": 23,
+                },
+                "TO": {
+                  "col": 5,
+                  "line": 24,
+                },
+              },
+              "from": {
+                "x": 300,
+                "y": 700,
+              },
+              "to": {
+                "x": 1620,
+                "y": 720,
+              },
+            },
+            "groupId": undefined,
+            "id": "divider",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 710,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#888888",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "line",
+          },
+          "source": {
+            "col": 3,
+            "line": 22,
+          },
+          "t": 2,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "RADIUS",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 32,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 33,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 30,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 31,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "star",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 660,
+              "y": 850,
+            },
+            "radius": 40,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#E76F51",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 29,
+          },
+          "t": 3,
+        },
+        {
+          "anim": {
+            "duration": 1.5,
+            "ease": "easeOut",
+            "to": {
+              "rotation": 12,
+            },
+            "verb": "rotate",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 36,
+          },
+          "t": 4,
+          "targetId": "copy",
+        },
+        {
+          "anim": {
+            "color": "#FFD966",
+            "duration": 2,
+            "ease": "easeInOut",
+            "verb": "highlight",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 38,
+          },
+          "t": 5.5,
+          "targetId": "source",
+        },
+        {
+          "anim": {
+            "duration": 1.5,
+            "ease": "easeInOut",
+            "verb": "erase",
+          },
+          "kind": "animate",
+          "source": {
+            "col": 3,
+            "line": 44,
+          },
+          "t": 9,
+          "targetId": "star",
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 22-ink-raw.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 2,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POINTS",
+                "COLOR",
+                "WIDTH",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 6,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POINTS": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 7,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "squiggle",
+            "layer": 0,
+            "opacity": 1,
+            "points": [
+              {
+                "x": 100,
+                "y": 200,
+              },
+              {
+                "x": 260,
+                "y": 180,
+              },
+              {
+                "x": 420,
+                "y": 240,
+              },
+              {
+                "x": 600,
+                "y": 170,
+              },
+              {
+                "x": 760,
+                "y": 230,
+              },
+              {
+                "x": 940,
+                "y": 180,
+              },
+            ],
+            "position": {
+              "x": 513.3333333333334,
+              "y": 200,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#2E86AB",
+              "strokeWidth": 4,
+            },
+            "type": "ink",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 23-ink-arrow.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "COLOR",
+                "WIDTH",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "ink_1",
+            "layer": 0,
+            "opacity": 1,
+            "points": [
+              {
+                "x": 200,
+                "y": 500,
+              },
+              {
+                "x": 437.07473322316747,
+                "y": 429.8008312250774,
+              },
+              {
+                "x": 689.8414699178039,
+                "y": 357.04958721767883,
+              },
+              {
+                "x": 900,
+                "y": 300,
+              },
+              {
+                "x": 876.9234252566202,
+                "y": 321.15352684809807,
+              },
+              {
+                "x": 900,
+                "y": 300,
+              },
+              {
+                "x": 869.2312336754937,
+                "y": 294.23085631415506,
+              },
+            ],
+            "position": {
+              "x": 696.1529802961551,
+              "y": 357.46211451500136,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#E76F51",
+              "strokeWidth": 4,
+            },
+            "type": "ink",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 24-ink-underline.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "COLOR",
+                "TEXT",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 6,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 7,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "phrase",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 400,
+              "y": 400,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#333333",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": "handwritten script",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "COLOR",
+                "WIDTH",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 11,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 13,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 12,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "ink_1",
+            "layer": 0,
+            "opacity": 1,
+            "points": [
+              {
+                "x": 265.7720012529753,
+                "y": 436.010152120702,
+              },
+              {
+                "x": 308.4758193407518,
+                "y": 441.27048988842745,
+              },
+              {
+                "x": 355.3039257378938,
+                "y": 442.5463183495902,
+              },
+              {
+                "x": 399.2296807593666,
+                "y": 439.83763750419024,
+              },
+              {
+                "x": 444.8880395121717,
+                "y": 436.27840435134846,
+              },
+              {
+                "x": 491.37481207416084,
+                "y": 435.0025758901857,
+              },
+              {
+                "x": 535.7993086928036,
+                "y": 436.010152120702,
+              },
+            ],
+            "position": {
+              "x": 400.12051248144627,
+              "y": 438.1365328893066,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#2E86AB",
+              "strokeWidth": 4,
+            },
+            "type": "ink",
+          },
+          "source": {
+            "col": 3,
+            "line": 10,
+          },
+          "t": 1,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 25-ink-circle.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": undefined,
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 5,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "server",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 1400,
+              "y": 400,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 220,
+              "width": 300,
+            },
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 4,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "COLOR",
+                "WIDTH",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 12,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 14,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 13,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "ink_1",
+            "layer": 0,
+            "opacity": 1,
+            "points": [
+              {
+                "x": 1566.4296911699787,
+                "y": 390.212839134156,
+              },
+              {
+                "x": 1574.554929724323,
+                "y": 415.17982994223223,
+              },
+              {
+                "x": 1552.466864158511,
+                "y": 435.13209266196054,
+              },
+              {
+                "x": 1540.5202035779246,
+                "y": 462.6859288907815,
+              },
+              {
+                "x": 1532.7001013603574,
+                "y": 482.7804963940819,
+              },
+              {
+                "x": 1510.2207308543,
+                "y": 496.92117475248784,
+              },
+              {
+                "x": 1472.9635869732876,
+                "y": 510.6455775592539,
+              },
+              {
+                "x": 1443.8743444133133,
+                "y": 520.0747640306873,
+              },
+              {
+                "x": 1414.2681218048206,
+                "y": 526.593642429808,
+              },
+              {
+                "x": 1380.4695757897211,
+                "y": 532.0954550920126,
+              },
+              {
+                "x": 1353.1248718478314,
+                "y": 529.1638371924737,
+              },
+              {
+                "x": 1325.9059544063768,
+                "y": 513.1937028111845,
+              },
+              {
+                "x": 1288.5722262124787,
+                "y": 495.75195322048626,
+              },
+              {
+                "x": 1263.885625944797,
+                "y": 482.52728569597537,
+              },
+              {
+                "x": 1259.1717882345367,
+                "y": 469.73815679622584,
+              },
+              {
+                "x": 1238.92806553176,
+                "y": 442.29703244488314,
+              },
+              {
+                "x": 1221.0993540128725,
+                "y": 420.34181765841686,
+              },
+              {
+                "x": 1221.1665836473421,
+                "y": 395.5993807758103,
+              },
+              {
+                "x": 1240.111581202683,
+                "y": 374.60311953244064,
+              },
+              {
+                "x": 1252.276883017728,
+                "y": 348.96524110378994,
+              },
+              {
+                "x": 1253.4369483145163,
+                "y": 330.0485541508028,
+              },
+              {
+                "x": 1289.119138235408,
+                "y": 310.22326844289137,
+              },
+              {
+                "x": 1312.3089806070886,
+                "y": 296.59301736129703,
+              },
+              {
+                "x": 1341.2405822130304,
+                "y": 288.75130796975844,
+              },
+              {
+                "x": 1372.2106936695764,
+                "y": 279.5156031512273,
+              },
+              {
+                "x": 1404.3660858129012,
+                "y": 278.6207440698153,
+              },
+              {
+                "x": 1433.024309169874,
+                "y": 274.99675017785086,
+              },
+              {
+                "x": 1469.3556184410324,
+                "y": 285.0211867567805,
+              },
+              {
+                "x": 1501.2592896174085,
+                "y": 285.53854459111386,
+              },
+              {
+                "x": 1520.7275053064684,
+                "y": 306.81336920611295,
+              },
+              {
+                "x": 1543.9037929347799,
+                "y": 325.30516669630225,
+              },
+              {
+                "x": 1548.992910785492,
+                "y": 346.97213169765126,
+              },
+              {
+                "x": 1577.973544250987,
+                "y": 367.695248925891,
+              },
+              {
+                "x": 1571.5054881721276,
+                "y": 393.32340056138565,
+              },
+              {
+                "x": 1564.9219471065985,
+                "y": 419.7751688866865,
+              },
+              {
+                "x": 1555.276651073257,
+                "y": 438.6063120145992,
+              },
+              {
+                "x": 1543.7641758633395,
+                "y": 467.2428213274386,
+              },
+            ],
+            "position": {
+              "x": 1417.7323985259143,
+              "y": 403.77151146234456,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#E76F51",
+              "strokeWidth": 4,
+            },
+            "type": "ink",
+          },
+          "source": {
+            "col": 3,
+            "line": 11,
+          },
+          "t": 1,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 26-icon.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Icon",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "NAME",
+                "POSITION",
+                "SIZE",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "NAME": {
+                  "col": 5,
+                  "line": 6,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 8,
+                },
+              },
+              "iconName": "brain",
+              "name": "brain",
+            },
+            "groupId": undefined,
+            "id": "brain",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 120,
+              "width": 120,
+            },
+            "style": {
+              "color": "#FFD93D",
+              "fill": undefined,
+              "fontSize": 120,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "icon",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 27-multiline-text.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Multiline text",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "MAXWIDTH",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "MAXWIDTH": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "note",
+            "label": undefined,
+            "layer": 0,
+            "maxWidth": 260,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 40,
+              "strokeWidth": 4,
+            },
+            "text": "A line one
+A line two",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 28-transition.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Opening",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+              ],
+              "_sourcePropertyLocations": {
+                "POSITION": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "opening",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 64,
+              "strokeWidth": 4,
+            },
+            "text": "Opening",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+      ],
+      "transition": {
+        "duration": 0.6,
+        "source": {
+          "col": 3,
+          "line": 10,
+        },
+        "type": "fade",
+      },
+    },
+    {
+      "id": "2",
+      "index": 2,
+      "label": "Closing",
+      "ops": [
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+              ],
+              "_sourcePropertyLocations": {
+                "POSITION": {
+                  "col": 5,
+                  "line": 16,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 17,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 15,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "closing",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 500,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 64,
+              "strokeWidth": 4,
+            },
+            "text": "Closing",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 14,
+          },
+          "t": 0,
+        },
+      ],
+      "transition": {
+        "duration": 0.4,
+        "source": {
+          "col": 3,
+          "line": 19,
+        },
+        "type": "wipe",
+      },
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 29-measured-text.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Measured text",
+      "ops": [
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "heading",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 400,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 64,
+              "strokeWidth": 4,
+            },
+            "text": "WWWWiiii",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "COLOR",
+                "WIDTH",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 5,
+                  "line": 13,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 15,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 14,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "ink_1",
+            "layer": 0,
+            "opacity": 1,
+            "points": [
+              {
+                "x": 831.8511272056494,
+                "y": 456.4140383036807,
+              },
+              {
+                "x": 876.3896202149335,
+                "y": 463.4347925234774,
+              },
+              {
+                "x": 917.1036795317195,
+                "y": 465.0424229461267,
+              },
+              {
+                "x": 959.7843514366541,
+                "y": 461.23692957162854,
+              },
+              {
+                "x": 1001.3403035458177,
+                "y": 456.35968258203087,
+              },
+              {
+                "x": 1044.4093171642162,
+                "y": 454.7520521593816,
+              },
+              {
+                "x": 1086.9864751738496,
+                "y": 456.4140383036807,
+              },
+            ],
+            "position": {
+              "x": 959.6949820389772,
+              "y": 459.0934223414294,
+            },
+            "rotation": 0,
+            "style": {
+              "color": "#FFD93D",
+              "strokeWidth": 4,
+            },
+            "type": "ink",
+          },
+          "source": {
+            "col": 3,
+            "line": 12,
+          },
+          "t": 0.5,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 30-text-layout.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Measured text layout",
+      "ops": [
+        {
+          "draw": {
+            "duration": 0.8,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "align": "right",
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "ALIGN",
+                "MAXWIDTH",
+                "LINEHEIGHT",
+                "FIT",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "ALIGN": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "COLOR": {
+                  "col": 5,
+                  "line": 13,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 14,
+                },
+                "FIT": {
+                  "col": 5,
+                  "line": 12,
+                },
+                "LINEHEIGHT": {
+                  "col": 5,
+                  "line": 11,
+                },
+                "MAXWIDTH": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "fit": {
+              "height": 120,
+              "width": 260,
+            },
+            "groupId": undefined,
+            "id": "heading",
+            "label": undefined,
+            "layer": 0,
+            "lineHeight": 1.5,
+            "maxWidth": 220,
+            "opacity": 1,
+            "position": {
+              "x": 960,
+              "y": 450,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": 26.66656494140625,
+              "strokeWidth": 4,
+            },
+            "text": "Wide WWWW and narrow iiii
+Two balanced lines",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 31-anchors.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Anchored positions",
+      "ops": [
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "anchor": "left",
+            "data": {
+              "_sourceProperties": [
+                "POSITION",
+                "WIDTH",
+                "HEIGHT",
+                "ANCHOR",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "ANCHOR": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "COLOR": {
+                  "col": 5,
+                  "line": 10,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 11,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 6,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 7,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "leftCard",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 180,
+              "y": 120,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 80,
+              "width": 160,
+            },
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "anchor": "bottomright",
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "ANCHOR",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "ANCHOR": {
+                  "col": 5,
+                  "line": 18,
+                },
+                "COLOR": {
+                  "col": 5,
+                  "line": 19,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 20,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 16,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 17,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 15,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "cornerLabel",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 673.1699981689453,
+              "y": 668.8,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#E76F51",
+              "fill": undefined,
+              "fontSize": 48,
+              "strokeWidth": 4,
+            },
+            "text": "WWWWiiii",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 14,
+          },
+          "t": 0.5,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 32-relative-placement.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Relative placement",
+      "ops": [
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 9,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 7,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 8,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 6,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "title",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 700,
+              "y": 260,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 60,
+              "strokeWidth": 4,
+            },
+            "text": "Measured heading",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "SIZE",
+                "MAXWIDTH",
+                "BELOW",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "BELOW": {
+                  "col": 5,
+                  "line": 16,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 17,
+                },
+                "MAXWIDTH": {
+                  "col": 5,
+                  "line": 15,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 14,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 13,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "caption",
+            "label": undefined,
+            "layer": 0,
+            "maxWidth": 360,
+            "opacity": 1,
+            "position": {
+              "x": 700,
+              "y": 378.4,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 38,
+              "strokeWidth": 4,
+            },
+            "text": "Placed below the measured title",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 12,
+          },
+          "t": 0.5,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "WIDTH",
+                "HEIGHT",
+                "RIGHTOF",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 24,
+                },
+                "HEIGHT": {
+                  "col": 5,
+                  "line": 22,
+                },
+                "RIGHTOF": {
+                  "col": 5,
+                  "line": 23,
+                },
+                "WIDTH": {
+                  "col": 5,
+                  "line": 21,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "card",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 1021.8300018310547,
+              "y": 260,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 120,
+              "width": 200,
+            },
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 20,
+          },
+          "t": 1,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "POSITION",
+                "SIZE",
+                "ALIGNX",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "ALIGNX": {
+                  "col": 5,
+                  "line": 31,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 32,
+                },
+                "POSITION": {
+                  "col": 5,
+                  "line": 29,
+                },
+                "SIZE": {
+                  "col": 5,
+                  "line": 30,
+                },
+                "TEXT": {
+                  "col": 5,
+                  "line": 28,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "aligned",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 700,
+              "y": 700,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 32,
+              "strokeWidth": 4,
+            },
+            "text": "Aligned x",
+            "type": "text",
+          },
+          "source": {
+            "col": 3,
+            "line": 27,
+          },
+          "t": 1.5,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "RADIUS",
+                "CENTERON",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "CENTERON": {
+                  "col": 5,
+                  "line": 37,
+                },
+                "DRAW": {
+                  "col": 5,
+                  "line": 38,
+                },
+                "RADIUS": {
+                  "col": 5,
+                  "line": 36,
+                },
+              },
+            },
+            "groupId": undefined,
+            "id": "centered",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 700,
+              "y": 260,
+            },
+            "radius": 30,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 3,
+            "line": 35,
+          },
+          "t": 2,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Strokeline</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="./src/assets/logo.png" />
+
+    <!-- LANDING PAGE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500&family=Kalam:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  <!-- Default to dark theme on first visit (before React loads, avoid a light flash). -->
+    <script>
+      try {
+        if (!localStorage.getItem("theme")) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (_) {}
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="module" src="/src/app/main.tsx"></script>
+  </body>
+</html>
