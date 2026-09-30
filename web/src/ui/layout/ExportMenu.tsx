@@ -32,6 +32,7 @@ export function ExportMenu() {
   const controllerRef = useRef<AbortController | null>(null)
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState<ExportKind | null>(null)
+  const [exportError, setExportError] = useState("")
   const [progress, setProgress] = useState<number | null>(null)
   const [exportMessage, setExportMessage] = useState("")
   const [resolution, setResolution] = useState<VideoResolution>("1080p")
@@ -115,6 +116,7 @@ export function ExportMenu() {
     const controller = new AbortController()
     controllerRef.current = controller
     setBusy(kind)
+    setExportError("")
     setCancelling(false)
     setExportMessage("")
     setProgress(["png", "srt", "vtt"].includes(kind) ? 100 : 0)
@@ -148,6 +150,7 @@ export function ExportMenu() {
         /* user cancelled */
       } else {
         console.error("Export failed:", error)
+        setExportError(error instanceof Error ? error.message : String(error))
       }
     } finally {
       controllerRef.current = null
@@ -242,6 +245,12 @@ export function ExportMenu() {
             Cancel
           </Button>
         </>
+      )}
+      {exportError && !exporting && (
+        <div role="alert" className="absolute right-0 top-full z-50 mt-2 flex w-80 items-start gap-2 rounded-md border border-destructive/40 bg-background p-3 text-sm shadow-lg">
+          <span className="flex-1">Export failed: {exportError}</span>
+          <button type="button" aria-label="Dismiss export error" onClick={() => setExportError("")} className="shrink-0 text-muted-foreground hover:text-foreground">×</button>
+        </div>
       )}
       {createPortal(
         open && position ? (

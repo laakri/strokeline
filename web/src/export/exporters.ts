@@ -534,11 +534,13 @@ async function recordCanvasWebm(
       "This browser supports neither H.264 WebCodecs nor MediaRecorder."
     )
   }
-  const candidates = [
-    "video/webm;codecs=vp9",
-    "video/webm;codecs=vp8",
-    "video/webm",
-  ]
+  const candidates = narration
+    ? [
+        "video/webm;codecs=vp9,opus",
+        "video/webm;codecs=vp8,opus",
+        "video/webm",
+      ]
+    : ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"]
   const mimeType = candidates.find((candidate) =>
     MediaRecorder.isTypeSupported(candidate)
   )
