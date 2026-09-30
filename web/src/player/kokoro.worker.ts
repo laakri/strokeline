@@ -40,40 +40,22 @@ async function loadModel(): Promise<KokoroTTS> {
   if (loading) return loading
   lastProgress = 0
   loading = (async () => {
-    const device = "gpu" in navigator ? "webgpu" : "wasm"
     const cached = await hasCachedModelFiles()
     postProgress(1, "Starting Kokoro…")
-    try {
-      return await KokoroTTS.from_pretrained(modelId, {
-        dtype: "q8",
-        device,
-        progress_callback: (event) => {
-          const file = "file" in event ? event.file.toLowerCase() : ""
-          if (event.status === "progress" && file.endsWith(".onnx")) {
-            postProgress(event.progress * 0.94, cached ? "Loading saved voice model…" : "Downloading voice model…")
-          } else if (event.status === "done" && file.endsWith(".onnx")) {
-            postProgress(96, cached ? "Preparing saved voice model…" : "Preparing voice model…")
-          } else if (event.status === "ready") {
-            postProgress(99, "Finishing setup…")
-          }
-        },
-      })
-    } catch (error) {
-      if (device !== "webgpu") throw error
-      postProgress(95, "Switching to compatible audio mode…")
-      return KokoroTTS.from_pretrained(modelId, {
-        dtype: "q8",
-        device: "wasm",
-        progress_callback: (event) => {
-          const file = "file" in event ? event.file.toLowerCase() : ""
-          if (event.status === "progress" && file.endsWith(".onnx")) {
-            postProgress(event.progress * 0.94, cached ? "Loading saved voice model…" : "Downloading voice model…")
-          } else if (event.status === "done" && file.endsWith(".onnx")) {
-            postProgress(96, cached ? "Preparing saved voice model…" : "Preparing voice model…")
-          }
-        },
-      })
-    }
+    return KokoroTTS.from_pretrained(modelId, {
+      dtype: "q8",
+      device: "wasm",
+      progress_callback: (event) => {
+        const file = "file" in event ? event.file.toLowerCase() : ""
+        if (event.status === "progress" && file.endsWith(".onnx")) {
+          postProgress(event.progress * 0.94, cached ? "Loading saved voice model…" : "Downloading voice model…")
+        } else if (event.status === "done" && file.endsWith(".onnx")) {
+          postProgress(96, cached ? "Preparing saved voice model…" : "Preparing voice model…")
+        } else if (event.status === "ready") {
+          postProgress(99, "Finishing setup…")
+        }
+      },
+    })
   })()
   try {
     tts = await loading
