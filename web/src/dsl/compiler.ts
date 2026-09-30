@@ -572,6 +572,9 @@ function compileScene(
           },
         }
       : {}),
+    ...(scene.gapAfter
+      ? { gapAfter: durationSeconds(scene.gapAfter.duration, scene.gapAfter.token.line, scene.gapAfter.token.col, diagnostics) }
+      : {}),
     ...(cursor > opsDuration ? { duration: cursor } : {}),
     ops: ops.sort((left, right) => left.t - right.t),
     ...(says.length ? { says } : {}),

@@ -36,9 +36,9 @@ export function PreviewPane() {
   const autoplayNext = useRef(false)
   const autoplayAll = useRef(false)
   const preservedPlayback = useRef<{ time: number; wasPlaying: boolean } | null>(null)
-  const [playAllMode, setPlayAllMode] = useState(false)
+  const [playAllMode, setPlayAllMode] = useState(true)
   const [sequenceSceneIndex, setSequenceSceneIndex] = useState(0)
-  const [sceneGapSeconds, setSceneGapSeconds] = useState(0)
+  const [sceneGapSeconds, setSceneGapSeconds] = useState<number | "script">("script")
   const [sceneAnimation, setSceneAnimation] = useState<SceneAnimation>("script")
   const [transitionDuration, setTransitionDuration] = useState(0.6)
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
@@ -243,7 +243,9 @@ export function PreviewPane() {
             if (sceneAnimation === "none") return { type: "none" as const, duration: 0 }
             return { type: sceneAnimation, duration: transitionDuration }
           }),
-          sceneGapSeconds
+          sceneGapSeconds === "script"
+            ? compiledIR.scenes.map((item) => item.gapAfter ?? 0)
+            : sceneGapSeconds
         )
       : new Player(timelines[activeSceneIndex]!, (state, elapsed) => {
           narrationRef.current?.sync(
@@ -315,6 +317,9 @@ export function PreviewPane() {
     player.duration > 0 &&
     player.elapsed >= player.duration &&
     !player.isPlaying
+  const sequenceSceneStarts = playAllMode && playerRef.current instanceof SequencePlayer
+    ? playerRef.current.sceneStartTimes
+    : []
   return (
     <section
       className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"
@@ -368,10 +373,11 @@ export function PreviewPane() {
                   value={sceneGapSeconds}
                   onChange={(event) => {
                     preservePlaybackPosition()
-                    setSceneGapSeconds(Number(event.target.value))
+                    setSceneGapSeconds(event.target.value === "script" ? "script" : Number(event.target.value))
                   }}
                   className="h-8 rounded-md border border-border bg-background px-2 text-foreground"
                 >
+                  <option value="script">Use script settings</option>
                   {[0, 0.25, 0.5, 1, 2, 3, 5].map((seconds) => (
                     <option key={seconds} value={seconds}>{seconds}s</option>
                   ))}
@@ -468,16 +474,31 @@ export function PreviewPane() {
             <Play className="size-4" />
           )}
         </button>
-        <input
-          aria-label="Timeline scrubber"
-          type="range"
-          min="0"
-          max={player.duration || 1}
-          step="0.01"
-          value={Math.min(player.elapsed, player.duration || 1)}
-          onChange={(event) => seek(event.target.value)}
-          className="order-last min-w-0 basis-full flex-1 sm:order-none sm:basis-auto"
-        />
+        <div className="relative order-last min-w-0 basis-full flex-1 sm:order-none sm:basis-auto">
+          <input
+            aria-label="Timeline scrubber"
+            type="range"
+            min="0"
+            max={player.duration || 1}
+            step="0.01"
+            value={Math.min(player.elapsed, player.duration || 1)}
+            onChange={(event) => seek(event.target.value)}
+            className="relative z-10 block w-full"
+          />
+          {player.duration > 0 && sequenceSceneStarts.slice(1).map((time, index) => (
+            <button
+              key={`${index + 1}-${time}`}
+              type="button"
+              title={`Scene ${index + 2} starts at ${time.toFixed(1)}s`}
+              aria-label={`Seek to scene ${index + 2}, ${time.toFixed(1)} seconds`}
+              onClick={() => playerRef.current?.seek(time)}
+              style={{ left: `${(time / player.duration) * 100}%` }}
+              className="group absolute inset-y-0 z-20 flex w-4 -translate-x-1/2 items-center justify-center"
+            >
+              <span className="h-3.5 w-0.5 rounded-full bg-foreground/70 transition-colors group-hover:bg-primary" />
+            </button>
+          ))}
+        </div>
         <span className="w-24 text-right font-mono text-xs text-muted-foreground">
           {player.elapsed.toFixed(2)} / {player.duration.toFixed(2)}s
         </span>

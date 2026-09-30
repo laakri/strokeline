@@ -125,6 +125,7 @@ export interface Scene {
     duration: number
     source?: SourceLocation
   }
+  gapAfter?: number
   duration?: number
   says?: SayLine[]
   ops: TimelineOp[]

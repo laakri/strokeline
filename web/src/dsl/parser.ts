@@ -160,6 +160,7 @@ export interface ASTScene {
     duration: ASTValue
     token: Token
   }
+  gapAfter?: { duration: ASTValue; token: Token }
   statements: ASTStatement[]
   token: Token
   closed: boolean
@@ -336,7 +337,7 @@ class Parser {
     const label =
       this.peek().kind === "string" ? String(this.take().value) : undefined
     this.endLine()
-    const statements = this.parseStatements(["END", "TRANSITION"])
+    const statements = this.parseStatements(["END", "TRANSITION", "GAP"])
     let transition: ASTScene["transition"]
     if (this.word() === "TRANSITION") {
       const transitionToken = this.take()
@@ -360,6 +361,13 @@ class Parser {
         token: transitionToken,
       }
     }
+    let gapAfter: ASTScene["gapAfter"]
+    if (this.word() === "GAP") {
+      const gapToken = this.take()
+      this.expect("DURATION", gapToken)
+      gapAfter = { duration: this.readValue() ?? "", token: gapToken }
+      this.endLine()
+    }
     let closed = false
     if (this.word() === "END") {
       this.take()
@@ -373,6 +381,7 @@ class Parser {
       index,
       label,
       statements,
+      gapAfter,
       token,
       transition,
       closed,

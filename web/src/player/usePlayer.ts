@@ -105,7 +105,7 @@ export class SequencePlayer {
     sceneTransitions: Array<
       { type: "fade" | "wipe" | "slide" | "erase" | "none"; duration: number } | undefined
     > = [],
-    sceneGapSeconds = 0
+    sceneGapSeconds: number | number[] = 0
   ) {
     this.timelines = timelines
     this.onRender = onRender
@@ -114,9 +114,10 @@ export class SequencePlayer {
     for (const [index, timeline] of timelines.entries()) {
       this.offsets.push(total)
       total += timeline.duration
-      if (index < timelines.length - 1 && sceneGapSeconds > 0) {
-        this.gaps.push({ start: total, end: total + sceneGapSeconds, sceneIndex: index })
-        total += sceneGapSeconds
+      const gap = Array.isArray(sceneGapSeconds) ? (sceneGapSeconds[index] ?? 0) : sceneGapSeconds
+      if (index < timelines.length - 1 && gap > 0) {
+        this.gaps.push({ start: total, end: total + gap, sceneIndex: index })
+        total += gap
       }
       const transition = features.sceneTransitions
         ? sceneTransitions[index]
@@ -142,6 +143,9 @@ export class SequencePlayer {
 
   get currentTime(): number {
     return this.elapsed
+  }
+  get sceneStartTimes(): number[] {
+    return [...this.offsets]
   }
   get isPlaying(): boolean {
     return this.playing
