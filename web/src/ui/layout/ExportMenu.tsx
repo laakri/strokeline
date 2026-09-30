@@ -11,7 +11,7 @@ import {
   exportVideo,
   preferredVideoExportFormat,
   videoExportDimensions,
-  type VideoExportStatus,
+  type VideoExportFormat,
   type VideoResolution,
 } from "@/export/exporters.ts"
 import { Button } from "@/ui/button"
@@ -40,7 +40,7 @@ export function ExportMenu() {
   const [includeNarration, setIncludeNarration] = useState(true)
   const [videoFormatProbe, setVideoFormatProbe] = useState<{
     key: string
-    format: VideoExportStatus
+    format: VideoExportFormat
   } | null>(null)
   const [cancelling, setCancelling] = useState(false)
   const [position, setPosition] = useState<{
@@ -61,21 +61,23 @@ export function ExportMenu() {
         : undefined
   const exporting = busy !== null
   const hasNarration = !!compiledIR?.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
-  const videoFormatKey = `${compiledIR?.canvas.width ?? 0}x${compiledIR?.canvas.height ?? 0}:${resolution}:${fps}:${hasNarration && includeNarration ? "audio" : "silent"}`
-  const videoFormat: VideoExportStatus | "checking" =
-    videoFormatProbe?.key === videoFormatKey ? videoFormatProbe.format : "checking"
+  const videoFormatKey = `${compiledIR?.canvas.width ?? 0}x${compiledIR?.canvas.height ?? 0}:${resolution}:${fps}`
+  const videoFormat: VideoExportFormat | "checking" =
+    videoFormatProbe?.key === videoFormatKey
+      ? videoFormatProbe.format
+      : "checking"
 
   useEffect(() => {
     if (!open || !compiledIR) return
     let current = true
     const { width, height } = videoExportDimensions(compiledIR, resolution)
-    void preferredVideoExportFormat(width, height, fps, hasNarration && includeNarration).then((format) => {
+    void preferredVideoExportFormat(width, height, fps).then((format) => {
       if (current) setVideoFormatProbe({ key: videoFormatKey, format })
     })
     return () => {
       current = false
     }
-  }, [open, compiledIR, resolution, fps, includeNarration, hasNarration, videoFormatKey])
+  }, [open, compiledIR, resolution, fps, videoFormatKey])
 
   useEffect(() => {
     if (!open) return
@@ -132,6 +134,8 @@ export function ExportMenu() {
           signal: controller.signal,
           onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
           onMessage: setExportMessage,
+          onFormat: (format) =>
+            setVideoFormatProbe({ key: videoFormatKey, format }),
         })
       } else if (kind === "gif") {
         await exportGif(state.compiledIR, {
@@ -169,13 +173,12 @@ export function ExportMenu() {
   }> = [
     {
       kind: "video",
-      label: videoFormat === "mp4"
-        ? "Video MP4 (H.264, full script)"
-        : videoFormat === "unsupported-audio"
-          ? "MP4 unavailable with narration"
-          : videoFormat === "unsupported-video"
-            ? "MP4 unavailable in this browser"
-            : "Video MP4 (checking support)",
+      label:
+        videoFormat === "mp4"
+          ? "Video MP4 (H.264, full script)"
+          : videoFormat === "webm"
+            ? "Video WebM (real-time fallback)"
+            : "Video (checking browser support)",
       icon: <FileVideo className="size-4" />,
     },
     {
@@ -217,7 +220,7 @@ export function ExportMenu() {
             <span className="text-xs text-muted-foreground">
               {cancelling
                 ? "Cancelling export…"
-                : `${exportMessage || `Exporting ${busy === "video" ? "MP4" : (busy ?? "file")}`} · ${progress ?? 0}%`}
+                : `${exportMessage || `Exporting ${videoFormat === "mp4" ? "MP4" : videoFormat === "webm" ? "WebM fallback" : (busy ?? "file")}`} · ${progress ?? 0}%`}
             </span>
             <progress
               max={100}
@@ -306,13 +309,7 @@ export function ExportMenu() {
               </label>
             )}
             {items.map((item) => {
-              const videoUnavailable = item.kind === "video" && videoFormat !== "mp4"
-              const videoReason = videoFormat === "unsupported-audio"
-                ? "Turn off narration to export MP4 in this browser"
-                : videoFormat === "unsupported-video"
-                  ? "MP4 encoding is unavailable in this browser"
-                  : "Checking MP4 support…"
-              const itemDisabled = !canExport || videoUnavailable
+              const itemDisabled = !canExport
               return (
                 <button
                   key={item.kind}
@@ -320,7 +317,7 @@ export function ExportMenu() {
                   role="menuitem"
                   disabled={itemDisabled}
                   onClick={() => void runExport(item.kind)}
-                  title={videoUnavailable ? videoReason : itemDisabledReason}
+                  title={itemDisabledReason}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent disabled:cursor-not-allowed disabled:text-muted-foreground"
                 >
                   {item.icon}
