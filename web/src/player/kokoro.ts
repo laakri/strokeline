@@ -31,13 +31,15 @@ const listeners = new Set<() => void>()
 const pending = new Map<number, PendingAudio>()
 const audioCache = new Map<string, KokoroAudio>()
 const generationJobs = new Map<string, Promise<KokoroAudio>>()
-const AUDIO_DB_NAME = "strokeline-kokoro-audio-v1"
+const AUDIO_DB_NAME = "strokeline-kokoro-audio-wasm-v1"
+const LEGACY_AUDIO_DB_NAME = "strokeline-kokoro-audio-v1"
 const AUDIO_STORE_NAME = "clips"
 const AUDIO_CACHE_LIMIT = 64 * 1024 * 1024
 const AUDIO_CACHE_ENTRY_LIMIT = 500
 type StoredAudio = { key: string; samples: ArrayBuffer; sampleRate: number; savedAt: number }
 let audioDbPromise: Promise<IDBDatabase | null> | null = null
 let persistenceRequest: Promise<boolean> | null = null
+let legacyAudioCacheCleared = false
 let state: KokoroState = {
   status: "idle",
   progress: 0,
@@ -52,6 +54,10 @@ let requestId = 0
 
 function openAudioDb(): Promise<IDBDatabase | null> {
   if (typeof indexedDB === "undefined") return Promise.resolve(null)
+  if (!legacyAudioCacheCleared) {
+    legacyAudioCacheCleared = true
+    indexedDB.deleteDatabase(LEGACY_AUDIO_DB_NAME)
+  }
   if (audioDbPromise) return audioDbPromise
   audioDbPromise = new Promise((resolve) => {
     const request = indexedDB.open(AUDIO_DB_NAME, 1)
