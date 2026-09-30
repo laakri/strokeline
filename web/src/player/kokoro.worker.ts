@@ -11,6 +11,24 @@ const modelId = "onnx-community/Kokoro-82M-v1.0-ONNX"
 let tts: KokoroTTS | null = null
 let loading: Promise<KokoroTTS> | null = null
 let lastProgress = 0
+let modelFilesCached: Promise<boolean> | null = null
+
+function hasCachedModelFiles(): Promise<boolean> {
+  if (modelFilesCached) return modelFilesCached
+  modelFilesCached = (async () => {
+    if (typeof caches === "undefined") return false
+    try {
+      const cache = await caches.open("transformers-cache")
+      const entries = await cache.keys()
+      return entries.some(({ url }) =>
+        url.includes("/onnx-community/Kokoro-82M-v1.0-ONNX/") && url.includes("/onnx/") && url.endsWith(".onnx")
+      )
+    } catch {
+      return false
+    }
+  })()
+  return modelFilesCached
+}
 
 function postProgress(progress: number, message: string): void {
   lastProgress = Math.max(lastProgress, Math.min(99, Math.round(progress)))
@@ -23,6 +41,7 @@ async function loadModel(): Promise<KokoroTTS> {
   lastProgress = 0
   loading = (async () => {
     const device = "gpu" in navigator ? "webgpu" : "wasm"
+    const cached = await hasCachedModelFiles()
     postProgress(1, "Starting Kokoro…")
     try {
       return await KokoroTTS.from_pretrained(modelId, {
@@ -31,9 +50,9 @@ async function loadModel(): Promise<KokoroTTS> {
         progress_callback: (event) => {
           const file = "file" in event ? event.file.toLowerCase() : ""
           if (event.status === "progress" && file.endsWith(".onnx")) {
-            postProgress(event.progress * 0.94, "Downloading voice model…")
+            postProgress(event.progress * 0.94, cached ? "Loading saved voice model…" : "Downloading voice model…")
           } else if (event.status === "done" && file.endsWith(".onnx")) {
-            postProgress(96, "Preparing voice model…")
+            postProgress(96, cached ? "Preparing saved voice model…" : "Preparing voice model…")
           } else if (event.status === "ready") {
             postProgress(99, "Finishing setup…")
           }
@@ -48,9 +67,9 @@ async function loadModel(): Promise<KokoroTTS> {
         progress_callback: (event) => {
           const file = "file" in event ? event.file.toLowerCase() : ""
           if (event.status === "progress" && file.endsWith(".onnx")) {
-            postProgress(event.progress * 0.94, "Downloading voice model…")
+            postProgress(event.progress * 0.94, cached ? "Loading saved voice model…" : "Downloading voice model…")
           } else if (event.status === "done" && file.endsWith(".onnx")) {
-            postProgress(96, "Preparing voice model…")
+            postProgress(96, cached ? "Preparing saved voice model…" : "Preparing voice model…")
           }
         },
       })

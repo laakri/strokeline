@@ -5,7 +5,7 @@ import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { useAppStore } from "@/app/store.ts"
 import { Player, SequencePlayer } from "@/player/usePlayer.ts"
 import { SubtitleNarration, type VoiceStatus } from "@/player/subtitleNarration.ts"
-import { getKokoroState, loadKokoro, subscribeKokoro } from "@/player/kokoro.ts"
+import { getKokoroState, subscribeKokoro } from "@/player/kokoro.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
 import { Timeline } from "@/timeline/timeline.ts"
 import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
@@ -55,9 +55,7 @@ export function PreviewPane() {
   const [transitionDuration, setTransitionDuration] = useState(0.6)
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
-  const [voiceDialogOpen, setVoiceDialogOpen] = useState(
-    () => readReadAlongSetting() && getKokoroState().status === "idle"
-  )
+  const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
   const [selectedVoice, setSelectedVoice] = useState(readVoiceSetting)
   const [voicePrepProgress, setVoicePrepProgress] = useState({ completed: 0, total: 0 })
   const [voiceNotice, setVoiceNotice] = useState("")
@@ -87,11 +85,6 @@ export function PreviewPane() {
   useEffect(() => {
     readAlongRef.current = readAlongOn
   }, [readAlongOn])
-  useEffect(() => {
-    if (readAlongOn && kokoroState.status === "idle") {
-      void loadKokoro().catch(() => undefined)
-    }
-  }, [kokoroState.status, readAlongOn])
   const voiceSupported = typeof window !== "undefined" && "Worker" in window && "AudioContext" in window
 
   const preservePlaybackPosition = () => {

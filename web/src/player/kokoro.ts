@@ -31,6 +31,13 @@ const listeners = new Set<() => void>()
 const pending = new Map<number, PendingAudio>()
 const audioCache = new Map<string, KokoroAudio>()
 const generationJobs = new Map<string, Promise<KokoroAudio>>()
+const AUDIO_DB_NAME = "strokeline-kokoro-audio-v1"
+const AUDIO_STORE_NAME = "clips"
+const AUDIO_CACHE_LIMIT = 64 * 1024 * 1024
+const AUDIO_CACHE_ENTRY_LIMIT = 500
+type StoredAudio = { key: string; samples: ArrayBuffer; sampleRate: number; savedAt: number }
+let audioDbPromise: Promise<IDBDatabase | null> | null = null
+let persistenceRequest: Promise<boolean> | null = null
 let state: KokoroState = {
   status: "idle",
   progress: 0,
@@ -42,6 +49,69 @@ let loadPromise: Promise<void> | null = null
 let loadResolve: (() => void) | null = null
 let loadReject: ((error: Error) => void) | null = null
 let requestId = 0
+
+function openAudioDb(): Promise<IDBDatabase | null> {
+  if (typeof indexedDB === "undefined") return Promise.resolve(null)
+  if (audioDbPromise) return audioDbPromise
+  audioDbPromise = new Promise((resolve) => {
+    const request = indexedDB.open(AUDIO_DB_NAME, 1)
+    request.onupgradeneeded = () => {
+      if (!request.result.objectStoreNames.contains(AUDIO_STORE_NAME)) {
+        request.result.createObjectStore(AUDIO_STORE_NAME, { keyPath: "key" })
+      }
+    }
+    request.onsuccess = () => resolve(request.result)
+    request.onerror = () => resolve(null)
+    request.onblocked = () => resolve(null)
+  })
+  return audioDbPromise
+}
+
+async function readStoredAudio(key: string): Promise<KokoroAudio | null> {
+  const db = await openAudioDb()
+  if (!db) return null
+  return new Promise((resolve) => {
+    const request = db.transaction(AUDIO_STORE_NAME, "readonly").objectStore(AUDIO_STORE_NAME).get(key)
+    request.onsuccess = () => {
+      const stored = request.result as StoredAudio | undefined
+      resolve(stored
+        ? { samples: new Float32Array(stored.samples), sampleRate: stored.sampleRate }
+        : null)
+    }
+    request.onerror = () => resolve(null)
+  })
+}
+
+async function writeStoredAudio(key: string, audio: KokoroAudio): Promise<void> {
+  const db = await openAudioDb()
+  if (!db) return
+  const transaction = db.transaction(AUDIO_STORE_NAME, "readwrite")
+  const store = transaction.objectStore(AUDIO_STORE_NAME)
+  const copy = audio.samples.slice()
+  store.put({ key, samples: copy.buffer, sampleRate: audio.sampleRate, savedAt: Date.now() } satisfies StoredAudio)
+  const list = store.getAll()
+  list.onsuccess = () => {
+    const entries = (list.result as StoredAudio[]).sort((a, b) => a.savedAt - b.savedAt)
+    let bytes = entries.reduce((total, entry) => total + entry.samples.byteLength, 0)
+    let count = entries.length
+    for (const entry of entries) {
+      if (bytes <= AUDIO_CACHE_LIMIT && count <= AUDIO_CACHE_ENTRY_LIMIT) break
+      store.delete(entry.key)
+      bytes -= entry.samples.byteLength
+      count--
+    }
+  }
+  await new Promise<void>((resolve) => {
+    transaction.oncomplete = () => resolve()
+    transaction.onerror = () => resolve()
+    transaction.onabort = () => resolve()
+  })
+}
+
+function requestPersistentStorage(): void {
+  if (persistenceRequest || typeof navigator === "undefined" || !navigator.storage?.persist) return
+  persistenceRequest = navigator.storage.persist().catch(() => false)
+}
 
 function updateState(next: Partial<KokoroState>): void {
   state = { ...state, ...next }
@@ -105,6 +175,7 @@ export function subscribeKokoro(listener: () => void): () => void {
 }
 
 export function loadKokoro(): Promise<void> {
+  requestPersistentStorage()
   if (state.status === "ready") return Promise.resolve()
   if (loadPromise) return loadPromise
   updateState({ status: "loading", progress: 0, message: "Starting Kokoro…", error: undefined })
@@ -130,22 +201,30 @@ export function loadKokoro(): Promise<void> {
 }
 
 export async function generateKokoroAudio(text: string, voice: string): Promise<KokoroAudio> {
-  await loadKokoro()
   const key = `${voice}:${text}`
   const cached = audioCache.get(key)
   if (cached) return cached
   const existing = generationJobs.get(key)
   if (existing) return existing
-  const id = ++requestId
-  const job = new Promise<KokoroAudio>((resolve, reject) => {
-    pending.set(id, { resolve, reject })
-    getWorker().postMessage({ type: "generate", id, text, voice })
-  })
+  const job = (async () => {
+    const saved = await readStoredAudio(key)
+    if (saved) {
+      audioCache.set(key, saved)
+      return saved
+    }
+    await loadKokoro()
+    const id = ++requestId
+    const generated = await new Promise<KokoroAudio>((resolve, reject) => {
+      pending.set(id, { resolve, reject })
+      getWorker().postMessage({ type: "generate", id, text, voice })
+    })
+    audioCache.set(key, generated)
+    await writeStoredAudio(key, generated).catch(() => undefined)
+    return generated
+  })()
   generationJobs.set(key, job)
   try {
-    const audio = await job
-    audioCache.set(key, audio)
-    return audio
+    return await job
   } finally {
     generationJobs.delete(key)
   }

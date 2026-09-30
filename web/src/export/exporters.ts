@@ -6,7 +6,7 @@ import { SequencePlayer } from "@/player/usePlayer.ts"
 import { Timeline } from "@/timeline/timeline.ts"
 import { frameCountForDuration, frameTimestamp } from "@/export/frameTiming.ts"
 import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
-import { getKokoroState, generateKokoroAudio, loadKokoro, subscribeKokoro } from "@/player/kokoro.ts"
+import { getKokoroState, generateKokoroAudio, subscribeKokoro } from "@/player/kokoro.ts"
 
 function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; readAlong: boolean } {
   const readSetting = (key: string): boolean | null => {
@@ -309,36 +309,34 @@ async function renderNarrationAudio(
     }
   })
   try {
-    onProgress(0, "Loading Kokoro voice model…")
-    await loadKokoro()
+    onProgress(0, "Preparing saved narration…")
+    const audioContext = new OfflineAudioContext(
+      1,
+      Math.max(1, Math.ceil(totalDuration * 24_000)),
+      24_000
+    )
+    const gain = audioContext.createGain()
+    gain.gain.value = 0.82
+    gain.connect(audioContext.destination)
+    for (let index = 0; index < says.length; index++) {
+      throwIfAborted(signal)
+      const { line, start } = says[index]!
+      onProgress(0.12 + (index / says.length) * 0.13, `Preparing narration ${index + 1}/${says.length}…`)
+      const audio = await generateKokoroAudio(plainSubtitleText(line.text).trim(), voice)
+      if (start >= totalDuration) continue
+      const buffer = audioContext.createBuffer(1, audio.samples.length, audio.sampleRate)
+      buffer.copyToChannel(audio.samples, 0)
+      const source = audioContext.createBufferSource()
+      source.buffer = buffer
+      source.connect(gain)
+      source.start(Math.max(0, start))
+    }
+    throwIfAborted(signal)
+    onProgress(0.25, "Mixing narration into the video…")
+    return await audioContext.startRendering()
   } finally {
     unsubscribe()
   }
-
-  const audioContext = new OfflineAudioContext(
-    1,
-    Math.max(1, Math.ceil(totalDuration * 24_000)),
-    24_000
-  )
-  const gain = audioContext.createGain()
-  gain.gain.value = 0.82
-  gain.connect(audioContext.destination)
-  for (let index = 0; index < says.length; index++) {
-    throwIfAborted(signal)
-    const { line, start } = says[index]!
-    onProgress(0.12 + (index / says.length) * 0.13, `Generating narration ${index + 1}/${says.length}…`)
-    const audio = await generateKokoroAudio(plainSubtitleText(line.text).trim(), voice)
-    if (start >= totalDuration) continue
-    const buffer = audioContext.createBuffer(1, audio.samples.length, audio.sampleRate)
-    buffer.copyToChannel(audio.samples, 0)
-    const source = audioContext.createBufferSource()
-    source.buffer = buffer
-    source.connect(gain)
-    source.start(Math.max(0, start))
-  }
-  throwIfAborted(signal)
-  onProgress(0.25, "Mixing narration into the video…")
-  return audioContext.startRendering()
 }
 
 interface SequenceRenderer {

@@ -44,7 +44,7 @@ export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, o
 
         {!ready ? (
           <div className="grid gap-3">
-            <p className="text-sm text-muted-foreground">First setup downloads about 92 MB once. It is cached in this browser; slow connections show live progress here.</p>
+            <p className="text-sm text-muted-foreground">First setup downloads about 92 MB once. The model stays in this browser’s cache. Refreshing reloads it into memory; saved narration clips are reused for the same text and voice.</p>
             {loading ? (
               <div className="grid gap-2" aria-live="polite">
                 <div className="flex justify-between gap-3 text-sm">
@@ -55,7 +55,7 @@ export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, o
               </div>
             ) : (
               <button type="button" onClick={() => void loadKokoro().catch(() => undefined)} className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
-                {kokoro.status === "error" ? "Retry download" : "Download Kokoro voice"}
+                {kokoro.status === "error" ? "Retry Kokoro setup" : "Load Kokoro voice"}
               </button>
             )}
             {kokoro.error && <p role="alert" className="text-sm text-destructive">{kokoro.error}</p>}
