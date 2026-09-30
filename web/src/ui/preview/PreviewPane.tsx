@@ -535,13 +535,15 @@ export function PreviewPane() {
           type="button"
           aria-label={`Spoken narration ${readAlongOn ? "on" : "off"}`}
           aria-pressed={readAlongOn}
-          title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voiceNotice || `Kokoro ${readAlongOn ? "on" : "off"} · ${activeVoiceLabel}${activeVoice ? ` · ${activeVoice.language} · ${activeVoice.gender}` : ""}`}
+          title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voiceNotice || (kokoroState.status === "loading" ? `${kokoroState.message} ${kokoroState.progress}%` : `Kokoro ${readAlongOn ? "on" : "off"} · ${activeVoiceLabel}${activeVoice ? ` · ${activeVoice.language} · ${activeVoice.gender}` : ""}`)}
           disabled={!voiceSupported}
           onClick={toggleReadAlong}
           className={`inline-flex items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${readAlongOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
         >
           <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
-          {voiceStatus === "preparing" && voicePrepProgress.total > 0
+          {kokoroState.status === "loading"
+            ? `${kokoroState.progress}%`
+            : voiceStatus === "preparing" && voicePrepProgress.total > 0
             ? `${voicePrepProgress.completed}/${voicePrepProgress.total}`
             : activeVoiceLabel}
         </button>
@@ -570,10 +572,29 @@ export function PreviewPane() {
               playerRef.current.pause()
               setPlayerState({ isPlaying: false })
             } else {
-              void narrationRef.current?.unlock()
-              narrationRef.current?.resume()
-              playerRef.current.play()
-              setPlayerState({ isPlaying: true })
+              const controller = playerRef.current
+              if (!controller) return
+              void (async () => {
+                try {
+                  await narrationRef.current?.unlock()
+                  if (readAlongOn && compiledIR && (voiceStatus === "idle" || voiceStatus === "error")) {
+                    const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
+                    await narrationRef.current?.prepare(
+                      lines,
+                      selectedVoice,
+                      (completed, total) => setVoicePrepProgress({ completed, total })
+                    )
+                    await narrationRef.current?.unlock()
+                  }
+                } catch (error) {
+                  const message = error instanceof Error ? error.message : String(error)
+                  setVoiceStatus("error")
+                  setVoiceNotice(`Kokoro could not prepare narration: ${message}`)
+                }
+                narrationRef.current?.resume()
+                controller.play()
+                setPlayerState({ isPlaying: true })
+              })()
             }
           }}
           className="inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"
