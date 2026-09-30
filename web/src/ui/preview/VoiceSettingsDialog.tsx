@@ -6,11 +6,13 @@ type Props = {
   open: boolean
   selectedVoice: string
   preparing: { completed: number; total: number }
+  preparingActive: boolean
+  error: string
   onClose: () => void
   onUseVoice: (voice: string) => void
 }
 
-export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, onUseVoice }: Props) {
+export function VoiceSettingsDialog({ open, selectedVoice, preparing, preparingActive, error, onClose, onUseVoice }: Props) {
   const kokoro = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
   const [draftVoice, setDraftVoice] = useState(selectedVoice)
   if (!open) return null
@@ -74,14 +76,15 @@ export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, o
               </select>
             </label>
             <p className="text-xs text-muted-foreground">Selected reader: {selectVoice(chosenVoiceInfo ?? { id: chosenVoice })}. Kokoro downloads the shared model once; this voice is cached when first used.</p>
-            {preparing.total > 0 && preparing.completed < preparing.total && (
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+            {preparingActive && (
               <div className="grid gap-2" aria-live="polite">
-                <div className="flex justify-between text-sm"><span>Preparing narration…</span><span className="font-mono">{preparing.completed}/{preparing.total}</span></div>
-                <progress aria-label="Narration preparation progress" max={preparing.total} value={preparing.completed} className="h-2 w-full accent-primary" />
+                <div className="flex justify-between text-sm"><span>{preparing.total > 0 ? "Preparing narration…" : "Preparing reader…"}</span>{preparing.total > 0 && <span className="font-mono">{preparing.completed}/{preparing.total}</span>}</div>
+                <progress aria-label="Narration preparation progress" max={Math.max(1, preparing.total)} value={preparing.total > 0 ? preparing.completed : undefined} className="h-2 w-full accent-primary" />
               </div>
             )}
-            <button type="button" onClick={() => onUseVoice(chosenVoice)} disabled={preparing.total > 0 && preparing.completed < preparing.total} className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:cursor-wait disabled:opacity-60">
-              {preparing.total > 0 && preparing.completed < preparing.total ? "Preparing voice…" : "Use this reader"}
+            <button type="button" onClick={() => onUseVoice(chosenVoice)} disabled={preparingActive} className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:cursor-wait disabled:opacity-60">
+              {preparingActive ? "Preparing voice…" : "Use this reader"}
             </button>
           </div>
         )}

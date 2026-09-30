@@ -114,7 +114,8 @@ export function PreviewPane() {
     setPlayerState({ isPlaying: false })
     narrationRef.current.setVoice(voice)
     setVoicePrepProgress({ completed: 0, total: 0 })
-    setVoiceNotice("")
+    setVoiceStatus("preparing")
+    setVoiceNotice("Preparing reader and narration…")
     try {
       await narrationRef.current.unlock()
       const lines = compiledIR?.scenes.flatMap((item) => scheduleSays(item.says ?? [])) ?? []
@@ -133,7 +134,11 @@ export function PreviewPane() {
       }
       readAlongRef.current = true
       setReadAlongOn(true)
-      if (skipped) setVoiceNotice(`Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`)
+      setVoiceNotice(skipped
+        ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
+        : lines.length === 0
+          ? "This script has no SAY lines to read."
+          : "")
       setVoiceDialogOpen(false)
       controller?.seek(time)
       if (wasPlaying) controller?.play()
@@ -167,6 +172,7 @@ export function PreviewPane() {
       }
       narrationRef.current.cancel()
       setVoiceStatus("idle")
+      setVoiceNotice("")
     }
   }, [enableReader, kokoroState.status, selectedVoice, voiceSupported])
 
@@ -393,18 +399,25 @@ export function PreviewPane() {
     }
     let cancelled = false
     const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
+    setVoicePrepProgress({ completed: 0, total: 0 })
+    setVoiceNotice(lines.length ? "Preparing narration…" : "This script has no SAY lines to read.")
     void narrationRef.current.prepare(
       lines,
       selectedVoice,
       (completed, total) => setVoicePrepProgress({ completed, total })
-    ).then(() => {
+    ).then(async ({ skipped }) => {
       if (cancelled) return
-      void narrationRef.current.unlock().then(() => controller.play())
+      await narrationRef.current.unlock()
+      if (cancelled) return
+      setVoiceNotice(skipped
+        ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
+        : lines.length ? "" : "This script has no SAY lines to read.")
+      controller.play()
     }).catch((error: unknown) => {
       if (cancelled) return
       setVoicePrepProgress({ completed: 0, total: 0 })
       setVoiceStatus("error")
-      setVoiceNotice(error instanceof Error ? error.message : String(error))
+      setVoiceNotice(`Kokoro could not prepare narration: ${error instanceof Error ? error.message : String(error)}`)
       controller.play()
     })
     return () => { cancelled = true }
@@ -543,8 +556,8 @@ export function PreviewPane() {
           <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
           {kokoroState.status === "loading"
             ? `${kokoroState.progress}%`
-            : voiceStatus === "preparing" && voicePrepProgress.total > 0
-            ? `${voicePrepProgress.completed}/${voicePrepProgress.total}`
+            : voiceStatus === "preparing"
+            ? voicePrepProgress.total > 0 ? `${voicePrepProgress.completed}/${voicePrepProgress.total}` : "Preparing…"
             : activeVoiceLabel}
         </button>
         <button
@@ -578,13 +591,19 @@ export function PreviewPane() {
                 try {
                   await narrationRef.current?.unlock()
                   if (readAlongOn && compiledIR && (voiceStatus === "idle" || voiceStatus === "error")) {
+                    setVoiceStatus("preparing")
+                    setVoicePrepProgress({ completed: 0, total: 0 })
+                    setVoiceNotice("Preparing narration…")
                     const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
-                    await narrationRef.current?.prepare(
+                    const { skipped } = await narrationRef.current.prepare(
                       lines,
                       selectedVoice,
                       (completed, total) => setVoicePrepProgress({ completed, total })
                     )
                     await narrationRef.current?.unlock()
+                    setVoiceNotice(skipped
+                      ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
+                      : lines.length ? "" : "This script has no SAY lines to read.")
                   }
                 } catch (error) {
                   const message = error instanceof Error ? error.message : String(error)
@@ -665,12 +684,30 @@ export function PreviewPane() {
           </button>
         )}
       </div>
+      {(voiceNotice || voiceStatus === "preparing") && (
+        <div
+          role={voiceStatus === "error" ? "alert" : "status"}
+          aria-live={voiceStatus === "error" ? "assertive" : "polite"}
+          className={`flex items-center gap-2 border-t border-border px-3 py-1.5 text-xs ${voiceStatus === "error" ? "text-destructive" : "text-muted-foreground"}`}
+        >
+          <span className="min-w-0 flex-1 truncate">
+            {voiceNotice || (kokoroState.status === "loading"
+              ? `${kokoroState.message} ${kokoroState.progress}%`
+              : voicePrepProgress.total > 0
+                ? `Preparing narration · ${voicePrepProgress.completed}/${voicePrepProgress.total}`
+                : "Preparing reader…")}
+          </span>
+          <button type="button" aria-label="Dismiss reader message" onClick={() => setVoiceNotice("")} className="shrink-0 px-1 text-muted-foreground hover:text-foreground">×</button>
+        </div>
+      )}
     </section>
     <VoiceSettingsDialog
       key={`${selectedVoice}:${voiceDialogOpen}`}
       open={voiceDialogOpen}
       selectedVoice={selectedVoice}
       preparing={voicePrepProgress}
+      preparingActive={voiceStatus === "preparing"}
+      error={voiceStatus === "error" ? voiceNotice : ""}
       onClose={() => setVoiceDialogOpen(false)}
       onUseVoice={(voice) => void enableReader(voice)}
     />
