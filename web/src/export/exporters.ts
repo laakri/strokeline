@@ -244,16 +244,9 @@ export async function exportVideo(
             }
           )
         : null
-      let format = await preferredVideoExportFormat(width, height, fps)
-      if (narration && format === "mp4") {
-        const { getFirstEncodableAudioCodec } = await import("mediabunny")
-        const audioCodec = await getFirstEncodableAudioCodec(["aac"], {
-          numberOfChannels: narration.numberOfChannels,
-          sampleRate: narration.sampleRate,
-          bitrate: 128_000,
-        })
-        if (!audioCodec) format = "webm"
-      }
+      const format = narration
+        ? "webm"
+        : await preferredVideoExportFormat(width, height, fps)
       onFormat?.(format)
       throwIfAborted(signal)
       onMessage?.(narration ? "Rendering video with narration…" : "Rendering video…")
@@ -535,16 +528,12 @@ async function recordCanvasWebm(
     )
   }
   const candidates = narration
-    ? [
-        "video/webm;codecs=vp9,opus",
-        "video/webm;codecs=vp8,opus",
-        "video/webm",
-      ]
+    ? ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus"]
     : ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"]
   const mimeType = candidates.find((candidate) =>
     MediaRecorder.isTypeSupported(candidate)
   )
-  if (!mimeType) throw new Error("This browser cannot record WebM video.")
+  if (!mimeType && !narration) throw new Error("This browser cannot record WebM video.")
 
   const stream = sequence.canvas.captureStream(fps)
   const audioDestination = narration && audioContext
@@ -562,7 +551,7 @@ async function recordCanvasWebm(
     for (const track of audioDestination.stream.getAudioTracks()) stream.addTrack(track)
   }
   const recorder = new MediaRecorder(stream, {
-    mimeType,
+    ...(mimeType ? { mimeType } : {}),
     videoBitsPerSecond: 8_000_000,
   })
   const chunks: Blob[] = []

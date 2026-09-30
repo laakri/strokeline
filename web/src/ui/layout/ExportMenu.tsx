@@ -61,7 +61,7 @@ export function ExportMenu() {
         : undefined
   const exporting = busy !== null
   const hasNarration = !!compiledIR?.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
-  const videoFormatKey = `${compiledIR?.canvas.width ?? 0}x${compiledIR?.canvas.height ?? 0}:${resolution}:${fps}`
+  const videoFormatKey = `${compiledIR?.canvas.width ?? 0}x${compiledIR?.canvas.height ?? 0}:${resolution}:${fps}:${hasNarration && includeNarration ? "audio" : "silent"}`
   const videoFormat: VideoExportFormat | "checking" =
     videoFormatProbe?.key === videoFormatKey
       ? videoFormatProbe.format
@@ -70,6 +70,12 @@ export function ExportMenu() {
   useEffect(() => {
     if (!open || !compiledIR) return
     let current = true
+    if (hasNarration && includeNarration) {
+      setVideoFormatProbe({ key: videoFormatKey, format: "webm" })
+      return () => {
+        current = false
+      }
+    }
     const { width, height } = videoExportDimensions(compiledIR, resolution)
     void preferredVideoExportFormat(width, height, fps).then((format) => {
       if (current) setVideoFormatProbe({ key: videoFormatKey, format })
@@ -77,7 +83,7 @@ export function ExportMenu() {
     return () => {
       current = false
     }
-  }, [open, compiledIR, resolution, fps, videoFormatKey])
+  }, [open, compiledIR, resolution, fps, includeNarration, hasNarration, videoFormatKey])
 
   useEffect(() => {
     if (!open) return
