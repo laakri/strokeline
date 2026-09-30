@@ -32,7 +32,8 @@ function exportVoiceId(): string {
 }
 
 export type VideoResolution = "720p" | "1080p"
-export type VideoExportFormat = "mp4" | "webm"
+export type VideoExportFormat = "mp4"
+export type VideoExportStatus = VideoExportFormat | "unsupported-video" | "unsupported-audio"
 
 function createCanvas(width: number, height: number): HTMLCanvasElement {
   const canvas = document.createElement("canvas")
@@ -66,7 +67,6 @@ export interface ExportOptions {
   includeNarration?: boolean
   signal?: AbortSignal
   onProgress?: (fraction: number) => void
-  onFormat?: (format: VideoExportFormat) => void
   onMessage?: (message: string) => void
 }
 
@@ -96,19 +96,29 @@ export function videoExportDimensions(
 export async function preferredVideoExportFormat(
   width: number,
   height: number,
-  fps: number
-): Promise<VideoExportFormat> {
-  if (typeof VideoEncoder === "undefined") return "webm"
+  fps: number,
+  includeAudio = false
+): Promise<VideoExportStatus> {
+  if (typeof VideoEncoder === "undefined") return "unsupported-video"
   try {
-    const { getFirstEncodableVideoCodec } = await import("mediabunny")
+    const { getFirstEncodableVideoCodec, getFirstEncodableAudioCodec } = await import("mediabunny")
     const codec = await getFirstEncodableVideoCodec(["avc"], {
       width,
       height,
       frameRate: fps,
     })
-    return codec === "avc" ? "mp4" : "webm"
+    if (codec !== "avc") return "unsupported-video"
+    if (includeAudio) {
+      const audioCodec = await getFirstEncodableAudioCodec(["aac"], {
+        numberOfChannels: 1,
+        sampleRate: 24_000,
+        bitrate: 128_000,
+      })
+      if (!audioCodec) return "unsupported-audio"
+    }
+    return "mp4"
   } catch {
-    return "webm"
+    return "unsupported-video"
   }
 }
 
@@ -210,18 +220,23 @@ export async function exportVideo(
     resolution = "1080p",
     signal,
     onProgress,
-    onFormat,
     onMessage,
   } = options
   const voiceEnabled = (options.includeNarration ?? exportSubtitleSettings(document).readAlong) &&
     document.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
+  const { width, height } = videoExportDimensions(document, resolution)
+  const exportStatus = await preferredVideoExportFormat(width, height, fps, voiceEnabled)
+  if (exportStatus !== "mp4") {
+    throw new Error(exportStatus === "unsupported-audio"
+      ? "MP4 with narration is not supported in this browser. Turn off narration or use a browser with AAC encoding."
+      : "MP4 video encoding is not supported in this browser.")
+  }
   const audioContext = voiceEnabled && typeof AudioContext !== "undefined"
     ? new AudioContext()
     : null
   if (audioContext) void audioContext.resume()
   try {
     await loadHandwrittenFont()
-    const { width, height } = videoExportDimensions(document, resolution)
     const timelines = sceneTimelines(document)
     const sequence = createSequenceRenderer(document, timelines, width, height)
     const total = sequence.player.duration
@@ -244,27 +259,14 @@ export async function exportVideo(
             }
           )
         : null
-      let format = await preferredVideoExportFormat(width, height, fps)
-      if (narration && format === "mp4") {
-        const { getFirstEncodableAudioCodec } = await import("mediabunny")
-        const audioCodec = await getFirstEncodableAudioCodec(["aac"], {
-          numberOfChannels: narration.numberOfChannels,
-          sampleRate: narration.sampleRate,
-          bitrate: 128_000,
-        })
-        if (!audioCodec) format = "webm"
-      }
-      onFormat?.(format)
       throwIfAborted(signal)
       onMessage?.(narration ? "Rendering video with narration…" : "Rendering video…")
       const videoProgress = (fraction: number) =>
         onProgress?.((narration ? 0.25 : 0) + fraction * (narration ? 0.75 : 1))
-      const blob = format === "mp4"
-        ? await exportMp4(sequence, height, fps, signal, videoProgress, narration)
-        : await recordCanvasWebm(sequence, fps, total, signal, videoProgress, narration, audioContext)
+      const blob = await exportMp4(sequence, height, fps, signal, videoProgress, narration)
       throwIfAborted(signal)
-      download(blob, `strokeline-${timestamp()}.${format}`)
-      return format
+      download(blob, `strokeline-${timestamp()}.mp4`)
+      return "mp4"
     } finally {
       sequence.player.dispose()
     }
@@ -519,108 +521,3 @@ async function exportMp4(
   }
 }
 
-async function recordCanvasWebm(
-  sequence: SequenceRenderer,
-  fps: number,
-  total: number,
-  signal: AbortSignal | undefined,
-  onProgress: ((fraction: number) => void) | undefined,
-  narration: AudioBuffer | null = null,
-  audioContext: AudioContext | null = null
-): Promise<Blob> {
-  throwIfAborted(signal)
-  if (typeof MediaRecorder === "undefined") {
-    throw new Error(
-      "This browser supports neither H.264 WebCodecs nor MediaRecorder."
-    )
-  }
-  const candidates = narration
-    ? [
-        "video/webm;codecs=vp9,opus",
-        "video/webm;codecs=vp8,opus",
-        "video/webm",
-      ]
-    : ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"]
-  const mimeType = candidates.find((candidate) =>
-    MediaRecorder.isTypeSupported(candidate)
-  )
-  if (!mimeType) throw new Error("This browser cannot record WebM video.")
-
-  const stream = sequence.canvas.captureStream(fps)
-  const audioDestination = narration && audioContext
-    ? audioContext.createMediaStreamDestination()
-    : null
-  const audioSource = narration && audioContext
-    ? audioContext.createBufferSource()
-    : null
-  if (narration && (!audioContext || !audioDestination || !audioSource)) {
-    throw new Error("Audio export needs Web Audio support in this browser.")
-  }
-  if (audioSource && narration && audioDestination) {
-    audioSource.buffer = narration
-    audioSource.connect(audioDestination)
-    for (const track of audioDestination.stream.getAudioTracks()) stream.addTrack(track)
-  }
-  const recorder = new MediaRecorder(stream, {
-    mimeType,
-    videoBitsPerSecond: 8_000_000,
-  })
-  const chunks: Blob[] = []
-  recorder.ondataavailable = (event) => {
-    if (event.data.size > 0) chunks.push(event.data)
-  }
-  const settled = new Promise<void>((resolve) => {
-    recorder.onstop = () => resolve()
-    recorder.onerror = () => resolve()
-  })
-
-  let animationFrame = 0
-  let cancelled = false
-  let finishFrames: (() => void) | undefined
-  const onAbort = () => {
-    cancelled = true
-    cancelAnimationFrame(animationFrame)
-    finishFrames?.()
-  }
-  signal?.addEventListener("abort", onAbort, { once: true })
-  try {
-    if (audioSource && audioContext) await audioContext.resume()
-    sequence.renderAt(0)
-    recorder.start(250)
-    const startedAt = performance.now()
-    audioSource?.start()
-    await new Promise<void>((resolve) => {
-      finishFrames = resolve
-      const step = (now: number) => {
-        const elapsed = (now - startedAt) / 1000
-        if (cancelled || elapsed >= total) {
-          if (!cancelled) {
-            sequence.renderAt(Math.max(0, total - 1 / fps))
-            onProgress?.(1)
-          }
-          resolve()
-          return
-        }
-        sequence.renderAt(elapsed)
-        onProgress?.(Math.min(1, elapsed / total))
-        animationFrame = requestAnimationFrame(step)
-      }
-      animationFrame = requestAnimationFrame(step)
-    })
-    recorder.stop()
-    await Promise.race([
-      settled,
-      new Promise<void>((resolve) => window.setTimeout(resolve, 8_000)),
-    ])
-    if (cancelled) throw new DOMException("Export cancelled.", "AbortError")
-    if (chunks.length === 0)
-      throw new Error("MediaRecorder produced no WebM data.")
-    return new Blob(chunks, { type: "video/webm" })
-  } finally {
-    cancelAnimationFrame(animationFrame)
-    finishFrames = undefined
-    signal?.removeEventListener("abort", onAbort)
-    if (recorder.state !== "inactive") recorder.stop()
-    for (const track of stream.getTracks()) track.stop()
-  }
-}
