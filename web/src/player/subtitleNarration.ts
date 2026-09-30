@@ -87,13 +87,14 @@ export class SubtitleNarration {
     const progress = Math.max(0, Math.min(1, line.readingProgress))
     const now = performance.now()
     const wallDelta = Math.max(0, (now - this.lastUpdate) / 1000)
-    const expectedDelta = Math.min(0.2, wallDelta / Math.max(0.1, line.duration))
+    const playhead = progress * line.duration
+    const timelineDelta = playhead - this.lastProgress
     const jumped = key === this.activeKey && (
-      progress < this.lastProgress - 0.08 ||
-      progress - this.lastProgress > expectedDelta + 0.08
+      timelineDelta < -0.12 ||
+      Math.abs(timelineDelta - wallDelta) > 0.35
     )
     if (key === this.activeKey && !jumped) {
-      this.lastProgress = progress
+      this.lastProgress = playhead
       this.lastUpdate = now
       return
     }
@@ -106,11 +107,10 @@ export class SubtitleNarration {
       return
     }
     this.activeKey = key
-    this.lastProgress = progress
+    this.lastProgress = playhead
     this.lastUpdate = now
     const source = this.getContext().createBufferSource()
     source.buffer = buffer
-    source.playbackRate.value = Math.min(1.25, Math.max(1, buffer.duration / Math.max(0.1, line.duration)))
     source.connect(this.getContext().destination)
     source.onended = () => {
       if (this.activeSource === source) {
@@ -119,16 +119,18 @@ export class SubtitleNarration {
       }
     }
     this.activeSource = source
-    source.start(0, Math.min(buffer.duration, progress * buffer.duration))
+    source.start(0, Math.min(buffer.duration, playhead))
     this.setStatus("speaking")
   }
 
   pause(): void {
+    this.lastUpdate = performance.now()
     if (this.context?.state === "running") void this.context.suspend()
     this.setStatus("paused")
   }
 
   resume(): void {
+    this.lastUpdate = performance.now()
     if (this.context?.state === "suspended") void this.context.resume()
     this.setStatus(this.activeKey ? "speaking" : "ready")
   }

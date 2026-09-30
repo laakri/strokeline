@@ -36,6 +36,7 @@ export function ExportMenu() {
   const [exportMessage, setExportMessage] = useState("")
   const [resolution, setResolution] = useState<VideoResolution>("1080p")
   const [fps, setFps] = useState<30 | 60>(30)
+  const [includeNarration, setIncludeNarration] = useState(true)
   const [videoFormatProbe, setVideoFormatProbe] = useState<{
     key: string
     format: VideoExportFormat
@@ -58,6 +59,7 @@ export function ExportMenu() {
         ? `${errorCount} error${errorCount === 1 ? "" : "s"} to fix`
         : undefined
   const exporting = busy !== null
+  const hasNarration = !!compiledIR?.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
   const videoFormatKey = `${compiledIR?.canvas.width ?? 0}x${compiledIR?.canvas.height ?? 0}:${resolution}:${fps}`
   const videoFormat: VideoExportFormat | "checking" =
     videoFormatProbe?.key === videoFormatKey
@@ -126,6 +128,7 @@ export function ExportMenu() {
         await exportVideo(state.compiledIR, {
           resolution,
           fps,
+          includeNarration,
           signal: controller.signal,
           onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
           onMessage: setExportMessage,
@@ -286,6 +289,16 @@ export function ExportMenu() {
                 </select>
               </label>
             </div>
+            {hasNarration && (
+              <label className="flex items-center gap-2 border-b border-border px-3 py-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={includeNarration}
+                  onChange={(event) => setIncludeNarration(event.target.checked)}
+                />
+                Include Kokoro narration in video
+              </label>
+            )}
             {items.map((item) => {
               const itemDisabled = !canExport
               return (

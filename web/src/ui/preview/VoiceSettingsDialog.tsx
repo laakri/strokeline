@@ -20,6 +20,7 @@ export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, o
   const chosenVoice = kokoro.voices.some((voice) => voice.id === draftVoice)
     ? draftVoice
     : kokoro.voices[0]?.id || "af_heart"
+  const chosenVoiceInfo = kokoro.voices.find((voice) => voice.id === chosenVoice)
   const selectVoice = (voice: KokoroVoice) => `${voice.name || voice.id} — ${voice.language || voice.id} ${voice.gender || ""}`
 
   return createPortal(
@@ -72,7 +73,7 @@ export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, o
                 {kokoro.voices.map((voice) => <option key={voice.id} value={voice.id}>{selectVoice(voice)}</option>)}
               </select>
             </label>
-            <p className="text-xs text-muted-foreground">Voice is generated locally. The selected reader is used for playback and video exports.</p>
+            <p className="text-xs text-muted-foreground">Selected reader: {selectVoice(chosenVoiceInfo ?? { id: chosenVoice })}. Kokoro downloads the shared model once; this voice is cached when first used.</p>
             {preparing.total > 0 && preparing.completed < preparing.total && (
               <div className="grid gap-2" aria-live="polite">
                 <div className="flex justify-between text-sm"><span>Preparing narration…</span><span className="font-mono">{preparing.completed}/{preparing.total}</span></div>

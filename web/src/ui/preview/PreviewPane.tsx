@@ -75,6 +75,10 @@ export function PreviewPane() {
   const setPlayerState = useAppStore((state) => state.setPlayerState)
   const scene = compiledIR?.scenes[activeSceneIndex]
   const subtitlesOn = subtitleOverride ?? (compiledIR?.subtitles ?? false)
+  const activeVoice = kokoroState.voices.find((voice) => voice.id === selectedVoice)
+  const activeVoiceLabel = activeVoice?.name || selectedVoice
+    .replace(/^[a-z]{2}_/, "")
+    .replace(/^\w/, (letter) => letter.toUpperCase())
   const subtitlesOnRef = useRef(subtitlesOn)
   const readAlongRef = useRef(readAlongOn)
   useEffect(() => {
@@ -538,7 +542,7 @@ export function PreviewPane() {
           type="button"
           aria-label={`Spoken narration ${readAlongOn ? "on" : "off"}`}
           aria-pressed={readAlongOn}
-          title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voiceNotice || (voiceStatus === "preparing" ? `Preparing narration ${voicePrepProgress.completed}/${voicePrepProgress.total || "…"}` : "Toggle Kokoro narration")}
+          title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voiceNotice || `Kokoro ${readAlongOn ? "on" : "off"} · ${activeVoiceLabel}${activeVoice ? ` · ${activeVoice.language} · ${activeVoice.gender}` : ""}`}
           disabled={!voiceSupported}
           onClick={toggleReadAlong}
           className={`inline-flex items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${readAlongOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
@@ -546,7 +550,7 @@ export function PreviewPane() {
           <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
           {voiceStatus === "preparing" && voicePrepProgress.total > 0
             ? `${voicePrepProgress.completed}/${voicePrepProgress.total}`
-            : "Voice"}
+            : activeVoiceLabel}
         </button>
         <button
           type="button"

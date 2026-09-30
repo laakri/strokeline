@@ -63,6 +63,7 @@ export interface ExportOptions {
   fps?: number
   scale?: number
   resolution?: VideoResolution
+  includeNarration?: boolean
   signal?: AbortSignal
   onProgress?: (fraction: number) => void
   onFormat?: (format: VideoExportFormat) => void
@@ -212,7 +213,7 @@ export async function exportVideo(
     onFormat,
     onMessage,
   } = options
-  const voiceEnabled = exportSubtitleSettings(document).readAlong &&
+  const voiceEnabled = (options.includeNarration ?? exportSubtitleSettings(document).readAlong) &&
     document.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
   const audioContext = voiceEnabled && typeof AudioContext !== "undefined"
     ? new AudioContext()
@@ -332,7 +333,6 @@ async function renderNarrationAudio(
     buffer.copyToChannel(audio.samples, 0)
     const source = audioContext.createBufferSource()
     source.buffer = buffer
-    source.playbackRate.value = Math.min(1.25, Math.max(1, buffer.duration / Math.max(0.1, line.duration)))
     source.connect(gain)
     source.start(Math.max(0, start))
   }
