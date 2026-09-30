@@ -95,6 +95,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   compileScript: () => {
     const script = get().script
+    if (get().compiledSource === script) return
     const result = runScript(script)
     set({
       compiledIR: result.document,

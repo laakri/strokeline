@@ -43,9 +43,10 @@ export function PreviewPane() {
   const [transitionDuration, setTransitionDuration] = useState(0.6)
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
+  const [sequenceStarts, setSequenceStarts] = useState<number[]>([])
   const [voiceStatus, setVoiceStatus] = useState<"idle" | "ready" | "speaking" | "paused" | "error">("idle")
-  const narrationRef = useRef<SubtitleNarration | null>(null)
-  if (!narrationRef.current) narrationRef.current = new SubtitleNarration(setVoiceStatus)
+  const [narration] = useState(() => new SubtitleNarration(setVoiceStatus))
+  const narrationRef = useRef(narration)
   const compiledIR = useAppStore((state) => state.compiledIR)
   const script = useAppStore((state) => state.script)
   const activeSceneIndex = useAppStore((state) => state.activeSceneIndex)
@@ -56,9 +57,13 @@ export function PreviewPane() {
   const scene = compiledIR?.scenes[activeSceneIndex]
   const subtitlesOn = subtitleOverride ?? (compiledIR?.subtitles ?? false)
   const subtitlesOnRef = useRef(subtitlesOn)
-  subtitlesOnRef.current = subtitlesOn
   const readAlongRef = useRef(readAlongOn)
-  readAlongRef.current = readAlongOn
+  useEffect(() => {
+    subtitlesOnRef.current = subtitlesOn
+  }, [subtitlesOn])
+  useEffect(() => {
+    readAlongRef.current = readAlongOn
+  }, [readAlongOn])
   const voiceSupported = typeof window !== "undefined" &&
     ("AudioContext" in window || ("speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined"))
 
@@ -96,7 +101,7 @@ export function PreviewPane() {
       narrationRef.current?.cancel()
       setVoiceStatus("idle")
     }
-  }, [compiledIR])
+  }, [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -125,6 +130,7 @@ export function PreviewPane() {
     playerRef.current?.dispose()
     playerRef.current = null
     if (!scene || !compiledIR || !canvasRef.current) {
+      setSequenceStarts([])
       setPlayerState({ elapsed: 0, duration: 0, isPlaying: false })
       return
     }
@@ -279,6 +285,9 @@ export function PreviewPane() {
           }
         })
     playerRef.current = controller
+    setSequenceStarts(
+      controller instanceof SequencePlayer ? controller.sceneStartTimes : []
+    )
     void loadHandwrittenFont().then(() =>
       controller.seek(controller.currentTime)
     )
@@ -317,9 +326,7 @@ export function PreviewPane() {
     player.duration > 0 &&
     player.elapsed >= player.duration &&
     !player.isPlaying
-  const sequenceSceneStarts = playAllMode && playerRef.current instanceof SequencePlayer
-    ? playerRef.current.sceneStartTimes
-    : []
+  const sequenceSceneStarts = playAllMode ? sequenceStarts : []
   return (
     <section
       className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"
