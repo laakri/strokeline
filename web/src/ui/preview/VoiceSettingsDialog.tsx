@@ -1,4 +1,4 @@
-import { useEffect, useState, useSyncExternalStore } from "react"
+import { useState, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
 import { getKokoroState, loadKokoro, subscribeKokoro, type KokoroVoice } from "@/player/kokoro.ts"
 
@@ -13,9 +13,6 @@ type Props = {
 export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, onUseVoice }: Props) {
   const kokoro = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
   const [draftVoice, setDraftVoice] = useState(selectedVoice)
-  useEffect(() => {
-    if (open) setDraftVoice(selectedVoice)
-  }, [open, selectedVoice])
   if (!open) return null
 
   const loading = kokoro.status === "loading"

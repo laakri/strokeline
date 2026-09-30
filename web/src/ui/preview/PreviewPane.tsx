@@ -55,7 +55,9 @@ export function PreviewPane() {
   const [transitionDuration, setTransitionDuration] = useState(0.6)
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
-  const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
+  const [voiceDialogOpen, setVoiceDialogOpen] = useState(
+    () => readReadAlongSetting() && getKokoroState().status === "idle"
+  )
   const [selectedVoice, setSelectedVoice] = useState(readVoiceSetting)
   const [voicePrepProgress, setVoicePrepProgress] = useState({ completed: 0, total: 0 })
   const [voiceNotice, setVoiceNotice] = useState("")
@@ -83,7 +85,6 @@ export function PreviewPane() {
   }, [readAlongOn])
   useEffect(() => {
     if (readAlongOn && kokoroState.status === "idle") {
-      setVoiceDialogOpen(true)
       void loadKokoro().catch(() => undefined)
     }
   }, [kokoroState.status, readAlongOn])
@@ -186,6 +187,7 @@ export function PreviewPane() {
 
   useEffect(() => {
     const controller = playerRef.current
+    const narration = narrationRef.current
     if (!readAlongOn) narrationRef.current?.cancel()
     if (controller && !controller.isPlaying)
       controller.seek(controller.currentTime)
@@ -380,7 +382,7 @@ export function PreviewPane() {
     }
     return () => {
       controller.dispose()
-      narrationRef.current?.cancel()
+      narration.cancel()
     }
   }, [compiledIR, activeSceneIndex, scene, playAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, setPlayerState])
 
@@ -394,7 +396,6 @@ export function PreviewPane() {
     }
     let cancelled = false
     const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
-    setVoicePrepProgress({ completed: 0, total: 0 })
     void narrationRef.current.prepare(
       lines,
       selectedVoice,
@@ -648,6 +649,7 @@ export function PreviewPane() {
       </div>
     </section>
     <VoiceSettingsDialog
+      key={`${selectedVoice}:${voiceDialogOpen}`}
       open={voiceDialogOpen}
       selectedVoice={selectedVoice}
       preparing={voicePrepProgress}
