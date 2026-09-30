@@ -50,31 +50,15 @@ export function drawSubtitleLayer(
     y: firstY + index * lineGap,
     width: lineWidths[index] ?? 0,
   }))
-  if (readAlong && lineMetrics.length)
-    drawPhraseHighlight(context, lineMetrics, opacity)
-  lineMetrics.forEach(({ line, y }) =>
-    drawSubtitleLine(context, line, y, direction, emphasized)
-  )
-  context.restore()
-}
-
-function drawPhraseHighlight(
-  context: CanvasRenderingContext2D,
-  lines: Array<{ line: string; y: number; width: number }>,
-  opacity: number
-): void {
-  const width = Math.min(subtitleWidth - 32, Math.max(...lines.map((line) => line.width)) + 36)
-  const top = lines[0]!.y - 21
-  const height = lines.at(-1)!.y - top + 21
-  context.save()
-  context.globalAlpha = opacity
-  context.fillStyle = "rgba(255, 217, 102, 0.13)"
-  context.strokeStyle = "rgba(255, 217, 102, 0.32)"
-  context.lineWidth = 1
-  context.beginPath()
-  context.roundRect(subtitleCenterX - width / 2, top, width, height, 16)
-  context.fill()
-  context.stroke()
+  const totalChars = lineMetrics.reduce((total, item) => total + item.line.length, 0)
+  let charsBeforeLine = 0
+  lineMetrics.forEach(({ line, y }) => {
+    const lineProgress = totalChars > 0
+      ? Math.max(0, Math.min(1, (subtitle.readingProgress * totalChars - charsBeforeLine) / line.length))
+      : 0
+    drawSubtitleLine(context, line, y, direction, emphasized, readAlong ? lineProgress : 0)
+    charsBeforeLine += line.length
+  })
   context.restore()
 }
 
@@ -83,20 +67,40 @@ function drawSubtitleLine(
   line: string,
   y: number,
   direction: "ltr" | "rtl",
-  emphasized: Set<string>
+  emphasized: Set<string>,
+  readProgress: number
 ): void {
   const segments = line.match(/\s+|[^\s]+/gu) ?? []
   const widths = segments.map((segment) => context.measureText(segment).width)
   const total = widths.reduce((sum, width) => sum + width, 0)
   let cursor = direction === "rtl" ? subtitleCenterX + total / 2 : subtitleCenterX - total / 2
+  let charsBeforeSegment = 0
   segments.forEach((segment, index) => {
     const width = widths[index] ?? 0
     if (!/^\s+$/u.test(segment)) {
       const normalized = segment.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "")
-      context.fillStyle = emphasized.has(normalized) ? "#FFD966" : "#FFFFFF"
+      const isEmphasized = emphasized.has(normalized)
+      context.fillStyle = isEmphasized ? "#FFD966" : "#FFFFFF"
       context.textAlign = direction === "rtl" ? "right" : "left"
       context.fillText(segment, cursor, y)
+      const readChars = Math.max(0, Math.min(segment.length, readProgress * line.length - charsBeforeSegment))
+      if (!isEmphasized && readChars > 0) {
+        const readWidth = context.measureText(segment.slice(0, Math.ceil(readChars))).width
+        context.save()
+        context.beginPath()
+        context.rect(
+          direction === "rtl" ? cursor - readWidth : cursor,
+          y - subtitleFontSize / 2,
+          readWidth,
+          subtitleFontSize
+        )
+        context.clip()
+        context.fillStyle = "#DCE8E5"
+        context.fillText(segment, cursor, y)
+        context.restore()
+      }
     }
     cursor += direction === "rtl" ? -width : width
+    charsBeforeSegment += segment.length
   })
 }
