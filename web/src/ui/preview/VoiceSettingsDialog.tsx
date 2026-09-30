@@ -1,0 +1,94 @@
+import { useEffect, useState, useSyncExternalStore } from "react"
+import { createPortal } from "react-dom"
+import { getKokoroState, loadKokoro, subscribeKokoro, type KokoroVoice } from "@/player/kokoro.ts"
+
+type Props = {
+  open: boolean
+  selectedVoice: string
+  preparing: { completed: number; total: number }
+  onClose: () => void
+  onUseVoice: (voice: string) => void
+}
+
+export function VoiceSettingsDialog({ open, selectedVoice, preparing, onClose, onUseVoice }: Props) {
+  const kokoro = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
+  const [draftVoice, setDraftVoice] = useState(selectedVoice)
+  useEffect(() => {
+    if (open) setDraftVoice(selectedVoice)
+  }, [open, selectedVoice])
+  if (!open) return null
+
+  const loading = kokoro.status === "loading"
+  const ready = kokoro.status === "ready"
+  const chosenVoice = kokoro.voices.some((voice) => voice.id === draftVoice)
+    ? draftVoice
+    : kokoro.voices[0]?.id || "af_heart"
+  const selectVoice = (voice: KokoroVoice) => `${voice.name || voice.id} — ${voice.language || voice.id} ${voice.gender || ""}`
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] grid place-items-center bg-black/55 p-4"
+      onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="kokoro-title"
+        className="w-full max-w-md rounded-xl border border-border bg-background p-5 shadow-2xl"
+      >
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <h2 id="kokoro-title" className="text-base font-semibold">Natural voice reader</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Kokoro runs on this device and can also provide audio for video export.</p>
+          </div>
+          <button type="button" aria-label="Close voice settings" onClick={onClose} className="rounded-md px-2 py-1 text-muted-foreground hover:bg-accent">×</button>
+        </div>
+
+        {!ready ? (
+          <div className="grid gap-3">
+            <p className="text-sm text-muted-foreground">First setup downloads about 92 MB once. It is cached in this browser; slow connections show live progress here.</p>
+            {loading ? (
+              <div className="grid gap-2" aria-live="polite">
+                <div className="flex justify-between gap-3 text-sm">
+                  <span>{kokoro.message || "Preparing voice…"}</span>
+                  <span className="font-mono">{kokoro.progress}%</span>
+                </div>
+                <progress aria-label="Kokoro download progress" max={100} value={kokoro.progress} className="h-2 w-full accent-primary" />
+              </div>
+            ) : (
+              <button type="button" onClick={() => void loadKokoro().catch(() => undefined)} className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+                {kokoro.status === "error" ? "Retry download" : "Download Kokoro voice"}
+              </button>
+            )}
+            {kokoro.error && <p role="alert" className="text-sm text-destructive">{kokoro.error}</p>}
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            <label className="grid gap-1.5 text-sm font-medium">
+              Choose a reader
+              <select
+                aria-label="Kokoro reader voice"
+                value={chosenVoice}
+                onChange={(event) => setDraftVoice(event.target.value)}
+                className="h-10 rounded-md border border-border bg-background px-3"
+              >
+                {kokoro.voices.map((voice) => <option key={voice.id} value={voice.id}>{selectVoice(voice)}</option>)}
+              </select>
+            </label>
+            <p className="text-xs text-muted-foreground">Voice is generated locally. The selected reader is used for playback and video exports.</p>
+            {preparing.total > 0 && preparing.completed < preparing.total && (
+              <div className="grid gap-2" aria-live="polite">
+                <div className="flex justify-between text-sm"><span>Preparing narration…</span><span className="font-mono">{preparing.completed}/{preparing.total}</span></div>
+                <progress aria-label="Narration preparation progress" max={preparing.total} value={preparing.completed} className="h-2 w-full accent-primary" />
+              </div>
+            )}
+            <button type="button" onClick={() => onUseVoice(chosenVoice)} disabled={preparing.total > 0 && preparing.completed < preparing.total} className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:cursor-wait disabled:opacity-60">
+              {preparing.total > 0 && preparing.completed < preparing.total ? "Preparing voice…" : "Use this reader"}
+            </button>
+          </div>
+        )}
+      </section>
+    </div>,
+    document.body
+  )
+}

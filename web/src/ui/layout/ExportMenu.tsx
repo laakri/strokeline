@@ -33,6 +33,7 @@ export function ExportMenu() {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState<ExportKind | null>(null)
   const [progress, setProgress] = useState<number | null>(null)
+  const [exportMessage, setExportMessage] = useState("")
   const [resolution, setResolution] = useState<VideoResolution>("1080p")
   const [fps, setFps] = useState<30 | 60>(30)
   const [videoFormatProbe, setVideoFormatProbe] = useState<{
@@ -113,6 +114,7 @@ export function ExportMenu() {
     controllerRef.current = controller
     setBusy(kind)
     setCancelling(false)
+    setExportMessage("")
     setProgress(["png", "srt", "vtt"].includes(kind) ? 100 : 0)
     setOpen(false)
     try {
@@ -126,6 +128,7 @@ export function ExportMenu() {
           fps,
           signal: controller.signal,
           onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
+          onMessage: setExportMessage,
           onFormat: (format) =>
             setVideoFormatProbe({ key: videoFormatKey, format }),
         })
@@ -148,6 +151,7 @@ export function ExportMenu() {
       setBusy(null)
       setCancelling(false)
       setProgress(null)
+      setExportMessage("")
     }
   }
 
@@ -210,7 +214,7 @@ export function ExportMenu() {
             <span className="text-xs text-muted-foreground">
               {cancelling
                 ? "Cancelling export…"
-                : `Exporting ${videoFormat === "mp4" ? "MP4" : videoFormat === "webm" ? "WebM fallback" : (busy ?? "file")} · ${progress ?? 0}%`}
+                : `${exportMessage || `Exporting ${videoFormat === "mp4" ? "MP4" : videoFormat === "webm" ? "WebM fallback" : (busy ?? "file")}`} · ${progress ?? 0}%`}
             </span>
             <progress
               max={100}

@@ -1,11 +1,12 @@
 import { GIFEncoder, applyPalette, quantize } from "gifenc"
-import type { SceneDocument } from "@/ir/types.ts"
+import type { SayLine, SceneDocument } from "@/ir/types.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { drawScene } from "@/renderer/draw.ts"
 import { SequencePlayer } from "@/player/usePlayer.ts"
 import { Timeline } from "@/timeline/timeline.ts"
 import { frameCountForDuration, frameTimestamp } from "@/export/frameTiming.ts"
-import { subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
+import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
+import { getKokoroState, generateKokoroAudio, loadKokoro, subscribeKokoro } from "@/player/kokoro.ts"
 
 function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; readAlong: boolean } {
   const readSetting = (key: string): boolean | null => {
@@ -19,6 +20,14 @@ function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; 
   return {
     subtitles: readSetting("strokeline.subtitles.v1") ?? (document.subtitles ?? false),
     readAlong: readSetting("strokeline.voice.v1") ?? false,
+  }
+}
+
+function exportVoiceId(): string {
+  try {
+    return localStorage.getItem("strokeline.voiceId.v1") || "af_heart"
+  } catch {
+    return "af_heart"
   }
 }
 
@@ -57,6 +66,7 @@ export interface ExportOptions {
   signal?: AbortSignal
   onProgress?: (fraction: number) => void
   onFormat?: (format: VideoExportFormat) => void
+  onMessage?: (message: string) => void
 }
 
 function throwIfAborted(signal?: AbortSignal): void {
@@ -200,34 +210,141 @@ export async function exportVideo(
     signal,
     onProgress,
     onFormat,
+    onMessage,
   } = options
-  await loadHandwrittenFont()
-  const { width, height } = videoExportDimensions(document, resolution)
-  const timelines = sceneTimelines(document)
-  const sequence = createSequenceRenderer(document, timelines, width, height)
-  const total = sequence.player.duration
-  if (total <= 0) {
-    throw new Error("The script has no playable duration to record.")
-  }
-  const format = await preferredVideoExportFormat(width, height, fps)
-  onFormat?.(format)
-  throwIfAborted(signal)
+  const voiceEnabled = exportSubtitleSettings(document).readAlong &&
+    document.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
+  const audioContext = voiceEnabled && typeof AudioContext !== "undefined"
+    ? new AudioContext()
+    : null
+  if (audioContext) void audioContext.resume()
   try {
-    const blob =
-      format === "mp4"
-        ? await exportMp4(sequence, height, fps, signal, onProgress)
-        : await recordCanvasWebm(sequence, fps, total, signal, onProgress)
-    throwIfAborted(signal)
-    download(blob, `strokeline-${timestamp()}.${format}`)
-    return format
+    await loadHandwrittenFont()
+    const { width, height } = videoExportDimensions(document, resolution)
+    const timelines = sceneTimelines(document)
+    const sequence = createSequenceRenderer(document, timelines, width, height)
+    const total = sequence.player.duration
+    if (total <= 0) {
+      sequence.player.dispose()
+      throw new Error("The script has no playable duration to record.")
+    }
+    try {
+      throwIfAborted(signal)
+      const narration = voiceEnabled
+        ? await renderNarrationAudio(
+            document,
+            sequence.sceneStartTimes,
+            total,
+            exportVoiceId(),
+            signal,
+            (fraction, message) => {
+              onProgress?.(fraction * 0.25)
+              onMessage?.(message)
+            }
+          )
+        : null
+      let format = await preferredVideoExportFormat(width, height, fps)
+      if (narration && format === "mp4") {
+        const { getFirstEncodableAudioCodec } = await import("mediabunny")
+        const audioCodec = await getFirstEncodableAudioCodec(["aac"], {
+          numberOfChannels: narration.numberOfChannels,
+          sampleRate: narration.sampleRate,
+          bitrate: 128_000,
+        })
+        if (!audioCodec) format = "webm"
+      }
+      onFormat?.(format)
+      throwIfAborted(signal)
+      onMessage?.(narration ? "Rendering video with narration…" : "Rendering video…")
+      const videoProgress = (fraction: number) =>
+        onProgress?.((narration ? 0.25 : 0) + fraction * (narration ? 0.75 : 1))
+      const blob = format === "mp4"
+        ? await exportMp4(sequence, height, fps, signal, videoProgress, narration)
+        : await recordCanvasWebm(sequence, fps, total, signal, videoProgress, narration, audioContext)
+      throwIfAborted(signal)
+      download(blob, `strokeline-${timestamp()}.${format}`)
+      return format
+    } finally {
+      sequence.player.dispose()
+    }
   } finally {
-    sequence.player.dispose()
+    await audioContext?.close().catch(() => undefined)
   }
+}
+
+type TimedSay = { line: SayLine; start: number }
+
+function timedSays(document: SceneDocument, sceneStarts: number[]): TimedSay[] {
+  return document.scenes.flatMap((scene, index) =>
+    scheduleSays(scene.says ?? []).map((line) => ({
+      line,
+      start: (sceneStarts[index] ?? 0) + line.start,
+    }))
+  )
+}
+
+function isUnsupportedNarration(line: SayLine): boolean {
+  return line.lang?.toLowerCase().startsWith("ar") === true || /\p{Script=Arabic}/u.test(line.text)
+}
+
+async function renderNarrationAudio(
+  document: SceneDocument,
+  sceneStarts: number[],
+  totalDuration: number,
+  voice: string,
+  signal: AbortSignal | undefined,
+  onProgress: (fraction: number, message: string) => void
+): Promise<AudioBuffer | null> {
+  const allSays = timedSays(document, sceneStarts)
+  const says = allSays.filter(({ line }) => !isUnsupportedNarration(line))
+  const skipped = allSays.length - says.length
+  if (skipped) onProgress(0, `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; rendering supported narration…`)
+  if (!says.length) return null
+
+  const unsubscribe = subscribeKokoro(() => {
+    const state = getKokoroState()
+    if (state.status === "loading") {
+      onProgress(state.progress * 0.12 / 100, `${state.message} ${state.progress}%`)
+    }
+  })
+  try {
+    onProgress(0, "Loading Kokoro voice model…")
+    await loadKokoro()
+  } finally {
+    unsubscribe()
+  }
+
+  const audioContext = new OfflineAudioContext(
+    1,
+    Math.max(1, Math.ceil(totalDuration * 24_000)),
+    24_000
+  )
+  const gain = audioContext.createGain()
+  gain.gain.value = 0.82
+  gain.connect(audioContext.destination)
+  for (let index = 0; index < says.length; index++) {
+    throwIfAborted(signal)
+    const { line, start } = says[index]!
+    onProgress(0.12 + (index / says.length) * 0.13, `Generating narration ${index + 1}/${says.length}…`)
+    const audio = await generateKokoroAudio(plainSubtitleText(line.text).trim(), voice)
+    if (start >= totalDuration) continue
+    const buffer = audioContext.createBuffer(1, audio.samples.length, audio.sampleRate)
+    buffer.copyToChannel(audio.samples, 0)
+    const source = audioContext.createBufferSource()
+    source.buffer = buffer
+    source.playbackRate.value = Math.min(1.25, Math.max(1, buffer.duration / Math.max(0.1, line.duration)))
+    source.connect(gain)
+    source.start(Math.max(0, start))
+  }
+  throwIfAborted(signal)
+  onProgress(0.25, "Mixing narration into the video…")
+  return audioContext.startRendering()
 }
 
 interface SequenceRenderer {
   canvas: HTMLCanvasElement
   player: SequencePlayer
+  sceneStartTimes: number[]
   renderAt: (time: number) => void
 }
 
@@ -305,7 +422,12 @@ function createSequenceRenderer(
     },
     document.scenes.map((scene) => scene.transition)
   )
-  return { canvas, player, renderAt: (time) => player.seek(time) }
+  return {
+    canvas,
+    player,
+    sceneStartTimes: player.sceneStartTimes,
+    renderAt: (time) => player.seek(time),
+  }
 }
 
 export function exportSrt(document: SceneDocument): void {
@@ -327,9 +449,10 @@ async function exportMp4(
   height: number,
   fps: number,
   signal: AbortSignal | undefined,
-  onProgress: ((fraction: number) => void) | undefined
+  onProgress: ((fraction: number) => void) | undefined,
+  narration: AudioBuffer | null = null
 ): Promise<Blob> {
-  const { BufferTarget, CanvasSource, Mp4OutputFormat, Output, Quality } =
+  const { AudioBufferSource, BufferTarget, CanvasSource, Mp4OutputFormat, Output, Quality } =
     await import("mediabunny")
   const target = new BufferTarget()
   const output = new Output({
@@ -342,6 +465,10 @@ async function exportMp4(
     keyFrameInterval: 2,
   })
   output.addVideoTrack(videoSource, { frameRate: fps })
+  const audioSource = narration
+    ? new AudioBufferSource({ codec: "aac", bitrate: 128_000 })
+    : null
+  if (audioSource) output.addAudioTrack(audioSource)
 
   let cancelTask: Promise<void> | undefined
   const cancelOutput = () => {
@@ -357,6 +484,7 @@ async function exportMp4(
   try {
     throwIfAborted(signal)
     await output.start()
+    if (audioSource && narration) await audioSource.add(narration)
     const frameCount = frameCountForDuration(sequence.player.duration, fps)
     for (let frame = 0; frame < frameCount; frame++) {
       throwIfAborted(signal)
@@ -398,7 +526,9 @@ async function recordCanvasWebm(
   fps: number,
   total: number,
   signal: AbortSignal | undefined,
-  onProgress: ((fraction: number) => void) | undefined
+  onProgress: ((fraction: number) => void) | undefined,
+  narration: AudioBuffer | null = null,
+  audioContext: AudioContext | null = null
 ): Promise<Blob> {
   throwIfAborted(signal)
   if (typeof MediaRecorder === "undefined") {
@@ -417,6 +547,20 @@ async function recordCanvasWebm(
   if (!mimeType) throw new Error("This browser cannot record WebM video.")
 
   const stream = sequence.canvas.captureStream(fps)
+  const audioDestination = narration && audioContext
+    ? audioContext.createMediaStreamDestination()
+    : null
+  const audioSource = narration && audioContext
+    ? audioContext.createBufferSource()
+    : null
+  if (narration && (!audioContext || !audioDestination || !audioSource)) {
+    throw new Error("Audio export needs Web Audio support in this browser.")
+  }
+  if (audioSource && narration && audioDestination) {
+    audioSource.buffer = narration
+    audioSource.connect(audioDestination)
+    for (const track of audioDestination.stream.getAudioTracks()) stream.addTrack(track)
+  }
   const recorder = new MediaRecorder(stream, {
     mimeType,
     videoBitsPerSecond: 8_000_000,
@@ -439,10 +583,12 @@ async function recordCanvasWebm(
     finishFrames?.()
   }
   signal?.addEventListener("abort", onAbort, { once: true })
-  const startedAt = performance.now()
   try {
+    if (audioSource && audioContext) await audioContext.resume()
     sequence.renderAt(0)
     recorder.start(250)
+    const startedAt = performance.now()
+    audioSource?.start()
     await new Promise<void>((resolve) => {
       finishFrames = resolve
       const step = (now: number) => {

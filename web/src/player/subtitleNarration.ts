@@ -1,29 +1,89 @@
 import type { SayLine } from "@/ir/types.ts"
 import { plainSubtitleText } from "@/subtitles/subtitles.ts"
+import { generateKokoroAudio } from "@/player/kokoro.ts"
+
+export type VoiceStatus = "idle" | "ready" | "preparing" | "speaking" | "paused" | "error"
 
 type NarratedLine = SayLine & { readingProgress: number }
-type VoiceStatus = "idle" | "ready" | "speaking" | "paused" | "error"
+
+function audioKey(text: string, voice: string): string {
+  return `${voice}:${text}`
+}
+
+function isUnsupportedLine(line: SayLine): boolean {
+  return line.lang?.toLowerCase().startsWith("ar") === true || /\p{Script=Arabic}/u.test(line.text)
+}
 
 export class SubtitleNarration {
-  private status: VoiceStatus = "idle"
   private activeKey: string | null = null
-  private nativeUtterance: SpeechSynthesisUtterance | null = null
-  private generation = 0
+  private activeSource: AudioBufferSourceNode | null = null
+  private context: AudioContext | null = null
+  private readonly buffers = new Map<string, AudioBuffer>()
   private lastProgress = 0
   private lastUpdate = 0
+  private voice = "af_heart"
 
   constructor(private readonly onStatus: (status: VoiceStatus) => void = () => {}) {}
 
-  async unlock(): Promise<void> {}
+  setVoice(voice: string): void {
+    if (this.voice === voice) return
+    this.cancel()
+    this.voice = voice
+    this.buffers.clear()
+  }
+
+  async unlock(): Promise<void> {
+    await this.getContext().resume()
+  }
+
+  async prepare(
+    lines: SayLine[],
+    voice: string,
+    onProgress?: (completed: number, total: number) => void
+  ): Promise<{ skipped: number }> {
+    this.setVoice(voice)
+    const eligible = new Map<string, string>()
+    let skipped = 0
+    for (const line of lines) {
+      const text = plainSubtitleText(line.text).trim()
+      if (!text) continue
+      if (isUnsupportedLine(line)) {
+        skipped++
+        continue
+      }
+      eligible.set(audioKey(text, voice), text)
+    }
+    const total = eligible.size
+    let completed = 0
+    onProgress?.(0, total)
+    this.setStatus("preparing")
+    for (const [key, text] of eligible) {
+      if (!this.buffers.has(key)) {
+        const generated = await generateKokoroAudio(text, voice)
+        const buffer = this.getContext().createBuffer(
+          1,
+          generated.samples.length,
+          generated.sampleRate
+        )
+        buffer.copyToChannel(generated.samples, 0)
+        this.buffers.set(key, buffer)
+      }
+      completed++
+      onProgress?.(completed, total)
+    }
+    this.setStatus("ready")
+    return { skipped }
+  }
 
   sync(line: NarratedLine | undefined, scope: string, enabled: boolean, playing: boolean): void {
     if (!enabled || !playing || !line) {
-      this.cancel()
+      if (this.activeKey || this.activeSource) this.cancel()
       this.setStatus(enabled ? "ready" : "idle")
       return
     }
 
-    const key = `${scope}:${line.start}:${line.text}`
+    const text = plainSubtitleText(line.text).trim()
+    const key = `${scope}:${line.start}:${audioKey(text, this.voice)}`
     const progress = Math.max(0, Math.min(1, line.readingProgress))
     const now = performance.now()
     const wallDelta = Math.max(0, (now - this.lastUpdate) / 1000)
@@ -38,94 +98,73 @@ export class SubtitleNarration {
       return
     }
 
-    this.cancel()
-    const token = this.generation
+    this.stopSource()
+    const buffer = this.buffers.get(audioKey(text, this.voice))
+    if (!buffer) {
+      this.activeKey = null
+      this.setStatus("preparing")
+      return
+    }
     this.activeKey = key
     this.lastProgress = progress
     this.lastUpdate = now
-    const text = this.remainingText(line)
-    if (text) this.speakSystem(line, text, token)
+    const source = this.getContext().createBufferSource()
+    source.buffer = buffer
+    source.playbackRate.value = Math.min(1.25, Math.max(1, buffer.duration / Math.max(0.1, line.duration)))
+    source.connect(this.getContext().destination)
+    source.onended = () => {
+      if (this.activeSource === source) {
+        this.activeSource = null
+        this.setStatus("ready")
+      }
+    }
+    this.activeSource = source
+    source.start(0, Math.min(buffer.duration, progress * buffer.duration))
+    this.setStatus("speaking")
   }
 
   pause(): void {
-    if (!this.supportsSystemVoice()) return
-    window.speechSynthesis.pause()
+    if (this.context?.state === "running") void this.context.suspend()
     this.setStatus("paused")
   }
 
   resume(): void {
-    if (this.supportsSystemVoice()) window.speechSynthesis.resume()
+    if (this.context?.state === "suspended") void this.context.resume()
     this.setStatus(this.activeKey ? "speaking" : "ready")
   }
 
   cancel(): void {
-    this.generation++
+    this.stopSource()
     this.activeKey = null
     this.lastProgress = 0
     this.lastUpdate = 0
-    this.nativeUtterance = null
-    if (this.supportsSystemVoice()) window.speechSynthesis.cancel()
   }
 
   dispose(): void {
     this.cancel()
+    void this.context?.close()
+    this.context = null
   }
 
-  private speakSystem(line: NarratedLine, text: string, token: number): void {
-    if (!this.supportsSystemVoice()) {
-      this.setStatus("error")
-      return
+  private stopSource(): void {
+    const source = this.activeSource
+    this.activeSource = null
+    if (!source) return
+    source.onended = null
+    try {
+      source.stop()
+    } catch {
+      /* already stopped */
     }
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = line.lang || (/\p{Script=Arabic}/u.test(line.text) ? "ar" : "en-US")
-    utterance.voice = this.selectVoice(utterance.lang)
-    utterance.rate = 1.03
-    utterance.onstart = () => {
-      if (token === this.generation) this.setStatus("speaking")
-    }
-    utterance.onend = () => {
-      if (token === this.generation) this.setStatus("ready")
-    }
-    utterance.onerror = () => {
-      if (token === this.generation) this.setStatus("error")
-    }
-    this.nativeUtterance = utterance
-    window.speechSynthesis.speak(utterance)
-    this.setStatus("speaking")
+    source.disconnect()
   }
 
-  private selectVoice(language: string): SpeechSynthesisVoice | null {
-    const voices = window.speechSynthesis.getVoices()
-    const base = language.toLowerCase().split("-")[0]!
-    const matching = voices.filter((voice) => voice.lang.toLowerCase().startsWith(base))
-    const local = matching.filter((voice) => voice.localService)
-    const preferred = /natural|neural|enhanced|premium|aria|jenny|samantha|ava|zira|google/i
-    return local.find((voice) => preferred.test(voice.name))
-      ?? local.find((voice) => voice.lang.toLowerCase() === language.toLowerCase())
-      ?? local[0]
-      ?? matching.find((voice) => voice.lang.toLowerCase() === language.toLowerCase())
-      ?? matching[0]
-      ?? null
-  }
-
-  private supportsSystemVoice(): boolean {
-    return typeof window !== "undefined" && "speechSynthesis" in window &&
-      "SpeechSynthesisUtterance" in window
-  }
-
-  private remainingText(line: NarratedLine): string {
-    const text = plainSubtitleText(line.text)
-    let offset = Math.floor(Math.max(0, Math.min(0.999, line.readingProgress)) * text.length)
-    if (offset > 0) {
-      while (offset < text.length && !/\s/u.test(text[offset]!)) offset++
-      while (offset < text.length && /\s/u.test(text[offset]!)) offset++
-    }
-    return text.slice(offset).trim()
+  private getContext(): AudioContext {
+    this.context ??= new AudioContext()
+    return this.context
   }
 
   private setStatus(status: VoiceStatus): void {
-    if (this.status === status) return
-    this.status = status
     this.onStatus(status)
   }
 }
