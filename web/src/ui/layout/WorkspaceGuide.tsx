@@ -1,41 +1,65 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { ArrowLeft, ArrowRight, AlertTriangle, Check, Clipboard, Code2, Eye, X } from "lucide-react"
 
-const steps = [
+type GuideStep = {
+  target: string
+  mobileTab?: "script" | "preview"
+  location: string
+  title: string
+  description: string
+}
+
+const steps: GuideStep[] = [
   {
-    icon: Clipboard,
-    location: "Top bar · Copy AI Prompt",
+    target: "copy-prompt",
+    location: "Copy AI Prompt",
     title: "Start with the AI guide",
-    description: "Copy AI Prompt, paste it into your AI chat, then describe the video you want. The prompt teaches the AI Strokeline’s syntax and features.",
+    description: "Copy this guide and paste it into your AI chat. Then describe the video you want. It teaches the AI Strokeline’s syntax and features.",
   },
   {
-    icon: Code2,
-    location: "Editor · Run",
-    title: "Bring the script here",
-    description: "Copy the AI’s complete script and paste it into the editor. Press Run to check it and build the animation. On mobile, choose the Script tab first.",
+    target: "editor",
+    mobileTab: "script",
+    location: "Script editor",
+    title: "Paste the script here",
+    description: "Copy the AI’s complete script and paste it into this editor. Next, run it to build your animation.",
   },
   {
-    icon: AlertTriangle,
+    target: "run",
+    location: "Run",
+    title: "Build the animation",
+    description: "Press Run to check the script and build the animation in Preview. If Strokeline finds a problem, it will show it in Diagnostics.",
+  },
+  {
+    target: "diagnostics",
+    mobileTab: "script",
     location: "Diagnostics · Copy all",
-    title: "Ask the AI to fix errors",
-    description: "If the script has errors, press Copy all and paste the diagnostics into the same AI chat. Ask it to fix the script, replace the code, then press Run again. Warnings are suggestions.",
+    title: "Let the AI fix errors",
+    description: "If errors appear here, press Copy all and paste them into the same AI chat. Ask it to fix the script, replace your code, then press Run again. Warnings are suggestions.",
   },
   {
-    icon: Eye,
+    target: "preview",
+    mobileTab: "preview",
     location: "Preview · Play and Present",
     title: "Review your animation",
-    description: "Play the preview, scrub the timeline, and check each scene. On mobile, choose Preview. When it looks ready, use Present or Export.",
+    description: "Play the preview, scrub through the timeline, and check every scene. When it looks ready, use Present or Export.",
   },
 ]
 
+type Bounds = { top: number; left: number; width: number; height: number }
 type Props = {
   step: number | null
   onStepChange: (step: number) => void
   onFinish: () => void
 }
 
+const spotlightPadding = 7
+
 export function WorkspaceGuide({ step, onStepChange, onFinish }: Props) {
+  const [measuredBounds, setMeasuredBounds] = useState<{ step: number; bounds: Bounds } | null>(null)
+  const currentIndex = step === null ? 0 : Math.max(0, Math.min(step, steps.length - 1))
+  const current = steps[currentIndex]!
+
   useEffect(() => {
     if (step === null) return
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -45,55 +69,112 @@ export function WorkspaceGuide({ step, onStepChange, onFinish }: Props) {
     return () => window.removeEventListener("keydown", closeOnEscape)
   }, [onFinish, step])
 
+  useEffect(() => {
+    if (step === null) {
+      return
+    }
+    const targetStep = steps[currentIndex]!
+    if (targetStep.mobileTab) {
+      document.querySelector<HTMLButtonElement>(`[data-workspace-guide-tab="${targetStep.mobileTab}"]`)?.click()
+    }
+
+    let animationFrame = 0
+    let target: HTMLElement | null = null
+    let observer: ResizeObserver | undefined
+    const updateBounds = () => {
+      target = document.querySelector<HTMLElement>(`[data-workspace-guide-target="${targetStep.target}"]`)
+      if (!target) return
+      const rect = target.getBoundingClientRect()
+      setMeasuredBounds({ step: currentIndex, bounds: { top: rect.top, left: rect.left, width: rect.width, height: rect.height } })
+    }
+    animationFrame = requestAnimationFrame(() => {
+      animationFrame = requestAnimationFrame(() => {
+        updateBounds()
+        if (target && "ResizeObserver" in window) {
+          observer = new ResizeObserver(updateBounds)
+          observer.observe(target)
+        }
+      })
+    })
+    window.addEventListener("resize", updateBounds)
+    window.visualViewport?.addEventListener("resize", updateBounds)
+    return () => {
+      cancelAnimationFrame(animationFrame)
+      observer?.disconnect()
+      window.removeEventListener("resize", updateBounds)
+      window.visualViewport?.removeEventListener("resize", updateBounds)
+    }
+  }, [currentIndex, step])
+
   if (step === null) return null
-  const currentStep = Math.max(0, Math.min(step, steps.length - 1))
-  const current = steps[currentStep]!
-  const Icon = current.icon
+
+  const bounds = measuredBounds?.step === currentIndex ? measuredBounds.bounds : null
+  const viewportWidth = window.innerWidth
+  const viewportHeight = window.innerHeight
+  const pad = spotlightPadding
+  const left = bounds ? Math.max(0, bounds.left - pad) : 0
+  const top = bounds ? Math.max(0, bounds.top - pad) : 0
+  const right = bounds ? Math.min(viewportWidth, bounds.left + bounds.width + pad) : viewportWidth
+  const bottom = bounds ? Math.min(viewportHeight, bounds.top + bounds.height + pad) : viewportHeight
+  const cardWidth = Math.min(390, viewportWidth - 24)
+  const cardHeight = viewportWidth < 480 ? 330 : 280
+  const cardLeft = bounds
+    ? Math.max(12, Math.min(bounds.left, viewportWidth - cardWidth - 12))
+    : Math.max(12, (viewportWidth - cardWidth) / 2)
+  const belowTop = bounds ? bounds.top + bounds.height + pad + 14 : 0
+  const cardTop = bounds && belowTop + cardHeight <= viewportHeight - 12
+    ? belowTop
+    : bounds
+      ? Math.max(12, Math.min(bounds.top - cardHeight - pad - 14, viewportHeight - cardHeight - 12))
+      : Math.max(12, (viewportHeight - cardHeight) / 2)
+  const Icon = [Clipboard, Code2, Code2, AlertTriangle, Eye][currentIndex]!
 
   return createPortal(
-    <div className="fixed inset-0 z-[200] grid place-items-center p-4 sm:p-6">
-      <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" />
+    <div className="pointer-events-none fixed inset-0 z-[200]">
+      {bounds ? (
+        <>
+          <div className="pointer-events-auto fixed left-0 right-0 top-0 bg-black/55 backdrop-blur-sm" style={{ height: top }} />
+          <div className="pointer-events-auto fixed left-0 bg-black/55 backdrop-blur-sm" style={{ top, width: left, height: bottom - top }} />
+          <div className="pointer-events-auto fixed right-0 bg-black/55 backdrop-blur-sm" style={{ top, left: right, height: bottom - top }} />
+          <div className="pointer-events-auto fixed bottom-0 left-0 right-0 bg-black/55 backdrop-blur-sm" style={{ top: bottom }} />
+          <div className="pointer-events-auto fixed bg-transparent" style={{ top, left, width: right - left, height: bottom - top }} />
+          <div className="pointer-events-none fixed rounded-xl border-2 border-amber-100 shadow-[0_0_0_4px_rgba(255,248,230,0.2)]" style={{ top, left, width: right - left, height: bottom - top }} />
+        </>
+      ) : (
+        <div className="pointer-events-auto fixed inset-0 bg-black/55 backdrop-blur-sm" />
+      )}
+
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="workspace-guide-title"
         aria-describedby="workspace-guide-description"
-        className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#111916] text-white shadow-2xl shadow-black/40"
+        className="pointer-events-auto fixed w-[min(390px,calc(100vw-24px))] rounded-xl border border-[#e8ddc5] bg-[#fff9ec] p-5 text-[#26241f] shadow-2xl shadow-black/35"
+        style={{ top: cardTop, left: cardLeft }}
       >
-        <div className="h-1 bg-white/10">
-          <div className="h-full bg-[#b5d39a] transition-[width] duration-300" style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }} />
-        </div>
-        <div className="p-5 sm:p-7">
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#b5d39a]/10 text-[#c6e6a8]">
-                <Icon className="size-5" />
-              </span>
-              <div>
-                <p className="text-xs font-medium tracking-wide text-[#c6e6a8]">WORKSPACE GUIDE · {currentStep + 1} OF {steps.length}</p>
-                <p className="mt-1 text-xs text-white/55">{current.location}</p>
-              </div>
-            </div>
-            <button type="button" aria-label="Close workspace guide" onClick={onFinish} className="rounded-lg p-2 text-white/55 transition-colors hover:bg-white/10 hover:text-white">
-              <X className="size-4" />
-            </button>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8a7042]">
+            <Icon className="size-4" />
+            <span>{current.location}</span>
           </div>
-
-          <h2 id="workspace-guide-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">{current.title}</h2>
-          <p id="workspace-guide-description" className="mt-3 text-sm leading-6 text-white/70 sm:text-base">{current.description}</p>
-
-          <div className="mt-8 flex items-center justify-between gap-3">
-            <button type="button" onClick={onFinish} className="rounded-lg px-2 py-2 text-sm text-white/55 transition-colors hover:text-white">Skip guide</button>
-            <div className="flex items-center gap-2">
-              {currentStep > 0 && (
-                <button type="button" onClick={() => onStepChange(currentStep - 1)} className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/15 px-3 text-sm text-white/80 transition-colors hover:bg-white/10">
-                  <ArrowLeft className="size-4" /> Back
-                </button>
-              )}
-              <button type="button" autoFocus onClick={() => currentStep === steps.length - 1 ? onFinish() : onStepChange(currentStep + 1)} className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#c6e6a8] px-4 text-sm font-semibold text-[#111916] transition-colors hover:bg-[#d6efbc]">
-                {currentStep === steps.length - 1 ? <><Check className="size-4" /> Start creating</> : <>Next <ArrowRight className="size-4" /></>}
+          <span className="shrink-0 font-mono text-xs text-[#817969]">{currentIndex + 1}/{steps.length}</span>
+        </div>
+        <button type="button" aria-label="Skip workspace guide" onClick={onFinish} className="absolute right-3 top-3 rounded-md p-1 text-[#817969] hover:bg-black/5 hover:text-[#26241f]">
+          <X className="size-4" />
+        </button>
+        <h2 id="workspace-guide-title" className="pr-5 text-lg font-semibold tracking-tight">{current.title}</h2>
+        <p id="workspace-guide-description" className="mt-2 text-sm leading-5 text-[#5c574d]">{current.description}</p>
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <button type="button" onClick={onFinish} className="rounded-md py-2 text-sm text-[#756e60] underline decoration-[#c6b99f] underline-offset-4 hover:text-[#26241f]">Skip guide</button>
+          <div className="flex items-center gap-2">
+            {currentIndex > 0 && (
+              <button type="button" onClick={() => onStepChange(currentIndex - 1)} className="inline-flex h-9 items-center gap-1.5 rounded-md border border-[#ddd2bb] px-3 text-sm hover:bg-black/5">
+                <ArrowLeft className="size-3.5" /> Back
               </button>
-            </div>
+            )}
+            <button type="button" autoFocus onClick={() => currentIndex === steps.length - 1 ? onFinish() : onStepChange(currentIndex + 1)} className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[#282720] px-3.5 text-sm font-semibold text-[#fff9ec] hover:bg-[#3a382f]">
+              {currentIndex === steps.length - 1 ? <><Check className="size-3.5" /> Done</> : <>Next <ArrowRight className="size-3.5" /></>}
+            </button>
           </div>
         </div>
       </section>

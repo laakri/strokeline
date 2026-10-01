@@ -103,6 +103,7 @@ export function TwoPaneLayout({
             type="button"
             role="tab"
             aria-selected={mobileTab === "script"}
+            data-workspace-guide-tab="script"
             onClick={() => setMobileTab("script")}
             className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${mobileTab === "script" ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/60"}`}
           >
@@ -112,6 +113,7 @@ export function TwoPaneLayout({
             type="button"
             role="tab"
             aria-selected={mobileTab === "preview"}
+            data-workspace-guide-tab="preview"
             onClick={() => setMobileTab("preview")}
             className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${mobileTab === "preview" ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/60"}`}
           >
@@ -119,7 +121,7 @@ export function TwoPaneLayout({
           </button>
         </div>
         {mobileTab === "script" ? (
-          <section className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(44px,13rem)] overflow-hidden bg-card">
+          <section data-workspace-guide-target="editor" className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(44px,13rem)] overflow-hidden bg-card">
             <ScriptEditor />
             <DiagnosticsPanel />
           </section>
@@ -136,6 +138,7 @@ export function TwoPaneLayout({
       className={`relative flex min-h-0 flex-1 overflow-hidden ${isDragging ? "select-none" : ""}`}
     >
       <section
+        data-workspace-guide-target="editor"
         className="grid min-h-0 shrink-0 overflow-hidden border-r border-border bg-card grid-rows-[minmax(0,1fr)_minmax(44px,13rem)]"
         style={{ width: `${leftRatio * 100}%`, minWidth: 360, maxWidth: `${MAX_RATIO * 100}%` }}
       >

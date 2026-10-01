@@ -107,6 +107,7 @@ export function AppShell() {
             size="sm"
             onClick={() => void copyPrompt()}
             title="Copy AI Prompt"
+            data-workspace-guide-target="copy-prompt"
           >
             <Clipboard className="size-4" />
             <span className="hidden md:inline">Copy AI Prompt</span>
@@ -149,6 +150,7 @@ export function AppShell() {
           <Button
             size="sm"
             onClick={run}
+            data-workspace-guide-target="run"
             title={
               errors
                 ? `Run blocked (${errors} error${errors === 1 ? "" : "s"})`

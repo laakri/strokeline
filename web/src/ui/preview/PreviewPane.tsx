@@ -519,6 +519,7 @@ export function PreviewPane({
   return (
     <>
     <section
+      data-workspace-guide-target="preview"
       className={presentationMode
         ? "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0b0e0d] text-white"
         : "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"}

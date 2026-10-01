@@ -32,6 +32,7 @@ export function DiagnosticsPanel() {
 
   return (
     <section
+      data-workspace-guide-target="diagnostics"
       className="flex min-h-11 max-h-52 flex-col overflow-hidden border-t border-border bg-card"
       aria-label="Diagnostics"
     >
