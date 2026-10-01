@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { Pause, Play, RotateCcw, Settings2, SkipForward, Volume2 } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
+import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { useAppStore } from "@/app/store.ts"
 import { Player, SequencePlayer } from "@/player/usePlayer.ts"
@@ -65,6 +66,10 @@ export function PreviewPane() {
   const narrationRef = useRef(narration)
   const kokoroState = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
   const compiledIR = useAppStore((state) => state.compiledIR)
+  const [imageReadiness, setImageReadiness] = useState<{
+    document: typeof compiledIR
+    ready: boolean
+  }>({ document: null, ready: false })
   const script = useAppStore((state) => state.script)
   const activeSceneIndex = useAppStore((state) => state.activeSceneIndex)
   const setActiveSceneIndex = useAppStore((state) => state.setActiveSceneIndex)
@@ -79,6 +84,19 @@ export function PreviewPane() {
     .replace(/^\w/, (letter) => letter.toUpperCase())
   const subtitlesOnRef = useRef(subtitlesOn)
   const readAlongRef = useRef(readAlongOn)
+  useEffect(() => {
+    let active = true
+    if (!compiledIR) {
+      useAppStore.getState().setImageDiagnostics([])
+      return () => { active = false }
+    }
+    void preloadImages(compiledIR).then((diagnostics) => {
+      if (!active) return
+      useAppStore.getState().setImageDiagnostics(diagnostics)
+      setImageReadiness({ document: compiledIR, ready: true })
+    })
+    return () => { active = false }
+  }, [compiledIR])
   useEffect(() => {
     subtitlesOnRef.current = subtitlesOn
   }, [subtitlesOn])
@@ -190,7 +208,6 @@ export function PreviewPane() {
 
   useEffect(() => {
     const controller = playerRef.current
-    const narration = narrationRef.current
     if (!readAlongOn) narrationRef.current?.cancel()
     if (controller && !controller.isPlaying)
       controller.seek(controller.currentTime)
@@ -203,7 +220,7 @@ export function PreviewPane() {
     preservedPlayback.current = null
     playerRef.current?.dispose()
     playerRef.current = null
-    if (!scene || !compiledIR || !canvasRef.current) {
+    if (!scene || !compiledIR || !canvasRef.current || imageReadiness.document !== compiledIR || !imageReadiness.ready) {
       setSequenceStarts([])
       setPlayerState({ elapsed: 0, duration: 0, isPlaying: false })
       return
@@ -385,9 +402,9 @@ export function PreviewPane() {
     }
     return () => {
       controller.dispose()
-      narration.cancel()
+      narrationRef.current?.cancel()
     }
-  }, [compiledIR, activeSceneIndex, scene, playAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, setPlayerState])
+  }, [compiledIR, activeSceneIndex, scene, playAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState])
 
   useEffect(() => {
     if (runId <= 0) return

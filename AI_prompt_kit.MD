@@ -690,6 +690,22 @@ Subtitles are spoken narration, not copies of screen text. Explain the why, an a
 - For multiple languages, include `LANG` and schedule lines sequentially; same-time SAY lines trigger `W_SAY_OVERLAP`.
 - Do not put double quotes, emoji, `#`, or `//` inside SAY strings. Put the full script in the response and use SAY inside PARALLEL blocks for synchronization.
 
+## IMAGES
+
+- Create IMAGE objects only when the user supplies an HTTPS image URL. Never invent, guess, or fabricate a URL. With no supplied URL, use a supported Lucide icon or build the visual from existing shapes.
+- Keep the supplied URL unchanged. Add POSITION, positive WIDTH and HEIGHT, and choose FIT cover or FIT contain. Use CORNERS n or MASK circle, plus BORDER and SHADOW only when they improve the composition.
+- Keep image frames inside the canvas with breathing room. Place labels outside images; never overlay text on an image.
+- Example syntax:
+
+  CREATE logo AS IMAGE
+    URL "USER_SUPPLIED_HTTPS_URL"
+    POSITION 960 540
+    WIDTH 400
+    HEIGHT 300
+    FIT contain
+    DRAW 0.8s
+  END
+
 ### SAY runtime constraints
 
 - Add `DETAIL` with a slightly longer, accessible explanation. Use `WHO` only when it adds clarity. `TONE` is optional and accepts exactly `explain`, `hook`, `warning`, `punchline`, or `recap`; omit it instead of inventing a label.

@@ -8,6 +8,7 @@ import {
 } from "@/renderer/shapes/registry.ts"
 import type { RenderState } from "@/timeline/timeline.ts"
 import { drawSubtitleLayer } from "@/renderer/subtitles.ts"
+import { getImageStatus } from "@/renderer/images.ts"
 
 interface CachedNode {
   image: HTMLCanvasElement
@@ -312,6 +313,7 @@ function cacheKey(
       : undefined
   return JSON.stringify({
     node: { ...node, opacity: undefined, revealProgress: undefined },
+    imageStatus: node.type === "image" ? getImageStatus(node.image?.url) : undefined,
     cameraScale,
     devicePixelRatio,
     dependencies,

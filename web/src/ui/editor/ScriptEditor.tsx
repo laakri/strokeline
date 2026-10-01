@@ -56,6 +56,9 @@ const languageValues = [
   "bottomright",
   "vertical",
   "horizontal",
+  "cover",
+  "contain",
+  "circle",
 ]
 const language = StreamLanguage.define({
   startState: () => ({}),

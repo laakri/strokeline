@@ -13,8 +13,18 @@ const knownTypes = new Set<string>([
   "arrow",
   "ink",
   "chart",
+  "image",
 ])
 const knownIcons = new Set<string>(ICON_NAMES)
+
+function isHttpsUrl(value: string): boolean {
+  try {
+    const url = new URL(value)
+    return url.protocol === "https:" && Boolean(url.hostname)
+  } catch {
+    return false
+  }
+}
 
 export function validate(document: SceneDocument): Diagnostic[] {
   const diagnostics: Diagnostic[] = []
@@ -169,6 +179,68 @@ export function validate(document: SceneDocument): Diagnostic[] {
               op.source?.col ?? 1
             )
           )
+        if (op.node.type === "image") {
+          const image = op.node.image
+          const propertyLocations = op.node.data?._sourcePropertyLocations as
+            | Record<string, { line: number; col: number }>
+            | undefined
+          const imageLocation = propertyLocations?.URL ?? op.source ?? { line: 1, col: 1 }
+          if (!image?.url) {
+            diagnostics.push(error(
+              "E_IMAGE_URL",
+              `IMAGE "${op.node.id}" needs a URL using HTTPS.`,
+              imageLocation.line,
+              imageLocation.col,
+              "Add URL \"https://…\"."
+            ))
+          } else if (!isHttpsUrl(image.url)) {
+            diagnostics.push(error(
+              "E_IMAGE_URL",
+              `IMAGE URL must use HTTPS: ${image.url}`,
+              imageLocation.line,
+              imageLocation.col,
+              "Use a publicly accessible HTTPS image URL."
+            ))
+          }
+          if (!op.node.size || !Number.isFinite(op.node.size.width) || !Number.isFinite(op.node.size.height) || op.node.size.width <= 0 || op.node.size.height <= 0)
+            diagnostics.push(error(
+              "E_MISSING_REQUIRED_PROP",
+              `IMAGE "${op.node.id}" needs positive WIDTH and HEIGHT.`,
+              op.source?.line ?? 1,
+              op.source?.col ?? 1,
+              "Set WIDTH and HEIGHT to positive values."
+            ))
+          const fit = String(image?.fit ?? "cover").toLowerCase()
+          if (!(["cover", "contain"] as string[]).includes(fit))
+            diagnostics.push(error(
+              "E_BAD_RANGE",
+              `IMAGE FIT must be cover or contain, received "${fit}".`,
+              propertyLocations?.FIT?.line ?? op.source?.line ?? 1,
+              propertyLocations?.FIT?.col ?? op.source?.col ?? 1
+            ))
+          const sourceProps = (op.node.data?._sourceProperties as string[] | undefined) ?? []
+          if (sourceProps.includes("BORDER") && !image?.border)
+            diagnostics.push(error(
+              "E_MISSING_REQUIRED_PROP",
+              "IMAGE BORDER needs a color.",
+              propertyLocations?.BORDER?.line ?? op.source?.line ?? 1,
+              propertyLocations?.BORDER?.col ?? op.source?.col ?? 1
+            ))
+          if (sourceProps.includes("MASK") && !image?.mask)
+            diagnostics.push(error(
+              "E_BAD_RANGE",
+              "IMAGE MASK supports only circle.",
+              propertyLocations?.MASK?.line ?? op.source?.line ?? 1,
+              propertyLocations?.MASK?.col ?? op.source?.col ?? 1
+            ))
+          if (!Number.isFinite(image?.corners) || (image?.corners ?? 0) < 0)
+            diagnostics.push(error(
+              "E_BAD_RANGE",
+              "IMAGE CORNERS must be a finite non-negative number.",
+              propertyLocations?.CORNERS?.line ?? op.source?.line ?? 1,
+              propertyLocations?.CORNERS?.col ?? op.source?.col ?? 1
+            ))
+        }
         if (op.node.type === "icon") {
           const iconName = (op.node.data?.iconName ?? op.node.data?.name) as
             string | undefined
@@ -700,6 +772,11 @@ function nodeBounds(node: SceneNode): {
       width: diameter,
       height: diameter,
     }
+  }
+  if (node.type === "rectangle" || node.type === "image") {
+    const width = node.size?.width ?? 0
+    const height = node.size?.height ?? 0
+    return { x: node.position.x - width / 2, y: node.position.y - height / 2, width, height }
   }
   if (node.type === "ink") {
     const points = node.points ?? []

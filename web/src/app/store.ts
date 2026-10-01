@@ -71,6 +71,7 @@ interface AppStore {
   run: () => boolean
   setActiveSceneIndex: (index: number) => void
   setPlayerState: (state: Partial<PlayerState>) => void
+  setImageDiagnostics: (diagnostics: Diagnostic[]) => void
   requestEditorJump: (line: number, col: number) => void
   clearEditorJump: () => void
   loadScript: (text: string) => void
@@ -131,6 +132,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setActiveSceneIndex: (activeSceneIndex) => set({ activeSceneIndex }),
   setPlayerState: (player) =>
     set((state) => ({ player: { ...state.player, ...player } })),
+  setImageDiagnostics: (imageDiagnostics) =>
+    set((state) => ({
+      diagnostics: [
+        ...state.diagnostics.filter((diagnostic) => diagnostic.code !== "E_IMAGE_LOAD"),
+        ...imageDiagnostics,
+      ],
+    })),
   requestEditorJump: (line, col) => set({ editorJump: { line, col } }),
   clearEditorJump: () => set({ editorJump: null }),
   loadScript: (text) => set({ editorLoad: { text }, activeSceneIndex: 0 }),

@@ -4,6 +4,7 @@ export const SHAPE_TYPES = [
   "RECTANGLE",
   "LINE",
   "ICON",
+  "IMAGE",
 ] as const
 export const ANIMATION_VERBS = [
   "MOVE",
@@ -69,6 +70,11 @@ export const PROPERTY_KEYS = [
   "NAME",
   "ICON",
   "PEN",
+  "URL",
+  "CORNERS",
+  "BORDER",
+  "MASK",
+  "SHADOW",
 ] as const
 
 export { ICON_NAMES, type IconName } from "@/defaults/icons.ts"

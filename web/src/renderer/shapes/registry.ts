@@ -7,6 +7,7 @@ import { drawLine, lineBoundingBox } from "@/renderer/shapes/line.ts"
 import { drawRectangle, rectangleBoundingBox } from "@/renderer/shapes/rectangle.ts"
 import { drawText, textBoundingBox } from "@/renderer/shapes/text.ts"
 import { chart } from "@/renderer/shapes/chart.ts"
+import { image } from "@/renderer/shapes/image.ts"
 
 export interface BoundingBox {
   x: number
@@ -28,4 +29,5 @@ export const ShapeRegistry: Record<Exclude<SceneNode["type"], "ink">, ShapeRende
   arrow: { draw: drawArrow, boundingBox: arrowBoundingBox },
   icon: icon,
   chart,
+  image,
 }

@@ -1,7 +1,7 @@
 export type EaseName = "linear" | "easeInOut" | "easeOut" | "easeIn" | "bounce" | "easeOutBack" | "easeOutElastic" | "easeInOutCubic" | "spring" | "natural"
 
 export type NodeType =
-  "text" | "circle" | "rectangle" | "line" | "arrow" | "ink" | "icon" | "chart"
+  "text" | "circle" | "rectangle" | "line" | "arrow" | "ink" | "icon" | "chart" | "image"
 
 export type TextAlign = "left" | "center" | "right"
 export type TextAnchor =
@@ -39,6 +39,14 @@ export interface SceneNode {
   align?: TextAlign
   lineHeight?: number
   fit?: { width: number; height: number }
+  image?: {
+    url?: string
+    fit: "cover" | "contain"
+    corners: number
+    mask?: "circle"
+    border?: string
+    shadow?: string
+  }
   anchor?: TextAnchor
   radius?: number
   rotation: number

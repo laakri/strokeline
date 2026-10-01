@@ -770,15 +770,16 @@ function nodeFromCreate(
     from.length === 2 &&
     to.length === 2
   const isIcon = statement.type.toLowerCase() === "icon"
+  const isImage = statement.type.toLowerCase() === "image"
+  const isText = statement.type.toLowerCase() === "text"
   const sizeNum = propNumber(props, "SIZE")
   const maxWidth = propNumber(props, "MAXWIDTH")
   const lineHeight = propNumber(props, "LINEHEIGHT")
   const align = propString(props, "ALIGN")?.toLowerCase()
   const anchorValue = propString(props, "ANCHOR")
   const anchor = anchorValue ? normalizeTextAnchor(anchorValue) : "center"
-  const fitProperty = fitSizeProperty(props)
+  const fitProperty = isText ? fitSizeProperty(props) : { present: false }
   const nodeText = propString(props, "TEXT")
-  const isText = statement.type.toLowerCase() === "text"
   const effectiveLineHeight = features.customLineHeight
     ? (lineHeight ?? 1.3)
     : 1.3
@@ -932,6 +933,20 @@ function nodeFromCreate(
     rotation: 0,
     opacity,
     style,
+    ...(isImage
+      ? {
+          image: {
+            url: propString(props, "URL"),
+            fit: (propString(props, "FIT")?.toLowerCase() ?? "cover") as "cover" | "contain",
+            corners: propNumber(props, "CORNERS") ?? 0,
+            ...(propString(props, "MASK")?.toLowerCase() === "circle" ? { mask: "circle" as const } : {}),
+            ...(propString(props, "BORDER") ? { border: propString(props, "BORDER") } : {}),
+            ...(props.some((prop) => prop.key === "SHADOW")
+              ? { shadow: propString(props, "SHADOW") ?? "#000000" }
+              : {}),
+          },
+        }
+      : {}),
     text: nodeText,
     label: propString(props, "LABEL"),
     layer: 0,
@@ -1187,7 +1202,7 @@ function compileTimeBox(
       height: radius * 2,
     }
   }
-  if (node.type === "rectangle" || node.type === "line") {
+  if (node.type === "rectangle" || node.type === "line" || node.type === "image") {
     const width = node.size?.width ?? 0
     const height = node.size?.height ?? 0
     if (width <= 0 || height <= 0) return undefined

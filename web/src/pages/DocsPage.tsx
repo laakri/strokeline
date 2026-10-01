@@ -66,6 +66,7 @@ const pageLinks = [
   ["quick-start", "Quick start"],
   ["first-script", "Your first script"],
   ["language", "Script language"],
+  ["images", "Images"],
   ["motion", "Timing and motion"],
   ["narration", "Subtitles and voice"],
   ["play-export", "Play and export"],
@@ -140,6 +141,30 @@ export function DocsPage() {
                 <p>A script has optional settings at the top, followed by one or more scenes. Each scene contains drawing and timing instructions.</p>
                 <CodeBlock title="first-scene.wbs" code={starterScript} />
                 <p><code>POSITION</code> places an object by its center. Text inside a rectangle uses the rectangle’s built-in <code>TEXT</code> property. <code>DRAW</code> sets how long it takes to appear.</p>
+              </DocsSection>
+
+              <DocsSection id="images" title="Images">
+                <p>Use a publicly accessible HTTPS URL that allows cross-origin embedding. Images preload for preview and export. Failed URLs show a placeholder and diagnostic. Images support reveal, camera movement, animation, duplicate, and delete.</p>
+                <CodeBlock title="Rounded image with a border" code={[
+                  'SCENE 1 "Image"',
+                  "  CREATE logo AS IMAGE",
+                  '    URL "https://example.com/logo.png"',
+                  "    POSITION 960 540",
+                  "    WIDTH 400",
+                  "    HEIGHT 300",
+                  "    CORNERS 32",
+                  "    FIT cover",
+                  "    BORDER #FFFFFF",
+                  "    OPACITY 1",
+                  "    SHADOW",
+                  "    DRAW 0.8s",
+                  "  END",
+                  "END SCENE",
+                ].join("\n")} />
+                <ul className="docs-list">
+                  <li>FIT cover crops to fill; FIT contain letterboxes inside the frame.</li>
+                  <li>Use CORNERS n for rounded corners or MASK circle for a circular crop. BORDER #hex and optional SHADOW add a frame and depth.</li>
+                </ul>
               </DocsSection>
 
               <DocsSection id="language" title="Script language">

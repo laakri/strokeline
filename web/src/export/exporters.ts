@@ -2,6 +2,7 @@ import { GIFEncoder, applyPalette, quantize } from "gifenc"
 import type { SayLine, SceneDocument } from "@/ir/types.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { drawScene } from "@/renderer/draw.ts"
+import { preloadImages } from "@/renderer/images.ts"
 import { SequencePlayer } from "@/player/usePlayer.ts"
 import { Timeline } from "@/timeline/timeline.ts"
 import { frameCountForDuration, frameTimestamp } from "@/export/frameTiming.ts"
@@ -122,6 +123,7 @@ export async function exportPng(
   if (!scene) return
   const timeline = new Timeline(scene, document.canvas)
   const at = Math.min(Math.max(0, elapsed), timeline.duration)
+  await preloadImages(document)
   await loadHandwrittenFont()
   const canvas = createCanvas(document.canvas.width, document.canvas.height)
   const context = canvas.getContext("2d")
@@ -151,6 +153,7 @@ export async function exportGif(
   options: ExportOptions = {}
 ): Promise<void> {
   const { fps = 12, scale = 0.5, signal, onProgress } = options
+  await preloadImages(document)
   await loadHandwrittenFont()
   const width = Math.max(1, Math.round(document.canvas.width * scale))
   const height = Math.max(1, Math.round(document.canvas.height * scale))
@@ -220,6 +223,7 @@ export async function exportVideo(
     : null
   if (audioContext) void audioContext.resume()
   try {
+    await preloadImages(document)
     await loadHandwrittenFont()
     const { width, height } = videoExportDimensions(document, resolution)
     const timelines = sceneTimelines(document)
