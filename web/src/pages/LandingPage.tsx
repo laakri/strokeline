@@ -2,8 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/ui/button"
-import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
-import logo from "@/assets/logo.png"
+import { PublicHeader } from "@/ui/layout/PublicHeader.tsx"
 
 const script = [
   "CREATE sun AS CIRCLE",
@@ -157,28 +156,7 @@ export function LandingPage() {
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <header className="mx-auto grid min-h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2 sm:flex sm:gap-2 sm:px-6 sm:py-0">
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-foreground no-underline"
-        >
-          <img src={logo} alt="" className="size-7 object-contain" />
-          <span className="text-lg font-semibold">Strokeline</span>
-        </Link>
-        <div className="justify-self-end sm:order-3 sm:ml-2">
-          <AccountMenu />
-        </div>
-        <nav aria-label="Main navigation" className="order-3 col-span-2 flex w-full items-center justify-between sm:order-2 sm:ml-auto sm:w-auto sm:justify-end sm:gap-2">
-          <Button asChild variant="ghost" className="px-2.5 sm:px-4">
-            <Link to="/docs">Docs</Link>
-          </Button>
-          <Button asChild className="px-2.5 sm:px-4">
-            <Link to="/workspace">
-              Open studio
-            </Link>
-          </Button>
-        </nav>
-      </header>
+      <PublicHeader activePage="home" />
 
       <main>
         <section className="mx-auto max-w-6xl px-4 pt-10 pb-12 sm:px-6 sm:pt-12 sm:pb-16 lg:pt-20">

@@ -2,8 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/ui/button"
-import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
-import logo from "@/assets/logo.png"
+import { PublicHeader } from "@/ui/layout/PublicHeader.tsx"
 
 const starterScript = `VERSION 1.0
 CANVAS 1920 1080
@@ -465,29 +464,7 @@ export function DocsPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur">
-        <div className="mx-auto grid min-h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2 sm:flex sm:gap-2 sm:px-6 sm:py-0">
-          <Link
-            to="/"
-            className="flex min-w-0 items-center gap-1.5 text-foreground no-underline sm:gap-2"
-          >
-            <img src={logo} alt="" className="size-7 shrink-0 object-contain" />
-            <span className="text-base font-semibold sm:text-lg">Strokeline</span>
-            <span className="hidden text-lg text-muted-foreground min-[420px]:inline">Docs</span>
-          </Link>
-          <div className="justify-self-end sm:order-3 sm:ml-2">
-            <AccountMenu compact />
-          </div>
-          <nav aria-label="Main navigation" className="order-3 col-span-2 flex w-full items-center justify-end gap-2 border-t pt-1 sm:order-2 sm:ml-auto sm:w-auto sm:border-0 sm:pt-0">
-            <Button asChild variant="ghost" className="hidden sm:inline-flex">
-              <Link to="/">Home</Link>
-            </Button>
-            <Button asChild className="px-2.5 sm:px-4">
-              <Link to="/workspace">Open studio</Link>
-            </Button>
-          </nav>
-        </div>
-
+      <PublicHeader activePage="docs">
         <nav
           aria-label="On this page"
           className="flex gap-1 overflow-x-auto border-t px-4 py-2 lg:hidden"
@@ -512,7 +489,7 @@ export function DocsPage() {
             </a>
           ))}
         </nav>
-      </header>
+      </PublicHeader>
 
       <main className="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12 sm:pb-24">
         <div className="max-w-2xl">
