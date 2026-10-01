@@ -133,6 +133,29 @@ const theme = EditorView.theme({
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
   },
   ".cm-content": { padding: "16px 0" },
+  ".cm-cursor, .cm-dropCursor": {
+    borderLeftColor: "var(--foreground)",
+    borderLeftWidth: "2px",
+  },
+  ".cm-selectionBackground, &.cm-focused .cm-selectionBackground": {
+    backgroundColor: "color-mix(in oklab, var(--primary) 28%, transparent)",
+  },
+  ".cm-tooltip": {
+    backgroundColor: "var(--popover)",
+    color: "var(--popover-foreground)",
+    border: "1px solid var(--border)",
+    borderRadius: "0.5rem",
+  },
+  ".cm-tooltip-lint, .cm-tooltip-autocomplete": {
+    backgroundColor: "var(--popover)",
+    color: "var(--popover-foreground)",
+  },
+  ".cm-diagnostic": { color: "var(--popover-foreground)" },
+  ".cm-diagnosticAction": { color: "var(--primary)" },
+  ".cm-tooltip-autocomplete ul li[aria-selected]": {
+    backgroundColor: "var(--accent)",
+    color: "var(--accent-foreground)",
+  },
   ".cm-gutters": {
     backgroundColor: "var(--muted)",
     color: "var(--muted-foreground)",

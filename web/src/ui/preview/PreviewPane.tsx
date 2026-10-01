@@ -45,6 +45,7 @@ function readVoiceSetting(): string {
 export function PreviewPane() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const playerRef = useRef<Player | SequencePlayer | null>(null)
+  const handledRunId = useRef(0)
   const lastUiUpdate = useRef(0)
   const autoplayNext = useRef(false)
   const autoplayAll = useRef(false)
@@ -407,9 +408,11 @@ export function PreviewPane() {
   }, [compiledIR, activeSceneIndex, scene, playAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState])
 
   useEffect(() => {
-    if (runId <= 0) return
+    if (runId <= 0 || handledRunId.current === runId) return
     const controller = playerRef.current
     if (!controller) return
+    handledRunId.current = runId
+    controller.seek(0)
     if (!readAlongOn || !compiledIR) {
       controller.play()
       return
@@ -438,7 +441,7 @@ export function PreviewPane() {
       controller.play()
     })
     return () => { cancelled = true }
-  }, [compiledIR, readAlongOn, runId, selectedVoice])
+  }, [compiledIR, imageReadiness, readAlongOn, runId, selectedVoice])
 
   const seek = (value: string) => playerRef.current?.seek(Number(value))
   const sceneCount = compiledIR?.scenes.length ?? 0
