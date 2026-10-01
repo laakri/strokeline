@@ -267,6 +267,7 @@ const iconNames =
 
 const prose =
   "mt-4 space-y-4 text-[15px] leading-7 text-muted-foreground " +
+  "[&_p]:break-words [&_li]:break-words [&_p_code]:break-all [&_li_code]:break-all " +
   "[&_h3]:mt-8 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-foreground " +
   "[&_strong]:font-semibold [&_strong]:text-foreground " +
   "[&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_code]:text-foreground " +
@@ -465,23 +466,25 @@ export function DocsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+        <div className="mx-auto grid min-h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2 sm:flex sm:gap-2 sm:px-6 sm:py-0">
           <Link
             to="/"
-            className="flex items-center gap-2 text-foreground no-underline"
+            className="flex min-w-0 items-center gap-1.5 text-foreground no-underline sm:gap-2"
           >
-            <img src={logo} alt="" className="size-7 object-contain" />
-            <span className="text-lg font-semibold">Strokeline</span>
-            <span className="text-lg text-muted-foreground">Docs</span>
+            <img src={logo} alt="" className="size-7 shrink-0 object-contain" />
+            <span className="text-base font-semibold sm:text-lg">Strokeline</span>
+            <span className="hidden text-lg text-muted-foreground min-[420px]:inline">Docs</span>
           </Link>
-          <nav aria-label="Main navigation" className="flex items-center gap-2">
-            <Button asChild variant="ghost">
+          <div className="justify-self-end sm:order-3 sm:ml-2">
+            <AccountMenu compact />
+          </div>
+          <nav aria-label="Main navigation" className="order-3 col-span-2 flex w-full items-center justify-end gap-2 border-t pt-1 sm:order-2 sm:ml-auto sm:w-auto sm:border-0 sm:pt-0">
+            <Button asChild variant="ghost" className="hidden sm:inline-flex">
               <Link to="/">Home</Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="px-2.5 sm:px-4">
               <Link to="/workspace">Open studio</Link>
             </Button>
-            <AccountMenu compact />
           </nav>
         </div>
 
@@ -511,12 +514,12 @@ export function DocsPage() {
         </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 pt-12 pb-24">
+      <main className="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12 sm:pb-24">
         <div className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">
             Make your ideas move.
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-4 text-base text-muted-foreground sm:text-lg">
             Write a small, readable script. Strokeline turns it into a
             hand-drawn animation you can preview and export.
           </p>
@@ -524,7 +527,7 @@ export function DocsPage() {
 
         <div
           ref={gridRef}
-          className="mt-12 grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)]"
+          className="mt-8 grid min-w-0 gap-8 lg:mt-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-12"
         >
           <nav
             ref={columnRef}

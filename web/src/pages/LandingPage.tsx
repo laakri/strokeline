@@ -76,7 +76,7 @@ function LiveDemo() {
 
   return (
     <div className="grid overflow-hidden rounded-lg border bg-card shadow-sm lg:grid-cols-[2fr_3fr]">
-      <div className="border-b bg-muted/50 p-5 lg:border-r lg:border-b-0">
+      <div className="border-b bg-muted/50 p-4 sm:p-5 lg:border-r lg:border-b-0">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground">
             scene.wbs
@@ -85,11 +85,11 @@ function LiveDemo() {
             Replay
           </Button>
         </div>
-        <ol className="mt-4 space-y-1 font-mono text-sm">
+        <ol className="mt-4 space-y-1 font-mono text-xs sm:text-sm">
           {script.map((line, i) => (
             <li
               key={line}
-              className={`rounded-md px-3 py-2 transition-colors duration-300 ${
+              className={`rounded-md px-2 py-2 transition-colors duration-300 sm:px-3 ${
                 step === i + 1
                   ? "bg-primary text-primary-foreground"
                   : step > i + 1
@@ -103,7 +103,7 @@ function LiveDemo() {
         </ol>
       </div>
 
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         <svg
           viewBox="0 0 480 270"
           role="img"
@@ -157,7 +157,7 @@ export function LandingPage() {
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <header className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <header className="mx-auto grid min-h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2 sm:flex sm:gap-2 sm:px-6 sm:py-0">
         <Link
           to="/"
           className="flex items-center gap-2 text-foreground no-underline"
@@ -165,19 +165,23 @@ export function LandingPage() {
           <img src={logo} alt="" className="size-7 object-contain" />
           <span className="text-lg font-semibold">Strokeline</span>
         </Link>
-        <nav aria-label="Main navigation" className="flex items-center gap-2">
-          <Button asChild variant="ghost">
+        <div className="justify-self-end sm:order-3 sm:ml-2">
+          <AccountMenu />
+        </div>
+        <nav aria-label="Main navigation" className="order-3 col-span-2 flex w-full items-center justify-between sm:order-2 sm:ml-auto sm:w-auto sm:justify-end sm:gap-2">
+          <Button asChild variant="ghost" className="px-2.5 sm:px-4">
             <Link to="/docs">Docs</Link>
           </Button>
-          <Button asChild>
-            <Link to="/workspace">Open studio</Link>
+          <Button asChild className="px-2.5 sm:px-4">
+            <Link to="/workspace">
+              Open studio
+            </Link>
           </Button>
-          <AccountMenu />
         </nav>
       </header>
 
       <main>
-        <section className="mx-auto max-w-6xl px-6 pt-12 pb-16 lg:pt-20">
+        <section className="mx-auto max-w-6xl px-4 pt-10 pb-12 sm:px-6 sm:pt-12 sm:pb-16 lg:pt-20">
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-6xl">
             Write the scene. Watch it draw itself.
           </h1>
@@ -200,7 +204,7 @@ export function LandingPage() {
         </section>
 
         <section className="border-t">
-          <div className="mx-auto grid max-w-6xl gap-8 px-6 py-16 sm:grid-cols-3">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6 sm:py-16">
             {steps.map((step) => (
               <div key={step.title}>
                 <h2 className="text-base font-semibold">{step.title}</h2>
@@ -214,7 +218,7 @@ export function LandingPage() {
       </main>
 
       <footer className="border-t">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:px-6">
           <span>© 2026 Strokeline</span>
           <div className="flex gap-5">
             <Link to="/docs" className="hover:text-foreground">

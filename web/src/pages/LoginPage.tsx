@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useLayoutEffect, useState } from "react"
 import { ArrowLeft, GitBranch } from "lucide-react"
 import { Link } from "react-router-dom"
 import logo from "@/assets/logo.png"
@@ -30,6 +30,11 @@ function GoogleMark() {
 export function LoginPage() {
   const [notice, setNotice] = useState("")
   const [pendingProvider, setPendingProvider] = useState<"google" | "github" | null>(null)
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.add("landing-mode")
+    return () => document.documentElement.classList.remove("landing-mode")
+  }, [])
 
   async function signIn(provider: "google" | "github") {
     if (!supabase) {
@@ -114,11 +119,11 @@ export function LoginPage() {
         </p>
       </section>
 
-      <section className="flex min-h-svh items-center justify-center px-6 py-12 sm:px-10">
+      <section className="flex min-h-svh min-w-0 items-center justify-center px-4 py-8 sm:px-10 sm:py-12">
         <div className="w-full max-w-sm">
           <Link
             to="/"
-            className="mb-12 inline-flex items-center gap-2 text-sm text-muted-foreground no-underline hover:text-foreground"
+            className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground no-underline hover:text-foreground sm:mb-12"
           >
             <ArrowLeft className="size-4" />
             Back to Strokeline
