@@ -211,9 +211,11 @@ export function ExportMenu() {
           onClick={toggleMenu}
           aria-haspopup="dialog"
           aria-expanded={open}
+          aria-label="Export"
+          title="Export video or subtitles"
         >
           <Download className="size-4" />
-          Export
+          <span className="hidden sm:inline">Export</span>
         </Button>
       )}
       {exporting && (
