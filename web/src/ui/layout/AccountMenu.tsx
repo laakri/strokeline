@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-import { LogOut, UserRound } from "lucide-react"
+import { LogOut, Moon, Sun, UserRound } from "lucide-react"
 import { Link } from "react-router-dom"
 import type { Session } from "@supabase/supabase-js"
+import { useTheme } from "@/components/theme-provider.tsx"
 import { supabase } from "@/lib/supabase.ts"
 
 export function AccountMenu({ compact = false }: { compact?: boolean }) {
+  const { theme, setTheme } = useTheme()
   const [session, setSession] = useState<Session | null>(null)
   const [logoutError, setLogoutError] = useState("")
   const [failedAvatarUrl, setFailedAvatarUrl] = useState("")
@@ -97,6 +99,15 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
             <p className="truncate text-xs text-muted-foreground">{user.email}</p>
           )}
         </div>
+        <div className="my-1 h-px bg-border/70" />
+        <button
+          type="button"
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          {theme === "dark" ? "Light theme" : "Dark theme"}
+        </button>
         <div className="my-1 h-px bg-border/70" />
         <button
           type="button"

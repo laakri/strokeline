@@ -164,10 +164,10 @@ export function LandingPage() {
           <Button asChild variant="ghost">
             <Link to="/docs">Docs</Link>
           </Button>
-          <AccountMenu />
           <Button asChild>
             <Link to="/workspace">Open studio</Link>
           </Button>
+          <AccountMenu />
         </nav>
       </header>
 
