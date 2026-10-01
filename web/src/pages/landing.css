@@ -205,6 +205,24 @@
   outline-offset: 2px;
 }
 
+.landing .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.landing .btn-secondary {
+  color: var(--foreground);
+  background: transparent;
+  border-color: var(--border);
+}
+
+.landing .btn-secondary:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+}
+
 /* ---------- reveal script toggle ---------- */
 .landing .reveal {
   margin-top: 22px;

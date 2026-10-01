@@ -202,9 +202,14 @@ export function LandingPage() {
             Write plain text. Watch it render as a hand-drawn explanation,
             stroke by stroke.
           </p>
-          <Link to="/workspace" className="btn">
-            Get started
-          </Link>
+          <div className="hero-actions">
+            <Link to="/workspace" className="btn">
+              Get started
+            </Link>
+            <Link to="/docs" className="btn btn-secondary">
+              Read the guide
+            </Link>
+          </div>
 
           {/* Homepage demo: loops forever, comes from src/assets/homepage.gif */}
           <style>{DEMO_CSS}</style>
