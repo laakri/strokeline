@@ -140,26 +140,46 @@ const theme = EditorView.theme({
   ".cm-selectionBackground, &.cm-focused .cm-selectionBackground": {
     backgroundColor: "color-mix(in oklab, var(--primary) 28%, transparent)",
   },
-  ".cm-tooltip": {
-    backgroundColor: "var(--popover)",
-    color: "var(--popover-foreground)",
+  ".cm-tooltip, .cm-tooltip-lint, .cm-tooltip-autocomplete": {
+    backgroundColor: "var(--card)",
+    color: "var(--card-foreground)",
     border: "1px solid var(--border)",
     borderRadius: "0.5rem",
   },
-  ".cm-tooltip-lint, .cm-tooltip-autocomplete": {
-    backgroundColor: "var(--popover)",
-    color: "var(--popover-foreground)",
+  ".cm-tooltip *": {
+    color: "var(--card-foreground)",
   },
-  ".cm-diagnostic": { color: "var(--popover-foreground)" },
+  ".cm-diagnostic, .cm-diagnosticMessage": {
+    color: "var(--card-foreground)",
+  },
   ".cm-diagnosticAction": { color: "var(--primary)" },
   ".cm-tooltip-autocomplete ul li[aria-selected]": {
     backgroundColor: "var(--accent)",
     color: "var(--accent-foreground)",
   },
   ".cm-gutters": {
+    display: "flex",
+    flexShrink: "0",
+    minWidth: "44px",
     backgroundColor: "var(--muted)",
     color: "var(--muted-foreground)",
-    border: "none",
+    borderRight: "1px solid var(--border)",
+  },
+  ".cm-lineNumbers": {
+    minWidth: "44px",
+  },
+  ".cm-lineNumbers .cm-gutterElement": {
+    display: "block",
+    minWidth: "44px",
+    padding: "0 8px",
+    color: "var(--muted-foreground)",
+    textAlign: "right",
+    fontVariantNumeric: "tabular-nums",
+  },
+  ".cm-lint-marker": {
+    width: "14px",
+    marginLeft: "3px",
+    backgroundPosition: "center",
   },
   ".cm-activeLine": { backgroundColor: "var(--accent)" },
   ".cm-activeLineGutter": { backgroundColor: "var(--accent)" },
