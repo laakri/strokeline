@@ -25,6 +25,11 @@ const keywords = new Set<string>([
   "AS",
   "TO",
 ])
+const mathCommands = new Set([
+  "nabla", "neq", "ne", "nleq", "ngeq", "nsubseteq", "nsupseteq", "nmid", "notin", "nexists", "nparallel", "ncong", "not", "nu", "nless", "ngtr",
+  "theta", "vartheta", "tau", "times", "tfrac", "text", "to", "triangle", "therefore", "tan", "top",
+  "rho", "right", "rightarrow", "Rightarrow", "rightleftarrows", "rightrightarrows", "rangle", "rbrace", "rceil", "rfloor", "Re", "rel", "rvert",
+])
 
 export function lex(source: string): Token[] {
   const tokens: Token[] = []
@@ -86,6 +91,13 @@ export function lex(source: string): Token[] {
       ) {
         if (source[index] === "\\" && index + 1 < source.length) {
           const escaped = source[index + 1]
+          const mathCommand = source.slice(index + 1).match(/^[A-Za-z]+/)?.[0]
+          if (mathCommand && mathCommands.has(mathCommand)) {
+            value += `\\${mathCommand}`
+            index += mathCommand.length + 1
+            col += mathCommand.length + 1
+            continue
+          }
           if (escaped === "n") value += "\n"
           else if (escaped === "r") value += "\r"
           else if (escaped === "t") value += "\t"

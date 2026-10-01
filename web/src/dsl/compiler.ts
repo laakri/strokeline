@@ -9,6 +9,7 @@ import {
   defaultReveal,
 } from "@/defaults/defaults.ts"
 import { features } from "@/defaults/features.ts"
+import { formatMathText } from "@/lib/mathText.ts"
 import { BOARD_BASES, THEMES } from "@/defaults/themes.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
 import { normalizeTextAnchor, positionFromAnchor } from "@/lib/anchors.ts"
@@ -788,7 +789,8 @@ function nodeFromCreate(
   const anchorValue = propString(props, "ANCHOR")
   const anchor = anchorValue ? normalizeTextAnchor(anchorValue) : "center"
   const fitProperty = isText ? fitSizeProperty(props) : { present: false }
-  const nodeText = propString(props, "TEXT")
+  const rawNodeText = propString(props, "TEXT")
+  const nodeText = isText && rawNodeText ? formatMathText(rawNodeText) : rawNodeText
   const effectiveLineHeight = features.customLineHeight
     ? (lineHeight ?? 1.3)
     : 1.3
@@ -832,6 +834,10 @@ function nodeFromCreate(
   const height = propNumber(props, "HEIGHT")
   const radius = propNumber(props, "RADIUS")
   const opacity = propNumber(props, "OPACITY") ?? 1
+  const textBackground = isText ? propString(props, "BACKGROUND") : undefined
+  const textPadding = propNumber(props, "PADDING") ?? 12
+  const textCorners = propNumber(props, "CORNERS") ?? 12
+  const textBoxOpacity = propNumber(props, "BOXOPACITY") ?? 0.92
   const iconName = propString(props, "NAME") ?? propString(props, "ICON")
   if (anchorValue && !anchor) {
     diagnostics.push(
@@ -848,7 +854,7 @@ function nodeFromCreate(
   const positionAnchorPoint = hasLineEndpoints
     ? { x: (from[0] + to[0]) / 2, y: (from[1] + to[1]) / 2 }
     : { x: position[0] ?? 0, y: position[1] ?? 0 }
-  const anchorSize = nodeAnchorSize(
+  const measuredAnchorSize = nodeAnchorSize(
     statement.type.toLowerCase(),
     nodeText,
     resolvedFontSize,
@@ -859,6 +865,9 @@ function nodeFromCreate(
     effectiveMaxWidth,
     effectiveLineHeight
   )
+  const anchorSize = textBackground
+    ? { width: measuredAnchorSize.width + textPadding * 2, height: measuredAnchorSize.height + textPadding * 2 }
+    : measuredAnchorSize
   let resolvedPosition =
     anchor && features.positionAnchors
       ? positionFromAnchor(
@@ -936,6 +945,7 @@ function nodeFromCreate(
     ...(effectiveMaxWidth !== undefined ? { maxWidth: effectiveMaxWidth } : {}),
     ...(align ? { align: align as TextAlign } : {}),
     ...(lineHeight !== undefined ? { lineHeight } : {}),
+    ...(textBackground ? { textBox: { background: textBackground, padding: textPadding, corners: textCorners, opacity: textBoxOpacity } } : {}),
     ...(fitProperty.size ? { fit: fitProperty.size } : {}),
     ...(anchorValue && anchor ? { anchor: anchor as TextAnchor } : {}),
     radius,

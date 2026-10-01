@@ -158,6 +158,11 @@ export function validate(document: SceneDocument): Diagnostic[] {
                 location(op, "TEXT").col
               )
             )
+          if (op.node.textBox && (
+            op.node.textBox.padding < 0 ||
+            op.node.textBox.corners < 0 ||
+            op.node.textBox.opacity < 0 || op.node.textBox.opacity > 1
+          )) diagnostics.push(error("E_BAD_RANGE", `Text plate values for "${op.node.id}" are out of range.`, location(op, "BACKGROUND").line, location(op, "BACKGROUND").col))
         }
         if (
           op.node.type === "circle" &&
@@ -588,8 +593,9 @@ function validateSceneWarnings(
         )
       )
     }
-    const background =
-      (op.node.type === "rectangle" || op.node.type === "circle") &&
+    const background = op.node.type === "text" && op.node.textBox?.background
+      ? op.node.textBox.background
+      : (op.node.type === "rectangle" || op.node.type === "circle") &&
       op.node.style.fill
         ? op.node.style.fill
         : document.background
@@ -639,6 +645,7 @@ function validateSceneWarnings(
     ["rectangle", "circle", "icon"].includes(op.node.type)
   )
   for (const entry of standaloneText) {
+    if (entry.op.node.textBox?.background) continue
     for (const shape of shapes) {
       const shapeEnd = erasures.get(shape.node.id) ?? Number.POSITIVE_INFINITY
       if (entry.op.t >= shapeEnd || shape.t >= entry.end) continue
@@ -708,6 +715,7 @@ function validateSceneWarnings(
     if (!from || !to) continue
     const endpoints = arrowEndpoints(from, to, nodeBounds(from), nodeBounds(to))
     for (const entry of standaloneText) {
+      if (entry.op.node.textBox?.background) continue
       if (entry.op.node.id === fromId || entry.op.node.id === toId) continue
       if (entry.op.t > arrowOp.t || arrowOp.t >= entry.end) continue
       if (

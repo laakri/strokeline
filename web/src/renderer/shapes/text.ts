@@ -5,10 +5,11 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { DEFAULT_TEXT_SIZE } from "@/defaults/defaults.ts"
+import { formatMathText } from "@/lib/mathText.ts"
 
 export function textBoundingBox(node: SceneNode): BoundingBox {
   const fontSize = node.style.fontSize ?? DEFAULT_TEXT_SIZE
-  const text = node.text ?? node.label ?? ""
+  const text = formatMathText(node.text ?? node.label ?? "")
   const layout = layoutText(
     text,
     fontSize,
@@ -17,10 +18,10 @@ export function textBoundingBox(node: SceneNode): BoundingBox {
     node.lineHeight
   )
   return {
-    x: node.position.x - layout.width / 2,
-    y: node.position.y - layout.height / 2,
-    width: layout.width,
-    height: layout.height,
+    x: node.position.x - layout.width / 2 - (node.textBox?.padding ?? 0),
+    y: node.position.y - layout.height / 2 - (node.textBox?.padding ?? 0),
+    width: layout.width + (node.textBox?.padding ?? 0) * 2,
+    height: layout.height + (node.textBox?.padding ?? 0) * 2,
   }
 }
 
@@ -36,6 +37,10 @@ export function drawText(renderContext: RenderContext, node: SceneNode): void {
       align: node.align,
       lineHeight: node.lineHeight,
       fontFamily: node.style.fontFamily,
+      background: node.textBox?.background,
+      backgroundOpacity: node.textBox?.opacity,
+      backgroundPadding: node.textBox?.padding,
+      backgroundCorners: node.textBox?.corners,
     },
     (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1,
     (node as SceneNode & { revealStyle?: string }).revealStyle === "text-wipe",

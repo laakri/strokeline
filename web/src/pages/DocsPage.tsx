@@ -725,7 +725,13 @@ export function DocsPage() {
                 <li>
                   Text: <code>TEXT "..."</code>, <code>LABEL "..."</code>,{" "}
                   <code>MAXWIDTH n</code>, <code>ALIGN left|center|right</code>,{" "}
-                  <code>LINEHEIGHT n</code>, <code>FIT WIDTH n HEIGHT n</code>.
+                  <code>LINEHEIGHT n</code>, <code>FIT WIDTH n HEIGHT n</code>.{" "}
+                  Add a smooth text plate with <code>BACKGROUND #hex</code>,{" "}
+                  <code>PADDING n</code>, <code>CORNERS n</code>, and{" "}
+                  <code>BOXOPACITY 0..1</code>; math can use Unicode or inline{" "}
+                  <code>$...$</code> notation such as <code>$E = mc^2$</code>,{" "}
+                  <code>$\frac&#123;a&#125;&#123;b&#125;$</code>, or{" "}
+                  <code>$\alpha + \beta$</code>.
                 </li>
                 <li>
                   Text anchors:{" "}
@@ -748,6 +754,41 @@ export function DocsPage() {
                   right; hand-drawn ink tapers at both ends.
                 </li>
               </ul>
+              <h3>Text plates and math</h3>
+              <p>
+                A text plate draws a rounded, translucent background behind the
+                text, so labels stay legible over busy diagrams. Set{" "}
+                <code>BACKGROUND</code> to enable it; padding, corner radius,
+                and opacity default to 12, 12, and 0.92. The plate is included
+                in measured bounds and can cover an intentional arrow or shape
+                overlap.
+              </p>
+              <p>
+                Use literal Unicode math symbols or inline <code>$...$</code>
+                notation. Common Greek letters, operators, relations, sets,
+                fractions, roots, and simple superscripts/subscripts are
+                rendered with math-font fallbacks. This is inline math, not a
+                full LaTeX layout engine.
+              </p>
+              <CodeBlock
+                title="Legible label and equation"
+                code={[
+                  'SCENE 1 "Math on the board"',
+                  "  CREATE formula AS TEXT",
+                  '    TEXT "Gravitational force: $F = G \\frac{m_1m_2}{r^2}$; $\\alpha + \\beta \\leq \\gamma$"',
+                  "    POSITION 960 540",
+                  "    SIZE 42",
+                  "    COLOR #FFFFFF",
+                  "    BACKGROUND #243A58",
+                  "    PADDING 18",
+                  "    CORNERS 20",
+                  "    BOXOPACITY 0.94",
+                  "    MAXWIDTH 1200",
+                  "    DRAW 0.8s",
+                  "  END",
+                  "END SCENE",
+                ].join("\n")}
+              />
               <CodeBlock
                 title="Shapes, text, and arrows"
                 code={drawingScript}

@@ -43,6 +43,12 @@ export interface SceneNode {
   maxWidth?: number
   align?: TextAlign
   lineHeight?: number
+  textBox?: {
+    background: string
+    padding: number
+    corners: number
+    opacity: number
+  }
   fit?: { width: number; height: number }
   image?: {
     url?: string

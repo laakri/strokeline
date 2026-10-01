@@ -42,7 +42,7 @@ export function measureTextWidth(text: string, fontSize: number, family = HANDWR
     throw new Error("The handwritten font must load before measuring text.")
   }
   const context = getMeasureContext()
-  context.font = `${fontSize}px "${family}"`
+  context.font = `${fontSize}px "${family}", "Cambria Math", "STIX Two Math", "Times New Roman", serif`
   return context.measureText(text).width
 }
 
