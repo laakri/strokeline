@@ -5,6 +5,8 @@ import { getKokoroState, loadKokoro, subscribeKokoro, type KokoroVoice } from "@
 type Props = {
   open: boolean
   selectedVoice: string
+  volume: number
+  onVolumeChange: (volume: number) => void
   preparing: { completed: number; total: number }
   preparingActive: boolean
   error: string
@@ -12,7 +14,7 @@ type Props = {
   onUseVoice: (voice: string) => void
 }
 
-export function VoiceSettingsDialog({ open, selectedVoice, preparing, preparingActive, error, onClose, onUseVoice }: Props) {
+export function VoiceSettingsDialog({ open, selectedVoice, volume, onVolumeChange, preparing, preparingActive, error, onClose, onUseVoice }: Props) {
   const kokoro = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
   const [draftVoice, setDraftVoice] = useState(selectedVoice)
   if (!open) return null
@@ -43,6 +45,24 @@ export function VoiceSettingsDialog({ open, selectedVoice, preparing, preparingA
           </div>
           <button type="button" aria-label="Close voice settings" onClick={onClose} className="rounded-md px-2 py-1 text-muted-foreground hover:bg-accent">×</button>
         </div>
+
+        <label className="mb-4 grid gap-2 text-sm font-medium">
+          <span className="flex items-center justify-between">
+            <span>Reader volume</span>
+            <output htmlFor="reader-volume" className="font-mono text-muted-foreground">{Math.round(volume * 100)}%</output>
+          </span>
+          <input
+            id="reader-volume"
+            type="range"
+            min="0"
+            max="150"
+            step="5"
+            value={Math.round(volume * 100)}
+            onChange={(event) => onVolumeChange(Number(event.target.value) / 100)}
+            aria-label="Reader volume"
+            className="w-full accent-primary"
+          />
+        </label>
 
         {!ready ? (
           <div className="grid gap-3">

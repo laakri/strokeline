@@ -12,6 +12,7 @@ import { Timeline, type RenderState } from "@/timeline/timeline.ts"
 import { drawPreflightOverlay } from "@/renderer/preflightOverlay.ts"
 import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
 import { VoiceSettingsDialog } from "@/ui/preview/VoiceSettingsDialog.tsx"
+import { readReaderVolume, saveReaderVolume } from "@/player/readerVolume.ts"
 
 const SUBTITLES_STORAGE_KEY = "strokeline.subtitles.v1"
 const READ_ALONG_STORAGE_KEY = "strokeline.voice.v1"
@@ -71,11 +72,12 @@ export function PreviewPane({
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
   const [selectedVoice, setSelectedVoice] = useState(readVoiceSetting)
+  const [readerVolume, setReaderVolume] = useState(readReaderVolume)
   const [voicePrepProgress, setVoicePrepProgress] = useState({ completed: 0, total: 0 })
   const [voiceNotice, setVoiceNotice] = useState("")
   const [sequenceStarts, setSequenceStarts] = useState<number[]>([])
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>("idle")
-  const [narration] = useState(() => new SubtitleNarration(setVoiceStatus))
+  const [narration] = useState(() => new SubtitleNarration(setVoiceStatus, readReaderVolume()))
   const narrationRef = useRef(narration)
   const kokoroState = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
   const compiledIR = useAppStore((state) => state.compiledIR)
@@ -897,6 +899,12 @@ export function PreviewPane({
       key={`${selectedVoice}:${voiceDialogOpen}`}
       open={voiceDialogOpen}
       selectedVoice={selectedVoice}
+      volume={readerVolume}
+      onVolumeChange={(volume) => {
+        const savedVolume = saveReaderVolume(volume)
+        setReaderVolume(savedVolume)
+        narrationRef.current.setVolume(savedVolume)
+      }}
       preparing={voicePrepProgress}
       preparingActive={voiceStatus === "preparing"}
       error={voiceStatus === "error" ? voiceNotice : ""}

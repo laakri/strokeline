@@ -8,6 +8,7 @@ import { Timeline } from "@/timeline/timeline.ts"
 import { frameCountForDuration, frameTimestamp } from "@/export/frameTiming.ts"
 import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
 import { getKokoroState, generateKokoroAudio, subscribeKokoro } from "@/player/kokoro.ts"
+import { readReaderVolume } from "@/player/readerVolume.ts"
 
 function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; readAlong: boolean } {
   const readSetting = (key: string): boolean | null => {
@@ -313,8 +314,15 @@ async function renderNarrationAudio(
       24_000
     )
     const gain = audioContext.createGain()
-    gain.gain.value = 0.82
-    gain.connect(audioContext.destination)
+    gain.gain.value = 0.82 * readReaderVolume()
+    const limiter = audioContext.createDynamicsCompressor()
+    limiter.threshold.value = -1
+    limiter.knee.value = 0
+    limiter.ratio.value = 20
+    limiter.attack.value = 0.003
+    limiter.release.value = 0.08
+    gain.connect(limiter)
+    limiter.connect(audioContext.destination)
     for (let index = 0; index < says.length; index++) {
       throwIfAborted(signal)
       const { line, start } = says[index]!

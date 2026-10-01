@@ -1,6 +1,7 @@
 import type { SayLine } from "@/ir/types.ts"
 import { plainSubtitleText } from "@/subtitles/subtitles.ts"
 import { generateKokoroAudio } from "@/player/kokoro.ts"
+import { clampReaderVolume } from "@/player/readerVolume.ts"
 
 export type VoiceStatus = "idle" | "ready" | "preparing" | "speaking" | "paused" | "error"
 
@@ -18,12 +19,24 @@ export class SubtitleNarration {
   private activeKey: string | null = null
   private activeSource: AudioBufferSourceNode | null = null
   private context: AudioContext | null = null
+  private voiceGain: GainNode | null = null
+  private limiter: DynamicsCompressorNode | null = null
   private readonly buffers = new Map<string, AudioBuffer>()
   private lastProgress = 0
   private lastUpdate = 0
   private voice = "af_heart"
+  private volume = 1
 
-  constructor(private readonly onStatus: (status: VoiceStatus) => void = () => {}) {}
+  constructor(private readonly onStatus: (status: VoiceStatus) => void = () => {}, volume = 1) {
+    this.volume = clampReaderVolume(volume)
+  }
+
+  setVolume(volume: number): void {
+    this.volume = clampReaderVolume(volume)
+    if (this.voiceGain && this.context) {
+      this.voiceGain.gain.setTargetAtTime(this.volume, this.context.currentTime, 0.025)
+    }
+  }
 
   setVoice(voice: string): void {
     if (this.voice === voice) return
@@ -111,7 +124,7 @@ export class SubtitleNarration {
     this.lastUpdate = now
     const source = this.getContext().createBufferSource()
     source.buffer = buffer
-    source.connect(this.getContext().destination)
+    source.connect(this.getVoiceGain())
     source.onended = () => {
       if (this.activeSource === source) {
         this.activeSource = null
@@ -144,6 +157,10 @@ export class SubtitleNarration {
 
   dispose(): void {
     this.cancel()
+    this.voiceGain?.disconnect()
+    this.limiter?.disconnect()
+    this.voiceGain = null
+    this.limiter = null
     void this.context?.close()
     this.context = null
   }
@@ -164,6 +181,24 @@ export class SubtitleNarration {
   private getContext(): AudioContext {
     this.context ??= new AudioContext()
     return this.context
+  }
+
+  private getVoiceGain(): GainNode {
+    if (this.voiceGain) return this.voiceGain
+    const context = this.getContext()
+    const gain = context.createGain()
+    gain.gain.value = this.volume
+    const limiter = context.createDynamicsCompressor()
+    limiter.threshold.value = -1
+    limiter.knee.value = 0
+    limiter.ratio.value = 20
+    limiter.attack.value = 0.003
+    limiter.release.value = 0.08
+    gain.connect(limiter)
+    limiter.connect(context.destination)
+    this.voiceGain = gain
+    this.limiter = limiter
+    return gain
   }
 
   private setStatus(status: VoiceStatus): void {
