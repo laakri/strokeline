@@ -75,6 +75,7 @@ export function drawScene(
     mode
   )
   for (const highlight of state.highlights) {
+    if (highlight.tableTarget) continue
     const target = nodes.get(highlight.targetId)
     if (!target) continue
     context.save()
@@ -92,11 +93,18 @@ export function drawScene(
     const renderer =
       node.type === "ink" ? InkRegistry.ink : ShapeRegistry[node.type]
     if (!renderer) continue
-    const renderNode = { ...node, style: { ...node.style, pen: node.style.pen ?? mode } }
+    const tableHighlights = state.highlights
+      .filter((highlight) => highlight.targetId === node.id && highlight.tableTarget)
+      .map((highlight) => ({ target: highlight.tableTarget!, color: highlight.color, progress: highlight.opacity }))
+    const renderNode = {
+      ...node,
+      style: { ...node.style, pen: node.style.pen ?? mode },
+      ...(tableHighlights.length ? { data: { ...node.data, _animatedTableHighlights: tableHighlights } } : {}),
+    }
     context.save()
     context.globalAlpha = node.opacity
     const cached =
-      node.revealProgress >= 1 && node.rotation === 0
+      node.revealProgress >= 1 && node.rotation === 0 && tableHighlights.length === 0
         ? getCachedNode(
             canvas,
           renderNode,

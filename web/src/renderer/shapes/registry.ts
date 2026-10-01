@@ -8,6 +8,7 @@ import { drawRectangle, rectangleBoundingBox } from "@/renderer/shapes/rectangle
 import { drawText, textBoundingBox } from "@/renderer/shapes/text.ts"
 import { chart } from "@/renderer/shapes/chart.ts"
 import { image } from "@/renderer/shapes/image.ts"
+import { table } from "@/renderer/shapes/table.ts"
 
 export interface BoundingBox {
   x: number
@@ -30,4 +31,5 @@ export const ShapeRegistry: Record<Exclude<SceneNode["type"], "ink">, ShapeRende
   icon: icon,
   chart,
   image,
+  table,
 }

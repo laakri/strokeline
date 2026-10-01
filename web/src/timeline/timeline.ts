@@ -1,5 +1,5 @@
 import { DEFAULT_HIGHLIGHT_COLOR } from "@/defaults/defaults.ts"
-import type { Point, SayLine, Scene, SceneNode, TimelineOp } from "@/ir/types.ts"
+import type { Point, SayLine, Scene, SceneNode, TableHighlightTarget, TimelineOp } from "@/ir/types.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
 import { clamp } from "@/timeline/easing.ts"
 import {
@@ -26,6 +26,7 @@ export interface HighlightState {
   color: string
   drawProgress: number
   opacity: number
+  tableTarget?: TableHighlightTarget
 }
 
 export interface RenderState {
@@ -142,6 +143,7 @@ export class Timeline {
         color: op.anim.color ?? DEFAULT_HIGHLIGHT_COLOR,
         drawProgress,
         opacity,
+        ...(op.anim.tableTarget ? { tableTarget: op.anim.tableTarget } : {}),
       })
     }
     return highlights

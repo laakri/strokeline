@@ -2,6 +2,7 @@ import { error, warning, type Diagnostic } from "@/dsl/diagnostics.ts"
 import { DEFAULT_TEXT_SIZE } from "@/defaults/defaults.ts"
 import { layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
+import { layoutTableCell } from "@/lib/tableLayout.ts"
 import { arrowEndpoints } from "@/renderer/geometry.ts"
 import { ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES } from "@/dsl/grammar.ts"
 import type { Scene, SceneDocument, SceneNode, TimelineOp } from "@/ir/types.ts"
@@ -14,6 +15,7 @@ const knownTypes = new Set<string>([
   "ink",
   "chart",
   "image",
+  "table",
 ])
 const knownIcons = new Set<string>(ICON_NAMES)
 
@@ -295,6 +297,18 @@ export function validate(document: SceneDocument): Diagnostic[] {
         }
       } else if (op.kind === "animate") {
         checkReference(op.targetId, created, op.t, diagnostics, op.source)
+        if (op.anim.tableTarget) {
+          const target = creates.find((item) => item.node.id === op.targetId)?.node
+          const selector = op.anim.tableTarget
+          const rows = (target?.data?.rows as string[][] | undefined) ?? []
+          const columns = (target?.data?.columns as string[] | undefined) ?? []
+          const invalid = target?.type !== "table" ||
+            (selector.type === "row" && selector.row > rows.length) ||
+            (selector.type === "column" && selector.column > columns.length) ||
+            (selector.type === "cell" && (selector.row > rows.length || selector.column > columns.length))
+          if (invalid)
+            diagnostics.push(error("E_BAD_RANGE", `HIGHLIGHT target is outside TABLE "${op.targetId}".`, op.source?.line ?? 1, op.source?.col ?? 1))
+        }
         if (op.anim.duration <= 0)
           diagnostics.push(
             error(
@@ -432,6 +446,47 @@ function validateSceneWarnings(
 
   const textEntries: MeasuredText[] = []
   for (const op of creates) {
+    if (op.node.type === "table") {
+      const columns = (op.node.data?.columns as string[] | undefined) ?? []
+      const rows = (op.node.data?.rows as string[][] | undefined) ?? []
+      const rowHeight = (op.node.size?.height ?? 0) / (rows.length + 1)
+      const cellWidth = (op.node.size?.width ?? 0) / Math.max(1, columns.length)
+      const rowLocations = op.node.data?._rowLocations as Array<{ line: number; col: number }> | undefined
+      const locations = op.node.data?._sourcePropertyLocations as Record<string, { line: number; col: number }> | undefined
+      const headerColor = String(op.node.data?.headerColor ?? (op.node.style.color.toLowerCase() === "#ffffff" || op.node.style.color.toLowerCase() === "#f5f5f5" ? "#334E68" : "#DCECF1"))
+      const fill = op.node.style.fill ?? document.background
+      const end = erasures.get(op.node.id) ?? Number.POSITIVE_INFINITY
+      const cellRows = [columns, ...rows]
+      cellRows.forEach((cells, rowIndex) => cells.forEach((cell, columnIndex) => {
+        const text = String(cell)
+        const layout = layoutTableCell(text, cellWidth, rowHeight, op.node.style.fontFamily)
+        const x = op.node.position.x - (op.node.size?.width ?? 0) / 2 + columnIndex * cellWidth
+        const y = op.node.position.y - (op.node.size?.height ?? 0) / 2 + rowIndex * rowHeight
+        const cellId = `${op.node.id}[${rowIndex === 0 ? "header" : rowIndex},${columnIndex + 1}]`
+        const cellNode: SceneNode = {
+          ...op.node,
+          id: cellId,
+          type: "text",
+          position: { x: x + cellWidth / 2, y: y + rowHeight / 2 },
+          maxWidth: Math.max(1, cellWidth - 24),
+          style: { ...op.node.style, fontSize: layout.fontSize },
+          text,
+        }
+        const cellOp = { ...op, node: cellNode }
+        const bounds = { x: x + 12, y: y + (rowHeight - layout.text.height) / 2, width: Math.min(cellWidth - 24, layout.text.width), height: layout.text.height }
+        textEntries.push({ op: cellOp, text, bounds, fontSize: layout.fontSize, end })
+        const source = rowIndex === 0 ? locations?.COLUMNS ?? op.source ?? { line: 1, col: 1 } : rowLocations?.[rowIndex - 1] ?? op.source ?? { line: 1, col: 1 }
+        if (bounds.x < 120 || bounds.x + bounds.width > 1800 || bounds.y < 100 || bounds.y + bounds.height > 980)
+          diagnostics.push(warning("W_TEXT_OFF_SAFE", `Table cell "${cellId}" extends outside the safe area.`, source.line, source.col, "Move or resize the table inside x=120..1800 and y=100..980."))
+        if (!layout.fits)
+          diagnostics.push(warning("W_TEXT_TOO_SMALL", `Table cell "${cellId}" cannot fit at the minimum 28px text size.`, source.line, source.col, "Increase SIZE or shorten the cell text."))
+        const foreground = rowIndex === 0 ? bestTableForeground(headerColor) : op.node.style.color
+        const contrast = contrastRatio(foreground, rowIndex === 0 ? headerColor : fill)
+        if (contrast !== undefined && contrast < 4.5)
+          diagnostics.push(warning("W_LOW_CONTRAST", `Table cell "${cellId}" has a contrast ratio of ${contrast.toFixed(2)}:1.`, source.line, source.col, "Choose cell and background colors with a WCAG contrast ratio of at least 4.5:1."))
+      }))
+      continue
+    }
     const text = op.node.text ?? op.node.label ?? ""
     if (!text) continue
     let textNode = op.node
@@ -834,6 +889,12 @@ function nodeBounds(node: SceneNode): {
     width,
     height,
   }
+}
+
+function bestTableForeground(background: string): string {
+  const lightContrast = contrastRatio("#FFFFFF", background) ?? 0
+  const darkContrast = contrastRatio("#18212B", background) ?? 0
+  return lightContrast >= darkContrast ? "#FFFFFF" : "#18212B"
 }
 
 function overlapRatio(

@@ -32,6 +32,7 @@ import type {
   ASTSay,
   ASTScript,
   ASTShape,
+  ASTTable,
   ASTStatement,
 } from "@/dsl/parser.ts"
 import type {
@@ -45,6 +46,7 @@ import type {
   TextAnchor,
   TextAlign,
   TimelineOp,
+  TableHighlightTarget,
 } from "@/ir/types.ts"
 
 export interface CompileResult {
@@ -303,6 +305,13 @@ function compileScene(
         ],
         end: start + draw.duration,
       }
+    }
+    if (statement.kind === "table") {
+      const node = nodeFromTable(statement, groupId, ast, diagnostics)
+      sceneNodes.set(node.id, node)
+      const draw = revealFromProps(statement.props, diagnostics, statement.token.line, statement.token.col)
+      return { ops: [{ kind: "create", t: start, node, draw,
+        source: { line: statement.token.line, col: statement.token.col } }], end: start + draw.duration }
     }
     if (statement.kind === "chart") {
       const node: SceneNode = {
@@ -1391,17 +1400,114 @@ function animationFrom(
       duration,
       ease,
     }
-  if (verb === "HIGHLIGHT")
+  if (verb === "HIGHLIGHT") {
+    const tableTarget = tableHighlightTarget(values)
+    if (values.length > 0 && !tableTarget)
+      diagnostics.push(error("E_BAD_RANGE", "HIGHLIGHT target must be ROW n, COLUMN n, or CELL r c with positive indexes.", line, col))
     return {
       verb: "highlight",
       color: String(colorValue ?? DEFAULT_HIGHLIGHT_COLOR),
+      ...(tableTarget ? { tableTarget } : {}),
       duration,
       ease,
     }
+  }
   diagnostics.push(
     error("E_UNKNOWN_ANIMATION", `Unknown animation verb "${verb}".`, line, col)
   )
   return { verb: "fade", duration, ease }
+}
+
+function nodeFromTable(
+  statement: ASTTable,
+  groupId: string | undefined,
+  ast: ASTScript,
+  diagnostics: Diagnostic[]
+): SceneNode {
+  const props = statement.props
+  const columns = (props.find((prop) => prop.key === "COLUMNS")?.values ?? []).map(String)
+  const columnProps = props.filter((prop) => prop.key === "COLUMNS")
+  if (columnProps.length > 1)
+    diagnostics.push(error("E_BAD_RANGE", `TABLE "${statement.id}" can have only one COLUMNS header.`, columnProps[1]!.token.line, columnProps[1]!.token.col))
+  if (columns.length === 0)
+    diagnostics.push(error("E_MISSING_REQUIRED_PROP", `TABLE "${statement.id}" needs COLUMNS with at least one header cell.`, statement.token.line, statement.token.col))
+  const rowProps = props.filter((prop) => prop.key === "ROW")
+  const rows = rowProps.map((prop) => prop.values.map(String))
+  rowProps.forEach((prop, index) => {
+    if (prop.values.length !== columns.length)
+      diagnostics.push(error(
+        "E_TABLE_ROW_LENGTH",
+        `Row ${index + 1} of table "${statement.id}" has ${prop.values.length} cells; expected ${columns.length}.`,
+        prop.token.line,
+        prop.token.col,
+        `Make ROW ${index + 1} contain exactly ${columns.length} cells.`
+      ))
+  })
+  const rawSize = propNumbers(props, "SIZE")
+  if (rawSize.some((value) => value <= 0)) {
+    const sizeProp = props.find((prop) => prop.key === "SIZE")
+    diagnostics.push(error("E_BAD_RANGE", `TABLE "${statement.id}" SIZE values must be positive.`, sizeProp?.token.line ?? statement.token.line, sizeProp?.token.col ?? statement.token.col))
+  }
+  const maxWidth = Math.max(1, ast.canvas.width - 240)
+  const maxHeight = Math.max(1, ast.canvas.height - 200)
+  const width = Math.min(Math.max(1, rawSize[0] ?? 1200), maxWidth)
+  const height = Math.min(Math.max(1, rawSize[1] ?? 400), maxHeight)
+  const rawPosition = propNumbers(props, "POSITION")
+  const position = {
+    x: Math.max(120 + width / 2, Math.min(ast.canvas.width - 120 - width / 2, rawPosition[0] ?? ast.canvas.width / 2)),
+    y: Math.max(100 + height / 2, Math.min(ast.canvas.height - 100 - height / 2, rawPosition[1] ?? ast.canvas.height / 2)),
+  }
+  const alignValue = propString(props, "ALIGN")?.toLowerCase() ?? "center"
+  if (!(alignValue === "left" || alignValue === "center" || alignValue === "right")) {
+    const alignProp = props.find((prop) => prop.key === "ALIGN")
+    diagnostics.push(error("E_BAD_RANGE", "TABLE ALIGN must be left, center, or right.", alignProp?.token.line ?? statement.token.line, alignProp?.token.col ?? statement.token.col))
+  }
+  const highlights: TableHighlightTarget[] = []
+  for (const prop of props.filter((property) => property.key === "HIGHLIGHT")) {
+    const target = tableHighlightTarget(prop.values)
+    if (!target ||
+      (target.type === "row" && target.row > rows.length) ||
+      (target.type === "column" && target.column > columns.length) ||
+      (target.type === "cell" && (target.row > rows.length || target.column > columns.length)))
+      diagnostics.push(error("E_BAD_RANGE", `HIGHLIGHT target is outside TABLE "${statement.id}".`, prop.token.line, prop.token.col))
+    else highlights.push(target)
+  }
+  return {
+    id: statement.id,
+    type: "table",
+    position,
+    size: { width, height },
+    rotation: 0,
+    opacity: propNumber(props, "OPACITY") ?? 1,
+    style: {
+      color: propString(props, "COLOR") ?? themeInk(ast),
+      fill: propString(props, "FILL"),
+      strokeWidth: propNumber(props, "STROKE") ?? ast.stroke ?? DEFAULT_STROKE_WIDTH,
+      ...(propString(props, "PEN") ? { pen: propString(props, "PEN") as SceneNode["style"]["pen"] } : {}),
+      ...(ast.font && ast.font.toLowerCase() !== "handwritten" ? { fontFamily: fontFamilyName(ast.font) } : {}),
+    },
+    layer: 0,
+    groupId,
+    data: {
+      columns,
+      rows,
+      headerColor: propString(props, "HEADERCOLOR"),
+      align: (alignValue === "left" || alignValue === "right" ? alignValue : "center") as TextAlign,
+      highlights,
+      _sourceProperties: props.map((prop) => prop.key),
+      _sourcePropertyLocations: Object.fromEntries(props.map((prop) => [prop.key, { line: prop.token.line, col: prop.token.col }])),
+      _rowLocations: rowProps.map((prop) => ({ line: prop.token.line, col: prop.token.col })),
+    },
+  }
+}
+
+function tableHighlightTarget(values: (string | number)[]): TableHighlightTarget | undefined {
+  const type = String(values[0] ?? "").toLowerCase()
+  if (type === "row" && Number(values[1]) > 0) return { type, row: Number(values[1]) }
+  if (type === "column" && Number(values[1]) > 0) return { type, column: Number(values[1]) }
+  if (type === "cell" && Number(values[1]) > 0 && Number(values[2]) > 0)
+    return { type, row: Number(values[1]), column: Number(values[2]) }
+  return undefined
 }
 
 function cameraFrom(statement: ASTCamera, diagnostics: Diagnostic[]): CameraOp {

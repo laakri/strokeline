@@ -120,6 +120,26 @@ END
 
 Use exact supported names only; search autocomplete if unsure. Make an icon inventory from the requested subject before planning the scene, then include the matching icons in the visual plan. Keep labels as separate `TEXT` objects near their icons. Do not replace an icon with a text emoji, Unicode symbol, or hand-drawn imitation.
 
+### 3.2.3 Comparison tables
+
+Use `TABLE` when a compact side-by-side comparison clarifies the explanation. Keep it to at most 4 columns and 5 body rows. Use one `COLUMNS` header, and give every `ROW` exactly the same number of short cells. Do not invent data. Keep the table in the safe area, choose a high-contrast `HEADERCOLOR`, and use `DRAW` for the header-then-row reveal.
+
+Use `HIGHLIGHT ROW n`, `HIGHLIGHT COLUMN n`, or `HIGHLIGHT CELL r c` sparingly. Rows are one-based body rows; columns are one-based, including the header. Animated highlighting uses `ANIMATE id HIGHLIGHT ROW n`, `COLUMN n`, or `CELL r c`.
+
+```
+TABLE plans
+  POSITION 960 540
+  SIZE 1200 400
+  COLUMNS "Plan" "Price" "Export"
+  ROW "Free" "0" "GIF"
+  ROW "Pro" "12" "MP4"
+  ROW "Team" "30" "MP4 + WebM"
+  HEADERCOLOR #2E86AB
+  HIGHLIGHT ROW 2
+  DRAW 1.5s
+END
+```
+
 ### 3.3 Connectors
 
 ```

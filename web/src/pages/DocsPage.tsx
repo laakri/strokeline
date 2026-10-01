@@ -67,6 +67,7 @@ const pageLinks = [
   ["first-script", "Your first script"],
   ["language", "Script language"],
   ["images", "Images"],
+  ["tables", "Tables"],
   ["motion", "Timing and motion"],
   ["narration", "Subtitles and voice"],
   ["play-export", "Play and export"],
@@ -179,7 +180,41 @@ export function DocsPage() {
                 <p>Charts build from <code>DATA "label" value</code> rows. Available types are <code>BARCHART</code>, <code>LINECHART</code>, and <code>PIECHART</code>.</p>
               </DocsSection>
 
-              <DocsSection id="motion" title="Timing and motion">
+              <DocsSection id="tables" title="Comparison tables">
+              <p>
+                Use <code>TABLE id</code> for comparisons. COLUMNS sets the
+                header; each ROW must provide one value for every column. Keep
+                tables to four columns and five body rows or fewer for comfortable
+                reading. Text stays at least 28px and fits inside the safe area.
+              </p>
+              <CodeBlock
+                title="Animated plan comparison"
+                code={[
+                  'SCENE 1 "Compare plans"',
+                  "  TABLE plans",
+                  "    POSITION 960 540",
+                  "    SIZE 1200 400",
+                  '    COLUMNS "Plan" "Price" "Export"',
+                  '    ROW "Free" "0" "GIF"',
+                  '    ROW "Pro" "12" "MP4"',
+                  '    ROW "Team" "30" "MP4 + WebM"',
+                  "    HEADERCOLOR #2E86AB",
+                  "    HIGHLIGHT ROW 2",
+                  "    DRAW 1.5s",
+                  "  END",
+                  "  ANIMATE plans HIGHLIGHT COLUMN 3 DURATION 1s",
+                  "END SCENE",
+                ].join("\n")}
+              />
+              <p>
+                HIGHLIGHT ROW n selects a body row; COLUMN n includes its
+                header; CELL r c selects a body cell. Animate the same targets
+                with <code>ANIMATE id HIGHLIGHT ROW|COLUMN|CELL ...</code>.
+                The header and rows reveal in order. Tables support camera,
+                enter/exit, move, duplicate, and delete operations.
+              </p>
+            </DocsSection>
+            <DocsSection id="motion" title="Timing and motion">
                 <p>Statements run in order. <code>WAIT 1s</code> adds a pause; <code>PARALLEL</code> starts several drawing actions together. Durations need a unit, usually seconds (<code>s</code>).</p>
                 <CodeBlock title="Motion and camera" code={animationScript} />
                 <p><code>ANIMATE</code> moves or changes an object. <code>ENTER</code> and <code>EXIT</code> add entrance and exit effects; <code>LOOP</code> adds subtle repeating motion. Camera zooms and pans should be reset before the scene ends.</p>

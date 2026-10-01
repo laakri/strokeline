@@ -1,7 +1,12 @@
 export type EaseName = "linear" | "easeInOut" | "easeOut" | "easeIn" | "bounce" | "easeOutBack" | "easeOutElastic" | "easeInOutCubic" | "spring" | "natural"
 
 export type NodeType =
-  "text" | "circle" | "rectangle" | "line" | "arrow" | "ink" | "icon" | "chart" | "image"
+  "text" | "circle" | "rectangle" | "line" | "arrow" | "ink" | "icon" | "chart" | "image" | "table"
+
+export type TableHighlightTarget =
+  | { type: "row"; row: number }
+  | { type: "column"; column: number }
+  | { type: "cell"; row: number; column: number }
 
 export type TextAlign = "left" | "center" | "right"
 export type TextAnchor =
@@ -76,6 +81,7 @@ export interface AnimationSpec {
     Pick<SceneNode, "position" | "rotation" | "opacity" | "size">
   > & { scale?: number }
   color?: string
+  tableTarget?: TableHighlightTarget
   duration: number
   ease: EaseName
 }

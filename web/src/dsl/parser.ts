@@ -122,6 +122,12 @@ export interface ASTChart {
   rows: Array<{ label: string; value: number }>
   token: Token
 }
+export interface ASTTable {
+  kind: "table"
+  id: string
+  props: ASTProperty[]
+  token: Token
+}
 export interface ASTBlock {
   kind: "parallel" | "group" | "stack" | "grid"
   id?: string
@@ -146,6 +152,7 @@ export type ASTStatement =
   | ASTLoop
   | ASTUse
   | ASTChart
+  | ASTTable
   | ASTBlock
   | ASTDuplicate
   | ASTDelete
@@ -418,6 +425,7 @@ class Parser {
     if (word === "SAY") return this.parseSay()
     if (word === "LOOP") return this.parseLoop()
     if (word === "USE") return this.parseUse()
+    if (word === "TABLE") return this.parseTable()
     if (["BARCHART", "LINECHART", "PIECHART"].includes(word)) return this.parseChart()
     if (word === "DUPLICATE") return this.parseDuplicate()
     if (word === "DELETE") return this.parseDelete()
@@ -677,6 +685,18 @@ class Parser {
     if (this.word() === "END") { this.take(); this.endLine() }
     else this.report("E_UNCLOSED_BLOCK", `${chartType.toUpperCase()} ${id} is missing END.`, token)
     return { kind: "chart", chartType, id, position, size, rows, token }
+  }
+
+  private parseTable(): ASTTable {
+    const token = this.take()
+    const id = this.readIdent("E_EXPECTED_ID", token)
+    this.endLine()
+    const props = this.parseProperties(["END"])
+    if (this.word() === "END") {
+      this.take()
+      this.endLine()
+    } else this.report("E_UNCLOSED_BLOCK", `TABLE ${id} is missing END.`, token)
+    return { kind: "table", id, props, token }
   }
 
   private parseDuplicate(): ASTDuplicate {
