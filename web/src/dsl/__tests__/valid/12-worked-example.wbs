@@ -17,7 +17,7 @@ SCENE 1 "Intro"
     CREATE browser AS CIRCLE
       POSITION 300 500
       RADIUS 100
-      COLOR #2E86AB
+      COLOR #205F78
       LABEL "Browser"
       DRAW 1s
     END
@@ -25,7 +25,7 @@ SCENE 1 "Intro"
       POSITION 1400 500
       WIDTH 300
       HEIGHT 220
-      COLOR #E76F51
+      COLOR #A14531
       TEXT "SERVER"
       DRAW 1s
     END
@@ -39,4 +39,6 @@ SCENE 1 "Intro"
     TARGET server
     SCALE 1.8
     DURATION 1s
+  CAMERA RESET
+    DURATION 0.8s
 END SCENE

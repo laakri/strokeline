@@ -152,17 +152,19 @@ export function WorkspaceGuide({ step, onStepChange, onFinish }: Props) {
         className="pointer-events-auto fixed w-[min(390px,calc(100vw-24px))] rounded-xl border border-[#e8ddc5] bg-[#fff9ec] p-5 text-[#26241f] shadow-2xl shadow-black/35"
         style={{ top: cardTop, left: cardLeft }}
       >
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8a7042]">
+        <div className="mb-3 flex items-start justify-between gap-3 pr-0">
+          <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8a7042]">
             <Icon className="size-4" />
-            <span>{current.location}</span>
+            <span className="truncate">{current.location}</span>
           </div>
-          <span className="shrink-0 font-mono text-xs text-[#817969]">{currentIndex + 1}/{steps.length}</span>
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="font-mono text-xs text-[#817969]">{currentIndex + 1}/{steps.length}</span>
+            <button type="button" aria-label="Close workspace guide" onClick={onFinish} className="-mr-2 -mt-2 rounded-md p-1 text-[#817969] hover:bg-black/5 hover:text-[#26241f]">
+              <X className="size-4" />
+            </button>
+          </div>
         </div>
-        <button type="button" aria-label="Skip workspace guide" onClick={onFinish} className="absolute right-3 top-3 rounded-md p-1 text-[#817969] hover:bg-black/5 hover:text-[#26241f]">
-          <X className="size-4" />
-        </button>
-        <h2 id="workspace-guide-title" className="pr-5 text-lg font-semibold tracking-tight">{current.title}</h2>
+        <h2 id="workspace-guide-title" className="text-lg font-semibold tracking-tight">{current.title}</h2>
         <p id="workspace-guide-description" className="mt-2 text-sm leading-5 text-[#5c574d]">{current.description}</p>
         <div className="mt-5 flex items-center justify-between gap-3">
           <button type="button" onClick={onFinish} className="rounded-md py-2 text-sm text-[#756e60] underline decoration-[#c6b99f] underline-offset-4 hover:text-[#26241f]">Skip guide</button>
