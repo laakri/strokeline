@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Check, Clipboard, FolderOpen, Maximize, Play, Save } from "lucide-react"
+import { Check, CircleHelp, Clipboard, FolderOpen, Maximize, Play, Save } from "lucide-react"
 import aiPrompt from "../../../../AI_prompt_kit.MD?raw"
 import { useAppStore } from "@/app/store.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
@@ -7,16 +7,36 @@ import { TwoPaneLayout } from "@/ui/layout/TwoPaneLayout.tsx"
 import { ExportMenu } from "@/ui/layout/ExportMenu.tsx"
 import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
 import { Button } from "@/ui/button"
+import { WorkspaceGuide } from "@/ui/layout/WorkspaceGuide.tsx"
 import logo from "@/assets/logo.png"
+
+const WORKSPACE_GUIDE_KEY = "strokeline.workspaceGuide.v1"
+
+function initialGuideStep(): number | null {
+  try {
+    return localStorage.getItem(WORKSPACE_GUIDE_KEY) === "done" ? null : 0
+  } catch {
+    return 0
+  }
+}
 
 export function AppShell() {
   const [presentationMode, setPresentationMode] = useState(false)
+  const [guideStep, setGuideStep] = useState<number | null>(initialGuideStep)
   const diagnostics = useAppStore((state) => state.diagnostics)
   const run = useAppStore((state) => state.run)
   const loadScript = useAppStore((state) => state.loadScript)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [saved, setSaved] = useState(false)
   const errors = diagnostics.filter(blocksScriptRun).length
+  const finishGuide = () => {
+    try {
+      localStorage.setItem(WORKSPACE_GUIDE_KEY, "done")
+    } catch {
+      /* storage unavailable */
+    }
+    setGuideStep(null)
+  }
   const copyPrompt = async () => {
     await navigator.clipboard.writeText(aiPrompt)
   }
@@ -71,6 +91,9 @@ export function AppShell() {
             <img src={logo} alt="Strokeline Logo" className="h-6 w-6" />
             <span className="hidden sm:inline">Strokeline</span>
           </span>
+          <Button variant="ghost" size="icon-sm" aria-label="Workspace guide" title="Workspace guide" onClick={() => setGuideStep(0)}>
+            <CircleHelp className="size-4" />
+          </Button>
           <span className="hidden text-xs text-muted-foreground lg:inline">
             whiteboard animation studio
           </span>
@@ -143,6 +166,7 @@ export function AppShell() {
         presentationMode={presentationMode}
         onExitPresentation={exitPresentation}
       />
+      {!presentationMode && <WorkspaceGuide step={guideStep} onStepChange={setGuideStep} onFinish={finishGuide} />}
     </main>
   )
 }
