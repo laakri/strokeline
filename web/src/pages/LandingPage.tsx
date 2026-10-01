@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/ui/button"
@@ -150,8 +150,13 @@ function LiveDemo() {
 }
 
 export function LandingPage() {
+  useLayoutEffect(() => {
+    document.documentElement.classList.add("landing-mode")
+    return () => document.documentElement.classList.remove("landing-mode")
+  }, [])
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-svh bg-background text-foreground">
       <header className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link
           to="/"
