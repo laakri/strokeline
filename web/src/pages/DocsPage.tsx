@@ -1,7 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Link } from "react-router-dom"
-import "./landing.css"
-import "./docs.css"
+
+import { Button } from "@/ui/button"
+import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
 import logo from "@/assets/logo.png"
 
 const starterScript = `VERSION 1.0
@@ -66,87 +67,729 @@ const pageLinks = [
   ["quick-start", "Quick start"],
   ["first-script", "Your first script"],
   ["language", "Script language"],
+  ["headers-objects", "Headers and objects"],
+  ["drawing-layout", "Drawing and layout"],
   ["images", "Images"],
   ["tables", "Tables"],
+  ["reusable-data", "Macros and charts"],
   ["motion", "Timing and motion"],
   ["narration", "Subtitles and voice"],
   ["play-export", "Play and export"],
   ["diagnostics", "Fix common errors"],
 ] as const
 
+const headerScript = `VERSION 1.0
+CANVAS 1920 1080
+THEME blueprint
+BOARD blueprint
+BACKGROUND #101827
+STYLE marker
+FONT neat
+STROKE 4
+HAND on
+SUBTITLES off
+
+SCENE 1 "A clear title"
+  CREATE title AS TEXT
+    TEXT "One idea at a time"
+    POSITION 960 300
+    SIZE 64
+    COLOR #FFFFFF
+    ALIGN center
+    MAXWIDTH 1200
+  END
+END SCENE`
+
+const drawingScript = `SCENE 1 "Draw and arrange"
+  CREATE card AS RECTANGLE
+    POSITION 960 540
+    WIDTH 560
+    HEIGHT 300
+    FILL #20334A
+    COLOR #8CC8FF
+    STROKE 5
+    OPACITY 1
+    TEXT "A labeled shape"
+    SIZE 36
+    ALIGN center
+    PEN handdrawn
+    DRAW 0.8s
+  END
+
+  CREATE label AS TEXT
+    TEXT "Near the card"
+    BELOW card GAP 36
+    SIZE 32
+    COLOR #FFFFFF
+  END
+
+  CREATE connector AS LINE
+    FROM 680 540
+    TO 400 540
+    COLOR #FFD166
+    STROKE 6
+  END
+  ARROW card -> label
+    COLOR #FFD166
+END SCENE`
+
+const inkScript = `SCENE 1 "Freehand marks"
+  CREATE target AS RECTANGLE
+    POSITION 1000 500
+    WIDTH 300
+    HEIGHT 180
+  END
+  INK underline
+    POINTS 420 650, 560 632, 720 646, 860 620
+    COLOR #FFD166
+    WIDTH 9
+    DRAW 0.7s
+    REVEAL natural
+    PEN chalk
+  END
+
+  INK ARROW FROM 900 600 TO 1250 440
+    COLOR #72D6C7
+    WIDTH 7
+    DRAW 0.8s
+  END
+  INK CIRCLE target
+END SCENE`
+
+const layoutScript = `SCENE 1 "Aligned content"
+  STACK flow DIRECTION vertical GAP 28 AT 960 360
+    CREATE heading AS TEXT
+      TEXT "First"
+      SIZE 38
+    END
+    CREATE detail AS TEXT
+      TEXT "Then the supporting idea"
+      SIZE 28
+    END
+  END
+
+  GRID cards
+    COLUMNS 3
+    GAP 24
+    AT 960 700
+    CREATE tile AS RECTANGLE
+      WIDTH 220
+      HEIGHT 140
+    END
+  END
+END SCENE`
+
+const macroScript = `DEFINE note PARAMS title body
+  CREATE card AS RECTANGLE
+    WIDTH 420
+    HEIGHT 240
+    TEXT title
+  END
+  CREATE copy AS TEXT
+    TEXT body
+    BELOW card GAP 24
+  END
+END
+
+SCENE 1 "Reusable pieces"
+  USE note AS idea AT 960 540 WITH title "The key idea" body "One reusable visual"
+  DUPLICATE ideaCopy FROM idea
+    POSITION 1400 540
+  DELETE ideaCopy
+END SCENE`
+
+const cameraScript = `SCENE 1 "Camera and motion"
+  CREATE dot AS CIRCLE
+    POSITION 700 540
+    RADIUS 48
+    FILL #FFD166
+  END
+  ENTER dot pop DURATION 0.5s
+  ANIMATE dot MOVE TO 1200 540 DURATION 1.2s EASE spring
+  LOOP dot breathe AMPLITUDE 8 PERIOD 2s
+
+  CAMERA ZOOM
+    TARGET dot
+    SCALE 1.4
+    DURATION 0.8s
+    EASE easeInOutCubic
+  CAMERA RESET
+    DURATION 0.6s
+  EXIT dot fade DURATION 0.3s
+  TRANSITION wipe DURATION 0.6s
+  GAP DURATION 0.5s
+END SCENE`
+
+const scriptSkeleton = `VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F6F1E7
+
+DEFINE reusable PARAMS LABEL
+  CREATE part AS TEXT
+    TEXT LABEL
+  END
+END
+
+SCENE 1 "Scene title"
+  PARALLEL STAGGER 0.15s
+    CREATE title AS TEXT
+      TEXT "One clear point"
+      POSITION 960 300
+      SIZE 56
+      MAXWIDTH 1100
+    END
+    SAY "Here is why this idea matters."
+      DURATION 2s
+      TONE hook
+  END
+  TRANSITION fade DURATION 0.6s
+  GAP DURATION 0.5s
+END SCENE`
+
+const iconScript = `CREATE brain AS ICON
+  NAME brain
+  POSITION 960 540
+  SIZE 160
+  COLOR #8CC8FF
+END`
+
+const sayScript = `SAY "The cache keeps frequently used data close."
+  DURATION 3s
+  WHO "Narrator"
+  TONE explain
+  LANG en
+  DETAIL "A cache is like keeping your most-used tools on the desk."`
+
+const iconNames =
+  "brain, user, users, database, settings, search, mail, camera, globe, lock, server, plus, x, check, send, printer, monitor, tv, tablet, smartphone, git-branch, git-merge, git-pull-request, workflow, box, package, clock, book-open, star, heart, home, house, folder, file-text, briefcase, cloud, link, credit-card, key, key-round, archive, shield, shield-check, bell, wifi, alert-triangle, triangle-alert, circle-help, help, users-round, database-zap, git-fork, layers".split(
+    ", "
+  )
+
+const prose =
+  "mt-4 space-y-4 text-[15px] leading-7 text-muted-foreground " +
+  "[&_h3]:mt-8 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-foreground " +
+  "[&_strong]:font-semibold [&_strong]:text-foreground " +
+  "[&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_code]:text-foreground " +
+  "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-[13px] " +
+  "[&_kbd]:rounded [&_kbd]:border [&_kbd]:bg-muted [&_kbd]:px-1.5 [&_kbd]:font-mono [&_kbd]:text-xs"
+
+const listCls = "list-disc space-y-2 pl-5 marker:text-muted-foreground/50"
+
 function CodeBlock({ title, code }: { title: string; code: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const copy = () => {
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setCopied(true)
+        window.setTimeout(() => setCopied(false), 1500)
+      })
+      .catch(() => {})
+  }
+
   return (
-    <div className="docs-code">
-      <div className="docs-code-title">{title}</div>
-      <pre><code>{code}</code></pre>
+    <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="flex items-center justify-between border-b bg-muted/50 py-1 pr-2 pl-4">
+        <span className="font-mono text-xs text-muted-foreground">{title}</span>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-7 px-2 text-xs"
+          onClick={copy}
+        >
+          <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
+        </Button>
+      </div>
+      <pre className="m-0 overflow-x-auto p-4 font-mono leading-6 text-foreground">
+        <code>{code}</code>
+      </pre>
     </div>
   )
 }
 
-function DocsSection({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+function Callout({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="docs-section" id={id}>
-      <h2>{title}</h2>
-      {children}
+    <aside className="rounded-lg border border-l-4 border-l-primary bg-muted/40 px-4 py-3">
+      <p className="text-sm font-semibold text-foreground">{title}</p>
+      <p className="mt-1 text-sm leading-6">{children}</p>
+    </aside>
+  )
+}
+
+function InfoCard({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <p className="text-sm font-semibold text-foreground">{title}</p>
+      <p className="mt-1.5 text-sm leading-6">{children}</p>
+    </div>
+  )
+}
+
+function CardGrid({ children }: { children: ReactNode }) {
+  return <div className="grid gap-3 sm:grid-cols-2">{children}</div>
+}
+
+function DocsSection({
+  id,
+  title,
+  children,
+}: {
+  id: string
+  title: string
+  children: ReactNode
+}) {
+  return (
+    <section
+      id={id}
+      className="group scroll-mt-32 border-t pt-10 first:border-t-0 first:pt-0"
+    >
+      <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
+        {title}
+        <a
+          href={`#${id}`}
+          aria-label={`Link to ${title}`}
+          className="text-lg font-normal text-muted-foreground/0 no-underline transition-colors group-hover:text-muted-foreground/60 hover:text-primary focus-visible:text-primary"
+        >
+          #
+        </a>
+      </h2>
+      <div className={prose}>{children}</div>
     </section>
   )
 }
 
+function goTo(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" })
+  window.history.replaceState(null, "", `#${id}`)
+}
+
 export function DocsPage() {
+  const [active, setActive] = useState<string>(pageLinks[0][0])
+  const [pin, setPin] = useState<{
+    left: number
+    top: number
+    width: number
+  } | null>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const columnRef = useRef<HTMLElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     document.documentElement.classList.add("landing-mode")
     return () => document.documentElement.classList.remove("landing-mode")
   }, [])
 
+  // Pins the sidebar with position: fixed so it keeps working even when an
+  // ancestor has overflow set (which breaks position: sticky).
+  useEffect(() => {
+    const TOP = 96
+    const update = () => {
+      const grid = gridRef.current
+      const column = columnRef.current
+      const panel = panelRef.current
+      if (
+        !grid ||
+        !column ||
+        !panel ||
+        !window.matchMedia("(min-width: 1024px)").matches
+      ) {
+        setPin(null)
+        return
+      }
+      const g = grid.getBoundingClientRect()
+      const c = column.getBoundingClientRect()
+      if (g.top > TOP) {
+        setPin(null)
+        return
+      }
+      const next = {
+        left: Math.round(c.left),
+        top: Math.round(Math.min(TOP, g.bottom - panel.offsetHeight)),
+        width: Math.round(c.width),
+      }
+      setPin((prev) =>
+        prev &&
+        prev.left === next.left &&
+        prev.top === next.top &&
+        prev.width === next.width
+          ? prev
+          : next
+      )
+    }
+    window.addEventListener("scroll", update, true)
+    window.addEventListener("resize", update)
+    update()
+    return () => {
+      window.removeEventListener("scroll", update, true)
+      window.removeEventListener("resize", update)
+    }
+  }, [])
+
+  useEffect(() => {
+    const els = pageLinks
+      .map(([id]) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null)
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+        if (visible[0]) setActive(visible[0].target.id)
+      },
+      { rootMargin: "-120px 0px -65% 0px" }
+    )
+    els.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1)
+    if (hash)
+      window.setTimeout(
+        () => document.getElementById(hash)?.scrollIntoView(),
+        0
+      )
+  }, [])
+
+  useEffect(() => {
+    document
+      .querySelector(`[data-pill="${active}"]`)
+      ?.scrollIntoView({ inline: "center", block: "nearest" })
+  }, [active])
+
   return (
-    <div className="landing docs-page">
-      <header>
-        <div className="docs-topbar">
-          <Link to="/" className="logo">
-            <img src={logo} alt="" />
-            Strokeline <span>Docs</span>
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-foreground no-underline"
+          >
+            <img src={logo} alt="" className="size-7 object-contain" />
+            <span className="text-lg font-semibold">Strokeline</span>
+            <span className="text-lg text-muted-foreground">Docs</span>
           </Link>
-          <nav aria-label="Main navigation">
-            <Link to="/">Home</Link>
-            <Link to="/workspace" className="btn">Open studio</Link>
+          <nav aria-label="Main navigation" className="flex items-center gap-2">
+            <Button asChild variant="ghost">
+              <Link to="/">Home</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/workspace">Open studio</Link>
+            </Button>
+            <AccountMenu compact />
           </nav>
         </div>
+
+        <nav
+          aria-label="On this page"
+          className="flex gap-1 overflow-x-auto border-t px-4 py-2 lg:hidden"
+        >
+          {pageLinks.map(([id, label]) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              data-pill={id}
+              onClick={(e) => {
+                e.preventDefault()
+                goTo(id)
+              }}
+              aria-current={active === id ? "true" : undefined}
+              className={`shrink-0 rounded-md px-3 py-1.5 text-sm no-underline ${
+                active === id
+                  ? "bg-secondary font-medium text-secondary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      <main>
-        <div className="docs-wrap">
-          <section className="docs-hero">
-            <span className="eyebrow">THE USER GUIDE</span>
-            <h1>Make your ideas move.</h1>
-            <p>Write a small, readable script. Strokeline turns it into a hand-drawn animation you can preview and export.</p>
-            <Link to="/workspace" className="btn">Open the studio <span aria-hidden="true">→</span></Link>
-          </section>
+      <main className="mx-auto max-w-6xl px-6 pt-12 pb-24">
+        <div className="max-w-2xl">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            Make your ideas move.
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Write a small, readable script. Strokeline turns it into a
+            hand-drawn animation you can preview and export.
+          </p>
+        </div>
 
-          <div className="docs-grid">
-            <nav className="docs-toc" aria-label="On this page">
-              <span>ON THIS PAGE</span>
-              {pageLinks.map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
-            </nav>
+        <div
+          ref={gridRef}
+          className="mt-12 grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)]"
+        >
+          <nav
+            ref={columnRef}
+            aria-label="On this page"
+            className="hidden lg:block"
+          >
+            <div
+              ref={panelRef}
+              style={
+                pin
+                  ? {
+                      position: "fixed",
+                      left: pin.left,
+                      top: pin.top,
+                      width: pin.width,
+                    }
+                  : undefined
+              }
+              className="max-h-[calc(100dvh-8rem)] overflow-y-auto"
+            >
+              <p className="mb-3 text-sm font-semibold">On this page</p>
+              <ul className="m-0 list-none space-y-0.5 border-l p-0">
+                {pageLinks.map(([id, label]) => (
+                  <li key={id}>
+                    <a
+                      href={`#${id}`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        goTo(id)
+                      }}
+                      aria-current={active === id ? "true" : undefined}
+                      className={`-ml-px block border-l-2 py-1.5 pl-4 text-sm no-underline transition-colors ${
+                        active === id
+                          ? "border-primary font-medium text-foreground"
+                          : "border-transparent text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
 
-            <article className="docs-content">
-              <DocsSection id="quick-start" title="Quick start">
-                <ol className="docs-steps">
-                  <li><strong>Open the studio.</strong> Select the script editor and replace its contents with a scene.</li>
-                  <li><strong>Run it.</strong> Strokeline checks the script, then renders the preview.</li>
-                  <li><strong>Play and refine.</strong> Use the player controls and timeline. Fix red errors; yellow warnings are suggestions.</li>
-                  <li><strong>Export.</strong> Save the script as <code>.wbs</code>, export a video or GIF, or download subtitle files.</li>
-                </ol>
-              </DocsSection>
+          <article className="max-w-3xl min-w-0 space-y-12">
+            <DocsSection id="quick-start" title="Quick start">
+              <ol className="list-decimal space-y-3 pl-5 marker:font-semibold marker:text-foreground">
+                <li>
+                  <strong>Open the studio.</strong> Select the script editor and
+                  replace its contents with a scene.
+                </li>
+                <li>
+                  <strong>Run it.</strong> Strokeline checks the script, then
+                  renders the preview.
+                </li>
+                <li>
+                  <strong>Play and refine.</strong> Use the player controls and
+                  timeline. Fix red errors; yellow warnings are suggestions.
+                </li>
+                <li>
+                  <strong>Export.</strong> Save the script as <code>.wbs</code>,
+                  export a video or GIF, or download subtitle files.
+                </li>
+              </ol>
+              <Button asChild>
+                <Link to="/workspace">Open the studio</Link>
+              </Button>
+            </DocsSection>
 
-              <DocsSection id="first-script" title="Your first script">
-                <p>A script has optional settings at the top, followed by one or more scenes. Each scene contains drawing and timing instructions.</p>
-                <CodeBlock title="first-scene.wbs" code={starterScript} />
-                <p><code>POSITION</code> places an object by its center. Text inside a rectangle uses the rectangle’s built-in <code>TEXT</code> property. <code>DRAW</code> sets how long it takes to appear.</p>
-              </DocsSection>
+            <DocsSection id="first-script" title="Your first script">
+              <p>
+                A script has optional settings at the top, followed by one or
+                more scenes. Each scene contains drawing and timing
+                instructions.
+              </p>
+              <CodeBlock title="first-scene.wbs" code={starterScript} />
+              <p>
+                <code>POSITION</code> places an object by its center. Text
+                inside a rectangle uses the rectangle’s built-in{" "}
+                <code>TEXT</code> property. <code>DRAW</code> sets how long it
+                takes to appear.
+              </p>
+            </DocsSection>
 
-              <DocsSection id="images" title="Images">
-                <p>Use a publicly accessible HTTPS URL that allows cross-origin embedding. Images preload for preview and export. Failed URLs show a placeholder and diagnostic. Images support reveal, camera movement, animation, duplicate, and delete.</p>
-                <CodeBlock title="Rounded image with a border" code={[
+            <DocsSection id="language" title="Script language">
+              <p>
+                Think of a script as global settings, reusable definitions, then
+                timed scenes. Coordinates use the canvas pixel grid; on a
+                1920×1080 canvas, (0, 0) is the top-left. IDs name things you
+                can connect, animate, copy, or remove.
+              </p>
+              <CodeBlock title="Complete script shape" code={scriptSkeleton} />
+              <CardGrid>
+                <InfoCard title="Blocks">
+                  <code>CREATE</code>, <code>INK</code>, <code>DEFINE</code>,{" "}
+                  <code>PARALLEL</code>, <code>GROUP</code>, <code>STACK</code>,{" "}
+                  <code>GRID</code>, and charts open blocks that close with{" "}
+                  <code>END</code>. Scenes close with <code>END SCENE</code>.
+                </InfoCard>
+                <InfoCard title="No-END statements">
+                  <code>ARROW</code>, <code>ANIMATE</code>, <code>ENTER</code>,{" "}
+                  <code>EXIT</code>, <code>CAMERA</code>, <code>WAIT</code>,{" "}
+                  <code>LOOP</code>, <code>USE</code>, <code>DUPLICATE</code>,
+                  and <code>DELETE</code> do not take an <code>END</code>. Some
+                  accept following property lines.
+                </InfoCard>
+                <InfoCard title="Time">
+                  Write durations with units: <code>1s</code> or{" "}
+                  <code>400ms</code>. Sequential actions advance the timeline;{" "}
+                  <code>PARALLEL</code> overlaps them, and <code>SAY</code>{" "}
+                  never advances it.
+                </InfoCard>
+                <InfoCard title="Object identity">
+                  Give each created object a unique, readable ID. Create it
+                  before referencing it from an arrow, layout relation, camera
+                  target, or animation.
+                </InfoCard>
+              </CardGrid>
+              <p>
+                Use the links in the sidebar as a reference: headers and object
+                properties, drawing/layout, macros/icons/charts, motion,
+                narration, then playback and diagnostics.
+              </p>
+            </DocsSection>
+
+            <DocsSection id="headers-objects" title="Headers and objects">
+              <p>
+                Put <code>VERSION</code> and <code>CANVAS</code> first. Optional
+                settings follow them and apply to the whole script; each scene
+                begins with <code>SCENE number</code> and closes with{" "}
+                <code>END SCENE</code>. Use one property per line inside a
+                block.
+              </p>
+              <Callout title="Coordinate tip">
+                <code>POSITION</code> is the object’s center. Measure the full
+                rendered text box, not just its anchor; <code>MAXWIDTH</code>{" "}
+                helps keep long copy on screen.
+              </Callout>
+              <CodeBlock title="Headers and text" code={headerScript} />
+              <h3>Header settings</h3>
+              <ul className={listCls}>
+                <li>
+                  <code>BACKGROUND #hex</code> sets a solid base color and
+                  overrides the board or theme base.
+                </li>
+                <li>
+                  <code>THEME</code>: classic, chalk, cosmic, suspense,
+                  parchment, blueprint, or cream.
+                </li>
+                <li>
+                  <code>BOARD</code>: chalkboard, whiteboard, blueprint, kraft,
+                  paper, graph, dotted, glass, or plain.
+                </li>
+                <li>
+                  <code>STYLE</code>: handdrawn, chalk, marker, pencil, brush,
+                  or clean. <code>PEN</code> overrides the style on one object.
+                </li>
+                <li>
+                  <code>FONT</code>: handwritten, marker, neat, messy, or
+                  arabic. Arabic text keeps its script and uses right-to-left
+                  shaping.
+                </li>
+                <li>
+                  <code>STROKE number</code> sets the default line weight;{" "}
+                  <code>HAND on|off</code> toggles the small reveal hand.
+                </li>
+                <li>
+                  <code>SUBTITLES on|off</code> sets the initial caption state.
+                  Missing means off.
+                </li>
+              </ul>
+              <p>
+                Board surfaces are procedural and cached offscreen. Depending on
+                the board and style, rendering can add grain, vignette, smudges,
+                a frame, light gradients, or subtle dust. Hand-drawn variation
+                is seeded by object ID, so seeking remains deterministic.
+              </p>
+              <h3>Object types and common properties</h3>
+              <p>
+                Use <code>CREATE id AS TYPE</code> and close it with{" "}
+                <code>END</code>. Types are <code>TEXT</code>,{" "}
+                <code>CIRCLE</code>, <code>RECTANGLE</code>, <code>LINE</code>,
+                <code>ICON</code>, and <code>IMAGE</code>.
+              </p>
+              <ul className={listCls}>
+                <li>
+                  Placement and geometry: <code>POSITION x y</code>,{" "}
+                  <code>FROM x y</code>, <code>TO x y</code>,{" "}
+                  <code>SIZE n</code>, <code>WIDTH n</code>,{" "}
+                  <code>HEIGHT n</code>, <code>RADIUS n</code>.
+                </li>
+                <li>
+                  Appearance: <code>COLOR #hex</code>, <code>FILL #hex</code>,{" "}
+                  <code>STROKE n</code>, <code>OPACITY 0..1</code>,{" "}
+                  <code>PEN style</code>.
+                </li>
+                <li>
+                  Text: <code>TEXT "..."</code>, <code>LABEL "..."</code>,{" "}
+                  <code>MAXWIDTH n</code>, <code>ALIGN left|center|right</code>,{" "}
+                  <code>LINEHEIGHT n</code>, <code>FIT WIDTH n HEIGHT n</code>.
+                </li>
+                <li>
+                  Text anchors:{" "}
+                  <code>
+                    ANCHOR
+                    center|left|right|top|bottom|topleft|topright|bottomleft|bottomright
+                  </code>
+                  .
+                </li>
+                <li>
+                  Relative placement: <code>BELOW id GAP n</code>,{" "}
+                  <code>ABOVE</code>, <code>LEFTOF</code>, <code>RIGHTOF</code>,{" "}
+                  <code>ALIGNX id</code>, <code>ALIGNY id</code>, or{" "}
+                  <code>CENTERON id</code>. Place referenced objects first.
+                </li>
+                <li>
+                  Reveal: <code>DRAW duration</code>.{" "}
+                  <code>REVEAL easeOut|linear|natural</code> controls the
+                  reveal; default is easeOut. Text wipes in softly from left to
+                  right; hand-drawn ink tapers at both ends.
+                </li>
+              </ul>
+              <CodeBlock
+                title="Shapes, text, and arrows"
+                code={drawingScript}
+              />
+            </DocsSection>
+
+            <DocsSection id="drawing-layout" title="Drawing and layout">
+              <p>
+                Use <code>ARROW fromId -&gt; toId</code> to connect objects. Put
+                optional arrow properties such as <code>COLOR</code>,{" "}
+                <code>PEN</code>, <code>DRAW</code>, and <code>REVEAL</code> on
+                following lines.
+              </p>
+              <p>
+                Raw <code>INK</code> is a freehand path with at least two
+                coordinate pairs. <code>INK ARROW</code> draws between
+                coordinates; <code>INK UNDERLINE id</code> and{" "}
+                <code>INK CIRCLE id</code> mark an existing object.
+              </p>
+              <CodeBlock title="Freehand ink" code={inkScript} />
+              <p>
+                <code>
+                  STACK id DIRECTION vertical|horizontal GAP n [AT x y]
+                </code>{" "}
+                and <code>GRID [id] COLUMNS n GAP n [AT x y]</code> arrange
+                measurable child shapes. Both are blocks closed by{" "}
+                <code>END</code>.
+              </p>
+              <CodeBlock title="Stack and grid" code={layoutScript} />
+            </DocsSection>
+
+            <DocsSection id="images" title="Images">
+              <p>
+                Use a publicly accessible HTTPS URL. Images preload for preview
+                and export, and the source must allow cross-origin embedding.
+                Failed URLs show a placeholder and diagnostic. Images support
+                timeline reveals, camera movement, enter, exit, animate,
+                duplicate, and delete.
+              </p>
+              <CodeBlock
+                title="Rounded image with a border"
+                code={[
                   'SCENE 1 "Image"',
                   "  CREATE logo AS IMAGE",
                   '    URL "https://example.com/logo.png"',
@@ -161,30 +804,26 @@ export function DocsPage() {
                   "    DRAW 0.8s",
                   "  END",
                   "END SCENE",
-                ].join("\n")} />
-                <ul className="docs-list">
-                  <li>FIT cover crops to fill; FIT contain letterboxes inside the frame.</li>
-                  <li>Use CORNERS n for rounded corners or MASK circle for a circular crop. BORDER #hex and optional SHADOW add a frame and depth.</li>
-                </ul>
-              </DocsSection>
+                ].join("\n")}
+              />
+              <ul className={listCls}>
+                <li>
+                  FIT cover crops to fill; FIT contain letterboxes inside the
+                  frame.
+                </li>
+                <li>
+                  Use CORNERS n for rounded corners or MASK circle for a
+                  circular crop. BORDER #hex and optional SHADOW add a frame
+                  and depth.
+                </li>
+              </ul>
+            </DocsSection>
 
-              <DocsSection id="language" title="Script language">
-                <div className="docs-cards">
-                  <div><h3>Scene structure</h3><p>Start with <code>SCENE number "title"</code> and finish with <code>END SCENE</code>. Close each object with <code>END</code>.</p></div>
-                  <div><h3>Objects</h3><p>Create <code>TEXT</code>, <code>CIRCLE</code>, <code>RECTANGLE</code>, <code>LINE</code>, or <code>ICON</code>. Connect existing objects with <code>ARROW from -&gt; to</code>.</p></div>
-                  <div><h3>Freehand ink</h3><p>Use <code>INK id</code> with comma-separated <code>POINTS</code>, a color, width, and draw time. Use <code>INK ARROW FROM</code> and <code>TO</code> for a hand-drawn arrow.</p></div>
-                  <div><h3>Reusable visuals</h3><p><code>DEFINE</code> and <code>USE</code> make reusable macros. Built-in macros include speech bubbles, sticky notes, callouts, timelines, and progress rings.</p></div>
-                </div>
-                <p>Recognizable objects are often quickest as an <code>ICON</code>. Enter a name after <code>NAME</code> or <code>ICON</code> and use editor autocomplete to search the built-in Lucide set.</p>
-                <CodeBlock title="A simple data chart" code={chartScript} />
-                <p>Charts build from <code>DATA "label" value</code> rows. Available types are <code>BARCHART</code>, <code>LINECHART</code>, and <code>PIECHART</code>.</p>
-              </DocsSection>
-
-              <DocsSection id="tables" title="Comparison tables">
+            <DocsSection id="tables" title="Comparison tables">
               <p>
                 Use <code>TABLE id</code> for comparisons. COLUMNS sets the
                 header; each ROW must provide one value for every column. Keep
-                tables to four columns and five body rows or fewer for comfortable
+                tables to four columns and five rows or fewer for comfortable
                 reading. Text stays at least 28px and fits inside the safe area.
               </p>
               <CodeBlock
@@ -214,50 +853,288 @@ export function DocsPage() {
                 enter/exit, move, duplicate, and delete operations.
               </p>
             </DocsSection>
+
+            <DocsSection id="reusable-data" title="Macros, icons, and charts">
+              <h3>Reusable macros</h3>
+              <p>
+                Define a macro before using it. Parameters are names listed
+                after <code>PARAMS</code>; substitute them in the body and pass
+                values with <code>WITH</code>.{" "}
+                <code>USE name AS id AT x y</code> expands its parts with
+                prefixed IDs. Animate the instance ID to move the complete
+                group.
+              </p>
+              <CodeBlock title="A parameterized macro" code={macroScript} />
+              <p>
+                Built-ins: <code>stick(MOOD)</code>, <code>speech(TEXT)</code>,{" "}
+                <code>thought(TEXT)</code>, <code>sticky(TEXT)</code>,{" "}
+                <code>badge(TEXT)</code>, <code>tick</code>,{" "}
+                <code>checklist(TEXT)</code>, <code>brackets</code>,{" "}
+                <code>callout(TEXT)</code>, <code>curvedarrow</code>,{" "}
+                <code>timeline</code>, and <code>progress(VALUE)</code>.
+              </p>
+              <h3>Icons</h3>
+              <p>
+                Create <code>ICON</code> and set <code>NAME icon-name</code> (or{" "}
+                <code>ICON icon-name</code>). The editor autocomplete searches
+                this supported set:
+              </p>
+              <CodeBlock title="Lucide icon" code={iconScript} />
+              <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+                {iconNames.map((name) => (
+                  <li
+                    key={name}
+                    className="rounded-md border bg-muted px-2 py-0.5 font-mono text-xs text-foreground"
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+              <h3>Charts</h3>
+              <p>
+                <code>BARCHART</code>, <code>LINECHART</code>, and{" "}
+                <code>PIECHART</code> take an ID, optional <code>POSITION</code>{" "}
+                and <code>SIZE</code>, then one or more{" "}
+                <code>DATA "label" number</code> rows. Close each chart with{" "}
+                <code>END</code>. Axes and build animation are generated from
+                the data.
+              </p>
+              <CodeBlock title="Bar chart" code={chartScript} />
+            </DocsSection>
+
             <DocsSection id="motion" title="Timing and motion">
-                <p>Statements run in order. <code>WAIT 1s</code> adds a pause; <code>PARALLEL</code> starts several drawing actions together. Durations need a unit, usually seconds (<code>s</code>).</p>
-                <CodeBlock title="Motion and camera" code={animationScript} />
-                <p><code>ANIMATE</code> moves or changes an object. <code>ENTER</code> and <code>EXIT</code> add entrance and exit effects; <code>LOOP</code> adds subtle repeating motion. Camera zooms and pans should be reset before the scene ends.</p>
-                <p>Scene transitions and optional gaps go at the end of a scene, immediately before <code>END SCENE</code>. The Play All control uses them unless you choose different preview settings.</p>
-              </DocsSection>
+              <p>
+                Statements run in order; durations use units such as{" "}
+                <code>0.8s</code> or <code>400ms</code>.{" "}
+                <code>WAIT duration</code> pauses the scene.{" "}
+                <code>PARALLEL</code> runs children together;{" "}
+                <code>STAGGER 0.15s</code> offsets each child.{" "}
+                <code>GROUP</code> organizes statements without changing their
+                timing. Close either block with <code>END</code>.
+              </p>
+              <CodeBlock title="Motion and camera" code={animationScript} />
+              <h3>Animation and effects</h3>
+              <ul className={listCls}>
+                <li>
+                  <code>ANIMATE id MOVE TO x y</code>, <code>SCALE TO n</code>,{" "}
+                  <code>ROTATE TO degrees</code>, <code>FADE</code>,{" "}
+                  <code>HIGHLIGHT</code>; add <code>DURATION</code> and{" "}
+                  <code>EASE</code>.
+                </li>
+                <li>
+                  <code>ENTER id effect</code>: pop, slide-left/right/up/down,
+                  fade, write, drop, or zoom.
+                </li>
+                <li>
+                  <code>EXIT id effect</code>: fade, shrink,
+                  slide-left/right/up/down, or erase.
+                </li>
+                <li>
+                  <code>LOOP id float|pulse|wobble|breathe|blink</code>{" "}
+                  optionally takes <code>AMPLITUDE n PERIOD 2s</code>.
+                </li>
+                <li>
+                  Eases: linear, easeIn, easeOut, easeInOut, bounce,
+                  easeOutBack, easeOutElastic, easeInOutCubic, spring, natural.
+                  Reveal eases are only easeOut, linear, and natural.
+                </li>
+              </ul>
+              <h3>Camera and scene changes</h3>
+              <p>
+                Camera statements take property lines and do not use{" "}
+                <code>END</code>: <code>CAMERA ZOOM</code> with{" "}
+                <code>TARGET id</code>/<code>SCALE n</code>;{" "}
+                <code>CAMERA PAN</code> with <code>TO x y</code>;{" "}
+                <code>CAMERA FOLLOW id</code>; <code>CAMERA DRIFT</code>,{" "}
+                <code>CAMERA SHAKE</code>, or <code>CAMERA RESET</code>. Add
+                property lines such as <code>DURATION</code>, <code>EASE</code>,
+                or <code>SCALE</code> where applicable. Reset the camera before
+                the scene ends.
+              </p>
+              <p>
+                At the end of a scene, optionally write{" "}
+                <code>TRANSITION fade|wipe|slide|erase|none DURATION 0.6s</code>{" "}
+                and then <code>GAP DURATION 0.5s</code>, directly before{" "}
+                <code>END SCENE</code>. Erase is a sweeping wipe. Play All uses
+                these settings unless overridden in the player.
+              </p>
+              <CodeBlock
+                title="Camera, effects, and transition"
+                code={cameraScript}
+              />
+            </DocsSection>
 
-              <DocsSection id="narration" title="Subtitles and voice">
-                <p><code>SAY "..."</code> adds spoken narration at the current timeline position. It does not advance the timeline; use a <code>WAIT</code> or ongoing animation to keep the scene alive until the line finishes.</p>
-                <p><code>SUBTITLES on</code> sets the initial caption state. Captions can be toggled in the player with <kbd>K</kbd>. SAY lines stay in the script even when captions are off.</p>
-                <p>Turn on the reader with the speaker control in the player. The first setup downloads the Kokoro model; its progress and any errors appear in the player. Generated speech is cached in this browser.</p>
-              </DocsSection>
+            <DocsSection id="narration" title="Subtitles and voice">
+              <p>
+                <code>SAY</code> adds a caption/narration cue at the current
+                timeline position without advancing it. It is valid only inside
+                a scene, may be placed inside <code>PARALLEL</code>, and ends
+                with the scene. Keep cues sequential; playback can schedule them
+                so narration finishes before the next cue.
+              </p>
+              <CodeBlock title="Narration cue" code={sayScript} />
+              <p>
+                Optional fields are <code>DURATION</code>, <code>WHO</code>,{" "}
+                <code>TONE</code> (explain, hook, warning, punchline, recap),{" "}
+                <code>LANG</code>, and <code>DETAIL</code>. Mark one to three
+                emphasis words with <code>*stars*</code>. Keep each cue short,
+                spoken, and distinct from on-screen labels.
+              </p>
+              <p>
+                A cue must wrap to two lines or fewer and stay under 90
+                characters. Above 20 characters per second warns about reading
+                speed; overlaps and close repetition of visible text are also
+                diagnosed. Playback lengthens and schedules cues for readable
+                pacing.
+              </p>
+              <p>
+                <code>SUBTITLES on</code> sets the initial caption state. Use
+                the CC control or <kbd>K</kbd> to toggle captions; the choice is
+                saved in this browser. Captions stay in a screen-space layer
+                when the camera moves. SAY lines remain in the script when
+                captions are off.
+              </p>
+              <p>
+                The reader uses the local Kokoro voice model. The player shows
+                preparation progress; after the initial download, the model and
+                generated audio are cached in this browser. SRT and VTT exports
+                use the SAY cues.
+              </p>
+            </DocsSection>
 
-              <DocsSection id="play-export" title="Play and export">
-                <ul className="docs-list">
-                  <li><strong>Play / pause:</strong> preview the current scene or the full sequence.</li>
-                  <li><strong>Timeline:</strong> scrub through playback; scene markers show where each scene begins.</li>
-                  <li><strong>Save / load:</strong> download a <code>.wbs</code> script or open one from your device.</li>
-                  <li><strong>Video:</strong> export MP4 when supported; narrated video exports as WebM with audio.</li>
-                  <li><strong>Other formats:</strong> export GIF, a PNG frame, or subtitle files in SRT and VTT.</li>
-                </ul>
-                <p>The studio’s <strong>Copy AI Prompt</strong> button copies the current AI authoring guide for use with your preferred assistant.</p>
-              </DocsSection>
+            <DocsSection id="play-export" title="Play and export">
+              <ul className={listCls}>
+                <li>
+                  <strong>Play All</strong> is the default and plays every
+                  scene. Scene mode previews only the selected scene. Use
+                  play/pause, replay, next scene, or scrub the timeline.
+                </li>
+                <li>
+                  <strong>Scene markers</strong> divide the full timeline by
+                  scene. The scene strip adapts to narrow screens.
+                </li>
+                <li>
+                  <strong>Playback options</strong> control the gap between
+                  scenes and whether to use each scene’s transition or override
+                  it.
+                </li>
+                <li>
+                  <strong>Save / load:</strong> download a <code>.wbs</code>{" "}
+                  script or open one from your device.
+                </li>
+                <li>
+                  <strong>Video:</strong> export MP4 when the browser supports
+                  it. Narrated video exports as WebM with audio.
+                </li>
+                <li>
+                  <strong>Other formats:</strong> export GIF, a PNG frame, or
+                  subtitles in SRT and VTT.
+                </li>
+                <li>
+                  <strong>Resolution and frame rate:</strong> choose 720p or
+                  1080p and 30 or 60 fps in the export controls.
+                </li>
+              </ul>
+              <p>
+                The studio’s <strong>Copy AI Prompt</strong> button copies the
+                current AI authoring guide for use with your preferred
+                assistant. Preview resolution follows the display pixel ratio,
+                capped at 2, with an offscreen cache for procedural rendering.
+              </p>
+            </DocsSection>
 
-              <DocsSection id="diagnostics" title="Fix common errors">
-                <div className="docs-cards docs-error-cards">
-                  <div><h3>Expected END SCENE</h3><p>Close every <code>CREATE</code>, <code>INK</code>, and <code>PARALLEL</code> block before closing the scene.</p></div>
-                  <div><h3>Unknown reference</h3><p>Check spelling and create the object earlier in the same scene before using it in an arrow or animation.</p></div>
-                  <div><h3>Bad duration</h3><p>Include a unit, for example <code>DRAW 0.8s</code> or <code>WAIT 2s</code>.</p></div>
-                  <div><h3>Text outside safe area</h3><p>Keep the full text box inside the canvas margins, not just the position point. Use <code>MAXWIDTH</code> for long text.</p></div>
-                </div>
-                <p>Fix the first red error, then run again; later parser errors can be follow-on errors. Warnings do not block playback, but fixing them improves readability.</p>
-              </DocsSection>
+            <DocsSection id="diagnostics" title="Fix common errors">
+              <CardGrid>
+                <InfoCard title="Expected END SCENE">
+                  Close every <code>CREATE</code>, <code>INK</code>, and{" "}
+                  <code>PARALLEL</code> block before closing the scene.
+                </InfoCard>
+                <InfoCard title="Unknown reference">
+                  Check spelling and create the object earlier in the same scene
+                  before using it in an arrow or animation.
+                </InfoCard>
+                <InfoCard title="Bad duration">
+                  Include a unit, for example <code>DRAW 0.8s</code> or{" "}
+                  <code>WAIT 2s</code>.
+                </InfoCard>
+                <InfoCard title="Text outside safe area">
+                  Keep the full text box inside the canvas margins, not just the
+                  position point. Use <code>MAXWIDTH</code> for long text.
+                </InfoCard>
+              </CardGrid>
+              <p>
+                Fix the first red error, then run again; later parser errors can
+                be follow-on errors. Warnings do not block playback, but fixing
+                them improves readability.
+              </p>
+              <h3>Warnings and what they mean</h3>
+              <ul className={listCls}>
+                <li>
+                  <code>W_TEXT_OFF_SAFE</code>, <code>W_TEXT_TOO_SMALL</code>,{" "}
+                  <code>W_LONG_TEXT</code>: text bounds should stay in
+                  x=120..1800 and y=100..980; below 28px is warned and below
+                  18px is an error; over 60 characters needs{" "}
+                  <code>MAXWIDTH</code>.
+                </li>
+                <li>
+                  <code>W_TEXT_OVERLAP</code>, <code>W_TEXT_ON_SHAPE</code>,{" "}
+                  <code>W_TOO_CROWDED</code>: separate simultaneous labels (over
+                  8% overlap is warned and both IDs are listed), avoid obscuring
+                  text with shapes, and keep visible text to 12 objects or
+                  fewer.
+                </li>
+                <li>
+                  <code>W_LOW_CONTRAST</code>: keep text/background contrast at
+                  WCAG 4.5:1 or higher.
+                </li>
+                <li>
+                  <code>W_ARROW_CROSSES_TEXT</code>: reroute the connector
+                  around labels.
+                </li>
+                <li>
+                  <code>W_SAY_FAST</code>, <code>W_SAY_OVERLAP</code>,{" "}
+                  <code>W_SAY_ECHO</code>: above 20 characters/second is fast;
+                  avoid overlapping cues and repeating more than 70% of visible
+                  text.
+                </li>
+                <li>
+                  <code>W_SCENE_LENGTH</code>, <code>W_DEAD_AIR</code>,{" "}
+                  <code>W_CAMERA_NOT_RESET</code>: scenes over 60 seconds (or
+                  over 20 seconds without motion), unchanged periods over 4
+                  seconds, and unreset camera moves are flagged.
+                </li>
+              </ul>
+              <p>
+                Text safety is measured from its rendered bounds (safe region
+                x=120..1800, y=100..980). Diagnostics show a fix suggestion;
+                click one to jump to its source line, or use Copy all to share
+                errors and warnings. Warnings never block Run.
+              </p>
+            </DocsSection>
 
-              <div className="docs-end">
-                <p>Ready to draw?</p>
-                <Link to="/workspace" className="btn">Open the studio <span aria-hidden="true">→</span></Link>
+            <div className="flex flex-col items-start justify-between gap-4 rounded-lg border bg-card p-6 sm:flex-row sm:items-center">
+              <div>
+                <p className="text-lg font-semibold">Ready to draw?</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Paste a script into the studio and press Run.
+                </p>
               </div>
-            </article>
-          </div>
+              <Button asChild>
+                <Link to="/workspace">Open the studio</Link>
+              </Button>
+            </div>
+          </article>
         </div>
       </main>
 
-      <footer><div className="footer-inner"><p>© 2026 Strokeline · <Link to="/">Home</Link></p></div></footer>
+      <footer className="border-t">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-sm text-muted-foreground">
+          <span>© 2026 Strokeline</span>
+          <Link to="/" className="hover:text-foreground">
+            Home
+          </Link>
+        </div>
+      </footer>
     </div>
   )
 }
