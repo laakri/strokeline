@@ -52,6 +52,7 @@ export function validate(document: SceneDocument): Diagnostic[] {
     }
     const created = new Map<string, number>()
     const createdTypes = new Map<string, string>()
+    const createdNodes = new Map<string, SceneNode>()
     for (const op of scene.ops) {
       if (op.kind === "create") {
         if (created.has(op.node.id))
@@ -65,6 +66,7 @@ export function validate(document: SceneDocument): Diagnostic[] {
           )
         created.set(op.node.id, op.t)
         createdTypes.set(op.node.id, op.node.type)
+        createdNodes.set(op.node.id, op.node)
         if (op.node.groupId) {
           created.set(op.node.groupId, op.t)
           createdTypes.set(op.node.groupId, "group")
@@ -298,7 +300,7 @@ export function validate(document: SceneDocument): Diagnostic[] {
       } else if (op.kind === "animate") {
         checkReference(op.targetId, created, op.t, diagnostics, op.source)
         if (op.anim.tableTarget) {
-          const target = creates.find((item) => item.node.id === op.targetId)?.node
+          const target = createdNodes.get(op.targetId)
           const selector = op.anim.tableTarget
           const rows = (target?.data?.rows as string[][] | undefined) ?? []
           const columns = (target?.data?.columns as string[] | undefined) ?? []
