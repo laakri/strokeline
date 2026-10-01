@@ -8,10 +8,26 @@ type VoiceInfo = { name?: string; language?: string; gender?: string; traits?: s
 
 const workerScope = self as DedicatedWorkerGlobalScope
 const modelId = "onnx-community/Kokoro-82M-v1.0-ONNX"
+const huggingFacePrefix = `https://huggingface.co/${modelId}/`
 let tts: KokoroTTS | null = null
 let loading: Promise<KokoroTTS> | null = null
 let lastProgress = 0
 let modelFilesCached: Promise<boolean> | null = null
+let nativeFetch: typeof fetch | null = null
+
+function useSameOriginModelProxy(): void {
+  if (nativeFetch) return
+  nativeFetch = workerScope.fetch.bind(workerScope)
+  workerScope.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
+    const inputUrl = input instanceof Request ? input.url : String(input)
+    if (!inputUrl.startsWith(huggingFacePrefix)) return nativeFetch!(input, init)
+
+    const remoteUrl = new URL(inputUrl)
+    const proxyUrl = new URL(`/hf/${remoteUrl.pathname.slice(1)}${remoteUrl.search}`, workerScope.location.origin)
+    const proxyRequest = input instanceof Request ? new Request(proxyUrl, input) : proxyUrl
+    return nativeFetch!(proxyRequest, init)
+  }) as typeof fetch
+}
 
 function hasCachedModelFiles(): Promise<boolean> {
   if (modelFilesCached) return modelFilesCached
@@ -40,6 +56,7 @@ async function loadModel(): Promise<KokoroTTS> {
   if (loading) return loading
   lastProgress = 0
   loading = (async () => {
+    useSameOriginModelProxy()
     const cached = await hasCachedModelFiles()
     postProgress(1, "Starting Kokoro…")
     return KokoroTTS.from_pretrained(modelId, {
