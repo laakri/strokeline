@@ -37,7 +37,13 @@ function clampRatio(ratio: number): number {
   return Math.min(MAX_RATIO, Math.max(MIN_RATIO, ratio))
 }
 
-export function TwoPaneLayout() {
+export function TwoPaneLayout({
+  presentationMode = false,
+  onExitPresentation,
+}: {
+  presentationMode?: boolean
+  onExitPresentation?: () => void
+}) {
   const isMobile = useIsMobile()
   const [mobileTab, setMobileTab] = useState<MobileTab>("script")
   const [leftRatio, setLeftRatio] = useState(loadRatio)
@@ -76,6 +82,17 @@ export function TwoPaneLayout() {
       setLeftRatio(ratio)
       saveRatio(ratio)
     }
+  }
+
+  if (presentationMode) {
+    return (
+      <div className="flex min-h-0 flex-1 overflow-hidden">
+        <PreviewPane
+          presentationMode
+          onExitPresentation={onExitPresentation}
+        />
+      </div>
+    )
   }
 
   if (isMobile) {

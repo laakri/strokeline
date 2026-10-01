@@ -1,5 +1,5 @@
-import { useRef, useState } from "react"
-import { Check, Clipboard, FolderOpen, Play, Save } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { Check, Clipboard, FolderOpen, Maximize, Play, Save } from "lucide-react"
 import aiPrompt from "../../../../AI_prompt_kit.MD?raw"
 import { useAppStore } from "@/app/store.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
@@ -10,6 +10,7 @@ import { Button } from "@/ui/button"
 import logo from "@/assets/logo.png"
 
 export function AppShell() {
+  const [presentationMode, setPresentationMode] = useState(false)
   const diagnostics = useAppStore((state) => state.diagnostics)
   const run = useAppStore((state) => state.run)
   const loadScript = useAppStore((state) => state.loadScript)
@@ -40,9 +41,31 @@ export function AppShell() {
     loadScript(text)
     event.target.value = ""
   }
+  const enterPresentation = () => {
+    setPresentationMode(true)
+    if (document.documentElement.requestFullscreen)
+      void document.documentElement.requestFullscreen().catch(() => {})
+  }
+  const exitPresentation = () => {
+    setPresentationMode(false)
+    if (document.fullscreenElement)
+      void document.exitFullscreen().catch(() => {})
+  }
+
+  useEffect(() => {
+    if (!presentationMode) return
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) setPresentationMode(false)
+    }
+    document.addEventListener("fullscreenchange", handleFullscreenChange)
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange)
+  }, [presentationMode])
+
   return (
-    <main className="flex h-svh max-h-svh min-h-0 flex-col overflow-hidden bg-background text-foreground">
-      <header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b border-border px-3 py-2 sm:flex sm:min-h-14 sm:gap-3 sm:px-4">
+    <main className={presentationMode
+      ? "fixed inset-0 z-[100] flex h-svh w-screen flex-col overflow-hidden bg-[#0b0e0d] text-white"
+      : "flex h-svh max-h-svh min-h-0 flex-col overflow-hidden bg-background text-foreground"}>
+      {!presentationMode && <header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b border-border px-3 py-2 sm:flex sm:min-h-14 sm:gap-3 sm:px-4">
         <div className="order-1 flex shrink-0 items-center gap-3">
           <span className="flex items-center gap-2 font-semibold tracking-tight">
             <img src={logo} alt="Strokeline Logo" className="h-6 w-6" />
@@ -90,6 +113,15 @@ export function AppShell() {
             onChange={(event) => void handleLoad(event)}
             className="hidden"
           />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={enterPresentation}
+            title="Present fullscreen"
+          >
+            <Maximize className="size-4" />
+            <span className="hidden md:inline">Present</span>
+          </Button>
           <ExportMenu />
           <Button
             size="sm"
@@ -106,8 +138,11 @@ export function AppShell() {
             </span>
           </Button>
         </div>
-      </header>
-      <TwoPaneLayout />
+      </header>}
+      <TwoPaneLayout
+        presentationMode={presentationMode}
+        onExitPresentation={exitPresentation}
+      />
     </main>
   )
 }

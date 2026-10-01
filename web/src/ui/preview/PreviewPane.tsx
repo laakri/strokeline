@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
-import { Pause, Play, RotateCcw, Settings2, SkipForward, Volume2 } from "lucide-react"
+import { Eye, EyeOff, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
@@ -8,7 +8,8 @@ import { Player, SequencePlayer } from "@/player/usePlayer.ts"
 import { SubtitleNarration, type VoiceStatus } from "@/player/subtitleNarration.ts"
 import { getKokoroState, subscribeKokoro } from "@/player/kokoro.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
-import { Timeline } from "@/timeline/timeline.ts"
+import { Timeline, type RenderState } from "@/timeline/timeline.ts"
+import { drawPreflightOverlay } from "@/renderer/preflightOverlay.ts"
 import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
 import { VoiceSettingsDialog } from "@/ui/preview/VoiceSettingsDialog.tsx"
 
@@ -42,8 +43,17 @@ function readVoiceSetting(): string {
   }
 }
 
-export function PreviewPane() {
+export function PreviewPane({
+  presentationMode = false,
+  onExitPresentation,
+}: {
+  presentationMode?: boolean
+  onExitPresentation?: () => void
+} = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const preflightCanvasRef = useRef<HTMLCanvasElement>(null)
+  const renderStateRef = useRef<RenderState | null>(null)
+  const playButtonRef = useRef<HTMLButtonElement>(null)
   const playerRef = useRef<Player | SequencePlayer | null>(null)
   const handledRunId = useRef(0)
   const lastUiUpdate = useRef(0)
@@ -51,10 +61,12 @@ export function PreviewPane() {
   const autoplayAll = useRef(false)
   const preservedPlayback = useRef<{ time: number; wasPlaying: boolean } | null>(null)
   const [playAllMode, setPlayAllMode] = useState(true)
+  const effectivePlayAllMode = presentationMode || playAllMode
   const [sequenceSceneIndex, setSequenceSceneIndex] = useState(0)
   const [sceneGapSeconds, setSceneGapSeconds] = useState<number | "script">("script")
   const [sceneAnimation, setSceneAnimation] = useState<SceneAnimation>("script")
   const [transitionDuration, setTransitionDuration] = useState(0.6)
+  const [preflightOn, setPreflightOn] = useState(false)
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
@@ -77,6 +89,7 @@ export function PreviewPane() {
   const runId = useAppStore((state) => state.runId)
   const player = useAppStore((state) => state.player)
   const setPlayerState = useAppStore((state) => state.setPlayerState)
+  const diagnostics = useAppStore((state) => state.diagnostics)
   const scene = compiledIR?.scenes[activeSceneIndex]
   const subtitlesOn = subtitleOverride ?? (compiledIR?.subtitles ?? false)
   const activeVoice = kokoroState.voices.find((voice) => voice.id === selectedVoice)
@@ -208,6 +221,28 @@ export function PreviewPane() {
   }, [toggleSubtitles])
 
   useEffect(() => {
+    if (!presentationMode) return
+    const onPresentationKeyDown = (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return
+      if (event.key === "Escape") {
+        event.preventDefault()
+        onExitPresentation?.()
+      } else if (event.key === " " && !(event.target instanceof HTMLInputElement)) {
+        event.preventDefault()
+        playButtonRef.current?.click()
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault()
+        const direction = event.key === "ArrowRight" ? 5 : -5
+        const controller = playerRef.current
+        if (controller)
+          controller.seek(Math.max(0, Math.min(controller.duration, controller.currentTime + direction)))
+      }
+    }
+    document.addEventListener("keydown", onPresentationKeyDown)
+    return () => document.removeEventListener("keydown", onPresentationKeyDown)
+  }, [presentationMode, onExitPresentation])
+
+  useEffect(() => {
     const controller = playerRef.current
     if (!readAlongOn) narrationRef.current?.cancel()
     if (controller && !controller.isPlaying)
@@ -222,6 +257,7 @@ export function PreviewPane() {
     playerRef.current?.dispose()
     playerRef.current = null
     if (!scene || !compiledIR || !canvasRef.current || imageReadiness.document !== compiledIR || !imageReadiness.ready) {
+      renderStateRef.current = null
       setSequenceStarts([])
       setPlayerState({ elapsed: 0, duration: 0, isPlaying: false })
       return
@@ -240,10 +276,11 @@ export function PreviewPane() {
     const transitionToCanvas = document.createElement("canvas")
     transitionFromCanvas.width = transitionToCanvas.width = canvas.width
     transitionFromCanvas.height = transitionToCanvas.height = canvas.height
-    const controller = playAllMode
+    const controller = effectivePlayAllMode
       ? new SequencePlayer(
           timelines,
           (state, sceneIndex, elapsed, transition) => {
+            renderStateRef.current = state
             narrationRef.current?.sync(
               transition ? undefined : state.subtitle,
               `sequence:${sceneIndex}`,
@@ -346,6 +383,7 @@ export function PreviewPane() {
             : sceneGapSeconds
         )
       : new Player(timelines[activeSceneIndex]!, (state, elapsed) => {
+          renderStateRef.current = state
           narrationRef.current?.sync(
             state.subtitle,
             `scene:${activeSceneIndex}`,
@@ -405,7 +443,28 @@ export function PreviewPane() {
       controller.dispose()
       narrationRef.current?.cancel()
     }
-  }, [compiledIR, activeSceneIndex, scene, playAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState])
+  }, [compiledIR, activeSceneIndex, scene, effectivePlayAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState])
+
+  useEffect(() => {
+    const overlay = preflightCanvasRef.current
+    const canvas = canvasRef.current
+    if (!overlay || !canvas) return
+    if (overlay.width !== canvas.width) overlay.width = canvas.width
+    if (overlay.height !== canvas.height) overlay.height = canvas.height
+    const context = overlay.getContext("2d")
+    if (!context) return
+    const state = renderStateRef.current
+    if (!preflightOn || !state || !compiledIR) {
+      context.clearRect(0, 0, overlay.width, overlay.height)
+      return
+    }
+    const issueIds = new Set(
+      state.nodes
+        .filter((node) => diagnostics.some((item) => item.message.includes(`"${node.id}"`)))
+        .map((node) => node.id)
+    )
+    drawPreflightOverlay(context, state, compiledIR.canvas, issueIds)
+  }, [preflightOn, player.elapsed, diagnostics, compiledIR])
 
   useEffect(() => {
     if (runId <= 0 || handledRunId.current === runId) return
@@ -445,28 +504,91 @@ export function PreviewPane() {
 
   const seek = (value: string) => playerRef.current?.seek(Number(value))
   const sceneCount = compiledIR?.scenes.length ?? 0
-  const hasNext = !playAllMode && activeSceneIndex < sceneCount - 1
+  const hasNext = !effectivePlayAllMode && activeSceneIndex < sceneCount - 1
   const ended =
     player.duration > 0 &&
     player.elapsed >= player.duration &&
     !player.isPlaying
-  const sequenceSceneStarts = playAllMode ? sequenceStarts : []
+  const sequenceSceneStarts = effectivePlayAllMode ? sequenceStarts : []
+  const presentationSceneIndex = effectivePlayAllMode ? sequenceSceneIndex : activeSceneIndex
+  const presentationScene = compiledIR?.scenes[presentationSceneIndex]
+  const formatTime = (time: number) =>
+    `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`
   return (
     <>
     <section
-      className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"
+      className={presentationMode
+        ? "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0b0e0d] text-white"
+        : "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"}
       aria-label="Preview"
     >
-      <SceneTabs
-        activeIndex={playAllMode ? sequenceSceneIndex : activeSceneIndex}
-        onSelect={() => setPlayAllMode(false)}
-      />
-      <div className="flex min-h-0 flex-1 items-center justify-center p-2 sm:p-4">
+      {presentationMode && (
+        <div className="flex h-12 shrink-0 items-center justify-between gap-3 px-4 sm:h-14 sm:px-8">
+          <div className="flex min-w-0 items-center gap-2 text-sm">
+            <span className="shrink-0 font-semibold tracking-tight">Strokeline</span>
+            <span className="text-white/30">/</span>
+            <span className="truncate text-white/70">
+              {presentationScene?.label ?? `Scene ${presentationSceneIndex + 1}`}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="hidden font-mono text-xs text-white/50 sm:inline">
+              {presentationSceneIndex + 1} / {sceneCount}
+            </span>
+            <button
+              type="button"
+              onClick={onExitPresentation}
+              title="Return to editing (Esc)"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <X className="size-3.5" />
+              <span className="hidden sm:inline">Exit</span>
+            </button>
+          </div>
+        </div>
+      )}
+      {!presentationMode && (
+        <SceneTabs
+          activeIndex={playAllMode ? sequenceSceneIndex : activeSceneIndex}
+          onSelect={() => setPlayAllMode(false)}
+        />
+      )}
+      <div className={presentationMode
+        ? "relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#101512] p-3 sm:p-8"
+        : "relative flex min-h-0 flex-1 items-center justify-center p-2 sm:p-4"}>
+        {!presentationMode && (
+          <button
+            type="button"
+            aria-pressed={preflightOn}
+            onClick={() => setPreflightOn((enabled) => !enabled)}
+            title="Show safe margins and object bounds; guides are not exported"
+            className={`absolute right-3 top-3 z-20 inline-flex items-center gap-2 rounded-full border bg-background/90 px-3 py-2 text-xs font-medium shadow-sm backdrop-blur transition-colors hover:bg-accent ${preflightOn ? "border-primary/40 text-primary" : "border-border text-muted-foreground"}`}
+          >
+            {preflightOn ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+            <span>Preflight</span>
+            {diagnostics.length > 0 && (
+              <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 font-mono text-[10px] text-amber-600">
+                {diagnostics.length}
+              </span>
+            )}
+          </button>
+        )}
         {scene ? (
-          <canvas
-            ref={canvasRef}
-            className="max-h-full max-w-full border border-border bg-background shadow-sm"
-          />
+          <div className="relative inline-flex max-h-full max-w-full">
+            <canvas
+              ref={canvasRef}
+              className={presentationMode
+                ? "block max-h-full max-w-full bg-background shadow-[0_24px_90px_rgba(0,0,0,0.48)]"
+                : "block max-h-full max-w-full border border-border bg-background shadow-sm"}
+            />
+            {preflightOn && !presentationMode && (
+              <canvas
+                ref={preflightCanvasRef}
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 block h-full w-full"
+              />
+            )}
+          </div>
         ) : script.trim() === "" ? (
           <p className="max-w-xs text-center text-sm text-muted-foreground">
             Write a scene in the editor, then run it to preview.
@@ -476,9 +598,45 @@ export function PreviewPane() {
             Run a valid script to preview it.
           </p>
         )}
+        {presentationMode && ended && (
+          <div className="absolute inset-0 z-20 grid place-items-center bg-black/55 p-5 backdrop-blur-sm">
+            <div className="w-full max-w-md rounded-3xl bg-[#f1eddc] p-7 text-[#202923] shadow-2xl sm:p-9">
+              <p className="text-xs font-semibold tracking-[0.18em] text-[#64745f] uppercase">
+                Presentation complete
+              </p>
+              <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                That’s the whole story.
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[#576259]">
+                Replay the explanation or return to your script.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playerRef.current?.seek(0)
+                    playButtonRef.current?.click()
+                  }}
+                  className="rounded-full bg-[#202923] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#35453a]"
+                >
+                  Replay
+                </button>
+                <button
+                  type="button"
+                  onClick={onExitPresentation}
+                  className="rounded-full px-4 py-2 text-sm font-medium text-[#202923] transition-colors hover:bg-black/5"
+                >
+                  Back to editor
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="flex flex-wrap items-center gap-2 border-t border-border bg-card px-2 py-2 sm:gap-3 sm:px-4 sm:py-3">
-        {sceneCount > 1 && (
+      <div className={presentationMode
+        ? "flex shrink-0 flex-wrap items-center gap-2 border-t border-white/10 bg-[#0b0e0d] px-3 py-3 text-white sm:gap-3 sm:px-8"
+        : "flex flex-wrap items-center gap-2 border-t border-border bg-card px-2 py-2 sm:gap-3 sm:px-4 sm:py-3"}>
+        {sceneCount > 1 && !presentationMode && (
           <details className="relative">
             <summary className="cursor-pointer list-none rounded-md border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-accent">
               Scenes
@@ -560,7 +718,9 @@ export function PreviewPane() {
           aria-pressed={subtitlesOn}
           title="Toggle subtitles (K)"
           onClick={toggleSubtitles}
-          className={`rounded-md border px-2 py-1.5 text-xs font-semibold ${subtitlesOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
+          className={`rounded-md border px-2 py-1.5 text-xs font-semibold ${presentationMode
+            ? `order-4 ${subtitlesOn ? "border-white bg-white text-[#0b0e0d]" : "border-white/20 bg-white/5 text-white hover:bg-white/10"}`
+            : subtitlesOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
         >
           CC
         </button>
@@ -571,16 +731,18 @@ export function PreviewPane() {
           title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voiceNotice || (kokoroState.status === "loading" ? `${kokoroState.message} ${kokoroState.progress}%` : `Kokoro ${readAlongOn ? "on" : "off"} · ${activeVoiceLabel}${activeVoice ? ` · ${activeVoice.language} · ${activeVoice.gender}` : ""}`)}
           disabled={!voiceSupported}
           onClick={toggleReadAlong}
-          className={`inline-flex items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${readAlongOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
+          className={`inline-flex items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${presentationMode
+            ? `order-5 ${readAlongOn ? "border-white bg-white text-[#0b0e0d]" : "border-white/20 bg-white/5 text-white hover:bg-white/10"}`
+            : readAlongOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
         >
           <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
-          {kokoroState.status === "loading"
+          {!presentationMode && (kokoroState.status === "loading"
             ? `${kokoroState.progress}%`
             : voiceStatus === "preparing"
             ? voicePrepProgress.total > 0 ? `${voicePrepProgress.completed}/${voicePrepProgress.total}` : "Preparing…"
-            : activeVoiceLabel}
+            : activeVoiceLabel)}
         </button>
-        <button
+        {!presentationMode && <button
           type="button"
           aria-label="Choose reader voice"
           title="Choose reader voice"
@@ -588,8 +750,9 @@ export function PreviewPane() {
           className="inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"
         >
           <Settings2 className="size-3.5" aria-hidden="true" />
-        </button>
+        </button>}
         <button
+          ref={playButtonRef}
           type="button"
           title={player.isPlaying ? "Pause" : "Play"}
           aria-label={player.isPlaying ? "Pause" : "Play"}
@@ -636,7 +799,10 @@ export function PreviewPane() {
               })()
             }
           }}
-          className="inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"
+          aria-keyshortcuts="Space"
+          className={presentationMode
+            ? "order-1 inline-flex size-10 items-center justify-center rounded-full border border-white/20 bg-white text-[#0b0e0d] transition-transform hover:scale-105"
+            : "inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"}
         >
           {player.isPlaying ? (
             <Pause className="size-4" />
@@ -644,7 +810,9 @@ export function PreviewPane() {
             <Play className="size-4" />
           )}
         </button>
-        <div className="relative order-last min-w-0 basis-full flex-1 sm:order-none sm:basis-auto">
+        <div className={presentationMode
+          ? "relative order-2 min-w-0 basis-full flex-1 sm:basis-auto"
+          : "relative order-last min-w-0 basis-full flex-1 sm:order-none sm:basis-auto"}>
           <input
             aria-label="Timeline scrubber"
             type="range"
@@ -653,7 +821,7 @@ export function PreviewPane() {
             step="0.01"
             value={Math.min(player.elapsed, player.duration || 1)}
             onChange={(event) => seek(event.target.value)}
-            className="relative z-10 block w-full"
+            className={`relative z-10 block w-full ${presentationMode ? "accent-white" : ""}`}
           />
           {player.duration > 0 && sequenceSceneStarts.slice(1).map((time, index) => (
             <button
@@ -665,14 +833,18 @@ export function PreviewPane() {
               style={{ left: `${(time / player.duration) * 100}%` }}
               className="group absolute inset-y-0 z-20 flex w-4 -translate-x-1/2 items-center justify-center"
             >
-              <span className="h-3.5 w-0.5 rounded-full bg-foreground/70 transition-colors group-hover:bg-primary" />
+              <span className={`h-3.5 w-0.5 rounded-full transition-colors ${presentationMode ? "bg-white/70 group-hover:bg-white" : "bg-foreground/70 group-hover:bg-primary"}`} />
             </button>
           ))}
         </div>
-        <span className="w-24 text-right font-mono text-xs text-muted-foreground">
-          {player.elapsed.toFixed(2)} / {player.duration.toFixed(2)}s
+        <span className={presentationMode
+          ? "order-3 w-24 text-right font-mono text-xs text-white/60"
+          : "w-24 text-right font-mono text-xs text-muted-foreground"}>
+          {presentationMode
+            ? `${formatTime(player.elapsed)} / ${formatTime(player.duration)}`
+            : `${player.elapsed.toFixed(2)} / ${player.duration.toFixed(2)}s`}
         </span>
-        {!playAllMode && ended && (
+        {!presentationMode && !playAllMode && ended && (
           <button
             type="button"
             title="Replay this scene"
@@ -708,7 +880,7 @@ export function PreviewPane() {
         <div
           role={voiceStatus === "error" ? "alert" : "status"}
           aria-live={voiceStatus === "error" ? "assertive" : "polite"}
-          className={`flex items-center gap-2 border-t border-border px-3 py-1.5 text-xs ${voiceStatus === "error" ? "text-destructive" : "text-muted-foreground"}`}
+          className={`flex items-center gap-2 border-t px-3 py-1.5 text-xs ${presentationMode ? "border-white/10" : "border-border"} ${voiceStatus === "error" ? "text-destructive" : presentationMode ? "text-white/60" : "text-muted-foreground"}`}
         >
           <span className="min-w-0 flex-1 truncate">
             {voiceNotice || (kokoroState.status === "loading"

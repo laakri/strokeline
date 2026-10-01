@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase.ts"
 export function AccountMenu({ compact = false }: { compact?: boolean }) {
   const [session, setSession] = useState<Session | null>(null)
   const [logoutError, setLogoutError] = useState("")
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState("")
   const menuRef = useRef<HTMLDetailsElement>(null)
 
   useEffect(() => {
@@ -78,10 +79,15 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
         title={name}
         className="flex size-9 cursor-pointer list-none items-center justify-center overflow-hidden rounded-full bg-secondary text-sm font-semibold text-secondary-foreground outline-none transition-shadow hover:ring-2 hover:ring-ring/40 focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
       >
-        {avatarUrl ? (
-          <img src={avatarUrl} alt="" className="size-full object-cover" />
+        {avatarUrl && failedAvatarUrl !== avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt=""
+            className="size-full object-cover"
+            onError={() => setFailedAvatarUrl(avatarUrl)}
+          />
         ) : (
-          <span>{name.slice(0, 1).toUpperCase() || <UserRound className="size-4" />}</span>
+          <UserRound className="size-4" />
         )}
       </summary>
       <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl bg-popover p-2 text-popover-foreground shadow-xl ring-1 ring-black/10">
