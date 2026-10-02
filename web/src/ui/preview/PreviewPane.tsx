@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
-import { Eye, EyeOff, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
+import { Check, Eye, EyeOff, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
@@ -170,6 +170,16 @@ export function PreviewPane({
   const [readerVolume, setReaderVolume] = useState(readReaderVolume)
   const [voicePrepProgress, setVoicePrepProgress] = useState({ completed: 0, total: 0 })
   const [voiceNotice, setVoiceNotice] = useState("")
+  const [readerToast, setReaderToast] = useState("")
+  const readerToastTimer = useRef<number | null>(null)
+  const showReaderToast = useCallback((message: string) => {
+    setReaderToast(message)
+    if (readerToastTimer.current !== null) window.clearTimeout(readerToastTimer.current)
+    readerToastTimer.current = window.setTimeout(() => {
+      setReaderToast("")
+      readerToastTimer.current = null
+    }, 5000)
+  }, [])
   const [sequenceStarts, setSequenceStarts] = useState<number[]>([])
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>("idle")
   const [narration] = useState(() => new SubtitleNarration(setVoiceStatus, readReaderVolume()))
@@ -180,6 +190,10 @@ export function PreviewPane({
     document: typeof compiledIR
     ready: boolean
   }>({ document: null, ready: false })
+
+  useEffect(() => () => {
+    if (readerToastTimer.current !== null) window.clearTimeout(readerToastTimer.current)
+  }, [])
   const script = useAppStore((state) => state.script)
   const compiledSource = useAppStore((state) => state.compiledSource)
   const activeSceneIndex = useAppStore((state) => state.activeSceneIndex)
@@ -267,13 +281,20 @@ export function PreviewPane({
       setReadAlongOn(true)
       setVoiceNotice(skipped
         ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
-        : lines.length === 0
-          ? "This script has no SAY lines to read."
-          : "")
+        : "")
       setVoiceDialogOpen(false)
-      controller?.seek(time)
-      if (wasPlaying) controller?.play()
-      setPlayerState({ elapsed: time, isPlaying: wasPlaying })
+      autoplayAll.current = false
+      autoplayNext.current = false
+      preservedPlayback.current = null
+      controller?.pause()
+      setPlayAllMode(true)
+      controller?.seek(0)
+      setPlayerState({ elapsed: 0, isPlaying: false })
+      showReaderToast(skipped
+        ? `Reader ready. All scenes reset and paused; ${skipped} Arabic line${skipped === 1 ? " was" : "s were"} skipped.`
+        : lines.length === 0
+          ? "Reader ready. All scenes reset and paused. Add SAY lines for narration."
+          : "Reader ready. All scenes reset and paused.")
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       narrationRef.current.setVoice(selectedVoice)
@@ -283,7 +304,7 @@ export function PreviewPane({
       if (wasPlaying) controller?.play()
       setPlayerState({ elapsed: time, isPlaying: wasPlaying })
     }
-  }, [compiledIR, player.elapsed, player.isPlaying, selectedVoice, setPlayerState])
+  }, [compiledIR, player.elapsed, player.isPlaying, selectedVoice, setPlayAllMode, setPlayerState, showReaderToast])
 
   const toggleReadAlong = useCallback(() => {
     if (!voiceSupported) return
@@ -803,6 +824,10 @@ export function PreviewPane({
 
   const seek = (value: string) => playerRef.current?.seek(Number(value))
   const sceneCount = compiledIR?.scenes.length ?? 0
+  const narrationLineCount = compiledIR?.scenes.reduce(
+    (count, scene) => count + (scene.says?.length ?? 0),
+    0
+  ) ?? 0
   const hasNext = !effectivePlayAllMode && activeSceneIndex < sceneCount - 1
   const ended =
     player.duration > 0 &&
@@ -850,10 +875,32 @@ export function PreviewPane({
     <section
       data-workspace-guide-target="preview"
       className={presentationMode
-        ? "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0b0e0d] text-white"
-        : "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"}
+        ? "relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0b0e0d] text-white"
+        : "relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-muted/30"}
       aria-label="Preview"
     >
+      {readerToast && (
+        <div className="pointer-events-none absolute inset-x-0 top-3 z-40 flex justify-center px-3 sm:top-5">
+          <div
+            role="status"
+            aria-live="polite"
+            className="pointer-events-auto flex max-w-lg items-center gap-3 rounded-xl border border-emerald-600/20 bg-background/95 px-4 py-3 text-sm text-foreground shadow-xl backdrop-blur"
+          >
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-emerald-500/12 text-emerald-700 dark:text-emerald-300">
+              <Check className="size-4" aria-hidden="true" />
+            </span>
+            <span className="min-w-0 flex-1">{readerToast}</span>
+            <button
+              type="button"
+              aria-label="Dismiss reader preparation message"
+              onClick={() => setReaderToast("")}
+              className="shrink-0 rounded-md px-1 text-muted-foreground hover:text-foreground"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       {presentationMode && (
         <div className="flex h-12 shrink-0 items-center justify-between gap-3 px-4 sm:h-14 sm:px-8">
           <div className="flex min-w-0 items-center gap-2 text-sm">
@@ -1110,8 +1157,8 @@ export function PreviewPane({
         </button>
         {!presentationMode && <button
           type="button"
-          aria-label="Choose reader voice"
-          title="Choose reader voice"
+          aria-label="Open reader settings"
+          title="Reader settings"
           onClick={() => setVoiceDialogOpen(true)}
           className="inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"
         >
@@ -1271,6 +1318,7 @@ export function PreviewPane({
       }}
       preparing={voicePrepProgress}
       preparingActive={voiceStatus === "preparing"}
+      narrationLineCount={narrationLineCount}
       error={voiceStatus === "error" ? voiceNotice : ""}
       onClose={() => setVoiceDialogOpen(false)}
       onUseVoice={(voice) => void enableReader(voice)}

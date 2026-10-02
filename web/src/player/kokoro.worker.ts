@@ -15,6 +15,10 @@ let lastProgress = 0
 let modelFilesCached: Promise<boolean> | null = null
 let nativeFetch: typeof fetch | null = null
 
+function isOnnxFile(value: string): boolean {
+  return /\.onnx(?:[?#].*)?$/i.test(value)
+}
+
 function useSameOriginModelProxy(): void {
   if (nativeFetch) return
   nativeFetch = workerScope.fetch.bind(workerScope)
@@ -37,7 +41,7 @@ function hasCachedModelFiles(): Promise<boolean> {
       const cache = await caches.open("transformers-cache")
       const entries = await cache.keys()
       return entries.some(({ url }) =>
-        url.includes("/onnx-community/Kokoro-82M-v1.0-ONNX/") && url.includes("/onnx/") && url.endsWith(".onnx")
+        url.includes("/onnx-community/Kokoro-82M-v1.0-ONNX/") && url.includes("/onnx/") && isOnnxFile(url)
       )
     } catch {
       return false
@@ -64,9 +68,9 @@ async function loadModel(): Promise<KokoroTTS> {
       device: "wasm",
       progress_callback: (event) => {
         const file = "file" in event ? event.file.toLowerCase() : ""
-        if (event.status === "progress" && file.endsWith(".onnx")) {
+        if (event.status === "progress" && isOnnxFile(file)) {
           postProgress(event.progress * 0.94, cached ? "Loading saved voice model…" : "Downloading voice model…")
-        } else if (event.status === "done" && file.endsWith(".onnx")) {
+        } else if (event.status === "done" && isOnnxFile(file)) {
           postProgress(96, cached ? "Preparing saved voice model…" : "Preparing voice model…")
         } else if (event.status === "ready") {
           postProgress(99, "Finishing setup…")
