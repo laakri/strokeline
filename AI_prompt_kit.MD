@@ -13,7 +13,7 @@ You write one script in the Strokeline whiteboard-animation language (version 1.
 
 **When rules conflict, this order wins:** (1) valid syntax and every block closed, (2) readable text inside the safe area, (3) the richness requirements in section 5, (4) style and taste.
 
-**Enabled features are only those in this kit.** These are DISABLED, never write them: THEME, BOARD, PEN, HAND, TRANSITION, GAP, ENTER, EXIT, REVEAL, LOOP, DEFINE, USE, PARALLEL STAGGER, CAMERA DRIFT/SHAKE/FOLLOW, MAXWIDTH, LANG, DETAIL, WHO, INK UNDERLINE, INK CIRCLE, INK RAW. Scenes cut directly into each other.
+**Enabled features are only those in this kit.** These are DISABLED, never write them: PEN, HAND, TRANSITION, GAP, ENTER, EXIT, REVEAL, LOOP, DEFINE, USE, PARALLEL STAGGER, CAMERA DRIFT/SHAKE/FOLLOW, MAXWIDTH, LANG, DETAIL, WHO, INK UNDERLINE, INK CIRCLE, INK RAW. Scenes cut directly into each other.
 
 ---
 
@@ -206,7 +206,7 @@ FONT handwritten
 STROKE 4
 ```
 
-Only `BACKGROUND` may change (any hex, chosen from section 12). Never put objects in the header.
+Use the header settings that fit the requested look. You may choose one `THEME` preset or one `BOARD` surface; use both only when you intentionally want a theme's ink/pen defaults on a different surface. `BACKGROUND` changes the surface's base color but keeps its texture. Never put objects in the header. `THEME` and `BOARD` are different: `suspense` is a theme, so write `THEME suspense`, never `BOARD suspense`.
 
 ---
 
@@ -418,6 +418,12 @@ Prefer a second pen color with an `INK ARROW` pointing at the subject over an un
 | Blueprint          | `#0D3B66`  | `#F4F4F4` | `#7FDBFF` `#FFDC00` `#FF8C42`                     |
 
 Pick one palette for the whole script, at most 4 accents. On dark boards use bright ink and dark, desaturated fills. Never gray text on a gray fill. Give different meanings different colors (for example problem = red, fix = green).
+
+### Procedural boards and themes
+
+Choose `THEME` for a coordinated board, base color, ink, and pen. Use `THEME classroom` for lessons and equations: it is a green school blackboard with a wood frame, chalk tray, chalk, and eraser. Use `THEME blueprint` for technical diagrams; `THEME circuit` for electronics and networks; `THEME notebook` for notes and worked examples; `THEME terrazzo` for warm, editorial storytelling; `THEME deepsea` or `THEME aurora` for astronomy; `THEME fieldnotes` for nature or research; `THEME scrapbook` for human stories; `THEME afterhours` for dramatic technology; and `THEME editorial` for polished business explainers. `THEME classic` and `THEME chalk` are visual aliases; prefer `classic` unless the user asks for chalk.
+
+Available themes: classic, chalk, cosmic, suspense, parchment, blueprint, cream, deepsea, fieldnotes, afterhours, editorial, classroom, scrapbook, aurora, atelier, circuit, notebook, terrazzo. Available `BOARD` surfaces: chalkboard, blackboard, whiteboard, blueprint, kraft, paper, graph, dotted, glass, plain, celestial, topographic, neon-grid, editorial, corkboard, linen, aurora, circuit, notebook, terrazzo. `suspense` is not a board surface; use `THEME suspense`. Use `BOARD` only with a listed surface name. `BACKGROUND` may recolor that surface without removing its procedural texture. Keep decorative texture subtle behind text and choose surfaces to reinforce the subject, not as random decoration.
 
 ---
 

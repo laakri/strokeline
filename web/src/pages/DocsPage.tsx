@@ -1,8 +1,21 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
-import { Link } from "react-router-dom"
+import { Link, Navigate, useLocation, useParams } from "react-router-dom"
 
+import { BOARD_BASES, THEMES } from "@/defaults/themes.ts"
+import { docsPages, docsSectionPages } from "@/pages/docs/docsStructure.ts"
+import { DocsBoardPreview } from "@/pages/docs/DocsBoardPreview.tsx"
+import { DocsSearch } from "@/pages/docs/DocsSearch.tsx"
 import { Button } from "@/ui/button"
 import { PublicHeader } from "@/ui/layout/PublicHeader.tsx"
+
+const themeGallery = Object.entries(THEMES).filter(([, theme], index, entries) =>
+  entries.findIndex(([, candidate]) =>
+    candidate.board === theme.board &&
+    candidate.background === theme.background &&
+    candidate.ink === theme.ink &&
+    candidate.pen === theme.pen
+  ) === index
+)
 
 const starterScript = `VERSION 1.0
 CANVAS 1920 1080
@@ -62,21 +75,6 @@ const chartScript = `BARCHART visits
   DATA "Week 3" 34
 END`
 
-const pageLinks = [
-  ["quick-start", "Quick start"],
-  ["first-script", "Your first script"],
-  ["language", "Script language"],
-  ["headers-objects", "Headers and objects"],
-  ["drawing-layout", "Drawing and layout"],
-  ["images", "Images"],
-  ["tables", "Tables"],
-  ["reusable-data", "Macros and charts"],
-  ["motion", "Timing and motion"],
-  ["narration", "Subtitles and voice"],
-  ["play-export", "Play and export"],
-  ["diagnostics", "Fix common errors"],
-] as const
-
 const headerScript = `VERSION 1.0
 CANVAS 1920 1080
 THEME blueprint
@@ -95,6 +93,26 @@ SCENE 1 "A clear title"
     SIZE 64
     COLOR #FFFFFF
     ALIGN center
+    MAXWIDTH 1200
+  END
+END SCENE`
+
+const themeScript = `VERSION 1.0
+CANVAS 1920 1080
+THEME cosmic
+BOARD topographic
+BACKGROUND #101F18
+STYLE pencil
+FONT neat
+STROKE 4
+
+SCENE 1 "Field study"
+  CREATE title AS TEXT
+    TEXT "A changing landscape"
+    POSITION 960 250
+    SIZE 64
+    COLOR #F2E7C9
+    PEN marker
     MAXWIDTH 1200
   END
 END SCENE`
@@ -259,11 +277,6 @@ const sayScript = `SAY "The cache keeps frequently used data close."
   LANG en
   DETAIL "A cache is like keeping your most-used tools on the desk."`
 
-const iconNames =
-  "brain, user, users, database, settings, search, mail, camera, globe, lock, server, plus, x, check, send, printer, monitor, tv, tablet, smartphone, git-branch, git-merge, git-pull-request, workflow, box, package, clock, book-open, star, heart, home, house, folder, file-text, briefcase, cloud, link, credit-card, key, key-round, archive, shield, shield-check, bell, wifi, alert-triangle, triangle-alert, circle-help, help, users-round, database-zap, git-fork, layers".split(
-    ", "
-  )
-
 const prose =
   "mt-4 space-y-4 text-[15px] leading-7 text-muted-foreground " +
   "[&_p]:break-words [&_li]:break-words [&_p_code]:break-all [&_li_code]:break-all " +
@@ -339,6 +352,9 @@ function DocsSection({
   title: string
   children: ReactNode
 }) {
+  const { page = "overview" } = useParams()
+  if (docsSectionPages[id] !== page) return null
+
   return (
     <section
       id={id}
@@ -359,16 +375,13 @@ function DocsSection({
   )
 }
 
-function goTo(id: string) {
-  const el = document.getElementById(id)
-  if (!el) return
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" })
-  window.history.replaceState(null, "", `#${id}`)
-}
-
 export function DocsPage() {
-  const [active, setActive] = useState<string>(pageLinks[0][0])
+  const { page = "overview" } = useParams()
+  const location = useLocation()
+  const currentPage = docsPages.find((item) => item.slug === page) ?? docsPages[0]
+  const pageIndex = docsPages.findIndex((item) => item.slug === page)
+  const previousPage = docsPages[pageIndex - 1]
+  const nextPage = docsPages[pageIndex + 1]
   const [pin, setPin] = useState<{
     left: number
     top: number
@@ -430,37 +443,24 @@ export function DocsPage() {
   }, [])
 
   useEffect(() => {
-    const els = pageLinks
-      .map(([id]) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null)
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-        if (visible[0]) setActive(visible[0].target.id)
-      },
-      { rootMargin: "-120px 0px -65% 0px" }
-    )
-    els.forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const hash = window.location.hash.slice(1)
-    if (hash)
+    const hash = location.hash.slice(1)
+    if (hash) {
       window.setTimeout(
         () => document.getElementById(hash)?.scrollIntoView(),
         0
       )
-  }, [])
+    } else {
+      window.scrollTo({ top: 0, behavior: "auto" })
+    }
+  }, [page, location.hash])
 
   useEffect(() => {
     document
-      .querySelector(`[data-pill="${active}"]`)
+      .querySelector(`[data-pill="${page}"]`)
       ?.scrollIntoView({ inline: "center", block: "nearest" })
-  }, [active])
+  }, [page])
+
+  if (pageIndex < 0) return <Navigate to="/docs" replace />
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -469,24 +469,20 @@ export function DocsPage() {
           aria-label="On this page"
           className="flex gap-1 overflow-x-auto border-t px-4 py-2 lg:hidden"
         >
-          {pageLinks.map(([id, label]) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              data-pill={id}
-              onClick={(e) => {
-                e.preventDefault()
-                goTo(id)
-              }}
-              aria-current={active === id ? "true" : undefined}
+          {docsPages.map(({ slug, label }) => (
+            <Link
+              key={slug}
+              to={slug === "overview" ? "/docs" : `/docs/${slug}`}
+              data-pill={slug}
+              aria-current={page === slug ? "page" : undefined}
               className={`shrink-0 rounded-md px-3 py-1.5 text-sm no-underline ${
-                active === id
+                page === slug
                   ? "bg-secondary font-medium text-secondary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {label}
-            </a>
+            </Link>
           ))}
         </nav>
       </PublicHeader>
@@ -494,13 +490,13 @@ export function DocsPage() {
       <main className="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12 sm:pb-24">
         <div className="max-w-2xl">
           <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">
-            Make your ideas move.
+            {currentPage.title}
           </h1>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-            Write a small, readable script. Strokeline turns it into a
-            hand-drawn animation you can preview and export.
+            {currentPage.description}
           </p>
         </div>
+        <DocsSearch />
 
         <div
           ref={gridRef}
@@ -527,23 +523,19 @@ export function DocsPage() {
             >
               <p className="mb-3 text-sm font-semibold">On this page</p>
               <ul className="m-0 list-none space-y-0.5 border-l p-0">
-                {pageLinks.map(([id, label]) => (
-                  <li key={id}>
-                    <a
-                      href={`#${id}`}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        goTo(id)
-                      }}
-                      aria-current={active === id ? "true" : undefined}
+                {docsPages.map(({ slug, label }) => (
+                  <li key={slug}>
+                    <Link
+                      to={slug === "overview" ? "/docs" : `/docs/${slug}`}
+                      aria-current={page === slug ? "page" : undefined}
                       className={`-ml-px block border-l-2 py-1.5 pl-4 text-sm no-underline transition-colors ${
-                        active === id
+                        page === slug
                           ? "border-primary font-medium text-foreground"
                           : "border-transparent text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       {label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -551,6 +543,21 @@ export function DocsPage() {
           </nav>
 
           <article className="max-w-3xl min-w-0 space-y-12">
+            {page === "overview" && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {docsPages.filter((item) => item.slug !== "overview").map((item) => (
+                  <Link
+                    key={item.slug}
+                    to={`/docs/${item.slug}`}
+                    className="group rounded-xl border bg-card p-5 no-underline transition-colors hover:border-primary/50 hover:bg-muted/40"
+                  >
+                    <h2 className="text-lg font-semibold text-foreground group-hover:text-primary">{item.label}</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+                    <span className="mt-4 inline-block text-sm font-medium text-primary">Open guide →</span>
+                  </Link>
+                ))}
+              </div>
+            )}
             <DocsSection id="quick-start" title="Quick start">
               <ol className="list-decimal space-y-3 pl-5 marker:font-semibold marker:text-foreground">
                 <li>
@@ -559,7 +566,8 @@ export function DocsPage() {
                 </li>
                 <li>
                   <strong>Run it.</strong> Strokeline checks the script, then
-                  renders the preview.
+                  renders the preview. Run also applies safe syntax fixes when
+                  possible; it does not guess new object positions.
                 </li>
                 <li>
                   <strong>Play and refine.</strong> Use the player controls and
@@ -590,6 +598,31 @@ export function DocsPage() {
               </p>
             </DocsSection>
 
+            <DocsSection id="studio-tools" title="Studio tools">
+              <p>
+                Use <strong>Copy AI Prompt</strong> to give an assistant the
+                current Strokeline syntax guide. Paste its script into the
+                editor, press <strong>Run</strong>, and send it the first error
+                or Copy all diagnostics if something still needs attention.
+              </p>
+              <p>
+                The editor’s <strong>Insert object</strong> menu searches icons
+                and inserts arrows, charts, tables, and callouts into the
+                current script and scene.
+                Canvas selection is another editing path: click an object to
+                open its action menu, jump to its code, edit supported
+                properties, connect an arrow, or delete it. If objects overlap,
+                cycle through the hits from that menu.
+              </p>
+              <p>
+                Drag an editable preview object to reposition it. Strokeline
+                changes only its <code>POSITION</code> values and adds an undo
+                step; it never auto-moves other objects. Selecting an object
+                also selects its source in the editor. The first-use workspace
+                guide points out the editor, Run, diagnostics, and preview.
+              </p>
+            </DocsSection>
+
             <DocsSection id="language" title="Script language">
               <p>
                 Think of a script as global settings, reusable definitions, then
@@ -602,13 +635,14 @@ export function DocsPage() {
                 <InfoCard title="Blocks">
                   <code>CREATE</code>, <code>INK</code>, <code>DEFINE</code>,{" "}
                   <code>PARALLEL</code>, <code>GROUP</code>, <code>STACK</code>,{" "}
-                  <code>GRID</code>, and charts open blocks that close with{" "}
+                  <code>GRID</code>, <code>TABLE</code>, and charts open blocks that close with{" "}
                   <code>END</code>. Scenes close with <code>END SCENE</code>.
                 </InfoCard>
                 <InfoCard title="No-END statements">
                   <code>ARROW</code>, <code>ANIMATE</code>, <code>ENTER</code>,{" "}
                   <code>EXIT</code>, <code>CAMERA</code>, <code>WAIT</code>,{" "}
-                  <code>LOOP</code>, <code>USE</code>, <code>DUPLICATE</code>,
+                  <code>LOOP</code>, <code>SAY</code>, <code>TRANSITION</code>,{" "}
+                  <code>GAP</code>, <code>USE</code>, <code>DUPLICATE</code>,{" "}
                   and <code>DELETE</code> do not take an <code>END</code>. Some
                   accept following property lines.
                 </InfoCard>
@@ -629,9 +663,13 @@ export function DocsPage() {
                 properties, drawing/layout, macros/icons/charts, motion,
                 narration, then playback and diagnostics.
               </p>
+              <CodeBlock
+                title="Duplicate and delete"
+                code={`DUPLICATE titleCopy FROM title\n  POSITION 960 720\nDELETE titleCopy`}
+              />
             </DocsSection>
 
-            <DocsSection id="headers-objects" title="Headers and objects">
+            <DocsSection id="theming" title="Themes and boards">
               <p>
                 Put <code>VERSION</code> and <code>CANVAS</code> first. Optional
                 settings follow them and apply to the whole script; each scene
@@ -652,12 +690,17 @@ export function DocsPage() {
                   overrides the board or theme base.
                 </li>
                 <li>
-                  <code>THEME</code>: classic, chalk, cosmic, suspense,
-                  parchment, blueprint, or cream.
+                  <code>THEME</code> presets: {Object.keys(THEMES).join(", ")}.
                 </li>
                 <li>
-                  <code>BOARD</code>: chalkboard, whiteboard, blueprint, kraft,
-                  paper, graph, dotted, glass, or plain.
+                  <code>BOARD</code> surfaces: {Object.keys(BOARD_BASES).join(", ")}.
+                  Celestial adds a star map; topographic adds
+                  terrain contours; neon-grid adds perspective rays; editorial adds
+                  ruled columns and registration marks; blackboard adds chalk dust,
+                  a wood frame, tray, chalk, and eraser; corkboard adds natural flecks; linen adds a woven
+                  grain; aurora adds soft light bands; circuit adds routed traces,
+                  notebook adds ruled paper, and terrazzo adds colored stone flecks.
+                  Board textures are procedural and cached.
                 </li>
                 <li>
                   <code>STYLE</code>: handdrawn, chalk, marker, pencil, brush,
@@ -683,6 +726,45 @@ export function DocsPage() {
                 a frame, light gradients, or subtle dust. Hand-drawn variation
                 is seeded by object ID, so seeking remains deterministic.
               </p>
+
+              <h3>How visual settings combine</h3>
+              <ol className="list-decimal space-y-2 pl-5">
+                <li><code>THEME</code> selects a coordinated board, base color, ink, and pen defaults.</li>
+                <li><code>BOARD</code> replaces the theme’s surface and uses that board’s base color.</li>
+                <li><code>BACKGROUND</code> replaces the surface’s base color.</li>
+                <li><code>STYLE</code> selects the global pen; object <code>PEN</code> overrides it.</li>
+                <li>Object <code>COLOR</code> and <code>FILL</code> override individual ink and fill colors.</li>
+              </ol>
+              <h3>Theme example</h3>
+              <p>
+                This keeps Cosmic’s coordinated defaults, swaps in the terrain-map
+                surface, and then sets a custom base color and pencil style.
+              </p>
+              <CodeBlock title="Combine a theme with overrides" code={themeScript} />
+              <h3>Themes</h3>
+              <p>
+                A theme combines a board, its base and ink colors, and a default pen.
+                These previews show each preset as a complete starting style, using
+                the same procedural renderer as the studio.
+              </p>
+              <div className="not-prose grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {themeGallery.map(([name, theme]) => (
+                  <figure key={name} className="min-w-0">
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted shadow-sm ring-1 ring-black/10">
+                      <DocsBoardPreview board={theme.board} color={theme.background} />
+                      <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pb-2 pt-8 text-white">
+                        <strong className="block text-sm capitalize">{name}</strong>
+                        <span className="text-xs capitalize text-white/80">
+                          {theme.board} · {theme.pen} pen · ink {theme.ink}
+                        </span>
+                      </figcaption>
+                    </div>
+                  </figure>
+                ))}
+              </div>
+            </DocsSection>
+
+            <DocsSection id="objects" title="Objects, text, and math">
               <h3>Object types and common properties</h3>
               <p>
                 Use <code>CREATE id AS TYPE</code> and close it with{" "}
@@ -837,6 +919,12 @@ export function DocsPage() {
                   circular crop. BORDER #hex and optional SHADOW add a frame
                   and depth.
                 </li>
+                <li>
+                  Missing, non-HTTPS, blocked, or failed URLs produce{" "}
+                  <code>E_IMAGE_LOAD</code> and a placeholder. For blocked
+                  hosts, Strokeline shows “This site blocks embedding. Try
+                  another URL.”
+                </li>
               </ul>
             </DocsSection>
 
@@ -846,6 +934,13 @@ export function DocsPage() {
                 header; each ROW must provide one value for every column. Keep
                 tables to four columns and five rows or fewer for comfortable
                 reading. Text stays at least 28px and fits inside the safe area.
+              </p>
+              <p>
+                Optional properties are <code>POSITION</code>, <code>SIZE</code>,{" "}
+                <code>COLOR</code>, <code>FILL</code>, <code>HEADERCOLOR</code>,{" "}
+                <code>ALIGN left|center|right</code>, <code>STROKE</code>,{" "}
+                <code>PEN</code>, <code>OPACITY</code>, <code>DRAW</code>, and{" "}
+                <code>REVEAL</code>.
               </p>
               <CodeBlock
                 title="Animated plan comparison"
@@ -897,20 +992,17 @@ export function DocsPage() {
               <h3>Icons</h3>
               <p>
                 Create <code>ICON</code> and set <code>NAME icon-name</code> (or{" "}
-                <code>ICON icon-name</code>). The editor autocomplete searches
-                this supported set:
+                <code>ICON icon-name</code>). All icons included in the installed
+                Lucide package are supported; search them in editor autocomplete
+                or the Insert object menu.
+              </p>
+              <p>
+                Use the lowercase names shown in search, for example{" "}
+                <code>brain</code> or <code>arrow-up-right</code>. Run
+                normalizes capitalization when the name matches an installed
+                icon exactly; misspellings still need correction.
               </p>
               <CodeBlock title="Lucide icon" code={iconScript} />
-              <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
-                {iconNames.map((name) => (
-                  <li
-                    key={name}
-                    className="rounded-md border bg-muted px-2 py-0.5 font-mono text-xs text-foreground"
-                  >
-                    {name}
-                  </li>
-                ))}
-              </ul>
               <h3>Charts</h3>
               <p>
                 <code>BARCHART</code>, <code>LINECHART</code>, and{" "}
@@ -953,6 +1045,12 @@ export function DocsPage() {
                 <li>
                   <code>LOOP id float|pulse|wobble|breathe|blink</code>{" "}
                   optionally takes <code>AMPLITUDE n PERIOD 2s</code>.
+                </li>
+                <li>
+                  <code>ANIMATE id HIGHLIGHT ROW n</code>,{" "}
+                  <code>COLUMN n</code>, or <code>CELL r c</code> animates a
+                  table target; other <code>HIGHLIGHT</code> animations mark an
+                  object.
                 </li>
                 <li>
                   Eases: linear, easeIn, easeOut, easeInOut, bounce,
@@ -1002,24 +1100,36 @@ export function DocsPage() {
                 spoken, and distinct from on-screen labels.
               </p>
               <p>
-                A cue must wrap to two lines or fewer and stay under 90
-                characters. Above 20 characters per second warns about reading
-                speed; overlaps and close repetition of visible text are also
-                diagnosed. Playback lengthens and schedules cues for readable
-                pacing.
+                There is no hard character limit for <code>SAY</code>.{" "}
+                <code>W_SAY_FAST</code> warns above 20 characters per second;
+                playback schedules cues in order and gives each at least 1.8
+                seconds or about 15 characters per second, whichever is longer.
+                Overlaps and close repetition of visible text are also warned.
               </p>
               <p>
-                <code>SUBTITLES on</code> sets the initial caption state. Use
+                <code>SUBTITLES on|off</code> sets the initial caption state;
+                missing means off. Use
                 the CC control or <kbd>K</kbd> to toggle captions; the choice is
-                saved in this browser. Captions stay in a screen-space layer
+                saved in this browser and overrides the script default. Captions stay in a screen-space layer
                 when the camera moves. SAY lines remain in the script when
                 captions are off.
               </p>
               <p>
-                The reader uses the local Kokoro voice model. The player shows
-                preparation progress; after the initial download, the model and
-                generated audio are cached in this browser. SRT and VTT exports
-                use the SAY cues.
+                Optional read-along smoothly tints the already-read caption
+                text as narration progresses, rather than switching color a
+                word at a time. Captions use balanced wrapping, remain fixed
+                while the camera moves, and preserve Arabic text with RTL
+                shaping. <code>DETAIL</code> is kept with the cue; the current
+                player displays and reads <code>SAY</code>.
+              </p>
+              <p>
+                The reader uses the local Kokoro voice model. First setup
+                downloads about 92 MB and shows progress; the model and
+                generated clips are cached in this browser. Choose a voice and
+                adjust volume from 0 to 150% in Voice settings; those choices
+                are saved for this browser. Kokoro does not speak Arabic, but
+                Arabic SAY text remains available for captions and subtitle
+                exports. SRT and VTT exports use the scheduled SAY cues.
               </p>
             </DocsSection>
 
@@ -1132,6 +1242,23 @@ export function DocsPage() {
                 errors and warnings. Warnings never block Run.
               </p>
             </DocsSection>
+
+            {page !== "overview" && (
+              <nav aria-label="Guide navigation" className="flex items-stretch justify-between gap-3 border-t pt-6">
+                {previousPage && previousPage.slug !== "overview" ? (
+                  <Link to={`/docs/${previousPage.slug}`} className="rounded-lg border px-4 py-3 text-sm no-underline hover:bg-muted/50">
+                    <span className="block text-xs text-muted-foreground">Previous</span>
+                    <span className="font-medium text-foreground">← {previousPage.label}</span>
+                  </Link>
+                ) : <span />}
+                {nextPage ? (
+                  <Link to={`/docs/${nextPage.slug}`} className="ml-auto rounded-lg border px-4 py-3 text-right text-sm no-underline hover:bg-muted/50">
+                    <span className="block text-xs text-muted-foreground">Next</span>
+                    <span className="font-medium text-foreground">{nextPage.label} →</span>
+                  </Link>
+                ) : <Link to="/docs" className="ml-auto rounded-lg border px-4 py-3 text-right text-sm no-underline hover:bg-muted/50"><span className="block text-xs text-muted-foreground">Back to</span><span className="font-medium text-foreground">Overview →</span></Link>}
+              </nav>
+            )}
 
             <div className="flex flex-col items-start justify-between gap-4 rounded-lg border bg-card p-6 sm:flex-row sm:items-center">
               <div>

@@ -10,6 +10,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/docs" element={<DocsPage />} />
+        <Route path="/docs/:page" element={<DocsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/workspace" element={<AppShell />} />
         <Route path="*" element={<Navigate to="/" replace />} />
