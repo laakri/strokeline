@@ -182,6 +182,16 @@ export function drawBoardPreview(
   context.restore()
 }
 
+function seededRandom(seed: number): () => number {
+  let state = seed
+  return () => {
+    state ^= state << 13
+    state ^= state >>> 17
+    state ^= state << 5
+    return (state >>> 0) / 4294967296
+  }
+}
+
 function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement, board: string, base: string): void {
   if (typeof document === "undefined") {
     context.fillStyle = base
@@ -425,6 +435,240 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
         ctx.fill()
         ctx.restore()
       }
+    } else if (board === "sonar") {
+      const random = seededRandom(0x50a2e1)
+      const cx = w * 0.5, cy = h * 0.52
+      const unit = Math.min(w, h), reach = Math.hypot(w, h) * 0.5
+      ctx.lineWidth = Math.max(1, w / 1800)
+      ctx.strokeStyle = "#58F2A6"
+      for (let ring = 1; ring * unit * 0.12 < reach; ring++) {
+        ctx.globalAlpha = ring % 4 === 0 ? 0.2 : 0.095
+        ctx.beginPath(); ctx.arc(cx, cy, ring * unit * 0.12, 0, Math.PI * 2); ctx.stroke()
+      }
+      ctx.globalAlpha = 0.12
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke()
+      ctx.globalAlpha = 0.055
+      ctx.beginPath()
+      for (const angle of [Math.PI / 4, -Math.PI / 4]) {
+        ctx.moveTo(cx - Math.cos(angle) * reach, cy - Math.sin(angle) * reach)
+        ctx.lineTo(cx + Math.cos(angle) * reach, cy + Math.sin(angle) * reach)
+      }
+      ctx.stroke()
+      const bezel = unit * 0.48
+      for (let deg = 0; deg < 360; deg += 5) {
+        const a = deg * Math.PI / 180, long = deg % 30 === 0, tick = unit * (long ? 0.03 : 0.014)
+        ctx.globalAlpha = long ? 0.32 : 0.17
+        ctx.beginPath()
+        ctx.moveTo(cx + Math.cos(a) * bezel, cy + Math.sin(a) * bezel)
+        ctx.lineTo(cx + Math.cos(a) * (bezel + tick), cy + Math.sin(a) * (bezel + tick))
+        ctx.stroke()
+      }
+      const sweep = -Math.PI * 0.32
+      const beam = ctx.createConicGradient(sweep - Math.PI * 0.2, cx, cy)
+      beam.addColorStop(0, "rgba(88,242,166,0)")
+      beam.addColorStop(0.1, "rgba(88,242,166,0.2)")
+      beam.addColorStop(0.1001, "rgba(88,242,166,0)")
+      beam.addColorStop(1, "rgba(88,242,166,0)")
+      ctx.globalAlpha = 1
+      ctx.fillStyle = beam
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, reach, 0, Math.PI * 2); ctx.fill()
+      ctx.globalAlpha = 0.38
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(sweep) * reach, cy + Math.sin(sweep) * reach); ctx.stroke()
+      ctx.fillStyle = "#9CFFCB"
+      for (let i = 0; i < 9; i++) {
+        const a = random() * Math.PI * 2, r = unit * (0.12 + random() * 0.78)
+        const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r, dot = Math.max(2.5, w / 450)
+        ctx.globalAlpha = 0.38
+        ctx.beginPath(); ctx.arc(x, y, dot, 0, Math.PI * 2); ctx.fill()
+        ctx.globalAlpha = 0.16
+        ctx.beginPath(); ctx.arc(x, y, dot * 3.2, 0, Math.PI * 2); ctx.stroke()
+      }
+    } else if (board === "halftone") {
+      const pitch = Math.max(14, w / 110), reach = Math.hypot(w, h) * 0.46
+      const lattice = Math.ceil(Math.hypot(w, h) / pitch)
+      for (const [ox, oy, color] of [[0, h, "#E0476B"], [w, 0, "#2BA6C9"]] as const) {
+        ctx.fillStyle = color
+        ctx.globalAlpha = 0.3
+        ctx.beginPath()
+        for (let i = -lattice; i <= lattice; i++) for (let j = -lattice; j <= lattice; j++) {
+          const x = ox + (i - j) * pitch * Math.SQRT1_2, y = oy + (i + j) * pitch * Math.SQRT1_2
+          if (x < 0 || x > w || y < 0 || y > h) continue
+          const fade = 1 - Math.hypot(x - ox, y - oy) / reach
+          if (fade <= 0.08) continue
+          const radius = pitch * 0.54 * Math.pow(fade, 0.9)
+          ctx.moveTo(x + radius, y); ctx.arc(x, y, radius, 0, Math.PI * 2)
+        }
+        ctx.fill()
+      }
+      const inset = w * 0.018, shift = Math.max(5, w / 320)
+      ctx.strokeStyle = "#1F2A5C"
+      ctx.lineWidth = Math.max(3, w / 400)
+      ctx.globalAlpha = 0.18
+      ctx.strokeRect(inset + shift, inset + shift, w - inset * 2, h - inset * 2)
+      ctx.globalAlpha = 0.42
+      ctx.strokeRect(inset, inset, w - inset * 2, h - inset * 2)
+    } else if (board === "zengarden") {
+      const random = seededRandom(0x2e91a7)
+      const unit = Math.min(w, h), lineWidth = Math.max(1.4, w / 1100)
+      const stones = [
+        { x: w * 0.11, y: h * 0.74, r: unit * 0.075 },
+        { x: w * 0.89, y: h * 0.25, r: unit * 0.06 },
+        { x: w * 0.81, y: h * 0.84, r: unit * 0.036 },
+      ]
+      const rake = Math.max(14, h / 56), grooves = new Path2D()
+      for (let y0 = rake * 0.6, row = 0; y0 < h; y0 += rake, row++) {
+        let drawing = false
+        for (let x = -8; x <= w + 8; x += 5) {
+          const y = y0 + Math.sin(x / w * Math.PI * 2.2 + row * 0.35) * rake * 0.28
+          if (stones.some((s) => Math.hypot(x - s.x, y - s.y) < s.r * 2.8)) { drawing = false; continue }
+          if (drawing) grooves.lineTo(x, y); else grooves.moveTo(x, y)
+          drawing = true
+        }
+      }
+      ctx.lineWidth = lineWidth
+      ctx.strokeStyle = "#FFF7DD"; ctx.globalAlpha = 0.5
+      ctx.save(); ctx.translate(0, lineWidth * 1.3); ctx.stroke(grooves); ctx.restore()
+      ctx.strokeStyle = "#7C6844"; ctx.globalAlpha = 0.26
+      ctx.stroke(grooves)
+      for (const s of stones) {
+        for (let n = 0; n < 5; n++) {
+          const radius = s.r * (1.45 + 0.32 * n)
+          ctx.strokeStyle = "#FFF7DD"; ctx.globalAlpha = 0.5
+          ctx.beginPath(); ctx.arc(s.x, s.y + lineWidth * 1.3, radius, 0, Math.PI * 2); ctx.stroke()
+          ctx.strokeStyle = "#7C6844"; ctx.globalAlpha = 0.3 - n * 0.03
+          ctx.beginPath(); ctx.arc(s.x, s.y, radius, 0, Math.PI * 2); ctx.stroke()
+        }
+        const phaseA = random() * 6, phaseB = random() * 6
+        const body = new Path2D()
+        for (let k = 0; k <= 36; k++) {
+          const a = k / 36 * Math.PI * 2, wobble = 1 + 0.09 * Math.sin(a * 2 + phaseA) + 0.05 * Math.sin(a * 3 + phaseB)
+          const px = s.x + Math.cos(a) * s.r * 1.2 * wobble, py = s.y + Math.sin(a) * s.r * 0.88 * wobble
+          if (k === 0) body.moveTo(px, py); else body.lineTo(px, py)
+        }
+        body.closePath()
+        const skin = ctx.createRadialGradient(s.x - s.r * 0.4, s.y - s.r * 0.5, s.r * 0.1, s.x, s.y, s.r * 1.3)
+        skin.addColorStop(0, "#8B867C"); skin.addColorStop(0.6, "#55514B"); skin.addColorStop(1, "#2D2B28")
+        ctx.save()
+        ctx.globalAlpha = 1
+        ctx.shadowColor = "rgba(60,44,20,0.45)"; ctx.shadowBlur = s.r * 0.5; ctx.shadowOffsetY = s.r * 0.22
+        ctx.fillStyle = skin; ctx.fill(body)
+        ctx.restore()
+        ctx.strokeStyle = "rgba(255,255,255,0.16)"; ctx.globalAlpha = 1; ctx.stroke(body)
+      }
+    } else if (board === "marble") {
+      const random = seededRandom(0x3b7d21)
+      const unit = Math.min(w, h)
+      for (let i = 0; i < 46; i++) {
+        const x = random() * w, y = random() * h, radius = unit * (0.08 + random() * 0.22)
+        const cloud = ctx.createRadialGradient(x, y, 0, x, y, radius)
+        cloud.addColorStop(0, random() > 0.35 ? "rgba(120,130,150,0.1)" : "rgba(0,0,0,0.25)")
+        cloud.addColorStop(1, "rgba(0,0,0,0)")
+        ctx.globalAlpha = 1
+        ctx.fillStyle = cloud
+        ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2)
+      }
+      const grow = (x0: number, y0: number, base: number, steps: number, width: number, depth: number): void => {
+        const phaseA = random() * 6.28, phaseB = random() * 6.28, phaseC = random() * 6.28
+        let x = x0, y = y0, jitter = 0
+        const stride = unit * 0.011
+        for (let step = 0; step < steps; step++) {
+          jitter = jitter * 0.9 + (random() - 0.5) * 0.08
+          const heading = base + 0.55 * Math.sin(step * 0.045 + phaseA) + 0.28 * Math.sin(step * 0.13 + phaseB) + 0.09 * Math.sin(step * 0.36 + phaseC) + jitter
+          const nx = x + Math.cos(heading) * stride, ny = y + Math.sin(heading) * stride
+          const t = step / steps, taper = (1 - t * 0.75) * width
+          ctx.strokeStyle = "#8F98AA"; ctx.globalAlpha = 0.06; ctx.lineWidth = taper * 6
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(nx, ny); ctx.stroke()
+          ctx.strokeStyle = "#E3C47F"; ctx.globalAlpha = 0.42 * (1 - t * 0.5); ctx.lineWidth = taper
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(nx, ny); ctx.stroke()
+          if (depth < 3 && random() < 0.016)
+            grow(nx, ny, heading + (random() < 0.5 ? -1 : 1) * (0.45 + random() * 0.7), Math.floor((steps - step) * 0.6), width * 0.6, depth + 1)
+          x = nx; y = ny
+        }
+      }
+      const starts: Array<[number, number, number]> = [
+        [-unit * 0.02, h * 0.18, 0.35], [w + unit * 0.02, h * 0.62, Math.PI - 0.3], [w * 0.3, -unit * 0.02, 1.25],
+        [-unit * 0.02, h * 0.86, -0.25], [w + unit * 0.02, h * 0.1, Math.PI - 0.9], [w * 0.7, h + unit * 0.02, -1.35],
+      ]
+      for (const [x, y, heading] of starts) grow(x, y, heading + (random() - 0.5) * 0.4, 170, Math.max(1.2, w / 1100) * (1 + random() * 1.3), 0)
+      const sheen = ctx.createLinearGradient(0, 0, w, h)
+      sheen.addColorStop(0.3, "rgba(255,255,255,0)"); sheen.addColorStop(0.42, "rgba(255,255,255,0.045)"); sheen.addColorStop(0.54, "rgba(255,255,255,0)")
+      ctx.globalAlpha = 1
+      ctx.fillStyle = sheen
+      ctx.fillRect(0, 0, w, h)
+    } else if (board === "spotlight") {
+      ctx.save()
+      const light = ctx.createRadialGradient(w * 0.52, h * 0.02, 0, w * 0.52, h * 0.02, h * 1.05)
+      light.addColorStop(0, "rgba(255,203,130,0.16)")
+      light.addColorStop(0.38, "rgba(255,176,105,0.055)")
+      light.addColorStop(1, "rgba(0,0,0,0)")
+      ctx.fillStyle = light
+      ctx.fillRect(0, 0, w, h)
+      const coolEdge = ctx.createRadialGradient(w * 0.96, h * 0.9, 0, w * 0.96, h * 0.9, w * 0.65)
+      coolEdge.addColorStop(0, "rgba(70,136,191,0.10)")
+      coolEdge.addColorStop(1, "rgba(0,0,0,0)")
+      ctx.fillStyle = coolEdge
+      ctx.fillRect(0, 0, w, h)
+      ctx.strokeStyle = "rgba(255,220,169,0.17)"
+      ctx.lineWidth = Math.max(1, w / 1920)
+      ctx.beginPath(); ctx.moveTo(w * 0.08, h * 0.075); ctx.lineTo(w * 0.92, h * 0.075); ctx.stroke()
+      for (const x of [w * 0.12, w * 0.5, w * 0.88]) {
+        const lamp = ctx.createRadialGradient(x, h * 0.075, 0, x, h * 0.075, w * 0.035)
+        lamp.addColorStop(0, "rgba(255,220,169,0.48)"); lamp.addColorStop(1, "rgba(255,220,169,0)")
+        ctx.fillStyle = lamp; ctx.fillRect(x - w * 0.035, h * 0.04, w * 0.07, h * 0.07)
+      }
+      ctx.restore()
+    } else if (board === "atlas") {
+      const random = seededRandom(0xa71a51)
+      ctx.save()
+      const wash = ctx.createLinearGradient(0, 0, w, h)
+      wash.addColorStop(0, "rgba(66,131,134,0.045)"); wash.addColorStop(0.52, "rgba(255,255,255,0)"); wash.addColorStop(1, "rgba(196,142,92,0.055)")
+      ctx.fillStyle = wash; ctx.fillRect(0, 0, w, h)
+      const centers: Array<[number, number, number]> = [[-w * 0.03, h * 0.96, h * 0.82], [w * 1.03, h * 0.04, h * 0.78]]
+      for (let c = 0; c < centers.length; c++) {
+        const [cx, cy, maxRadius] = centers[c]!
+        const phase = random() * Math.PI * 2
+        for (let ring = 0; ring < 17; ring++) {
+          const radius = maxRadius * (0.18 + ring * 0.052)
+          ctx.beginPath()
+          for (let step = 0; step <= 220; step++) {
+            const angle = step / 220 * Math.PI * 2
+            const roughness = 1 + 0.035 * Math.sin(angle * 3 + phase) + 0.018 * Math.sin(angle * 7 + phase * 1.8) + 0.009 * Math.sin(angle * 11 + ring)
+            const x = cx + Math.cos(angle) * radius * roughness
+            const y = cy + Math.sin(angle) * radius * roughness
+            if (step === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+          }
+          ctx.closePath()
+          ctx.strokeStyle = c === 0 ? "rgba(44,112,112,0.105)" : "rgba(165,112,71,0.095)"
+          ctx.lineWidth = Math.max(1, w / 1920) * (ring % 5 === 0 ? 1.6 : 1)
+          ctx.stroke()
+        }
+      }
+      ctx.restore()
+    } else if (board === "prism") {
+      ctx.save()
+      for (const [x, y, radius, color] of [
+        [w * 0.98, h * 0.18, w * 0.45, "rgba(114,97,255,0.16)"],
+        [w * 0.91, h * 0.92, w * 0.4, "rgba(52,208,210,0.13)"],
+        [w * 0.02, h * 0.05, w * 0.32, "rgba(227,103,170,0.09)"],
+      ] as const) {
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, radius)
+        glow.addColorStop(0, color); glow.addColorStop(1, "rgba(0,0,0,0)")
+        ctx.fillStyle = glow; ctx.fillRect(0, 0, w, h)
+      }
+      const facets = [
+        [[0.83, 0], [1, 0], [1, 0.42], [0.93, 0.29]],
+        [[1, 0.52], [1, 1], [0.79, 1], [0.9, 0.72]],
+        [[0, 0], [0.14, 0], [0.28, 0.2], [0.12, 0.3]],
+      ]
+      for (let i = 0; i < facets.length; i++) {
+        ctx.beginPath()
+        facets[i]!.forEach(([x, y], index) => index === 0 ? ctx.moveTo(x * w, y * h) : ctx.lineTo(x * w, y * h))
+        ctx.closePath()
+        ctx.fillStyle = ["rgba(150,139,255,0.055)", "rgba(88,224,215,0.045)", "rgba(247,128,191,0.04)"][i]!
+        ctx.fill()
+        ctx.strokeStyle = "rgba(222,226,255,0.08)"; ctx.lineWidth = Math.max(1, w / 1920); ctx.stroke()
+      }
+      ctx.restore()
     }
     if (board !== "plain") {
       ctx.globalAlpha = board === "chalkboard" ? 0.035 : 0.025
@@ -436,7 +680,7 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
       }
     }
     ctx.globalAlpha = 1
-    if (["paper", "kraft", "chalkboard", "celestial", "topographic", "neon-grid", "blackboard", "corkboard", "aurora", "circuit"].includes(board)) {
+    if (["paper", "kraft", "chalkboard", "celestial", "topographic", "neon-grid", "blackboard", "corkboard", "aurora", "circuit", "sonar", "marble", "spotlight", "prism"].includes(board)) {
       const gradient = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.15, w / 2, h / 2, Math.max(w, h) * 0.72)
       gradient.addColorStop(0, "rgba(255,255,255,0)")
       gradient.addColorStop(1, "rgba(0,0,0,0.2)")

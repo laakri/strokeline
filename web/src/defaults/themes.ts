@@ -7,6 +7,9 @@ export interface ThemeStyle {
 
 export const THEMES: Record<string, ThemeStyle> = {
   classic: { board: "chalkboard", background: "#18382F", ink: "#F5F0DB", pen: "chalk" },
+  spotlight: { board: "spotlight", background: "#111820", ink: "#F7F1E6", pen: "marker" },
+  atlas: { board: "atlas", background: "#F3EFE4", ink: "#243C46", pen: "pencil" },
+  prism: { board: "prism", background: "#15162B", ink: "#F1F0FF", pen: "brush" },
   chalk: { board: "chalkboard", background: "#18382F", ink: "#F5F0DB", pen: "chalk" },
   cosmic: { board: "glass", background: "#11172B", ink: "#D7C6FF", pen: "brush" },
   suspense: { board: "chalkboard", background: "#171717", ink: "#F2EDE0", pen: "chalk" },
@@ -24,6 +27,10 @@ export const THEMES: Record<string, ThemeStyle> = {
   circuit: { board: "circuit", background: "#0D1B2A", ink: "#D9F9EE", pen: "marker" },
   notebook: { board: "notebook", background: "#FCF8EC", ink: "#27384A", pen: "pencil" },
   terrazzo: { board: "terrazzo", background: "#F2E7D5", ink: "#342D3A", pen: "marker" },
+  nightwatch: { board: "sonar", background: "#06231D", ink: "#C7FFE0", pen: "marker" },
+  pulp: { board: "halftone", background: "#F8E9B0", ink: "#1F2A5C", pen: "marker" },
+  kyoto: { board: "zengarden", background: "#E6D8B8", ink: "#2A2723", pen: "brush" },
+  gilded: { board: "marble", background: "#14161B", ink: "#F4E9CC", pen: "pencil" },
 }
 
 export const BOARD_BASES: Record<string, string> = {
@@ -34,4 +41,6 @@ export const BOARD_BASES: Record<string, string> = {
   editorial: "#F6F1E7",
   blackboard: "#203E36", corkboard: "#C18C56", linen: "#F4EFE5", aurora: "#071927",
   circuit: "#0D1B2A", notebook: "#FCF8EC", terrazzo: "#F2E7D5",
+  sonar: "#06231D", halftone: "#F8E9B0", zengarden: "#E6D8B8", marble: "#14161B",
+  spotlight: "#111820", atlas: "#F3EFE4", prism: "#15162B",
 }
