@@ -1,4 +1,4 @@
-import { HEADER_KEYWORDS, PROPERTY_KEYS, SHAPE_TYPES, STATEMENT_KEYWORDS } from "@/dsl/grammar.ts"
+import { HEADER_KEYWORDS, ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES, STATEMENT_KEYWORDS } from "@/dsl/grammar.ts"
 import { runScript } from "@/dsl/index.ts"
 import type { Diagnostic } from "@/ir/types.ts"
 
@@ -67,6 +67,7 @@ const statementBoundaries = new Set(
 const colorHex = /^(?:#)?(?:[\da-f]{3}|[\da-f]{6})$/i
 const numberValue = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/
 const emojiPattern = /\p{Extended_Pictographic}/u
+const canonicalIconNames = new Map(ICON_NAMES.map((name) => [name.toLowerCase(), name]))
 
 function tokenizeLine(source: string): LineToken[] {
   const result: LineToken[] = []
@@ -413,6 +414,44 @@ function fixMechanicalProperties(
   return output
 }
 
+function canonicalizeIconNames(lines: Line[], fixes: ScriptRepairFix[]): Line[] {
+  const output = lines.map((line) => ({ ...line }))
+  const blocks: boolean[] = []
+
+  for (const line of output) {
+    const tokens = tokenizeLine(line.text)
+    const first = word(tokens[0])
+    if (first === "SCENE" || isEndScene(tokens)) {
+      blocks.length = 0
+      continue
+    }
+    if (first === "END") {
+      blocks.pop()
+      continue
+    }
+
+    const opener = openerName(tokens)
+    if (opener) {
+      const asIndex = tokens.findIndex((token) => word(token) === "AS")
+      const isIcon = opener === "CREATE" && word(tokens[asIndex + 1]) === "ICON"
+      blocks.push(isIcon)
+      continue
+    }
+
+    if (!blocks.some(Boolean) || (first !== "NAME" && first !== "ICON")) continue
+    const value = tokens[1]
+    if (!value || (value.kind !== "string" && value.kind !== "word")) continue
+    const canonical = canonicalIconNames.get(value.value.toLowerCase())
+    if (!canonical || canonical === value.value) continue
+
+    const replacement = value.kind === "string" ? `"${canonical}"` : canonical
+    line.text = `${line.text.slice(0, value.start)}${replacement}${line.text.slice(value.end)}`
+    addFix(fixes, line.number, `Normalized icon name "${value.value}" to "${canonical}".`)
+  }
+
+  return output
+}
+
 function normalizeSceneHeadings(lines: Line[], fixes: ScriptRepairFix[]): Line[] {
   const output: Line[] = []
   let sceneIndex = 0
@@ -743,7 +782,7 @@ export function repair(source: string): ScriptRepairResult {
   const fixes: ScriptRepairFix[] = []
   const { lines: cleaned, trailingNewline } = cleanInput(source, fixes)
   const structured = ensureRequiredStructure(cleaned, fixes)
-  const mechanical = fixMechanicalProperties(structured, fixes)
+  const mechanical = canonicalizeIconNames(fixMechanicalProperties(structured, fixes), fixes)
   const headings = normalizeSceneHeadings(mechanical, fixes)
   const directives = removeLastSceneDirectives(headings, fixes)
   normalizeIds(directives, fixes)
@@ -758,7 +797,7 @@ export function repair(source: string): ScriptRepairResult {
 export function repairSyntax(source: string): ScriptRepairResult {
   const fixes: ScriptRepairFix[] = []
   const { lines: cleaned, trailingNewline } = cleanInput(source, fixes, true)
-  const syntaxFixed = fixMechanicalProperties(cleaned, fixes, true)
+  const syntaxFixed = canonicalizeIconNames(fixMechanicalProperties(cleaned, fixes, true), fixes)
   const truncated = isTruncated(syntaxFixed)
   const balanced = balanceBlocks(syntaxFixed, fixes, truncated, false)
   let script = balanced.map((line) => line.text).join("\n")
