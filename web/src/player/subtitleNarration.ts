@@ -70,20 +70,34 @@ export class SubtitleNarration {
     let completed = 0
     onProgress?.(0, total)
     this.setStatus("preparing")
-    for (const [key, text] of eligible) {
-      if (!this.buffers.has(key)) {
-        const generated = await generateKokoroAudio(text, voice)
-        const buffer = this.getContext().createBuffer(
-          1,
-          generated.samples.length,
-          generated.sampleRate
-        )
-        buffer.copyToChannel(generated.samples, 0)
-        this.buffers.set(key, buffer)
+    const entries = [...eligible]
+    let nextIndex = 0
+    let failed = false
+    let failure: unknown
+    const prepareNext = async () => {
+      while (nextIndex < entries.length && !failed) {
+        const [key, text] = entries[nextIndex++]
+        try {
+          if (!this.buffers.has(key)) {
+            const generated = await generateKokoroAudio(text, voice)
+            const buffer = this.getContext().createBuffer(
+              1,
+              generated.samples.length,
+              generated.sampleRate
+            )
+            buffer.copyToChannel(generated.samples, 0)
+            this.buffers.set(key, buffer)
+          }
+          completed++
+          onProgress?.(completed, total)
+        } catch (error) {
+          failed = true
+          failure = error
+        }
       }
-      completed++
-      onProgress?.(completed, total)
     }
+    await Promise.all(Array.from({ length: Math.min(2, entries.length) }, prepareNext))
+    if (failed) throw failure
     this.setStatus("ready")
     return { skipped }
   }
