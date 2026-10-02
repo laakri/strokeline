@@ -8,6 +8,17 @@ export default defineConfig({
   optimizeDeps: {
     include: ["kokoro-js"],
   },
+  server: {
+    proxy: {
+      "/hf/": {
+        target: "https://huggingface.co",
+        changeOrigin: true,
+        followRedirects: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/hf\//, "/"),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),

@@ -153,13 +153,13 @@ export function AppShell() {
             data-workspace-guide-target="run"
             title={
               errors
-                ? `Run blocked (${errors} error${errors === 1 ? "" : "s"})`
+                ? `Try to fix ${errors} error${errors === 1 ? "" : "s"}, then run`
                 : "Run the script"
             }
           >
             <Play className="size-4" />
             <span className="hidden md:inline">
-              {errors ? `Run (${errors})` : "Run"}
+              {errors ? `Fix & Run (${errors})` : "Run"}
             </span>
           </Button>
         </div>

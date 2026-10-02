@@ -218,9 +218,15 @@ export function ScriptEditor() {
       }),
       parent: container.current,
     })
+    const readCurrentDocument = () =>
+      view.current?.state.doc.toString() ?? useAppStore.getState().script
+    useAppStore.getState().setEditorSourceReader(readCurrentDocument)
     return () => {
       view.current?.destroy()
       view.current = null
+      if (useAppStore.getState().editorSourceReader === readCurrentDocument) {
+        useAppStore.getState().setEditorSourceReader(null)
+      }
     }
   }, [])
 

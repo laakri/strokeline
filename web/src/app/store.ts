@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import workedExample from "@/dsl/__tests__/valid/12-worked-example.wbs?raw"
 import { runScript } from "@/dsl/index.ts"
+import { repairSyntax } from "@/dsl/repair.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
 import { normalizeScriptSource } from "@/dsl/source.ts"
 import type { Diagnostic, Scene, SceneDocument } from "@/ir/types.ts"
@@ -65,6 +66,7 @@ interface AppStore {
   runId: number
   editorJump: { line: number; col: number } | null
   editorLoad: { text: string } | null
+  editorSourceReader: (() => string) | null
   player: PlayerState
   setScript: (script: string) => void
   compileScript: () => void
@@ -74,6 +76,7 @@ interface AppStore {
   setImageDiagnostics: (diagnostics: Diagnostic[]) => void
   requestEditorJump: (line: number, col: number) => void
   clearEditorJump: () => void
+  setEditorSourceReader: (reader: (() => string) | null) => void
   loadScript: (text: string) => void
   clearEditorLoad: () => void
 }
@@ -88,6 +91,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   runId: 0,
   editorJump: null,
   editorLoad: null,
+  editorSourceReader: null,
   player: { elapsed: 0, duration: 0, isPlaying: false },
   setScript: (script) => {
     const normalized = normalizeScriptSource(script).source
@@ -107,7 +111,17 @@ export const useAppStore = create<AppStore>((set, get) => ({
     })
   },
   run: () => {
-    const script = get().script
+    const editorSource = get().editorSourceReader?.()
+    const source = normalizeScriptSource(editorSource ?? get().script).source
+    if (source !== get().script) {
+      saveStoredScript(source)
+      set({ script: source })
+    }
+    const script = repairSyntax(source).script
+    if (script !== source) {
+      saveStoredScript(script)
+      set({ script, editorLoad: { text: script } })
+    }
     const result = runScript(script)
     if (!result.document || result.diagnostics.some(blocksScriptRun)) {
       set({
@@ -141,6 +155,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     })),
   requestEditorJump: (line, col) => set({ editorJump: { line, col } }),
   clearEditorJump: () => set({ editorJump: null }),
+  setEditorSourceReader: (editorSourceReader) => set({ editorSourceReader }),
   loadScript: (text) => set({ editorLoad: { text }, activeSceneIndex: 0 }),
   clearEditorLoad: () => set({ editorLoad: null }),
 }))

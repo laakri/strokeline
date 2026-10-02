@@ -39,4 +39,27 @@ describe("app store scene tabs", () => {
     expect(useAppStore.getState().script).toBe("")
     useAppStore.getState().setScript(STARTER_SCRIPT)
   })
+
+  it("runs the live editor document when the store snapshot is stale", () => {
+    const staleScript = multiSceneScript
+    const liveScript = `VERSION 1.0
+CANVAS 800 600
+SCENE 1 "Live editor"
+CREATE liveText AS TEXT
+POSITION 400 300
+TEXT "Latest code"
+END
+END SCENE`
+    useAppStore.getState().setScript(staleScript)
+    useAppStore.getState().setEditorSourceReader(() => liveScript)
+
+    try {
+      expect(useAppStore.getState().run()).toBe(true)
+      expect(useAppStore.getState().compiledSource).toBe(liveScript)
+      expect(useAppStore.getState().script).toBe(liveScript)
+    } finally {
+      useAppStore.getState().setEditorSourceReader(null)
+      useAppStore.getState().setScript(STARTER_SCRIPT)
+    }
+  })
 })

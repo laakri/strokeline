@@ -6,7 +6,7 @@ import { layoutTableCell } from "@/lib/tableLayout.ts"
 import { arrowEndpoints } from "@/renderer/geometry.ts"
 import { ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES } from "@/dsl/grammar.ts"
 import type { Scene, SceneDocument, SceneNode, TimelineOp } from "@/ir/types.ts"
-import { plainSubtitleText, wrapSubtitleText } from "@/subtitles/subtitles.ts"
+import { plainSubtitleText } from "@/subtitles/subtitles.ts"
 
 const knownProperties = new Set<string>(PROPERTY_KEYS)
 const knownTypes = new Set<string>([
@@ -388,8 +388,6 @@ function validateSays(scene: Scene, diagnostics: Diagnostic[]): void {
   for (const say of says) {
     const text = plainSubtitleText(say.text)
     const location = say.source ?? { line: 1, col: 1 }
-    if (text.length > 90 || wrapSubtitleText(say.text).length > 2)
-      diagnostics.push(error("E_SAY_TOO_LONG", "SAY must fit in two subtitle lines and stay under 90 characters.", location.line, location.col))
     if (say.duration > 0 && text.length / say.duration > 20)
       diagnostics.push(warning("W_SAY_FAST", "SAY is faster than 20 characters per second.", location.line, location.col, "Increase DURATION; playback will be auto-scheduled to a readable pace."))
   }
@@ -414,7 +412,8 @@ function validateSays(scene: Scene, diagnostics: Diagnostic[]): void {
       const textWords = new Set(plainSubtitleText(op.node.text ?? op.node.label ?? "").toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [])
       if (!textWords.size) continue
       const common = [...sayWords].filter((word) => textWords.has(word)).length
-      if (common / Math.min(sayWords.size, textWords.size) > 0.7) {
+      const similarity = common / Math.max(sayWords.size, textWords.size)
+      if (similarity > 0.7) {
         const location = say.source ?? op.source ?? { line: 1, col: 1 }
         diagnostics.push(warning("W_SAY_ECHO", `SAY repeats visible TEXT "${op.node.id}".`, location.line, location.col, "Explain the why, analogy, or consequence instead."))
       }
@@ -644,21 +643,27 @@ function validateSceneWarnings(
   const shapes = creates.filter((op) =>
     ["rectangle", "circle", "icon"].includes(op.node.type)
   )
+  const opOrder = new Map(scene.ops.map((op, index) => [op, index]))
   for (const entry of standaloneText) {
     if (entry.op.node.textBox?.background) continue
     for (const shape of shapes) {
       const shapeEnd = erasures.get(shape.node.id) ?? Number.POSITIVE_INFINITY
       if (entry.op.t >= shapeEnd || shape.t >= entry.end) continue
+      const shapeDrawsAfterText =
+        shape.t > entry.op.t ||
+        (shape.t === entry.op.t &&
+          (opOrder.get(shape) ?? -1) > (opOrder.get(entry.op) ?? -1))
+      if (!shapeDrawsAfterText) continue
       const shapeBounds = nodeBounds(shape.node)
       if (overlapRatio(entry.bounds, shapeBounds) <= 0.08) continue
       const source = location(entry.op, entry.op.node.text ? "TEXT" : "LABEL")
       diagnostics.push(
         warning(
           "W_TEXT_ON_SHAPE",
-          `Text "${entry.op.node.id}" overlaps shape "${shape.node.id}".`,
+          `Text "${entry.op.node.id}" is covered by later shape "${shape.node.id}".`,
           source.line,
           source.col,
-          "Move the text or shape so the text is not obscured."
+          "Create the background shape before the text, or move text clear of foreground shapes."
         )
       )
     }
