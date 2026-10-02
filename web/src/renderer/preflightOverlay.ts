@@ -33,7 +33,10 @@ export function drawPreflightOverlay(
   context: CanvasRenderingContext2D,
   state: RenderState,
   canvasSize: CanvasSize,
-  issueIds: Set<string>
+  issueSeverities: ReadonlyMap<string, "error" | "warning">,
+  selectedId?: string,
+  showGuides = true,
+  selectedOnly = false
 ): void {
   const { canvas } = context
   const ratio = Math.min(2, canvas.width / canvasSize.width)
@@ -43,24 +46,47 @@ export function drawPreflightOverlay(
   applyCamera(context, state.camera, canvasSize, ratio)
 
   const scale = Math.max(0.01, state.camera.scale)
-  context.save()
-  context.lineWidth = 2 / scale
-  context.setLineDash([10 / scale, 8 / scale])
-  context.strokeStyle = "#f2c96d"
-  context.strokeRect(120, 100, 1680, 880)
-  context.restore()
+  if (showGuides) {
+    context.save()
+    context.lineWidth = 2 / scale
+    context.setLineDash([10 / scale, 8 / scale])
+    context.strokeStyle = "#f2c96d"
+    context.strokeRect(120, 100, 1680, 880)
+    context.restore()
+
+    context.save()
+    context.globalAlpha = 0.42
+    context.lineWidth = 1 / scale
+    context.setLineDash([8 / scale, 10 / scale])
+    context.strokeStyle = "#57c7d4"
+    context.beginPath()
+    context.moveTo(canvasSize.width / 2, 0)
+    context.lineTo(canvasSize.width / 2, canvasSize.height)
+    context.moveTo(0, canvasSize.height / 2)
+    context.lineTo(canvasSize.width, canvasSize.height / 2)
+    context.stroke()
+    context.restore()
+  }
 
   const nodes = new Map(state.nodes.map((node) => [node.id, node]))
   for (const node of state.nodes) {
+    if (selectedOnly && node.id !== selectedId) continue
     if (node.data?.layoutContainer === true) continue
     const box = nodeBounds(node, nodes)
     if (box.width <= 0 || box.height <= 0) continue
-    const hasIssue = issueIds.has(node.id)
+    const severity = issueSeverities.get(node.id)
+    const selected = selectedId === node.id
     context.save()
     context.globalAlpha = 0.9
-    context.lineWidth = 1.5 / scale
+    context.lineWidth = (selected ? 3 : 1.5) / scale
     context.setLineDash([5 / scale, 4 / scale])
-    context.strokeStyle = hasIssue ? "#ff7777" : "#72d9a0"
+    context.strokeStyle = selected
+      ? "#ffffff"
+      : severity === "error"
+        ? "#ff7777"
+        : severity === "warning"
+          ? "#ffad55"
+          : "#72d9a0"
     context.strokeRect(box.x, box.y, box.width, box.height)
 
     const fontSize = 12 / scale
@@ -69,11 +95,41 @@ export function drawPreflightOverlay(
     const labelWidth = context.measureText(label).width + 10 / scale
     const labelHeight = 18 / scale
     const labelY = box.y - labelHeight
-    context.fillStyle = hasIssue ? "#7d2828" : "#193b2b"
+    context.fillStyle = selected
+      ? "#175d66"
+      : severity === "error"
+        ? "#7d2828"
+        : severity === "warning"
+          ? "#82420b"
+          : "#193b2b"
     context.fillRect(box.x, labelY, labelWidth, labelHeight)
     context.fillStyle = "#ffffff"
     context.fillText(label, box.x + 5 / scale, labelY + 13 / scale)
     context.restore()
   }
   context.restore()
+}
+
+export function preflightNodeAt(
+  state: RenderState,
+  x: number,
+  y: number,
+  currentId?: string | null
+): string | undefined {
+  const hits = preflightNodesAt(state, x, y)
+  if (!hits.length) return undefined
+  const currentIndex = hits.indexOf(currentId ?? "")
+  return currentIndex >= 0 ? hits[(currentIndex + 1) % hits.length] : hits[0]
+}
+
+export function preflightNodesAt(state: RenderState, x: number, y: number): string[] {
+  const nodes = new Map(state.nodes.map((node) => [node.id, node]))
+  const orderedNodes = [...state.nodes].reverse()
+  return orderedNodes.filter((node) => {
+    if (node.data?.layoutContainer === true) return false
+    const box = nodeBounds(node, nodes)
+    const padding = 10
+    return x >= box.x - padding && x <= box.x + box.width + padding &&
+      y >= box.y - padding && y <= box.y + box.height + padding
+  }).map((node) => node.id)
 }

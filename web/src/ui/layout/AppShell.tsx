@@ -3,6 +3,7 @@ import { Check, CircleHelp, Clipboard, FolderOpen, Maximize, Play, Save } from "
 import aiPrompt from "../../../../AI_prompt_kit.MD?raw"
 import { useAppStore } from "@/app/store.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
+import { ICON_NAMES } from "@/dsl/grammar.ts"
 import { TwoPaneLayout } from "@/ui/layout/TwoPaneLayout.tsx"
 import { ExportMenu } from "@/ui/layout/ExportMenu.tsx"
 import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
@@ -38,7 +39,9 @@ export function AppShell() {
     setGuideStep(null)
   }
   const copyPrompt = async () => {
-    await navigator.clipboard.writeText(aiPrompt)
+    await navigator.clipboard.writeText(
+      aiPrompt.replace("{{ICON_LIST}}", ICON_NAMES.join(", "))
+    )
   }
   const handleSave = () => {
     const script = useAppStore.getState().script

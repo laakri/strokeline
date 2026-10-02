@@ -8,6 +8,12 @@ import type { Diagnostic, Scene, SceneDocument } from "@/ir/types.ts"
 
 const STORAGE_KEY = "strokeline.script.v1"
 
+export interface EditorSourceEdit {
+  from: number
+  to: number
+  insert: string
+}
+
 /** Minimal starter script used whenever the editor is emptied. */
 export const STARTER_SCRIPT = `VERSION 1.0
 CANVAS 1920 1080
@@ -67,6 +73,7 @@ interface AppStore {
   editorJump: { line: number; col: number } | null
   editorLoad: { text: string } | null
   editorSourceReader: (() => string) | null
+  editorSourceWriter: ((edits: EditorSourceEdit[]) => void) | null
   player: PlayerState
   setScript: (script: string) => void
   compileScript: () => void
@@ -77,6 +84,8 @@ interface AppStore {
   requestEditorJump: (line: number, col: number) => void
   clearEditorJump: () => void
   setEditorSourceReader: (reader: (() => string) | null) => void
+  setEditorSourceWriter: (writer: ((edits: EditorSourceEdit[]) => void) | null) => void
+  applyEditorSourceEdits: (edits: EditorSourceEdit[]) => void
   loadScript: (text: string) => void
   clearEditorLoad: () => void
 }
@@ -92,6 +101,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   editorJump: null,
   editorLoad: null,
   editorSourceReader: null,
+  editorSourceWriter: null,
   player: { elapsed: 0, duration: 0, isPlaying: false },
   setScript: (script) => {
     const normalized = normalizeScriptSource(script).source
@@ -101,12 +111,15 @@ export const useAppStore = create<AppStore>((set, get) => ({
   compileScript: () => {
     const script = get().script
     if (get().compiledSource === script) return
+    const previousSceneIndex = get().activeSceneIndex
     const result = runScript(script)
     set({
       compiledIR: result.document,
       scenes: result.document?.scenes ?? [],
       diagnostics: result.diagnostics,
-      activeSceneIndex: 0,
+      activeSceneIndex: result.document
+        ? Math.min(previousSceneIndex, Math.max(0, result.document.scenes.length - 1))
+        : 0,
       compiledSource: script,
     })
   },
@@ -156,6 +169,19 @@ export const useAppStore = create<AppStore>((set, get) => ({
   requestEditorJump: (line, col) => set({ editorJump: { line, col } }),
   clearEditorJump: () => set({ editorJump: null }),
   setEditorSourceReader: (editorSourceReader) => set({ editorSourceReader }),
+  setEditorSourceWriter: (editorSourceWriter) => set({ editorSourceWriter }),
+  applyEditorSourceEdits: (edits) => {
+    const writer = get().editorSourceWriter
+    if (writer) {
+      writer(edits)
+      return
+    }
+    let script = get().script
+    for (const edit of [...edits].sort((left, right) => right.from - left.from)) {
+      script = `${script.slice(0, edit.from)}${edit.insert}${script.slice(edit.to)}`
+    }
+    get().setScript(script)
+  },
   loadScript: (text) => set({ editorLoad: { text }, activeSceneIndex: 0 }),
   clearEditorLoad: () => set({ editorLoad: null }),
 }))

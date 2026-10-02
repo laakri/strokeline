@@ -3,13 +3,17 @@ import { Eye, EyeOff, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X
 import { drawScene } from "@/renderer/draw.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
-import { useAppStore } from "@/app/store.ts"
+import { useAppStore, type EditorSourceEdit } from "@/app/store.ts"
 import { Player, SequencePlayer } from "@/player/usePlayer.ts"
 import { SubtitleNarration, type VoiceStatus } from "@/player/subtitleNarration.ts"
 import { getKokoroState, subscribeKokoro } from "@/player/kokoro.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
 import { Timeline, type RenderState } from "@/timeline/timeline.ts"
-import { drawPreflightOverlay } from "@/renderer/preflightOverlay.ts"
+import { drawPreflightOverlay, preflightNodeAt, preflightNodesAt } from "@/renderer/preflightOverlay.ts"
+import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
+import { editObjectProperties, objectSourceCapability, removeObjectBlock } from "@/dsl/objectSourceEdits.ts"
+import { ObjectActions } from "@/ui/preview/ObjectActions.tsx"
+import type { ObjectEditValues } from "@/dsl/objectSourceEdits.ts"
 import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
 import { VoiceSettingsDialog } from "@/ui/preview/VoiceSettingsDialog.tsx"
 import { readReaderVolume, saveReaderVolume } from "@/player/readerVolume.ts"
@@ -18,6 +22,82 @@ const SUBTITLES_STORAGE_KEY = "strokeline.subtitles.v1"
 const READ_ALONG_STORAGE_KEY = "strokeline.voice.v1"
 const VOICE_STORAGE_KEY = "strokeline.voiceId.v1"
 type SceneAnimation = "script" | "none" | "fade" | "wipe" | "slide" | "erase"
+
+interface PreviewDrag {
+  pointerId: number
+  id: string
+  state: RenderState
+  startWorldX: number
+  startWorldY: number
+  startClientX: number
+  startClientY: number
+  sourceLine?: number
+  canMove: boolean
+  cycleOnClick: boolean
+  hitIds: string[]
+  moved: boolean
+}
+
+function worldPointAt(
+  clientX: number,
+  clientY: number,
+  canvas: HTMLCanvasElement,
+  state: RenderState,
+  size: { width: number; height: number }
+): { x: number; y: number } | undefined {
+  const rect = canvas.getBoundingClientRect()
+  if (!rect.width || !rect.height) return undefined
+  const screenX = ((clientX - rect.left) / rect.width) * size.width
+  const screenY = ((clientY - rect.top) / rect.height) * size.height
+  const scale = state.camera.scale || 1
+  return {
+    x: state.camera.position.x + (screenX - size.width / 2) / scale,
+    y: state.camera.position.y + (screenY - size.height / 2) / scale,
+  }
+}
+
+function positionEditsForDrag(
+  source: string,
+  sourceLine: number,
+  deltaX: number,
+  deltaY: number
+): EditorSourceEdit[] | undefined {
+  const lines = source.split("\n")
+  const startIndex = sourceLine - 1
+  if (startIndex < 0 || startIndex >= lines.length) return undefined
+  const number = "[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?"
+  const positionPattern = new RegExp(`^(\\s*POSITION\\s+)(${number})(\\s+)(${number})\\s*$`, "i")
+  let lineOffset = lines.slice(0, startIndex).reduce((sum, line) => sum + line.length + 1, 0)
+  for (let index = startIndex; index < lines.length; index += 1) {
+    const line = lines[index] ?? ""
+    if (index > startIndex && /^\s*END(?:\s+SCENE)?\s*$/i.test(line)) return undefined
+    if (index > startIndex && /^\s*(?:SCENE|CREATE|TABLE|DEFINE|BARCHART|LINECHART|PIECHART)\b/i.test(line)) return undefined
+    const match = positionPattern.exec(line)
+    if (match) {
+      const x = Number(match[2]) + deltaX
+      const y = Number(match[4]) + deltaY
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined
+      const xFrom = lineOffset + (match[1]?.length ?? 0)
+      const yFrom = xFrom + (match[2]?.length ?? 0) + (match[3]?.length ?? 0)
+      const format = (value: number) => String(Math.round(value * 10) / 10)
+      return [
+        { from: xFrom, to: xFrom + (match[2]?.length ?? 0), insert: format(x) },
+        { from: yFrom, to: yFrom + (match[4]?.length ?? 0), insert: format(y) },
+      ]
+    }
+    lineOffset += line.length + 1
+  }
+  return undefined
+}
+
+function moveRenderNode(state: RenderState, id: string, x: number, y: number): RenderState {
+  return {
+    ...state,
+    nodes: state.nodes.map((node) => node.id === id
+      ? { ...node, position: { x: node.position.x + x, y: node.position.y + y } }
+      : node),
+  }
+}
 
 function readSubtitleOverride(): boolean | null {
   try {
@@ -54,6 +134,8 @@ export function PreviewPane({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const preflightCanvasRef = useRef<HTMLCanvasElement>(null)
   const renderStateRef = useRef<RenderState | null>(null)
+  const dragRef = useRef<PreviewDrag | null>(null)
+  const suppressPreflightClick = useRef(false)
   const playButtonRef = useRef<HTMLButtonElement>(null)
   const playerRef = useRef<Player | SequencePlayer | null>(null)
   const handledRunId = useRef(0)
@@ -68,6 +150,19 @@ export function PreviewPane({
   const [sceneAnimation, setSceneAnimation] = useState<SceneAnimation>("script")
   const [transitionDuration, setTransitionDuration] = useState(0.6)
   const [preflightOn, setPreflightOn] = useState(false)
+  const [preflightSelectedId, setPreflightSelectedId] = useState<string | null>(null)
+  const [dragVisualState, setDragVisualState] = useState<RenderState | null>(null)
+  const [objectMenu, setObjectMenu] = useState<{
+    id: string
+    clientX: number
+    clientY: number
+    worldX: number
+    worldY: number
+    hitIds: string[]
+    sceneIndex: number
+  } | null>(null)
+  const [connectFrom, setConnectFrom] = useState<{ id: string; sceneIndex: number } | null>(null)
+  const [objectNotice, setObjectNotice] = useState("")
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
@@ -86,12 +181,14 @@ export function PreviewPane({
     ready: boolean
   }>({ document: null, ready: false })
   const script = useAppStore((state) => state.script)
+  const compiledSource = useAppStore((state) => state.compiledSource)
   const activeSceneIndex = useAppStore((state) => state.activeSceneIndex)
   const setActiveSceneIndex = useAppStore((state) => state.setActiveSceneIndex)
   const runId = useAppStore((state) => state.runId)
   const player = useAppStore((state) => state.player)
   const setPlayerState = useAppStore((state) => state.setPlayerState)
   const diagnostics = useAppStore((state) => state.diagnostics)
+  const requestEditorJump = useAppStore((state) => state.requestEditorJump)
   const scene = compiledIR?.scenes[activeSceneIndex]
   const subtitlesOn = subtitleOverride ?? (compiledIR?.subtitles ?? false)
   const activeVoice = kokoroState.voices.find((voice) => voice.id === selectedVoice)
@@ -455,18 +552,218 @@ export function PreviewPane({
     if (overlay.height !== canvas.height) overlay.height = canvas.height
     const context = overlay.getContext("2d")
     if (!context) return
-    const state = renderStateRef.current
-    if (!preflightOn || !state || !compiledIR) {
+    const state = dragVisualState ?? renderStateRef.current
+    if ((!preflightOn && !preflightSelectedId) || !state || !compiledIR) {
       context.clearRect(0, 0, overlay.width, overlay.height)
       return
     }
-    const issueIds = new Set(
-      state.nodes
-        .filter((node) => diagnostics.some((item) => item.message.includes(`"${node.id}"`)))
-        .map((node) => node.id)
+    const issueSeverities = new Map<string, "error" | "warning">()
+    for (const node of state.nodes) {
+      const issue = diagnostics.find((item) => item.message.includes(`"${node.id}"`))
+      if (issue) issueSeverities.set(node.id, issue.severity)
+    }
+    drawPreflightOverlay(
+      context,
+      state,
+      compiledIR.canvas,
+      issueSeverities,
+      preflightSelectedId ?? undefined,
+      preflightOn,
+      !preflightOn
     )
-    drawPreflightOverlay(context, state, compiledIR.canvas, issueIds)
-  }, [preflightOn, player.elapsed, diagnostics, compiledIR])
+  }, [preflightOn, preflightSelectedId, player.elapsed, diagnostics, compiledIR, dragVisualState])
+
+  const jumpToObject = (targetId: string) => {
+    if (!compiledIR) return
+    const issue = diagnostics.find((item) => item.message.includes('"' + targetId + '"'))
+    const sceneIndex = effectivePlayAllMode ? sequenceSceneIndex : activeSceneIndex
+    const source = compiledIR.scenes[sceneIndex]?.ops.find(
+      (op) => op.kind === "create" && op.node.id === targetId
+    )?.source
+    const location = issue ?? source
+    if (location) requestEditorJump(location.line, location.col)
+  }
+
+  const handlePreflightPointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (event.button !== 0 || !compiledIR) return
+    const state = renderStateRef.current
+    const canvas = preflightCanvasRef.current
+    if (!state || !canvas) return
+    const point = worldPointAt(event.clientX, event.clientY, canvas, state, compiledIR.canvas)
+    if (!point) return
+    const hitIds = preflightNodesAt(state, point.x, point.y)
+    if (!hitIds.length) {
+      dragRef.current = null
+      return
+    }
+    const cycleOnClick = preflightSelectedId !== null && hitIds.includes(preflightSelectedId)
+    const targetId = cycleOnClick ? preflightSelectedId : hitIds[0]!
+    const sceneIndex = effectivePlayAllMode ? sequenceSceneIndex : activeSceneIndex
+    const source = compiledIR.scenes[sceneIndex]?.ops.find(
+      (op) => op.kind === "create" && op.node.id === targetId
+    )?.source
+    const currentSource = useAppStore.getState().editorSourceReader?.() ?? script
+    dragRef.current = {
+      pointerId: event.pointerId,
+      id: targetId,
+      state,
+      startWorldX: point.x,
+      startWorldY: point.y,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      sourceLine: source?.line,
+      canMove: source !== undefined && currentSource === compiledSource &&
+        positionEditsForDrag(compiledSource, source.line, 0, 0) !== undefined,
+      cycleOnClick,
+      hitIds,
+      moved: false,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const handlePreflightPointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    const drag = dragRef.current
+    const canvas = preflightCanvasRef.current
+    if (!drag || drag.pointerId !== event.pointerId || !drag.canMove || !canvas || !compiledIR) return
+    if (!drag.moved && Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) < 4) return
+    if (!drag.moved) {
+      drag.moved = true
+      setPreflightSelectedId(drag.id)
+      jumpToObject(drag.id)
+      const controller = playerRef.current
+      preservedPlayback.current = {
+        time: controller?.currentTime ?? player.elapsed,
+        wasPlaying: false,
+      }
+      controller?.pause()
+      setPlayerState({ isPlaying: false })
+    }
+    const point = worldPointAt(event.clientX, event.clientY, canvas, drag.state, compiledIR.canvas)
+    if (!point) return
+    const visualState = moveRenderNode(
+      drag.state,
+      drag.id,
+      point.x - drag.startWorldX,
+      point.y - drag.startWorldY
+    )
+    setDragVisualState(visualState)
+    const context = canvasRef.current?.getContext("2d")
+    if (context) {
+      drawScene(
+        context,
+        visualState,
+        undefined,
+        compiledIR.canvas,
+        compiledIR.background,
+        compiledIR.style.mode,
+        compiledIR.style.board,
+        compiledIR.style.hand,
+        subtitlesOnRef.current,
+        readAlongRef.current
+      )
+    }
+    event.preventDefault()
+  }
+
+  const handlePreflightPointerUp = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    const drag = dragRef.current
+    const canvas = preflightCanvasRef.current
+    if (!drag || drag.pointerId !== event.pointerId) return
+    dragRef.current = null
+    if (drag.moved && drag.sourceLine !== undefined && canvas && compiledIR) {
+      const point = worldPointAt(event.clientX, event.clientY, canvas, drag.state, compiledIR.canvas)
+      const currentSource = useAppStore.getState().editorSourceReader?.() ?? script
+      if (point && currentSource === compiledSource) {
+        const edits = positionEditsForDrag(
+          compiledSource,
+          drag.sourceLine,
+          point.x - drag.startWorldX,
+          point.y - drag.startWorldY
+        )
+        if (edits) {
+          jumpToObject(drag.id)
+          useAppStore.getState().applyEditorSourceEdits(edits)
+        }
+      }
+      suppressPreflightClick.current = true
+      window.setTimeout(() => { suppressPreflightClick.current = false }, 0)
+    }
+    setDragVisualState(null)
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const handlePreflightPointerCancel = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (dragRef.current?.pointerId !== event.pointerId) return
+    dragRef.current = null
+    setDragVisualState(null)
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const handlePreflightClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (suppressPreflightClick.current) {
+      suppressPreflightClick.current = false
+      return
+    }
+    const state = renderStateRef.current
+    const canvas = preflightCanvasRef.current
+    if (!state || !canvas || !compiledIR) return
+    const rect = canvas.getBoundingClientRect()
+    if (!rect.width || !rect.height) return
+    const screenX = ((event.clientX - rect.left) / rect.width) * compiledIR.canvas.width
+    const screenY = ((event.clientY - rect.top) / rect.height) * compiledIR.canvas.height
+    const worldX = state.camera.position.x + (screenX - compiledIR.canvas.width / 2) / state.camera.scale
+    const worldY = state.camera.position.y + (screenY - compiledIR.canvas.height / 2) / state.camera.scale
+    const hitIds = preflightNodesAt(state, worldX, worldY)
+    const targetId = preflightNodeAt(state, worldX, worldY, preflightSelectedId)
+    if (!targetId) {
+      setPreflightSelectedId(null)
+      setObjectMenu(null)
+      if (connectFrom) setObjectNotice("Click an object to connect the arrow, or cancel.")
+      return
+    }
+    setObjectNotice("")
+    if (connectFrom) {
+      if (targetId === connectFrom.id) {
+        setObjectNotice("Choose a different object as the arrow destination.")
+        return
+      }
+      const current = useAppStore.getState()
+      const source = current.editorSourceReader?.() ?? current.script
+      const edit = makeSceneInsertEdit(source, `ARROW ${connectFrom.id} -> ${targetId}`, connectFrom.sceneIndex)
+      if (!edit) {
+        setObjectNotice("Add a SCENE before connecting objects.")
+        setConnectFrom(null)
+        return
+      }
+      current.applyEditorSourceEdits([edit])
+      window.requestAnimationFrame(() => useAppStore.getState().compileScript())
+      setObjectNotice(`Arrow connected: ${connectFrom.id} → ${targetId}`)
+      setConnectFrom(null)
+      setObjectMenu(null)
+      return
+    }
+    setPreflightSelectedId(targetId)
+    const issue = diagnostics.find((item) => item.message.includes(`"${targetId}"`))
+    const sceneIndex = effectivePlayAllMode ? sequenceSceneIndex : activeSceneIndex
+    const source = compiledIR.scenes[sceneIndex]?.ops.find(
+      (op) => op.kind === "create" && op.node.id === targetId
+    )?.source
+    const location = issue ?? source
+    if (location) requestEditorJump(location.line, location.col)
+    setObjectMenu({
+      id: targetId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      worldX,
+      worldY,
+      hitIds,
+      sceneIndex,
+    })
+  }
 
   useEffect(() => {
     if (runId <= 0 || handledRunId.current === runId) return
@@ -514,6 +811,38 @@ export function PreviewPane({
   const sequenceSceneStarts = effectivePlayAllMode ? sequenceStarts : []
   const presentationSceneIndex = effectivePlayAllMode ? sequenceSceneIndex : activeSceneIndex
   const presentationScene = compiledIR?.scenes[presentationSceneIndex]
+  const selectedObjectNode = objectMenu
+    ? compiledIR?.scenes[objectMenu.sceneIndex]?.ops.find(
+        (op) => op.kind === "create" && op.node.id === objectMenu.id
+      )?.node
+    : undefined
+  const currentEditorSource = useAppStore.getState().editorSourceReader?.() ?? script
+  const objectCapability = objectMenu
+    ? objectSourceCapability(currentEditorSource, objectMenu.id)
+    : { editable: false, deletable: false, positionEditable: false }
+  const sourceIsCurrent = currentEditorSource === compiledSource
+  const applyAndCompileEdits = (edits: EditorSourceEdit[]) => {
+    const current = useAppStore.getState()
+    current.applyEditorSourceEdits(edits)
+    window.requestAnimationFrame(() => useAppStore.getState().compileScript())
+  }
+  const editSelectedObject = (values: ObjectEditValues): boolean => {
+    if (!selectedObjectNode || !objectMenu) return false
+    const source = useAppStore.getState().editorSourceReader?.() ?? useAppStore.getState().script
+    const edits = editObjectProperties(source, selectedObjectNode, values)
+    if (!edits?.length) return false
+    applyAndCompileEdits(edits)
+    return true
+  }
+  const deleteSelectedObject = () => {
+    if (!objectMenu || !objectCapability.deletable || !sourceIsCurrent) return
+    const source = useAppStore.getState().editorSourceReader?.() ?? useAppStore.getState().script
+    const edit = removeObjectBlock(source, objectMenu.id)
+    if (!edit) return
+    applyAndCompileEdits([edit])
+    setObjectMenu(null)
+    setPreflightSelectedId(null)
+  }
   const formatTime = (time: number) =>
     `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`
   return (
@@ -563,12 +892,17 @@ export function PreviewPane({
           <button
             type="button"
             aria-pressed={preflightOn}
-            onClick={() => setPreflightOn((enabled) => !enabled)}
-            title="Show safe margins and object bounds; guides are not exported"
+            onClick={() => {
+              setPreflightOn((enabled) => !enabled)
+              setPreflightSelectedId(null)
+              setObjectMenu(null)
+              setConnectFrom(null)
+            }}
+            title="Show the safe area, center guides, and diagnostic highlights; not exported"
             className={`absolute right-3 top-3 z-20 inline-flex items-center gap-2 rounded-full border bg-background/90 px-3 py-2 text-xs font-medium shadow-sm backdrop-blur transition-colors hover:bg-accent ${preflightOn ? "border-primary/40 text-primary" : "border-border text-muted-foreground"}`}
           >
             {preflightOn ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-            <span>Preflight</span>
+            <span>Layout</span>
             {diagnostics.length > 0 && (
               <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 font-mono text-[10px] text-amber-600">
                 {diagnostics.length}
@@ -584,12 +918,41 @@ export function PreviewPane({
                 ? "block max-h-full max-w-full bg-background shadow-[0_24px_90px_rgba(0,0,0,0.48)]"
                 : "block max-h-full max-w-full border border-border bg-background shadow-sm"}
             />
-            {preflightOn && !presentationMode && (
+            {!presentationMode && (
               <canvas
                 ref={preflightCanvasRef}
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 block h-full w-full"
+                aria-label="Click an object to edit it or connect it; drag to reposition."
+                onClick={handlePreflightClick}
+                onPointerDown={handlePreflightPointerDown}
+                onPointerMove={handlePreflightPointerMove}
+                onPointerUp={handlePreflightPointerUp}
+                onPointerCancel={handlePreflightPointerCancel}
+                title="Click an object for edit, delete, or arrow actions; drag to reposition"
+                className="absolute inset-0 block h-full w-full touch-none cursor-pointer active:cursor-grabbing"
               />
+            )}
+            {connectFrom && !presentationMode && (
+              <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 items-center gap-3 rounded-xl bg-popover px-3 py-2 text-xs text-popover-foreground shadow-xl ring-1 ring-border/70">
+                <span>Click a destination object to connect the arrow.</span>
+                <button type="button" onClick={() => { setConnectFrom(null); setObjectNotice("") }} className="font-semibold text-primary hover:underline">Cancel</button>
+              </div>
+            )}
+            {objectNotice && !connectFrom && !presentationMode && (
+              <div className="pointer-events-none absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-xl bg-popover px-3 py-2 text-xs text-popover-foreground shadow-xl ring-1 ring-border/70">
+                {objectNotice}
+              </div>
+            )}
+            {preflightOn && !presentationMode && (
+              <div aria-label="Layout guide key" className="pointer-events-none absolute bottom-2 left-2 z-10 flex flex-wrap gap-x-3 gap-y-1 rounded-lg bg-background/90 px-2.5 py-1.5 text-[10px] font-medium text-muted-foreground shadow-sm backdrop-blur">
+                <span className="inline-flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-[#f2c96d]" />Safe area</span>
+                <span className="inline-flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-[#57c7d4]" />Center</span>
+                <span className="inline-flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-[#ffad55]" />Warning</span>
+                <span className="inline-flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-[#ff7777]" />Error</span>
+                <span className="inline-flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-[#72d9a0]" />Other objects</span>
+                <span className="basis-full pt-0.5 sm:basis-auto sm:pt-0">
+                  {preflightSelectedId ? `Selected ${preflightSelectedId} · click again to cycle` : "Click an object to jump to code"}
+                </span>
+              </div>
             )}
           </div>
         ) : script.trim() === "" ? (
@@ -912,6 +1275,39 @@ export function PreviewPane({
       onClose={() => setVoiceDialogOpen(false)}
       onUseVoice={(voice) => void enableReader(voice)}
     />
+    {objectMenu && selectedObjectNode && !presentationMode && (
+      <ObjectActions
+        key={`${objectMenu.sceneIndex}:${objectMenu.id}`}
+        node={selectedObjectNode}
+        source={currentEditorSource}
+        clientX={objectMenu.clientX}
+        clientY={objectMenu.clientY}
+        editable={sourceIsCurrent && objectCapability.editable}
+        positionEditable={objectCapability.positionEditable}
+        editReason={!sourceIsCurrent ? "Run the edited script before changing preview objects." : undefined}
+        deletable={sourceIsCurrent && objectCapability.deletable}
+        deleteReason={!sourceIsCurrent ? "Run the edited script before deleting preview objects." : objectCapability.deleteReason}
+        overlapCount={objectMenu.hitIds.length}
+        onClose={() => setObjectMenu(null)}
+        onEdit={editSelectedObject}
+        onDelete={deleteSelectedObject}
+        onJump={() => jumpToObject(objectMenu.id)}
+        onCycle={() => {
+          const state = renderStateRef.current
+          if (!state) return
+          const id = preflightNodeAt(state, objectMenu.worldX, objectMenu.worldY, objectMenu.id)
+          if (!id) return
+          setPreflightSelectedId(id)
+          setObjectMenu((previous) => previous ? { ...previous, id } : null)
+          jumpToObject(id)
+        }}
+        onConnect={() => {
+          setConnectFrom({ id: objectMenu.id, sceneIndex: objectMenu.sceneIndex })
+          setObjectMenu(null)
+          setObjectNotice("")
+        }}
+      />
+    )}
     </>
   )
 }

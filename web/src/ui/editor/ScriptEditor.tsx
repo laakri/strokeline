@@ -7,6 +7,7 @@ import {
   defaultKeymap,
   history,
   historyKeymap,
+  isolateHistory,
   indentWithTab,
 } from "@codemirror/commands"
 import {
@@ -19,11 +20,13 @@ import {
   setDiagnostics,
   type Diagnostic as CodeMirrorDiagnostic,
 } from "@codemirror/lint"
-import { EditorState, type Extension } from "@codemirror/state"
-import { EditorView, keymap, lineNumbers } from "@codemirror/view"
+import { EditorState, StateEffect, StateField, type Extension } from "@codemirror/state"
+import { Decoration, EditorView, keymap, lineNumbers, type DecorationSet } from "@codemirror/view"
 import { tags } from "@lezer/highlight"
 import { ICON_NAMES, PROPERTY_KEYS, STATEMENT_KEYWORDS } from "@/dsl/grammar.ts"
-import { useAppStore } from "@/app/store.ts"
+import { useAppStore, type EditorSourceEdit } from "@/app/store.ts"
+import { ObjectQuickInsert } from "@/ui/editor/ObjectQuickInsert.tsx"
+import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
 import { colorSwatches } from "@/ui/editor/colorSwatches.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
 
@@ -45,6 +48,10 @@ const keywords = new Set([
   "EASE",
 ])
 const languageValues = [
+  "chalkboard", "whiteboard", "blueprint", "kraft", "paper", "graph", "dotted", "glass", "plain",
+  "celestial", "topographic", "neon-grid", "editorial", "blackboard", "corkboard", "linen", "aurora",
+  "circuit", "notebook", "terrazzo",
+  "classic", "chalk", "cosmic", "suspense", "parchment", "cream", "deepsea", "fieldnotes", "afterhours", "classroom", "scrapbook", "atelier",
   "left",
   "center",
   "right",
@@ -111,7 +118,7 @@ function completions(context: CompletionContext) {
         : "keyword",
     detail: (ICON_NAMES as readonly string[]).includes(label) ? "Lucide icon" : undefined,
     info: (ICON_NAMES as readonly string[]).includes(label)
-      ? "54 built-in Lucide icons. Type to filter the icon list."
+      ? "Lucide icon from the full installed library. Type to filter."
       : BUILTIN_MACROS.some((macro) => macro.name === label)
         ? "Built-in compile-time macro. Use AS id AT x y."
         : undefined,
@@ -183,11 +190,35 @@ const theme = EditorView.theme({
   },
   ".cm-activeLine": { backgroundColor: "var(--accent)" },
   ".cm-activeLineGutter": { backgroundColor: "var(--accent)" },
+  ".cm-line.cm-source-jump-line": {
+    backgroundColor: "color-mix(in oklab, var(--primary) 18%, transparent)",
+    boxShadow: "inset 3px 0 var(--primary)",
+    transition: "background-color 180ms ease-out",
+  },
+})
+
+const sourceJumpEffect = StateEffect.define<number | null>()
+const sourceJumpLine = StateField.define<DecorationSet>({
+  create: () => Decoration.none,
+  update: (decorations, transaction) => {
+    let next = decorations.map(transaction.changes)
+    for (const effect of transaction.effects) {
+      if (!effect.is(sourceJumpEffect)) continue
+      next = effect.value === null
+        ? Decoration.none
+        : Decoration.set([
+            Decoration.line({ class: "cm-source-jump-line" }).range(effect.value),
+          ])
+    }
+    return next
+  },
+  provide: (field) => EditorView.decorations.from(field),
 })
 
 export function ScriptEditor() {
   const container = useRef<HTMLDivElement>(null)
   const view = useRef<EditorView | null>(null)
+  const sourceJumpTimeout = useRef<number | null>(null)
   const script = useAppStore((state) => state.script)
   const diagnostics = useAppStore((state) => state.diagnostics)
   const editorJump = useAppStore((state) => state.editorJump)
@@ -197,6 +228,7 @@ export function ScriptEditor() {
     if (!container.current) return
     const extensions: Extension[] = [
       lineNumbers(),
+      sourceJumpLine,
       language,
       highlights,
       history(),
@@ -220,12 +252,23 @@ export function ScriptEditor() {
     })
     const readCurrentDocument = () =>
       view.current?.state.doc.toString() ?? useAppStore.getState().script
+    const writeSourceEdits = (edits: EditorSourceEdit[]) => {
+      view.current?.dispatch({
+        changes: edits,
+        annotations: isolateHistory.of("full"),
+      })
+    }
     useAppStore.getState().setEditorSourceReader(readCurrentDocument)
+    useAppStore.getState().setEditorSourceWriter(writeSourceEdits)
     return () => {
+      if (sourceJumpTimeout.current !== null) window.clearTimeout(sourceJumpTimeout.current)
       view.current?.destroy()
       view.current = null
       if (useAppStore.getState().editorSourceReader === readCurrentDocument) {
         useAppStore.getState().setEditorSourceReader(null)
+      }
+      if (useAppStore.getState().editorSourceWriter === writeSourceEdits) {
+        useAppStore.getState().setEditorSourceWriter(null)
       }
     }
   }, [])
@@ -257,11 +300,19 @@ export function ScriptEditor() {
       line.from + Math.max(0, editorJump.col - 1),
       line.to
     )
+    if (sourceJumpTimeout.current !== null) window.clearTimeout(sourceJumpTimeout.current)
     view.current.dispatch({
       selection: { anchor: position },
-      effects: EditorView.scrollIntoView(position, { y: "center" }),
+      effects: [
+        EditorView.scrollIntoView(position, { y: "center" }),
+        sourceJumpEffect.of(line.from),
+      ],
     })
     view.current.focus()
+    sourceJumpTimeout.current = window.setTimeout(() => {
+      view.current?.dispatch({ effects: sourceJumpEffect.of(null) })
+      sourceJumpTimeout.current = null
+    }, 1800)
     useAppStore.getState().clearEditorJump()
   }, [editorJump])
 
@@ -287,11 +338,34 @@ export function ScriptEditor() {
     view.current.dispatch(setDiagnostics(view.current.state, mapped))
   }, [diagnostics])
 
+  const insertObjectSnippet = (snippet: string, sceneIndex?: number): boolean => {
+    const editor = view.current
+    if (!editor) return false
+    const state = editor.state
+    const edit = makeSceneInsertEdit(
+      state.doc.toString(),
+      snippet,
+      sceneIndex,
+      state.doc.lineAt(state.selection.main.head).number
+    )
+    if (!edit) return false
+    editor.dispatch({
+      changes: edit,
+      annotations: isolateHistory.of("full"),
+      scrollIntoView: true,
+    })
+    editor.focus()
+    useAppStore.getState().compileScript()
+    return true
+  }
+
   return (
-    <div
-      ref={container}
-      className="h-full min-h-0"
-      aria-label="Script editor"
-    />
+    <div className="grid h-full min-h-0 grid-rows-[40px_minmax(0,1fr)]" aria-label="Script editor">
+      <ObjectQuickInsert
+        onInsert={insertObjectSnippet}
+        getSource={() => view.current?.state.doc.toString() ?? script}
+      />
+      <div ref={container} className="h-full min-h-0" />
+    </div>
   )
 }
