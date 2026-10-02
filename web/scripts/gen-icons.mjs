@@ -1,5 +1,5 @@
 // Generator: emits src/renderer/shapes/icons.generated.ts
-// by dynamic-importing curated lucide-react icons and serializing each
+// by dynamic-importing lucide-react icons and serializing each
 // icon's __iconData.node array (JSON-safe: [tag, {attrs}][]).
 
 import fs from "node:fs"
@@ -101,6 +101,14 @@ const ICON_MAP = {
   "x-circle": ["circle-x", "x-circle"],
 }
 
+for (const filename of fs.readdirSync(iconsDir).sort()) {
+  if (!filename.endsWith(".mjs")) continue
+  const name = filename.slice(0, -4)
+  if (!Object.prototype.hasOwnProperty.call(ICON_MAP, name)) {
+    ICON_MAP[name] = [name]
+  }
+}
+
 function resolveIconFile(candidates) {
   for (const candidate of candidates) {
     const filePath = path.join(iconsDir, `${candidate}.mjs`)
@@ -158,7 +166,7 @@ async function main() {
     .join("\n")
 
   const out = `// AUTO-GENERATED from lucide-react geometry (24x24 viewBox). Do not edit.
-// Curated icon set; regen with: node scripts/gen-icons.mjs
+// Full installed Lucide icon set; regen with: node scripts/gen-icons.mjs
 
 export type IconPrimitive = [tag: string, attrs: Record<string, string>]
 
@@ -177,7 +185,7 @@ export const ICON_NAMES: readonly string[] = Object.keys(ICONS)
 
   const defaultsIconFile = path.join(webRoot, "src", "defaults", "icons.ts")
   const defaultsOut = `// AUTO-GENERATED from lucide-react geometry. Do not edit.
-// Curated icon set; regen with: node scripts/gen-icons.mjs
+// Full installed Lucide icon set; regen with: node scripts/gen-icons.mjs
 
 export const ICON_NAMES = ${JSON.stringify(Object.keys(entries), null, 2)} as const
 
