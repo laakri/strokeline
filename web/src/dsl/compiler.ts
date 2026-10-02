@@ -625,7 +625,7 @@ function fontFamilyName(name = "handwritten"): string {
 
 function themeInk(ast: ASTScript): string {
   if (ast.theme) return (THEMES[ast.theme.toLowerCase()] ?? THEMES.classic!).ink
-  if (["chalkboard", "blueprint", "glass"].includes(ast.board?.toLowerCase() ?? "")) return "#F5F0DB"
+  if (["chalkboard", "blueprint", "glass", "celestial", "topographic", "neon-grid", "blackboard", "aurora", "circuit"].includes(ast.board?.toLowerCase() ?? "")) return "#F5F0DB"
   return DEFAULT_COLOR
 }
 
