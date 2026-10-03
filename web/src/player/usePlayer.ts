@@ -94,6 +94,8 @@ export class SequencePlayer {
     type: "fade" | "wipe" | "slide" | "erase"
     fromIndex: number
     toIndex: number
+    fromState: RenderState
+    toState: RenderState
   }> = []
   private readonly gaps: Array<{ start: number; end: number; sceneIndex: number }> = []
   private readonly onRender: SequenceRenderCallback
@@ -134,6 +136,8 @@ export class SequencePlayer {
           type: transition.type,
           fromIndex: index,
           toIndex: index + 1,
+          fromState: timelines[index]!.resolveAt(timelines[index]!.duration),
+          toState: timelines[index + 1]!.resolveAt(0),
         })
         total += transition.duration
       }
@@ -210,13 +214,11 @@ export class SequencePlayer {
       const progress =
         (this.elapsed - activeTransition.start) /
         (activeTransition.end - activeTransition.start)
-      const from = fromTimeline.resolveAt(fromTimeline.duration)
-      const to = toTimeline.resolveAt(0)
-      this.onRender(to, activeTransition.toIndex, this.elapsed, {
+      this.onRender(activeTransition.toState, activeTransition.toIndex, this.elapsed, {
         type: activeTransition.type,
         progress,
-        from,
-        to,
+        from: activeTransition.fromState,
+        to: activeTransition.toState,
       })
       return
     }

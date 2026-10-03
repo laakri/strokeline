@@ -396,6 +396,10 @@ export function PreviewPane({
     const transitionToCanvas = document.createElement("canvas")
     transitionFromCanvas.width = transitionToCanvas.width = canvas.width
     transitionFromCanvas.height = transitionToCanvas.height = canvas.height
+    let cachedTransitionFrom: RenderState | null = null
+    let cachedTransitionTo: RenderState | null = null
+    let cachedTransitionSubtitles: boolean | null = null
+    let cachedTransitionReadAlong: boolean | null = null
     const controller = effectivePlayAllMode
       ? new SequencePlayer(
           timelines,
@@ -424,30 +428,43 @@ export function PreviewPane({
               const fromContext = transitionFromCanvas.getContext("2d")
               const toContext = transitionToCanvas.getContext("2d")
               if (fromContext && toContext) {
-                drawScene(
-                  fromContext,
-                  transition.from,
-                  undefined,
-                  compiledIR.canvas,
-                  compiledIR.background,
-                  compiledIR.style.mode,
-                  compiledIR.style.board,
-                  compiledIR.style.hand,
-                  subtitlesOnRef.current,
-                  readAlongRef.current
-                )
-                drawScene(
-                  toContext,
-                  transition.to,
-                  undefined,
-                  compiledIR.canvas,
-                  compiledIR.background,
-                  compiledIR.style.mode,
-                  compiledIR.style.board,
-                  compiledIR.style.hand,
-                  subtitlesOnRef.current,
-                  readAlongRef.current
-                )
+                const subtitlesEnabled = subtitlesOnRef.current
+                const readAlongEnabled = readAlongRef.current
+                if (
+                  cachedTransitionFrom !== transition.from ||
+                  cachedTransitionTo !== transition.to ||
+                  cachedTransitionSubtitles !== subtitlesEnabled ||
+                  cachedTransitionReadAlong !== readAlongEnabled
+                ) {
+                  drawScene(
+                    fromContext,
+                    transition.from,
+                    undefined,
+                    compiledIR.canvas,
+                    compiledIR.background,
+                    compiledIR.style.mode,
+                    compiledIR.style.board,
+                    compiledIR.style.hand,
+                    subtitlesEnabled,
+                    readAlongEnabled
+                  )
+                  drawScene(
+                    toContext,
+                    transition.to,
+                    undefined,
+                    compiledIR.canvas,
+                    compiledIR.background,
+                    compiledIR.style.mode,
+                    compiledIR.style.board,
+                    compiledIR.style.hand,
+                    subtitlesEnabled,
+                    readAlongEnabled
+                  )
+                  cachedTransitionFrom = transition.from
+                  cachedTransitionTo = transition.to
+                  cachedTransitionSubtitles = subtitlesEnabled
+                  cachedTransitionReadAlong = readAlongEnabled
+                }
                 context.save()
                 context.setTransform(1, 0, 0, 1, 0, 0)
                 context.clearRect(0, 0, canvas.width, canvas.height)
