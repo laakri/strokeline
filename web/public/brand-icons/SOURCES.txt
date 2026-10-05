@@ -1,0 +1,4 @@
+Brand SVG assets in this directory were downloaded from the Simple Icons CDN:
+https://cdn.simpleicons.org/
+
+The respective brand names and marks remain the property of their owners.

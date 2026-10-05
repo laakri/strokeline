@@ -137,3 +137,18 @@
     cursor: pointer;
     }
 }
+@keyframes docker-flow-dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.docker-flow-line {
+  animation: docker-flow-dash 1.1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docker-flow-line {
+    animation: none;
+  }
+}

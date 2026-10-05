@@ -1,327 +1,519 @@
 VERSION 1.0
 CANVAS 1920 1080
-BACKGROUND #F4F6F8
+BACKGROUND #F5F7F9
 STYLE clean
 FONT neat
 STROKE 4
+SUBTITLES on
 
-SCENE 1 "How Docker moves images"
-  SAY "The client sends commands to the Docker daemon on the host."
-    DURATION 5.2s
-    TONE explain
-
+SCENE 1 "Docker image lifecycle"
   PARALLEL
     CREATE clientLane AS RECTANGLE
-      POSITION 260 570
-      WIDTH 420
-      HEIGHT 900
-      COLOR #3B7DAA
-      FILL #F9FCFE
-      DRAW 0.5s
+      POSITION 235 570
+      WIDTH 390
+      HEIGHT 940
+      COLOR #4A7EA4
+      FILL #FCFDFE
+      DRAW 0.6s
     END
     CREATE hostLane AS RECTANGLE
       POSITION 960 570
-      WIDTH 940
-      HEIGHT 900
-      COLOR #3B7DAA
-      FILL #FBFCFE
-      DRAW 0.5s
+      WIDTH 980
+      HEIGHT 940
+      COLOR #4A7EA4
+      FILL #FCFDFE
+      DRAW 0.6s
     END
     CREATE registryLane AS RECTANGLE
-      POSITION 1660 570
-      WIDTH 420
-      HEIGHT 900
-      COLOR #3B7DAA
-      FILL #F9FCFE
-      DRAW 0.5s
+      POSITION 1675 570
+      WIDTH 430
+      HEIGHT 940
+      COLOR #4A7EA4
+      FILL #FCFDFE
+      DRAW 0.6s
     END
-    CREATE clientHeading AS TEXT
+
+    CREATE clientHeading AS RECTANGLE
+      POSITION 235 145
+      WIDTH 390
+      HEIGHT 90
+      COLOR #4A7EA4
+      FILL #E8F1F7
       TEXT "Client"
-      POSITION 260 165
-      SIZE 42
-      COLOR #193B55
+      SIZE 40
       DRAW 0.4s
     END
-    CREATE hostHeading AS TEXT
+    CREATE hostHeading AS RECTANGLE
+      POSITION 960 145
+      WIDTH 980
+      HEIGHT 90
+      COLOR #4A7EA4
+      FILL #E8F1F7
       TEXT "Docker Host"
-      POSITION 960 165
-      SIZE 42
-      COLOR #193B55
+      SIZE 40
       DRAW 0.4s
     END
-    CREATE registryHeading AS TEXT
+    CREATE registryHeading AS RECTANGLE
+      POSITION 1675 145
+      WIDTH 430
+      HEIGHT 90
+      COLOR #4A7EA4
+      FILL #E8F1F7
       TEXT "Registry"
-      POSITION 1660 165
-      SIZE 42
-      COLOR #193B55
+      SIZE 40
       DRAW 0.4s
     END
   END
 
   PARALLEL
-    STACK commands
-      DIRECTION vertical
-      GAP 46
-      AT 75 300
-      CREATE dockerRun AS RECTANGLE
-        WIDTH 380
-        HEIGHT 140
-        COLOR #4A85A7
-        FILL #EAF3F8
-        TEXT "docker run"
-        SIZE 34
-        DRAW 0.7s
-      END
-      CREATE dockerBuild AS RECTANGLE
-        WIDTH 380
-        HEIGHT 140
-        COLOR #4A85A7
-        FILL #EAF3F8
-        TEXT "docker build"
-        SIZE 34
-        DRAW 0.7s
-      END
-      CREATE dockerPull AS RECTANGLE
-        WIDTH 380
-        HEIGHT 140
-        COLOR #4A85A7
-        FILL #EAF3F8
-        TEXT "docker pull"
-        SIZE 34
-        DRAW 0.7s
-      END
+    CREATE dockerRunCard AS RECTANGLE
+      POSITION 235 350
+      WIDTH 320
+      HEIGHT 140
+      COLOR #6F8EA5
+      FILL #F2F7FA
+      DRAW 0.5s
+    END
+    CREATE dockerRunIcon AS ICON
+      NAME "terminal"
+      POSITION 135 350
+      SIZE 54
+      COLOR #397FA8
+    END
+    CREATE dockerRunLabel AS TEXT
+      TEXT "docker run"
+      POSITION 280 337
+      SIZE 32
+      COLOR #233E53
+    END
+    CREATE dockerRunDetail AS TEXT
+      TEXT "start a container"
+      POSITION 280 379
+      SIZE 28
+      COLOR #687D8F
+    END
+
+    CREATE dockerBuildCard AS RECTANGLE
+      POSITION 235 570
+      WIDTH 320
+      HEIGHT 140
+      COLOR #6F8EA5
+      FILL #F2F7FA
+      DRAW 0.5s
+    END
+    CREATE dockerBuildIcon AS ICON
+      NAME "terminal"
+      POSITION 135 570
+      SIZE 54
+      COLOR #397FA8
+    END
+    CREATE dockerBuildLabel AS TEXT
+      TEXT "docker build"
+      POSITION 280 557
+      SIZE 32
+      COLOR #233E53
+    END
+    CREATE dockerBuildDetail AS TEXT
+      TEXT "make an image"
+      POSITION 280 599
+      SIZE 28
+      COLOR #687D8F
+    END
+
+    CREATE dockerPullCard AS RECTANGLE
+      POSITION 235 790
+      WIDTH 320
+      HEIGHT 140
+      COLOR #6F8EA5
+      FILL #F2F7FA
+      DRAW 0.5s
+    END
+    CREATE dockerPullIcon AS ICON
+      NAME "terminal"
+      POSITION 135 790
+      SIZE 54
+      COLOR #397FA8
+    END
+    CREATE dockerPullLabel AS TEXT
+      TEXT "docker pull"
+      POSITION 280 777
+      SIZE 32
+      COLOR #233E53
+    END
+    CREATE dockerPullDetail AS TEXT
+      TEXT "fetch from registry"
+      POSITION 280 819
+      SIZE 28
+      COLOR #687D8F
     END
 
     CREATE dockerDaemon AS RECTANGLE
-      POSITION 650 565
-      WIDTH 230
-      HEIGHT 660
-      COLOR #59788F
-      FILL #E9F0F4
-      TEXT "Docker daemon"
-      SIZE 34
-      DRAW 0.8s
+      POSITION 650 570
+      WIDTH 250
+      HEIGHT 640
+      COLOR #6E889B
+      FILL #EEF3F6
+      DRAW 0.7s
+    END
+    CREATE dockerBrand AS IMAGE
+      URL "/brand-icons/docker.svg"
+      POSITION 650 390
+      WIDTH 150
+      HEIGHT 105
+      FIT contain
+      DRAW 0.6s
+    END
+    CREATE dockerDaemonLabel AS TEXT
+      TEXT "Docker\ndaemon"
+      POSITION 650 520
+      SIZE 38
+      COLOR #283E51
+      ALIGN center
+      MAXWIDTH 210
+    END
+    CREATE daemonRule AS LINE
+      FROM 565 580
+      TO 735 580
+      COLOR #CEDAE2
+      STROKE 3
+    END
+    CREATE daemonApiIcon AS ICON
+      NAME "server-cog"
+      POSITION 595 655
+      SIZE 42
+      COLOR #4D7E9E
+    END
+    CREATE daemonApiLabel AS TEXT
+      TEXT "Engine API"
+      POSITION 680 655
+      SIZE 28
+      COLOR #526C80
+    END
+    CREATE daemonContainerIcon AS ICON
+      NAME "container"
+      POSITION 595 745
+      SIZE 42
+      COLOR #4D7E9E
+    END
+    CREATE daemonContainerLabel AS TEXT
+      TEXT "Runtime"
+      POSITION 680 745
+      SIZE 28
+      COLOR #526C80
     END
 
     CREATE localImagesFrame AS RECTANGLE
-      POSITION 965 465
-      WIDTH 240
+      POSITION 1010 540
+      WIDTH 300
       HEIGHT 500
-      COLOR #3B7DAA
-      FILL #EFF5F8
+      COLOR #4A83A9
+      FILL #FBFDFE
       DRAW 0.6s
     END
     CREATE localImagesTitle AS TEXT
       TEXT "Images"
-      POSITION 965 255
-      SIZE 32
-      COLOR #193B55
-      DRAW 0.4s
+      POSITION 1010 320
+      SIZE 34
+      COLOR #263F53
     END
-    STACK localImageList
-      DIRECTION vertical
-      GAP 20
-      AT 865 315
-      CREATE pythonImage AS RECTANGLE
-        WIDTH 200
-        HEIGHT 95
-        COLOR #6D9C72
-        FILL #F6FAF5
-        TEXT "python:3.12"
-        SIZE 30
-        DRAW 0.5s
-      END
-      CREATE redisImage AS RECTANGLE
-        WIDTH 200
-        HEIGHT 95
-        COLOR #BD624F
-        FILL #FCF6F4
-        TEXT "redis:7"
-        SIZE 30
-        DRAW 0.5s
-      END
-      CREATE appImage AS RECTANGLE
-        WIDTH 200
-        HEIGHT 95
-        COLOR #6D9C72
-        FILL #F6FAF5
-        TEXT "storefront:latest"
-        SIZE 28
-        DRAW 0.5s
-      END
+    CREATE pythonBrand AS IMAGE
+      URL "/brand-icons/python.svg"
+      POSITION 900 405
+      WIDTH 68
+      HEIGHT 68
+      FIT contain
+      DRAW 0.5s
+    END
+    CREATE pythonImageLabel AS TEXT
+      TEXT "python:3.12"
+      POSITION 1040 405
+      SIZE 30
+      COLOR #394E60
+    END
+    CREATE redisBrand AS IMAGE
+      URL "/brand-icons/redis.svg"
+      POSITION 900 550
+      WIDTH 68
+      HEIGHT 68
+      FIT contain
+      DRAW 0.5s
+    END
+    CREATE redisImageLabel AS TEXT
+      TEXT "redis:7"
+      POSITION 1040 550
+      SIZE 30
+      COLOR #394E60
+    END
+    CREATE appImageIcon AS ICON
+      NAME "boxes"
+      POSITION 900 695
+      SIZE 62
+      COLOR #4383A9
+    END
+    CREATE appImageLabel AS TEXT
+      TEXT "web:latest"
+      POSITION 1040 695
+      SIZE 30
+      COLOR #394E60
     END
 
     CREATE containersFrame AS RECTANGLE
-      POSITION 1280 465
-      WIDTH 240
+      POSITION 1315 540
+      WIDTH 260
       HEIGHT 500
-      COLOR #3B7DAA
-      FILL #EFF5F8
+      COLOR #4A83A9
+      FILL #FBFDFE
       DRAW 0.6s
     END
     CREATE containersTitle AS TEXT
       TEXT "Containers"
-      POSITION 1280 255
-      SIZE 32
-      COLOR #193B55
-      DRAW 0.4s
+      POSITION 1315 320
+      SIZE 34
+      COLOR #263F53
     END
-    STACK containerList
-      DIRECTION vertical
-      GAP 66
-      AT 1180 365
-      CREATE webContainer AS RECTANGLE
-        WIDTH 200
-        HEIGHT 125
-        COLOR #4587B6
-        FILL #EAF4FA
-        TEXT "web: python"
-        SIZE 30
-        DRAW 0.6s
-      END
-      CREATE cacheContainer AS RECTANGLE
-        WIDTH 200
-        HEIGHT 125
-        COLOR #4587B6
-        FILL #EAF4FA
-        TEXT "cache: redis"
-        SIZE 30
-        DRAW 0.6s
-      END
+    CREATE webContainerIcon AS ICON
+      NAME "container"
+      POSITION 1255 440
+      SIZE 84
+      COLOR #3784B3
+    END
+    CREATE webContainerLabel AS TEXT
+      TEXT "web_01"
+      POSITION 1370 440
+      SIZE 29
+      COLOR #394E60
+    END
+    CREATE webContainerStatus AS TEXT
+      TEXT "running"
+      POSITION 1370 478
+      SIZE 28
+      COLOR #35936E
+    END
+    CREATE cacheContainerIcon AS ICON
+      NAME "container"
+      POSITION 1255 650
+      SIZE 84
+      COLOR #648BA5
+    END
+    CREATE cacheContainerLabel AS TEXT
+      TEXT "cache_01"
+      POSITION 1370 650
+      SIZE 29
+      COLOR #394E60
+    END
+    CREATE cacheContainerStatus AS TEXT
+      TEXT "running"
+      POSITION 1370 688
+      SIZE 28
+      COLOR #35936E
     END
 
     CREATE registryImagesFrame AS RECTANGLE
-      POSITION 1660 445
-      WIDTH 360
-      HEIGHT 470
-      COLOR #3B7DAA
-      FILL #EFF5F8
+      POSITION 1675 500
+      WIDTH 350
+      HEIGHT 490
+      COLOR #4A83A9
+      FILL #FBFDFE
       DRAW 0.6s
     END
     CREATE registryImagesTitle AS TEXT
-      TEXT "Image registry"
-      POSITION 1660 245
-      SIZE 32
-      COLOR #193B55
-      DRAW 0.4s
+      TEXT "Images"
+      POSITION 1675 285
+      SIZE 34
+      COLOR #263F53
     END
-    GRID registryImageGrid
-      COLUMNS 2
-      GAP 16
-      AT 1505 310
-      CREATE nginxImage AS RECTANGLE
-        WIDTH 140
-        HEIGHT 105
-        COLOR #79A877
-        FILL #F7FAF4
-        TEXT "nginx"
-        SIZE 28
-        DRAW 0.5s
-      END
-      CREATE ubuntuImage AS RECTANGLE
-        WIDTH 140
-        HEIGHT 105
-        COLOR #CC7654
-        FILL #FCF5F2
-        TEXT "ubuntu"
-        SIZE 28
-        DRAW 0.5s
-      END
-      CREATE postgresImage AS RECTANGLE
-        WIDTH 140
-        HEIGHT 105
-        COLOR #597CA9
-        FILL #F3F6FA
-        TEXT "postgres"
-        SIZE 28
-        DRAW 0.5s
-      END
-      CREATE alpineImage AS RECTANGLE
-        WIDTH 140
-        HEIGHT 105
-        COLOR #8796A3
-        FILL #F7F9FA
-        TEXT "alpine"
-        SIZE 28
-        DRAW 0.5s
-      END
+    CREATE nginxBrand AS IMAGE
+      URL "/brand-icons/nginx.svg"
+      POSITION 1550 345
+      WIDTH 62
+      HEIGHT 62
+      FIT contain
+      DRAW 0.5s
+    END
+    CREATE nginxImageLabel AS TEXT
+      TEXT "nginx"
+      POSITION 1695 345
+      SIZE 29
+      COLOR #394E60
+    END
+    CREATE ubuntuBrand AS IMAGE
+      URL "/brand-icons/ubuntu.svg"
+      POSITION 1550 460
+      WIDTH 62
+      HEIGHT 62
+      FIT contain
+      DRAW 0.5s
+    END
+    CREATE ubuntuImageLabel AS TEXT
+      TEXT "ubuntu"
+      POSITION 1695 460
+      SIZE 29
+      COLOR #394E60
+    END
+    CREATE postgresBrand AS IMAGE
+      URL "/brand-icons/postgresql.svg"
+      POSITION 1550 575
+      WIDTH 62
+      HEIGHT 62
+      FIT contain
+      DRAW 0.5s
+    END
+    CREATE postgresImageLabel AS TEXT
+      TEXT "postgres:16"
+      POSITION 1695 575
+      SIZE 29
+      COLOR #394E60
+    END
+    CREATE alpineIcon AS ICON
+      NAME "package"
+      POSITION 1550 690
+      SIZE 62
+      COLOR #718393
+    END
+    CREATE alpineImageLabel AS TEXT
+      TEXT "alpine"
+      POSITION 1695 690
+      SIZE 29
+      COLOR #394E60
     END
 
-    CREATE extensions AS RECTANGLE
-      POSITION 1660 790
-      WIDTH 360
-      HEIGHT 115
-      COLOR #668A74
-      FILL #F2F7F3
-      TEXT "Extensions"
-      SIZE 30
+    CREATE extensionsFrame AS RECTANGLE
+      POSITION 1675 835
+      WIDTH 350
+      HEIGHT 140
+      COLOR #77957C
+      FILL #F4F8F4
       DRAW 0.5s
     END
-    CREATE plugins AS RECTANGLE
-      POSITION 1660 930
-      WIDTH 360
-      HEIGHT 115
-      COLOR #6884A5
-      FILL #F2F5F9
-      TEXT "Plugins"
-      SIZE 30
+    CREATE extensionsTitle AS TEXT
+      TEXT "Extensions"
+      POSITION 1675 790
+      SIZE 28
+      COLOR #405A47
+    END
+    CREATE extensionBlocks AS ICON
+      NAME "blocks"
+      POSITION 1585 865
+      SIZE 46
+      COLOR #5B9870
+    END
+    CREATE extensionShip AS ICON
+      NAME "ship-cargo"
+      POSITION 1675 865
+      SIZE 46
+      COLOR #4D849F
+    END
+    CREATE extensionPlug AS ICON
+      NAME "plug-zap"
+      POSITION 1765 865
+      SIZE 46
+      COLOR #67946A
+    END
+
+    CREATE pluginsFrame AS RECTANGLE
+      POSITION 1675 985
+      WIDTH 350
+      HEIGHT 110
+      COLOR #788CA1
+      FILL #F3F6F9
       DRAW 0.5s
+    END
+    CREATE pluginsTitle AS TEXT
+      TEXT "Plugins"
+      POSITION 1675 952
+      SIZE 28
+      COLOR #405469
+    END
+    CREATE pluginServer AS ICON
+      NAME "server-cog"
+      POSITION 1585 1008
+      SIZE 44
+      COLOR #467DA2
+    END
+    CREATE pluginContainer AS ICON
+      NAME "container"
+      POSITION 1675 1008
+      SIZE 44
+      COLOR #5B829C
+    END
+    CREATE pluginDatabase AS ICON
+      NAME "database"
+      POSITION 1765 1008
+      SIZE 44
+      COLOR #73936F
     END
   END
 
   PARALLEL
-    ARROW dockerRun -> dockerDaemon
+    ARROW dockerRunCard -> dockerDaemon
       ROUTE elbow
-      COLOR #2589BC
+      COLOR #3784B3
       STROKE 6
       DRAW 0.8s
-    ARROW dockerBuild -> dockerDaemon
+    ARROW dockerBuildCard -> dockerDaemon
       ROUTE elbow
-      COLOR #D59B36
-      STROKE 6
+      LINESTYLE dotted
+      COLOR #D39A3B
+      STROKE 5
       DRAW 0.8s
-    ARROW dockerPull -> dockerDaemon
+    ARROW dockerPullCard -> dockerDaemon
       ROUTE elbow
-      COLOR #2589BC
-      STROKE 6
+      LINESTYLE dashed
+      COLOR #4E8DB7
+      STROKE 5
       DRAW 0.8s
     ARROW dockerDaemon -> localImagesFrame
-      ROUTE elbow
-      COLOR #2589BC
+      ROUTE straight
+      LABEL "create image"
+      COLOR #3784B3
       STROKE 5
       DRAW 0.8s
     ARROW localImagesFrame -> containersFrame
       ROUTE straight
       LABEL "run"
-      COLOR #2589BC
+      COLOR #3784B3
       STROKE 5
-      DRAW 0.7s
+      DRAW 0.8s
+  END
+
+  SAY "A Docker client asks the host to run, build, or pull an image."
+    DURATION 4.6s
+    TONE explain
+
+  PARALLEL
     ARROW localImagesFrame -> registryImagesFrame
       ROUTE curve
-      VIA 1110 215 1500 215
+      VIA 1150 215 1515 215
       LINESTYLE dashed
-      HEAD both
-      LABEL "push / pull"
-      COLOR #D59B36
+      HEAD end
+      LABEL "push"
+      COLOR #D39A3B
+      STROKE 5
+      DRAW 1s
+    ARROW registryImagesFrame -> localImagesFrame
+      ROUTE curve
+      VIA 1515 245 1150 245
+      LINESTYLE dashed
+      HEAD end
+      LABEL "pull"
+      COLOR #D39A3B
       STROKE 5
       DRAW 1s
   END
 
-  WAIT 3.2s
-
-  SAY "Images are stored in the registry, then downloaded onto the host."
-    DURATION 4.6s
+  SAY "The host stores images, then starts containers from them. Push sends an image to the registry; pull fetches one back."
+    DURATION 8.2s
     TONE explain
   PARALLEL
-    ANIMATE registryImagesFrame HIGHLIGHT
-      COLOR #FFE3A1
-      DURATION 1.1s
     ANIMATE localImagesFrame HIGHLIGHT
-      COLOR #D8F0FF
-      DURATION 1.1s
+      COLOR #DCEFFC
+      DURATION 1s
     ANIMATE containersFrame HIGHLIGHT
-      COLOR #D8F0FF
-      DURATION 1.1s
+      COLOR #DCEFFC
+      DURATION 1s
+    ANIMATE registryImagesFrame HIGHLIGHT
+      COLOR #FCEACB
+      DURATION 1s
   END
-  WAIT 3.5s
+  WAIT 7.5s
 END SCENE

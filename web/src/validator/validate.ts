@@ -19,7 +19,8 @@ const knownTypes = new Set<string>([
 ])
 const knownIcons = new Set<string>(ICON_NAMES)
 
-function isHttpsUrl(value: string): boolean {
+function isAllowedImageUrl(value: string): boolean {
+  if (value.startsWith("/") && !value.startsWith("//")) return true
   try {
     const url = new URL(value)
     return url.protocol === "https:" && Boolean(url.hostname)
@@ -197,18 +198,18 @@ export function validate(document: SceneDocument): Diagnostic[] {
           if (!image?.url) {
             diagnostics.push(error(
               "E_IMAGE_URL",
-              `IMAGE "${op.node.id}" needs a URL using HTTPS.`,
+              `IMAGE "${op.node.id}" needs an HTTPS URL or a same-origin asset path.`,
               imageLocation.line,
               imageLocation.col,
-              "Add URL \"https://…\"."
+              "Add an HTTPS URL or a root path such as \"/brand-icons/docker.svg\"."
             ))
-          } else if (!isHttpsUrl(image.url)) {
+          } else if (!isAllowedImageUrl(image.url)) {
             diagnostics.push(error(
               "E_IMAGE_URL",
-              `IMAGE URL must use HTTPS: ${image.url}`,
+              `IMAGE URL must use HTTPS or a root-relative asset path: ${image.url}`,
               imageLocation.line,
               imageLocation.col,
-              "Use a publicly accessible HTTPS image URL."
+              "Use a publicly accessible HTTPS URL or a same-origin root path."
             ))
           }
           if (!op.node.size || !Number.isFinite(op.node.size.width) || !Number.isFinite(op.node.size.height) || op.node.size.width <= 0 || op.node.size.height <= 0)

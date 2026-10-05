@@ -193,6 +193,49 @@ const connectorScript = `SCENE 1 "Three ways to connect"
   END
 END SCENE`
 
+const dockerIconScript = `SCENE 1 "Docker image flow"
+  CREATE docker AS IMAGE
+    URL "/brand-icons/docker.svg"
+    POSITION 500 500
+    WIDTH 180
+    HEIGHT 120
+    FIT contain
+    DRAW 0.8s
+  END
+  CREATE image AS IMAGE
+    URL "/brand-icons/python.svg"
+    POSITION 980 400
+    WIDTH 96
+    HEIGHT 96
+    FIT contain
+    DRAW 0.6s
+  END
+  CREATE container AS ICON
+    NAME "container"
+    POSITION 1320 500
+    SIZE 100
+    COLOR #3784B3
+  END
+  CREATE registry AS ICON
+    NAME "ship-cargo"
+    POSITION 1660 500
+    SIZE 100
+    COLOR #D39137
+  END
+  ARROW docker -> image
+    ROUTE elbow
+    COLOR #3784B3
+  ARROW image -> container
+    LABEL "run"
+    COLOR #3784B3
+  ARROW registry -> image
+    ROUTE curve
+    VIA 1480 260 1080 260
+    LINESTYLE dashed
+    LABEL "pull"
+    COLOR #D39137
+END SCENE`
+
 const inkScript = `SCENE 1 "Freehand marks"
   CREATE target AS RECTANGLE
     POSITION 1000 500
@@ -795,6 +838,15 @@ export function DocsPage() {
                 These previews show each preset as a complete starting style, using
                 the same procedural renderer as the studio.
               </p>
+              <h3>Foggy Window</h3>
+              <p>
+                Use <code>THEME foggywindow</code> for night scenes about heat,
+                optics, weather, and phases. The blurred city sits behind
+                condensed glass. Freehand <code>INK</code> strokes clear the
+                fog and reveal the sharper scene underneath, so a curve can
+                literally become clarity.
+              </p>
+              <CodeBlock title="Foggy Window reveal" code={`VERSION 1.0\nCANVAS 1920 1080\nTHEME foggywindow\n\nSCENE 1 "Heat bends light"\n  INK risingHeat\n    POINTS 300 760, 600 430, 960 300, 1320 430, 1620 760\n    COLOR #6BD6FF\n    WIDTH 8\n    DRAW 1.2s\n  END\nEND SCENE`} />
               <div className="not-prose grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {themeGallery.map(([name, theme]) => (
                   <figure key={name} className="min-w-0">
@@ -920,6 +972,16 @@ export function DocsPage() {
               </p>
               <CodeBlock title="Styled diagram connectors" code={connectorScript} />
               <p>
+                This compact Docker flow pairs the Docker whale and software
+                brand marks with the built-in container and cargo ship icons.
+                The staged reference example is also in{" "}
+                <code>web/examples/docker-architecture.wbs</code>.
+              </p>
+              <CodeBlock
+                title="Docker brand and built-in diagram icons"
+                code={dockerIconScript}
+              />
+              <p>
                 Raw <code>INK</code> is a freehand path with at least two
                 coordinate pairs. <code>INK ARROW</code> draws between
                 coordinates; <code>INK UNDERLINE id</code> and{" "}
@@ -946,8 +1008,9 @@ export function DocsPage() {
 
             <DocsSection id="images" title="Images">
               <p>
-                Use a publicly accessible HTTPS URL. Images preload for preview
-                and export, and the source must allow cross-origin embedding.
+                Use a publicly accessible HTTPS URL or a same-origin root path
+                for an asset shipped with the site. Images preload for preview
+                and export; external sources must allow cross-origin embedding.
                 Failed URLs show a placeholder and diagnostic. Images support
                 timeline reveals, camera movement, enter, exit, animate,
                 duplicate, and delete.
@@ -971,6 +1034,19 @@ export function DocsPage() {
                   "END SCENE",
                 ].join("\n")}
               />
+              <p>
+                Packaged brand marks are available at{" "}
+                <code>/brand-icons/docker.svg</code>,{" "}
+                <code>/brand-icons/python.svg</code>,{" "}
+                <code>/brand-icons/redis.svg</code>,{" "}
+                <code>/brand-icons/nginx.svg</code>,{" "}
+                <code>/brand-icons/ubuntu.svg</code>, and{" "}
+                <code>/brand-icons/postgresql.svg</code>. Use them as{" "}
+                <code>IMAGE</code> objects; Lucide icons such as{" "}
+                <code>container</code>, <code>ship-cargo</code>, and{" "}
+                <code>boxes</code> work as regular animated <code>ICON</code>{" "}
+                objects.
+              </p>
               <ul className={listCls}>
                 <li>
                   FIT cover crops to fill; FIT contain letterboxes inside the
@@ -982,7 +1058,8 @@ export function DocsPage() {
                   and depth.
                 </li>
                 <li>
-                  Missing, non-HTTPS, blocked, or failed URLs produce{" "}
+                  Missing, blocked, or failed external URLs and missing
+                  same-origin assets produce{" "}
                   <code>E_IMAGE_LOAD</code> and a placeholder. For blocked
                   hosts, Strokeline shows “This site blocks embedding. Try
                   another URL.”
@@ -1163,9 +1240,11 @@ export function DocsPage() {
               </p>
               <p>
                 There is no hard character limit for <code>SAY</code>.{" "}
-                <code>W_SAY_FAST</code> warns above 20 characters per second;
-                playback schedules cues in order and gives each at least 1.8
-                seconds or about 15 characters per second, whichever is longer.
+                <code>W_SAY_FAST</code> flags unusually dense narration.
+                Playback schedules cues in order using an estimate of about 2.6
+                words per second, with extra time for punctuation and a minimum
+                of 1.8 seconds per cue. Keep visuals active through the spoken
+                line and leave a brief breath before the next cue.
                 Overlaps and close repetition of visible text are also warned.
               </p>
               <p>

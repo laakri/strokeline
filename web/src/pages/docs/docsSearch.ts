@@ -63,10 +63,10 @@ export const docsSearchEntries: DocsSearchEntry[] = [
   },
   {
     title: "Images",
-    description: "Load an image from a secure URL and animate its reveal.",
+    description: "Load an image from HTTPS or a same-origin asset and animate its reveal.",
     page: "visuals",
     anchor: "images",
-    keywords: ["IMAGE URL photo logo picture https fit corners"],
+    keywords: ["IMAGE URL photo logo picture https asset docker python redis nginx ubuntu postgresql fit corners"],
   },
   {
     title: "Comparison tables",

@@ -9,7 +9,8 @@ interface ImageAsset {
 }
 const imageCache = new Map<string, ImageAsset>()
 
-function isHttpsImageUrl(value: string): boolean {
+function isAllowedImageUrl(value: string): boolean {
+  if (value.startsWith("/") && !value.startsWith("//")) return true
   try {
     const url = new URL(value)
     return url.protocol === "https:" && Boolean(url.hostname)
@@ -57,7 +58,7 @@ function ensureImage(url: string): ImageAsset {
   if (cached) return cached
   const asset: ImageAsset = { promise: Promise.resolve() }
   imageCache.set(url, asset)
-  asset.promise = isHttpsImageUrl(url)
+  asset.promise = isAllowedImageUrl(url)
     ? requestImage(url, asset)
     : Promise.resolve().then(() => { asset.error = IMAGE_EMBED_ERROR })
   return asset
@@ -101,7 +102,7 @@ export async function preloadImages(document: SceneDocument): Promise<Diagnostic
       message: `IMAGE "${node.id}" could not load ${url}. ${IMAGE_EMBED_ERROR}`,
       line: locations?.URL?.line ?? line,
       col: locations?.URL?.col ?? col,
-      suggestion: "Use an HTTPS image URL that allows cross-origin embedding.",
+      suggestion: "Use an HTTPS image URL that allows embedding, or a same-origin root asset path.",
     }]
   })
 }

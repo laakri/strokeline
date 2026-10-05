@@ -33,7 +33,7 @@ Use the syntax documented in this kit; do not invent keywords or property values
 | Auto grid       | `GRID [id] COLUMNS n GAP n [AT x y]` ...                   | **YES** `END` |
 | Table           | `TABLE id` ...                                             | **YES** `END` |
 | Charts          | `BARCHART id`, `LINECHART id`, `PIECHART id` ...           | **YES** `END` |
-| Image           | `CREATE id AS IMAGE` (only with a user-supplied https URL) | **YES** `END` |
+| Image           | `CREATE id AS IMAGE` (HTTPS URL or packaged same-origin asset path) | **YES** `END` |
 | Connector       | `ARROW a -> b`                                             | no            |
 | Animate         | `ANIMATE id VERB`                                          | no            |
 | Delete          | `DELETE id`                                                | no            |
@@ -331,9 +331,9 @@ Every scene has narration. `SAY` does not take `END` and does not pause the time
 **Timing recipe (no guesswork):**
 
 1. Write complete narration naturally; there is no character limit.
-2. Set `DURATION` to `max(1.8, characters / 15)` rounded UP to one decimal. Example: 62 characters gives 4.1s.
+2. Estimate speaking time from words: `word count / 2.6`, then add 0.2s for each comma/colon/semicolon and 0.3s for each sentence-ending mark. Round UP to one decimal and use at least 1.8s. Example: 13 words with one comma and one period needs about 5.5s. Keep sentences concise and split long narration at natural pauses.
 3. Write the visuals for that beat. Add their durations (a `PARALLEL` counts as its longest child, plus every `WAIT`).
-4. If the visuals total less than the `SAY` duration, add a `WAIT` for the difference. Then the next `SAY` begins after the previous one ends, which prevents overlap.
+4. Let the visual beat breathe for the entire `SAY` duration. Add a final `WAIT` to cover any remaining speech time, then leave about 0.2s before the next beat. The next `SAY` must not overlap the previous one.
 5. Never put `SAY` inside `PARALLEL`. One `SAY` per timeline moment.
 
 `TONE` is optional and only these exact values exist: `explain`, `hook`, `warning`, `punchline`, `recap`. Put warmth or humor in the wording, never in `TONE`. The last line of the script uses `TONE punchline`.
@@ -415,11 +415,13 @@ END
 
 `LINECHART` and `PIECHART` use the same form. Label what the numbers mean in a nearby `TEXT` and say "example" when they are illustrative.
 
-**Images:** only when the user's message contains an https URL; copy it unchanged. Never invent a URL.
+**Images:** use a user-supplied HTTPS URL unchanged, or a packaged same-origin asset path listed below. Never invent an external URL.
+
+Packaged brand SVGs: `/brand-icons/docker.svg`, `/brand-icons/python.svg`, `/brand-icons/redis.svg`, `/brand-icons/nginx.svg`, `/brand-icons/ubuntu.svg`, `/brand-icons/postgresql.svg`. Use them as `IMAGE` objects with `FIT contain`. Other bundled icons are Lucide `ICON` names; common diagram choices include `container`, `ship-cargo`, `boxes`, `package`, `server`, `terminal`, `cloud`, and `database`. Use the Docker whale mark for Docker itself, then only the specific software marks needed to distinguish image types.
 
 ```
 CREATE logo AS IMAGE
-  URL "USER_SUPPLIED_HTTPS_URL"
+  URL "/brand-icons/docker.svg"
   POSITION 960 540
   WIDTH 400
   HEIGHT 300
@@ -480,14 +482,15 @@ Prefer a second pen color with an `INK ARROW` pointing at the subject over an un
 | Suspense           | `#07070B`  | `#E8E0C8` | `#FF2D2D` `#FFD966` `#8A8470`                     |
 | Parchment          | `#F2E8D0`  | `#3B2A1A` | `#B5403A` `#A99A62` `#A8853F` `#6C8A85`           |
 | Blueprint          | `#0D3B66`  | `#F4F4F4` | `#7FDBFF` `#FFDC00` `#FF8C42`                     |
+| Foggy Window      | `#0D1626`  | `#DFE9F5` | `#FFCF6B` `#6BD6FF`                               |
 
 Pick one palette for the whole script, at most 4 accents. On dark boards use bright ink and dark, desaturated fills. Never gray text on a gray fill. Give different meanings different colors (for example problem = red, fix = green).
 
 ### Procedural boards and themes
 
-Choose `THEME` for a coordinated board, base color, ink, and pen. Use `THEME classroom` for lessons and equations: it is a green school blackboard with a wood frame, chalk tray, chalk, and eraser. Use `THEME blueprint` for technical diagrams; `THEME circuit` for electronics and networks; `THEME notebook` for notes and worked examples; `THEME terrazzo` for warm, editorial storytelling; `THEME deepsea` or `THEME aurora` for astronomy; `THEME fieldnotes` for nature or research; `THEME scrapbook` for human stories; `THEME afterhours` for dramatic technology; and `THEME editorial` for polished business explainers. For presentation-ready visuals, use `THEME spotlight` for a cinematic keynote, `THEME atlas` for research and strategy, or `THEME prism` for modern product and technology stories. Keep the center calm, preserve strong text contrast, and choose a board that supports the message. `THEME classic` and `THEME chalk` are visual aliases; prefer `classic` unless the user asks for chalk.
+Choose `THEME` for a coordinated board, base color, ink, and pen. Use `THEME classroom` for lessons and equations: it is a green school blackboard with a wood frame, chalk tray, chalk, and eraser. Use `THEME blueprint` for technical diagrams; `THEME circuit` for electronics and networks; `THEME notebook` for notes and worked examples; `THEME terrazzo` for warm, editorial storytelling; `THEME deepsea` or `THEME aurora` for astronomy; `THEME fieldnotes` for nature or research; `THEME scrapbook` for human stories; `THEME afterhours` for dramatic technology; and `THEME editorial` for polished business explainers. For heat, optics, weather, or phase changes, use `THEME foggywindow`: the blurred city is visible through condensed glass, and each freehand `INK` stroke clears a path to reveal the sharper city underneath. Treat the erased path as the visual itself; choose cool light for the curve and warm city lights for key details. For presentation-ready visuals, use `THEME spotlight` for a cinematic keynote, `THEME atlas` for research and strategy, or `THEME prism` for modern product and technology stories. Keep the center calm, preserve strong text contrast, and choose a board that supports the message. `THEME classic` and `THEME chalk` are visual aliases; prefer `classic` unless the user asks for chalk.
 
-Available themes: classic, spotlight, atlas, prism, chalk, cosmic, suspense, parchment, blueprint, cream, deepsea, fieldnotes, afterhours, editorial, classroom, scrapbook, aurora, atelier, circuit, notebook, terrazzo, nightwatch, pulp, kyoto, gilded. Available `BOARD` surfaces: chalkboard, blackboard, whiteboard, blueprint, kraft, paper, graph, dotted, glass, plain, celestial, topographic, neon-grid, editorial, corkboard, linen, aurora, circuit, notebook, terrazzo, sonar, halftone, zengarden, marble, spotlight, atlas, prism. `suspense` is not a board surface; use `THEME suspense`. Use `BOARD` only with a listed surface name. `BACKGROUND` may recolor that surface without removing its procedural texture. Keep decorative texture subtle behind text and choose surfaces to reinforce the subject, not as random decoration.
+Available themes: classic, spotlight, atlas, prism, chalk, cosmic, foggywindow, suspense, parchment, blueprint, cream, deepsea, fieldnotes, afterhours, editorial, classroom, scrapbook, aurora, atelier, circuit, notebook, terrazzo, nightwatch, pulp, kyoto, gilded. Available `BOARD` surfaces: chalkboard, blackboard, whiteboard, blueprint, kraft, paper, graph, dotted, glass, foggywindow, plain, celestial, topographic, neon-grid, editorial, corkboard, linen, aurora, circuit, notebook, terrazzo, sonar, halftone, zengarden, marble, spotlight, atlas, prism. On `BOARD foggywindow` or `THEME foggywindow`, freehand `INK` clears the fog layer and reveals the city beneath; its path is a transparent opening rather than colored ink. `suspense` is not a board surface; use `THEME suspense`. Use `BOARD` only with a listed surface name. `BACKGROUND` may recolor that surface without removing its procedural texture. Keep decorative texture subtle behind text and choose surfaces to reinforce the subject, not as random decoration.
 
 ---
 
@@ -523,7 +526,7 @@ For long narration, keep all of the wording and split it at natural sentence bou
 5. Ids unique per scene, created before use, not used after `DELETE`.
 6. Every duration has a unit; every color is `#RRGGBB`; opacity is within 0..1.
 7. Text: size at least 28, inside the safe area, no text-text overlaps, strong contrast, at most 10 visible at once. Create panel shapes before the text they contain.
-8. `SAY`: no character limit; preserve all narration and split long text across consecutive non-overlapping lines; no repeated visible phrase; `DURATION = max(1.8, chars/15)`, a `WAIT` covers any gap, only valid `TONE` values, none inside `PARALLEL`.
+8. `SAY`: no character limit; preserve all narration and split long text at natural sentence pauses; no repeated visible phrase; `DURATION` is at least 1.8s and estimates 2.6 words/second plus 0.2s per comma/colon/semicolon and 0.3s per sentence-ending mark. Match each visual beat to its narration and add a short 0.2s breath before the next cue; no overlap, only valid `TONE` values, none inside `PARALLEL`.
 9. Every `ZOOM`/`PAN` has a `RESET` in the same scene.
 10. Richness (section 5): each scene has a non-box anchor, two changes in place, a new layout; the script has a table or chart (when it fits), a `TARGET` shot, and a payoff ending.
 11. Icon names all appear in the list in section 8.

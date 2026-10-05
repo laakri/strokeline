@@ -12,6 +12,7 @@ export const THEMES: Record<string, ThemeStyle> = {
   prism: { board: "prism", background: "#15162B", ink: "#F1F0FF", pen: "brush" },
   chalk: { board: "chalkboard", background: "#18382F", ink: "#F5F0DB", pen: "chalk" },
   cosmic: { board: "glass", background: "#11172B", ink: "#D7C6FF", pen: "brush" },
+  foggywindow: { board: "foggywindow", background: "#0D1626", ink: "#DFE9F5", pen: "marker" },
   suspense: { board: "chalkboard", background: "#171717", ink: "#F2EDE0", pen: "chalk" },
   parchment: { board: "kraft", background: "#D6B98C", ink: "#493320", pen: "pencil" },
   blueprint: { board: "blueprint", background: "#16436B", ink: "#F3F5E8", pen: "marker" },
@@ -35,6 +36,7 @@ export const THEMES: Record<string, ThemeStyle> = {
 
 export const BOARD_BASES: Record<string, string> = {
   chalkboard: "#18382F", whiteboard: "#F7F7F2", blueprint: "#16436B",
+  foggywindow: "#0D1626",
   kraft: "#D6B98C", paper: "#F5EBD5", graph: "#FCFCFA",
   dotted: "#FCFCFA", glass: "#11172B", plain: "#FAFAFA",
   celestial: "#081629", topographic: "#17261F", "neon-grid": "#100F21",
