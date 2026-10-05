@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
-import { ArrowLeft, ArrowRight, AlertTriangle, Check, Clipboard, Code2, Eye, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, AlertTriangle, Check, Clipboard, Code2, Eye, LayoutGrid, X } from "lucide-react"
 
 type GuideStep = {
   target: string
   mobileTab?: "script" | "preview"
+  fitCardToTarget?: boolean
   location: string
   title: string
   description: string
@@ -29,11 +30,12 @@ const steps: GuideStep[] = [
     target: "run",
     location: "Run",
     title: "Build the animation",
-    description: "Press Run to check the script and build the animation in Preview. If Strokeline finds a problem, it will show it in Diagnostics.",
+    description: "Press Run to tidy the indentation, check the script, and build the animation in Preview. If Strokeline finds a problem, it will show it in Diagnostics.",
   },
   {
     target: "diagnostics",
     mobileTab: "script",
+    fitCardToTarget: true,
     location: "Diagnostics · Copy all",
     title: "Let the AI fix errors",
     description: "If errors appear here, press Copy all and paste them into the same AI chat. Ask it to fix the script, replace your code, then press Run again. Warnings are suggestions.",
@@ -44,6 +46,13 @@ const steps: GuideStep[] = [
     location: "Preview · Play and Present",
     title: "Review your animation",
     description: "Play the preview, scrub through the timeline, and check every scene. When it looks ready, use Present or Export.",
+  },
+  {
+    target: "preview-layout",
+    mobileTab: "preview",
+    location: "Preview · Layout",
+    title: "Check the layout before you export",
+    description: "Turn on Layout to see the safe area, center guides, and diagnostic highlights. Click a highlighted object to jump to its code. These guides are only for editing and never appear in your export.",
   },
 ]
 
@@ -117,7 +126,11 @@ export function WorkspaceGuide({ step, onStepChange, onFinish }: Props) {
   const top = bounds ? Math.max(0, bounds.top - pad) : 0
   const right = bounds ? Math.min(viewportWidth, bounds.left + bounds.width + pad) : viewportWidth
   const bottom = bounds ? Math.min(viewportHeight, bounds.top + bounds.height + pad) : viewportHeight
-  const cardWidth = Math.min(390, viewportWidth - 24)
+  const cardWidth = Math.min(
+    390,
+    viewportWidth - 24,
+    current.fitCardToTarget && bounds ? bounds.width : 390
+  )
   const cardHeight = viewportWidth < 480 ? 330 : 280
   const cardLeft = bounds
     ? Math.max(12, Math.min(bounds.left, viewportWidth - cardWidth - 12))
@@ -128,7 +141,7 @@ export function WorkspaceGuide({ step, onStepChange, onFinish }: Props) {
     : bounds
       ? Math.max(12, Math.min(bounds.top - cardHeight - pad - 14, viewportHeight - cardHeight - 12))
       : Math.max(12, (viewportHeight - cardHeight) / 2)
-  const Icon = [Clipboard, Code2, Code2, AlertTriangle, Eye][currentIndex]!
+  const Icon = [Clipboard, Code2, Code2, AlertTriangle, Eye, LayoutGrid][currentIndex]!
 
   return createPortal(
     <div className="pointer-events-none fixed inset-0 z-[200]">

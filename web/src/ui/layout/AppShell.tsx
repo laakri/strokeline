@@ -159,8 +159,8 @@ export function AppShell() {
             data-workspace-guide-target="run"
             title={
               errors
-                ? `Try to fix ${errors} error${errors === 1 ? "" : "s"}, then run`
-                : "Run the script"
+                ? `Format, then try to fix ${errors} error${errors === 1 ? "" : "s"} and run`
+                : "Format and run the script"
             }
           >
             <Play className="size-4" />

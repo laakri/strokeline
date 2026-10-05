@@ -954,6 +954,7 @@ export function PreviewPane({
           <button
             type="button"
             aria-pressed={preflightOn}
+            data-workspace-guide-target="preview-layout"
             onClick={() => {
               setPreflightOn((enabled) => !enabled)
               setPreflightSelectedId(null)

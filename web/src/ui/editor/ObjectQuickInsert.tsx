@@ -169,11 +169,11 @@ export function ObjectQuickInsert({
   return (
     <>
       {!contextMode && (
-        <div className="flex h-10 shrink-0 items-center gap-1.5 border-b border-border/70 bg-card px-2">
+        <div className="flex h-10 shrink-0 items-center gap-1.5 overflow-x-auto border-b border-border/70 bg-card px-2">
           <button
             type="button"
             onClick={() => openLibrary("icons")}
-            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             title="Search Lucide icons and brand logos"
             aria-haspopup="dialog"
           >
@@ -183,14 +183,14 @@ export function ObjectQuickInsert({
           <button
             type="button"
             onClick={() => openLibrary("all")}
-            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             title="Add an icon, brand logo, arrow, chart, table, or callout"
             aria-haspopup="dialog"
           >
             <Plus className="size-3.5" />
             Add objects
           </button>
-          <div className="ml-auto min-w-0">{toolbarContent}</div>
+          <div className="shrink-0">{toolbarContent}</div>
         </div>
       )}
       {menuOpen && (

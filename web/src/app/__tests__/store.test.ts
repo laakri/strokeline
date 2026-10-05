@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { runScript } from "@/dsl/index.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
+import { formatScript } from "@/dsl/format.ts"
 import { STARTER_SCRIPT, useAppStore } from "@/app/store.ts"
 
 const multiSceneScript = `VERSION 1.0
@@ -55,10 +56,13 @@ END SCENE`
 
     try {
       expect(useAppStore.getState().run()).toBe(true)
-      expect(useAppStore.getState().compiledSource).toBe(liveScript)
-      expect(useAppStore.getState().script).toBe(liveScript)
+      const formatted = formatScript(liveScript)
+      expect(useAppStore.getState().compiledSource).toBe(formatted)
+      expect(useAppStore.getState().script).toBe(formatted)
+      expect(useAppStore.getState().editorLoad?.text).toBe(formatted)
     } finally {
       useAppStore.getState().setEditorSourceReader(null)
+      useAppStore.getState().clearEditorLoad()
       useAppStore.getState().setScript(STARTER_SCRIPT)
     }
   })

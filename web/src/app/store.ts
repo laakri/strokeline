@@ -4,6 +4,7 @@ import { runScript } from "@/dsl/index.ts"
 import { repairSyntax } from "@/dsl/repair.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
 import { normalizeScriptSource } from "@/dsl/source.ts"
+import { formatScript } from "@/dsl/format.ts"
 import type { Diagnostic, Scene, SceneDocument } from "@/ir/types.ts"
 
 const STORAGE_KEY = "strokeline.script.v1"
@@ -130,7 +131,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
       saveStoredScript(source)
       set({ script: source })
     }
-    const script = repairSyntax(source).script
+    const repaired = repairSyntax(source).script
+    const script = formatScript(repaired)
     if (script !== source) {
       saveStoredScript(script)
       set({ script, editorLoad: { text: script } })

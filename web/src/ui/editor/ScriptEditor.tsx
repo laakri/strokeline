@@ -12,6 +12,7 @@ import {
 } from "@codemirror/commands"
 import {
   HighlightStyle,
+  indentUnit,
   StreamLanguage,
   syntaxHighlighting,
 } from "@codemirror/language"
@@ -23,7 +24,13 @@ import {
 import { EditorState, StateEffect, StateField, type Extension } from "@codemirror/state"
 import { Decoration, EditorView, keymap, lineNumbers, type DecorationSet } from "@codemirror/view"
 import { tags } from "@lezer/highlight"
-import { ICON_NAMES, PROPERTY_KEYS, STATEMENT_KEYWORDS } from "@/dsl/grammar.ts"
+import {
+  HEADER_KEYWORDS,
+  ICON_NAMES,
+  PROPERTY_KEYS,
+  SHAPE_TYPES,
+  STATEMENT_KEYWORDS,
+} from "@/dsl/grammar.ts"
 import { useAppStore, type EditorSourceEdit } from "@/app/store.ts"
 import { ObjectQuickInsert } from "@/ui/editor/ObjectQuickInsert.tsx"
 import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
@@ -48,6 +55,20 @@ const keywords = new Set([
   "DURATION",
   "EASE",
 ])
+const propertyKeywords = new Set([...PROPERTY_KEYS, ...HEADER_KEYWORDS])
+const blockKeywords = new Set([
+  "SCENE",
+  "CREATE",
+  "TABLE",
+  "BARCHART",
+  "LINECHART",
+  "PIECHART",
+  "PARALLEL",
+  "GROUP",
+  "STACK",
+  "GRID",
+  "DEFINE",
+])
 const languageValues = [
   "chalkboard", "whiteboard", "blueprint", "kraft", "paper", "graph", "dotted", "glass", "plain",
   "celestial", "topographic", "neon-grid", "editorial", "blackboard", "corkboard", "linen", "aurora",
@@ -71,6 +92,7 @@ const languageValues = [
 const language = StreamLanguage.define({
   startState: () => ({}),
   token(stream) {
+    if (stream.match(/^->/)) return "operator"
     if (stream.match(/^"(?:[^"\\]|\\.)*"/)) return "string"
     if (
       stream.match(/^#[0-9a-fA-F]{6}(?![0-9a-fA-F])/) ||
@@ -79,10 +101,16 @@ const language = StreamLanguage.define({
       return "atom"
     if (stream.match(/^\/\/.*$/) || stream.match(/^#/)) return "comment"
     if (stream.match(/^\d+(?:\.\d+)?(?:ms|s)?/)) return "number"
-    if (stream.match(/^[A-Za-z_][A-Za-z0-9_.-]*/))
-      return keywords.has(stream.current().toUpperCase())
-        ? "keyword"
-        : "variableName"
+    if (stream.match(/^[A-Za-z_][A-Za-z0-9_.-]*/)) {
+      const word = stream.current().toUpperCase()
+      if (word === "END") return "controlKeyword"
+      if (blockKeywords.has(word)) return "definitionKeyword"
+      if (propertyKeywords.has(word)) return "propertyName"
+      if ((SHAPE_TYPES as readonly string[]).includes(word)) return "typeName"
+      if (keywords.has(word)) return "keyword"
+      if (languageValues.includes(stream.current().toLowerCase())) return "typeName"
+      return "variableName"
+    }
     stream.next()
     return null
   },
@@ -90,10 +118,15 @@ const language = StreamLanguage.define({
 
 const highlights = syntaxHighlighting(
   HighlightStyle.define([
-    { tag: tags.keyword, color: "var(--primary)" },
-    { tag: tags.string, color: "var(--chart-2)" },
-    { tag: tags.number, color: "var(--chart-4)" },
-    { tag: tags.atom, color: "var(--chart-3)" },
+    { tag: tags.definitionKeyword, color: "var(--editor-block)", fontWeight: "700" },
+    { tag: tags.controlKeyword, color: "var(--editor-end)", fontWeight: "700" },
+    { tag: tags.propertyName, color: "var(--editor-property)", fontWeight: "600" },
+    { tag: tags.keyword, color: "var(--editor-keyword)", fontWeight: "600" },
+    { tag: tags.typeName, color: "var(--editor-type)" },
+    { tag: tags.operator, color: "var(--editor-operator)", fontWeight: "700" },
+    { tag: tags.string, color: "var(--editor-string)" },
+    { tag: tags.number, color: "var(--editor-number)" },
+    { tag: tags.atom, color: "var(--editor-color)" },
     { tag: tags.comment, color: "var(--muted-foreground)" },
     { tag: tags.variableName, color: "var(--foreground)" },
   ])
@@ -140,10 +173,10 @@ const theme = EditorView.theme({
     overflowX: "auto",
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
   },
-  ".cm-content": { padding: "16px 0" },
+  ".cm-content": { padding: "16px 0", caretColor: "var(--editor-cursor)" },
   ".cm-cursor, .cm-dropCursor": {
-    borderLeftColor: "var(--foreground)",
-    borderLeftWidth: "2px",
+    borderLeftColor: "var(--editor-cursor) !important",
+    borderLeftWidth: "2px !important",
   },
   ".cm-selectionBackground, &.cm-focused .cm-selectionBackground": {
     backgroundColor: "color-mix(in oklab, var(--primary) 28%, transparent)",
@@ -228,6 +261,7 @@ export function ScriptEditor({ onTemplateSelected }: { onTemplateSelected?: () =
   useEffect(() => {
     if (!container.current) return
     const extensions: Extension[] = [
+      indentUnit.of("  "),
       lineNumbers(),
       sourceJumpLine,
       language,

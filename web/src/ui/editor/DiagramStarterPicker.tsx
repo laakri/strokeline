@@ -117,7 +117,7 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
         setOpen(true)
       }}
       title="Start with an editable diagram"
-      className="ml-1 inline-flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md bg-primary px-2.5 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <LayoutTemplate className="size-3.5" />
       <span>Templates</span>

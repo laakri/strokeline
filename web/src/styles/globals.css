@@ -50,6 +50,16 @@
 }
 
 :root {
+    --editor-cursor: #1d4ed8;
+    --editor-block: #1d4ed8;
+    --editor-end: #c2410c;
+    --editor-property: #0e7490;
+    --editor-keyword: #7e22ce;
+    --editor-type: #0f766e;
+    --editor-operator: #be185d;
+    --editor-string: #15803d;
+    --editor-number: #b45309;
+    --editor-color: #c026d3;
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -85,6 +95,16 @@
 }
 
 .dark {
+    --editor-cursor: #60a5fa;
+    --editor-block: #7dd3fc;
+    --editor-end: #fdba74;
+    --editor-property: #67e8f9;
+    --editor-keyword: #c4b5fd;
+    --editor-type: #6ee7b7;
+    --editor-operator: #f9a8d4;
+    --editor-string: #86efac;
+    --editor-number: #fcd34d;
+    --editor-color: #f0abfc;
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
