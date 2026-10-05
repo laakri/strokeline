@@ -372,16 +372,23 @@ export function PreviewPane({
   useEffect(() => () => narrationRef.current?.dispose(), [])
 
   useEffect(() => {
-    const preserved = preservedPlayback.current
-    preservedPlayback.current = null
-    playerRef.current?.dispose()
-    playerRef.current = null
     if (!scene || !compiledIR || !canvasRef.current || imageReadiness.document !== compiledIR || !imageReadiness.ready) {
+      playerRef.current?.dispose()
+      playerRef.current = null
+      // A freshly compiled layout can need its images preloaded before its
+      // replacement player is created. Keep the saved playhead through that
+      // wait instead of consuming it and resetting the preview to zero.
+      if (scene && compiledIR && canvasRef.current) return
+      preservedPlayback.current = null
       renderStateRef.current = null
       setSequenceStarts([])
       setPlayerState({ elapsed: 0, duration: 0, isPlaying: false })
       return
     }
+    const preserved = preservedPlayback.current
+    preservedPlayback.current = null
+    playerRef.current?.dispose()
+    playerRef.current = null
     const canvas = canvasRef.current
     const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2)
     canvas.width = Math.round(compiledIR.canvas.width * devicePixelRatio)
