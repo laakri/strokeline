@@ -442,11 +442,18 @@ SCENE 1 "Docker image lifecycle"
       SIZE 44
       COLOR #73936F
     END
+    CREATE pullRequestLabel AS TEXT
+      TEXT "PULL REQUEST"
+      POSITION 1010 245
+      SIZE 28
+      COLOR #855B1C
+      ALIGN center
+    END
     CREATE imageReturnLabel AS TEXT
       TEXT "IMAGE RETURN"
-      POSITION 1310 950
-      SIZE 20
-      COLOR #A9762F
+      POSITION 1340 245
+      SIZE 28
+      COLOR #855B1C
       ALIGN center
     END
   END
@@ -491,13 +498,12 @@ SCENE 1 "Docker image lifecycle"
       VIA 800 215 1480 215
       LINESTYLE dashed
       HEAD end
-      LABEL "pull request"
       COLOR #D39A3B
       STROKE 5
       DRAW 1s
-    ARROW registryImagesFrame -> dockerDaemon
+    ARROW registryImagesFrame -> localImagesFrame
       ROUTE elbow
-      VIA 1480 700 1480 920 800 920
+      VIA 1480 280 1165 280
       HEAD end
       COLOR #D39A3B
       STROKE 5

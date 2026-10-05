@@ -3,9 +3,9 @@ import { DEFAULT_TEXT_SIZE } from "@/defaults/defaults.ts"
 import { layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { layoutTableCell } from "@/lib/tableLayout.ts"
-import { arrowEndpoints } from "@/renderer/geometry.ts"
+import { arrowEndpoints, pointOnBoundary } from "@/renderer/geometry.ts"
 import { ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES } from "@/dsl/grammar.ts"
-import type { Scene, SceneDocument, SceneNode, TimelineOp } from "@/ir/types.ts"
+import type { Point, Scene, SceneDocument, SceneNode, TimelineOp } from "@/ir/types.ts"
 import { plainSubtitleText } from "@/subtitles/subtitles.ts"
 
 const knownProperties = new Set<string>(PROPERTY_KEYS)
@@ -403,8 +403,9 @@ function validateSays(scene: Scene, diagnostics: Diagnostic[]): void {
   for (const say of says) {
     const text = plainSubtitleText(say.text)
     const location = say.source ?? { line: 1, col: 1 }
-    if (say.duration > 0 && text.length / say.duration > 20)
-      diagnostics.push(warning("W_SAY_FAST", "SAY is faster than 20 characters per second.", location.line, location.col, "Increase DURATION; playback will be auto-scheduled to a readable pace."))
+    const wordCount = text.match(/[\p{L}\p{N}]+/gu)?.length ?? 0
+    if (say.duration > 0 && wordCount / say.duration > 4)
+      diagnostics.push(warning("W_SAY_FAST", "SAY is faster than 4 words per second.", location.line, location.col, "Increase DURATION; playback will also be auto-scheduled to a natural speaking pace."))
   }
   for (let index = 0; index < says.length; index++) {
     const left = says[index]!
@@ -733,15 +734,12 @@ function validateSceneWarnings(
     const from = createsById.get(fromId)
     const to = createsById.get(toId)
     if (!from || !to) continue
-    const endpoints = arrowEndpoints(from, to, nodeBounds(from), nodeBounds(to))
+    const arrowPath = arrowPathForTextCheck(arrowOp.node, from, to)
     for (const entry of standaloneText) {
       if (entry.op.node.textBox?.background) continue
       if (entry.op.node.id === fromId || entry.op.node.id === toId) continue
       if (entry.op.t > arrowOp.t || arrowOp.t >= entry.end) continue
-      if (
-        !segmentIntersectsBounds(endpoints.start, endpoints.end, entry.bounds)
-      )
-        continue
+      if (!polylineIntersectsBounds(arrowPath, entry.bounds)) continue
       const source = arrowOp.source ?? { line: 1, col: 1 }
       diagnostics.push(
         warning(
@@ -841,6 +839,111 @@ function validateSceneWarnings(
       )
     )
   }
+}
+
+function arrowPathForTextCheck(
+  arrowNode: SceneNode,
+  from: SceneNode,
+  to: SceneNode
+): Point[] {
+  const rawWaypoints = arrowNode.data?.waypoints
+  const waypoints = Array.isArray(rawWaypoints)
+    ? rawWaypoints.filter(
+        (point): point is Point =>
+          typeof point === "object" &&
+          point !== null &&
+          "x" in point &&
+          "y" in point &&
+          typeof point.x === "number" &&
+          typeof point.y === "number" &&
+          Number.isFinite(point.x) &&
+          Number.isFinite(point.y)
+      )
+    : []
+  if (waypoints.length === 0) {
+    const endpoints = arrowEndpoints(from, to, nodeBounds(from), nodeBounds(to))
+    return [endpoints.start, endpoints.end]
+  }
+
+  const start = pointOnBoundary(from, waypoints[0]!, nodeBounds(from))
+  const end = pointOnBoundary(to, waypoints.at(-1)!, nodeBounds(to))
+  const anchors = [start, ...waypoints, end]
+  const route = String(arrowNode.data?.route ?? "straight").toLowerCase()
+  if (route === "elbow") return elbowRoutePoints(anchors)
+  if (route === "curve") return curveRoutePoints(anchors)
+  return anchors
+}
+
+function elbowRoutePoints(points: Point[]): Point[] {
+  const path: Point[] = [points[0]!]
+  for (let index = 1; index < points.length; index++) {
+    const start = points[index - 1]!
+    const end = points[index]!
+    if (Math.abs(end.x - start.x) >= Math.abs(end.y - start.y)) {
+      const middleX = (start.x + end.x) / 2
+      path.push({ x: middleX, y: start.y }, { x: middleX, y: end.y }, end)
+    } else {
+      const middleY = (start.y + end.y) / 2
+      path.push({ x: start.x, y: middleY }, { x: end.x, y: middleY }, end)
+    }
+  }
+  return path
+}
+
+function curveRoutePoints(points: Point[]): Point[] {
+  if (points.length < 3) return [points[0]!, points.at(-1)!]
+  const curve: Point[] = []
+  for (let index = 0; index < points.length - 1; index++) {
+    const start = points[index]!
+    const end = points[index + 1]!
+    const previous = points[index - 1] ?? start
+    const next = points[index + 2] ?? end
+    const firstControl = {
+      x: start.x + (end.x - previous.x) / 6,
+      y: start.y + (end.y - previous.y) / 6,
+    }
+    const secondControl = {
+      x: end.x - (next.x - start.x) / 6,
+      y: end.y - (next.y - start.y) / 6,
+    }
+    for (let step = 0; step < 8; step++) {
+      curve.push(cubicPoint(start, firstControl, secondControl, end, step / 8))
+    }
+  }
+  curve.push(points.at(-1)!)
+  return curve
+}
+
+function cubicPoint(
+  start: Point,
+  first: Point,
+  second: Point,
+  end: Point,
+  t: number
+): Point {
+  const inverse = 1 - t
+  return {
+    x:
+      inverse ** 3 * start.x +
+      3 * inverse ** 2 * t * first.x +
+      3 * inverse * t ** 2 * second.x +
+      t ** 3 * end.x,
+    y:
+      inverse ** 3 * start.y +
+      3 * inverse ** 2 * t * first.y +
+      3 * inverse * t ** 2 * second.y +
+      t ** 3 * end.y,
+  }
+}
+
+function polylineIntersectsBounds(
+  points: Point[],
+  bounds: { x: number; y: number; width: number; height: number }
+): boolean {
+  return points.some(
+    (point, index) =>
+      index > 0 && segmentIntersectsBounds(points[index - 1]!, point, bounds)
+  )
 }
 
 function nodeBounds(node: SceneNode): {
