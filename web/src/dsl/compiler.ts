@@ -803,7 +803,6 @@ function nodeFromCreate(
   const isImage = statement.type.toLowerCase() === "image"
   const isText = statement.type.toLowerCase() === "text"
   const imageUrl = isImage ? propString(props, "URL") : undefined
-  const isPackagedBrandImage = imageUrl?.startsWith("/brand-icons/") ?? false
   const sizeNum = propNumber(props, "SIZE")
   const maxWidth = propNumber(props, "MAXWIDTH")
   const lineHeight = propNumber(props, "LINEHEIGHT")
@@ -979,15 +978,13 @@ function nodeFromCreate(
           image: {
             url: imageUrl,
             fit: (propString(props, "FIT")?.toLowerCase() ?? "cover") as "cover" | "contain",
-            padding: propNumber(props, "PADDING") ?? (isPackagedBrandImage ? 12 : 0),
-            corners: propNumber(props, "CORNERS") ?? (isPackagedBrandImage ? 18 : 0),
+            padding: propNumber(props, "PADDING") ?? 0,
+            corners: propNumber(props, "CORNERS") ?? 0,
             ...(propString(props, "MASK")?.toLowerCase() === "circle" ? { mask: "circle" as const } : {}),
-            ...((propString(props, "BORDER") ?? (isPackagedBrandImage ? "#D8E2EC" : undefined))
-              ? { border: propString(props, "BORDER") ?? "#D8E2EC" }
-              : {}),
+            ...(propString(props, "BORDER") ? { border: propString(props, "BORDER") } : {}),
             ...(props.some((prop) => prop.key === "SHADOW")
               ? { shadow: propString(props, "SHADOW") ?? "#000000" }
-              : isPackagedBrandImage ? { shadow: "#00000018" } : {}),
+              : {}),
           },
         }
       : {}),

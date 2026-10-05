@@ -1051,7 +1051,8 @@ export function DocsPage() {
                   Use CORNERS n for rounded corners or MASK circle for a
                   circular crop. BORDER #hex and optional SHADOW add a frame
                   and depth. PADDING n insets the image inside its frame.
-                  Packaged brand SVGs get a soft, padded card by default.
+                  For packaged brand SVGs, add PADDING 12, CORNERS 16, and
+                  BORDER #D8E2EC to create an inset rounded card.
                 </li>
                 <li>
                   Missing, blocked, or failed external URLs and missing
