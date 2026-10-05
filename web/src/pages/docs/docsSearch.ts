@@ -66,7 +66,7 @@ export const docsSearchEntries: DocsSearchEntry[] = [
     description: "Load an image from HTTPS or a same-origin asset and animate its reveal.",
     page: "visuals",
     anchor: "images",
-    keywords: ["IMAGE URL photo logo picture https asset docker python redis nginx ubuntu postgresql fit corners"],
+    keywords: ["IMAGE URL photo logo picture https asset brand icons logos docker github kubernetes react python postgresql fit contain corners"],
   },
   {
     title: "Comparison tables",

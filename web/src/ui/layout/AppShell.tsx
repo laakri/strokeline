@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Check, CircleHelp, Clipboard, FolderOpen, Maximize, Play, Save } from "lucide-react"
 import aiPrompt from "../../../../AI_prompt_kit.MD?raw"
+import { BRAND_ICON_CATALOG } from "@/defaults/brandIcons.generated.ts"
 import { useAppStore } from "@/app/store.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
 import { ICON_NAMES } from "@/dsl/grammar.ts"
@@ -40,7 +41,9 @@ export function AppShell() {
   }
   const copyPrompt = async () => {
     await navigator.clipboard.writeText(
-      aiPrompt.replace("{{ICON_LIST}}", ICON_NAMES.join(", "))
+      aiPrompt
+        .replace("{{ICON_LIST}}", ICON_NAMES.join(", "))
+        .replace("{{BRAND_ICON_LIST}}", BRAND_ICON_CATALOG.map(({ title, slug }) => `${title} (/brand-icons/${slug}.svg)`).join("\n"))
     )
   }
   const handleSave = () => {

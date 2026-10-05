@@ -1,4 +1,8 @@
-Brand SVG assets in this directory were downloaded from the Simple Icons CDN:
-https://cdn.simpleicons.org/
+Brand SVGs in this directory are generated from the Simple Icons CDN using the
+catalog in web/scripts/brand-icons.json. Regenerate them with `npm run icons:brands`
+from the web directory. Source: https://cdn.simpleicons.org/ and
+https://github.com/simple-icons/simple-icons
 
-The respective brand names and marks remain the property of their owners.
+Each logo and brand name remains the property of its respective owner. Simple
+Icons asks users to review its brand-specific disclaimer and verify permitted
+uses: https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md

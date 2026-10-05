@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react"
 import { Plus, Search, X } from "lucide-react"
+import { BRAND_ICON_CATALOG } from "@/defaults/brandIcons.generated.ts"
 import { ICON_NAMES } from "@/dsl/grammar.ts"
 
 interface InsertOption {
   label: string
   category: string
   keywords: string
+  imageUrl?: string
   snippet: (source: string, point?: InsertPoint) => string
 }
 
@@ -89,6 +91,19 @@ const objectOptions: InsertOption[] = [
         "  COLOR #2E86AB\n  DRAW 0.8s\nEND"
     },
   })),
+  ...BRAND_ICON_CATALOG.map(({ slug, title, category, keywords }) => ({
+    label: title,
+    category: "Brand · " + category,
+    keywords: "brand logo " + slug + " " + title + " " + category + " " + keywords,
+    imageUrl: "/brand-icons/" + slug + ".svg",
+    snippet: (source: string, point?: InsertPoint) => {
+      const at = coordinates(point)
+      return "CREATE " + nextId(source, "brand") + " AS IMAGE\n" +
+        "  URL \"/brand-icons/" + slug + ".svg\"\n" +
+        "  POSITION " + at.x + " " + at.y + "\n  WIDTH 180\n  HEIGHT 140\n" +
+        "  FIT contain\n  DRAW 0.8s\nEND"
+    },
+  })),
 ]
 
 export function ObjectQuickInsert({
@@ -126,9 +141,10 @@ export function ObjectQuickInsert({
           (option.label + " " + option.category + " " + option.keywords).toLowerCase().includes(normalized)
         )
       : objectOptions.filter((option) =>
-          option.category !== "Icon" || ICON_NAMES.indexOf(option.label as typeof ICON_NAMES[number]) < 6
+          (option.category !== "Icon" && !option.category.startsWith("Brand · ")) ||
+          (option.category === "Icon" && ICON_NAMES.indexOf(option.label as typeof ICON_NAMES[number]) < 6)
         )
-    return filtered
+    return filtered.slice(0, 80)
   }, [query])
 
   const choose = (option: InsertOption) => {
@@ -190,7 +206,7 @@ export function ObjectQuickInsert({
                   if (event.key === "Escape") closeMenu()
                   if (event.key === "Enter" && options[0]) choose(options[0])
                 }}
-                placeholder="Search icons, arrows, charts, tables…"
+                placeholder="Search icons, brand logos, arrows, charts…"
                 aria-label="Search objects"
                 className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
@@ -211,7 +227,12 @@ export function ObjectQuickInsert({
                   onClick={() => choose(option)}
                   className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-accent"
                 >
-                  <span className="min-w-0 truncate text-sm font-medium">{option.label}</span>
+                  <span className="flex min-w-0 items-center gap-2.5 truncate text-sm font-medium">
+                    {option.imageUrl && (
+                      <img src={option.imageUrl} alt="" aria-hidden="true" className="size-6 shrink-0 object-contain" />
+                    )}
+                    <span className="truncate">{option.label}</span>
+                  </span>
                   <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
                     {option.category}
                   </span>
@@ -224,7 +245,7 @@ export function ObjectQuickInsert({
             <div className="border-t border-border/70 px-3 py-2 text-[11px] text-muted-foreground">
               {notice || (query
                 ? options.length + " matching objects · Enter inserts the first"
-                : "Type to search the full Lucide icon library")}
+                : "Search " + ICON_NAMES.length.toLocaleString() + "+ Lucide icons and " + BRAND_ICON_CATALOG.length + " brand logos")}
             </div>
           </section>
         </div>

@@ -1,0 +1,1028 @@
+[
+  {
+    "slug": "docker",
+    "title": "Docker",
+    "category": "DevOps",
+    "keywords": "containers images whale"
+  },
+  {
+    "slug": "kubernetes",
+    "title": "Kubernetes",
+    "category": "DevOps",
+    "keywords": "k8s orchestration cluster"
+  },
+  {
+    "slug": "github",
+    "title": "GitHub",
+    "category": "DevOps",
+    "keywords": "git repo source code"
+  },
+  {
+    "slug": "gitlab",
+    "title": "GitLab",
+    "category": "DevOps",
+    "keywords": "git repo ci cd"
+  },
+  {
+    "slug": "bitbucket",
+    "title": "Bitbucket",
+    "category": "DevOps",
+    "keywords": "git repository atlassian"
+  },
+  {
+    "slug": "git",
+    "title": "Git",
+    "category": "DevOps",
+    "keywords": "version control branch"
+  },
+  {
+    "slug": "terraform",
+    "title": "Terraform",
+    "category": "DevOps",
+    "keywords": "infrastructure hashicorp iac"
+  },
+  {
+    "slug": "ansible",
+    "title": "Ansible",
+    "category": "DevOps",
+    "keywords": "automation configuration"
+  },
+  {
+    "slug": "jenkins",
+    "title": "Jenkins",
+    "category": "DevOps",
+    "keywords": "build ci pipeline"
+  },
+  {
+    "slug": "circleci",
+    "title": "CircleCI",
+    "category": "DevOps",
+    "keywords": "continuous integration pipeline"
+  },
+  {
+    "slug": "githubactions",
+    "title": "GitHub Actions",
+    "category": "DevOps",
+    "keywords": "workflow automation ci cd"
+  },
+  {
+    "slug": "npm",
+    "title": "npm",
+    "category": "DevOps",
+    "keywords": "package registry javascript"
+  },
+  {
+    "slug": "pnpm",
+    "title": "pnpm",
+    "category": "DevOps",
+    "keywords": "package manager javascript"
+  },
+  {
+    "slug": "yarn",
+    "title": "Yarn",
+    "category": "DevOps",
+    "keywords": "package manager javascript"
+  },
+  {
+    "slug": "bun",
+    "title": "Bun",
+    "category": "DevOps",
+    "keywords": "javascript runtime package manager"
+  },
+  {
+    "slug": "nodedotjs",
+    "title": "Node.js",
+    "category": "Languages",
+    "keywords": "javascript runtime server"
+  },
+  {
+    "slug": "deno",
+    "title": "Deno",
+    "category": "Languages",
+    "keywords": "javascript runtime typescript"
+  },
+  {
+    "slug": "javascript",
+    "title": "JavaScript",
+    "category": "Languages",
+    "keywords": "js web"
+  },
+  {
+    "slug": "typescript",
+    "title": "TypeScript",
+    "category": "Languages",
+    "keywords": "ts javascript"
+  },
+  {
+    "slug": "python",
+    "title": "Python",
+    "category": "Languages",
+    "keywords": "programming language snake"
+  },
+  {
+    "slug": "openjdk",
+    "title": "OpenJDK",
+    "category": "Languages",
+    "keywords": "jvm programming"
+  },
+  {
+    "slug": "go",
+    "title": "Go",
+    "category": "Languages",
+    "keywords": "golang programming"
+  },
+  {
+    "slug": "rust",
+    "title": "Rust",
+    "category": "Languages",
+    "keywords": "systems programming"
+  },
+  {
+    "slug": "php",
+    "title": "PHP",
+    "category": "Languages",
+    "keywords": "web programming"
+  },
+  {
+    "slug": "ruby",
+    "title": "Ruby",
+    "category": "Languages",
+    "keywords": "programming rails"
+  },
+  {
+    "slug": "swift",
+    "title": "Swift",
+    "category": "Languages",
+    "keywords": "apple ios programming"
+  },
+  {
+    "slug": "kotlin",
+    "title": "Kotlin",
+    "category": "Languages",
+    "keywords": "android jvm programming"
+  },
+  {
+    "slug": "dart",
+    "title": "Dart",
+    "category": "Languages",
+    "keywords": "flutter programming"
+  },
+  {
+    "slug": "cplusplus",
+    "title": "C++",
+    "category": "Languages",
+    "keywords": "cpp programming"
+  },
+  {
+    "slug": "c",
+    "title": "C",
+    "category": "Languages",
+    "keywords": "programming systems"
+  },
+  {
+    "slug": "dotnet",
+    "title": ".NET",
+    "category": "Languages",
+    "keywords": "microsoft csharp framework"
+  },
+  {
+    "slug": "react",
+    "title": "React",
+    "category": "Frameworks",
+    "keywords": "frontend ui javascript"
+  },
+  {
+    "slug": "nextdotjs",
+    "title": "Next.js",
+    "category": "Frameworks",
+    "keywords": "react frontend web"
+  },
+  {
+    "slug": "vuedotjs",
+    "title": "Vue.js",
+    "category": "Frameworks",
+    "keywords": "frontend javascript"
+  },
+  {
+    "slug": "nuxt",
+    "title": "Nuxt",
+    "category": "Frameworks",
+    "keywords": "vue frontend web"
+  },
+  {
+    "slug": "angular",
+    "title": "Angular",
+    "category": "Frameworks",
+    "keywords": "frontend typescript google"
+  },
+  {
+    "slug": "svelte",
+    "title": "Svelte",
+    "category": "Frameworks",
+    "keywords": "frontend javascript"
+  },
+  {
+    "slug": "astro",
+    "title": "Astro",
+    "category": "Frameworks",
+    "keywords": "web framework site"
+  },
+  {
+    "slug": "vite",
+    "title": "Vite",
+    "category": "Frameworks",
+    "keywords": "build tool frontend"
+  },
+  {
+    "slug": "webpack",
+    "title": "Webpack",
+    "category": "Frameworks",
+    "keywords": "bundler build javascript"
+  },
+  {
+    "slug": "tailwindcss",
+    "title": "Tailwind CSS",
+    "category": "Frameworks",
+    "keywords": "css styling design"
+  },
+  {
+    "slug": "html5",
+    "title": "HTML5",
+    "category": "Frameworks",
+    "keywords": "web markup"
+  },
+  {
+    "slug": "css",
+    "title": "CSS",
+    "category": "Frameworks",
+    "keywords": "web styling"
+  },
+  {
+    "slug": "graphql",
+    "title": "GraphQL",
+    "category": "Frameworks",
+    "keywords": "api query"
+  },
+  {
+    "slug": "figma",
+    "title": "Figma",
+    "category": "Design",
+    "keywords": "design prototyping ui"
+  },
+  {
+    "slug": "storybook",
+    "title": "Storybook",
+    "category": "Design",
+    "keywords": "components ui frontend"
+  },
+  {
+    "slug": "cypress",
+    "title": "Cypress",
+    "category": "DevOps",
+    "keywords": "testing browser automation"
+  },
+  {
+    "slug": "postman",
+    "title": "Postman",
+    "category": "DevOps",
+    "keywords": "api testing requests"
+  },
+  {
+    "slug": "insomnia",
+    "title": "Insomnia",
+    "category": "DevOps",
+    "keywords": "api testing requests"
+  },
+  {
+    "slug": "swagger",
+    "title": "Swagger",
+    "category": "DevOps",
+    "keywords": "openapi api docs"
+  },
+  {
+    "slug": "jetbrains",
+    "title": "JetBrains",
+    "category": "Developer Tools",
+    "keywords": "ide editor"
+  },
+  {
+    "slug": "intellijidea",
+    "title": "IntelliJ IDEA",
+    "category": "Developer Tools",
+    "keywords": "jetbrains ide java"
+  },
+  {
+    "slug": "webstorm",
+    "title": "WebStorm",
+    "category": "Developer Tools",
+    "keywords": "jetbrains ide javascript"
+  },
+  {
+    "slug": "vim",
+    "title": "Vim",
+    "category": "Developer Tools",
+    "keywords": "editor terminal"
+  },
+  {
+    "slug": "neovim",
+    "title": "Neovim",
+    "category": "Developer Tools",
+    "keywords": "editor terminal"
+  },
+  {
+    "slug": "googlecloud",
+    "title": "Google Cloud",
+    "category": "Cloud",
+    "keywords": "gcp cloud"
+  },
+  {
+    "slug": "cloudflare",
+    "title": "Cloudflare",
+    "category": "Cloud",
+    "keywords": "cdn dns security"
+  },
+  {
+    "slug": "vercel",
+    "title": "Vercel",
+    "category": "Cloud",
+    "keywords": "hosting deployment nextjs"
+  },
+  {
+    "slug": "netlify",
+    "title": "Netlify",
+    "category": "Cloud",
+    "keywords": "hosting deployment"
+  },
+  {
+    "slug": "digitalocean",
+    "title": "DigitalOcean",
+    "category": "Cloud",
+    "keywords": "cloud hosting droplets"
+  },
+  {
+    "slug": "render",
+    "title": "Render",
+    "category": "Cloud",
+    "keywords": "hosting deployment"
+  },
+  {
+    "slug": "flydotio",
+    "title": "Fly.io",
+    "category": "Cloud",
+    "keywords": "hosting deployment"
+  },
+  {
+    "slug": "railway",
+    "title": "Railway",
+    "category": "Cloud",
+    "keywords": "hosting deployment"
+  },
+  {
+    "slug": "firebase",
+    "title": "Firebase",
+    "category": "Cloud",
+    "keywords": "google backend database"
+  },
+  {
+    "slug": "supabase",
+    "title": "Supabase",
+    "category": "Cloud",
+    "keywords": "backend postgres database"
+  },
+  {
+    "slug": "sentry",
+    "title": "Sentry",
+    "category": "Cloud",
+    "keywords": "errors monitoring observability"
+  },
+  {
+    "slug": "datadog",
+    "title": "Datadog",
+    "category": "Cloud",
+    "keywords": "monitoring observability logs"
+  },
+  {
+    "slug": "grafana",
+    "title": "Grafana",
+    "category": "Cloud",
+    "keywords": "dashboard monitoring observability"
+  },
+  {
+    "slug": "prometheus",
+    "title": "Prometheus",
+    "category": "Cloud",
+    "keywords": "metrics monitoring"
+  },
+  {
+    "slug": "elasticsearch",
+    "title": "Elasticsearch",
+    "category": "Cloud",
+    "keywords": "search logs data"
+  },
+  {
+    "slug": "splunk",
+    "title": "Splunk",
+    "category": "Cloud",
+    "keywords": "logs security observability"
+  },
+  {
+    "slug": "nginx",
+    "title": "NGINX",
+    "category": "Cloud",
+    "keywords": "web server proxy"
+  },
+  {
+    "slug": "linux",
+    "title": "Linux",
+    "category": "Cloud",
+    "keywords": "operating system open source"
+  },
+  {
+    "slug": "ubuntu",
+    "title": "Ubuntu",
+    "category": "Cloud",
+    "keywords": "linux operating system"
+  },
+  {
+    "slug": "debian",
+    "title": "Debian",
+    "category": "Cloud",
+    "keywords": "linux operating system"
+  },
+  {
+    "slug": "postgresql",
+    "title": "PostgreSQL",
+    "category": "Data & AI",
+    "keywords": "postgres database sql"
+  },
+  {
+    "slug": "mysql",
+    "title": "MySQL",
+    "category": "Data & AI",
+    "keywords": "database sql"
+  },
+  {
+    "slug": "mariadb",
+    "title": "MariaDB",
+    "category": "Data & AI",
+    "keywords": "database sql"
+  },
+  {
+    "slug": "mongodb",
+    "title": "MongoDB",
+    "category": "Data & AI",
+    "keywords": "document database nosql"
+  },
+  {
+    "slug": "redis",
+    "title": "Redis",
+    "category": "Data & AI",
+    "keywords": "cache database key value"
+  },
+  {
+    "slug": "sqlite",
+    "title": "SQLite",
+    "category": "Data & AI",
+    "keywords": "database embedded sql"
+  },
+  {
+    "slug": "clickhouse",
+    "title": "ClickHouse",
+    "category": "Data & AI",
+    "keywords": "analytics database sql"
+  },
+  {
+    "slug": "snowflake",
+    "title": "Snowflake",
+    "category": "Data & AI",
+    "keywords": "data warehouse analytics"
+  },
+  {
+    "slug": "databricks",
+    "title": "Databricks",
+    "category": "Data & AI",
+    "keywords": "data lakehouse analytics"
+  },
+  {
+    "slug": "apachekafka",
+    "title": "Apache Kafka",
+    "category": "Data & AI",
+    "keywords": "stream messaging events"
+  },
+  {
+    "slug": "rabbitmq",
+    "title": "RabbitMQ",
+    "category": "Data & AI",
+    "keywords": "queue messaging broker"
+  },
+  {
+    "slug": "apacheairflow",
+    "title": "Apache Airflow",
+    "category": "Data & AI",
+    "keywords": "workflow orchestration pipeline"
+  },
+  {
+    "slug": "pandas",
+    "title": "Pandas",
+    "category": "Data & AI",
+    "keywords": "python dataframe data science"
+  },
+  {
+    "slug": "numpy",
+    "title": "NumPy",
+    "category": "Data & AI",
+    "keywords": "python arrays science"
+  },
+  {
+    "slug": "jupyter",
+    "title": "Jupyter",
+    "category": "Data & AI",
+    "keywords": "notebook python science"
+  },
+  {
+    "slug": "pytorch",
+    "title": "PyTorch",
+    "category": "Data & AI",
+    "keywords": "machine learning deep learning"
+  },
+  {
+    "slug": "tensorflow",
+    "title": "TensorFlow",
+    "category": "Data & AI",
+    "keywords": "machine learning deep learning"
+  },
+  {
+    "slug": "keras",
+    "title": "Keras",
+    "category": "Data & AI",
+    "keywords": "machine learning neural network"
+  },
+  {
+    "slug": "scikitlearn",
+    "title": "scikit-learn",
+    "category": "Data & AI",
+    "keywords": "machine learning python"
+  },
+  {
+    "slug": "huggingface",
+    "title": "Hugging Face",
+    "category": "Data & AI",
+    "keywords": "ai models transformers"
+  },
+  {
+    "slug": "anthropic",
+    "title": "Anthropic",
+    "category": "Data & AI",
+    "keywords": "claude ai"
+  },
+  {
+    "slug": "googlegemini",
+    "title": "Google Gemini",
+    "category": "Data & AI",
+    "keywords": "ai model google"
+  },
+  {
+    "slug": "ollama",
+    "title": "Ollama",
+    "category": "Data & AI",
+    "keywords": "local ai models"
+  },
+  {
+    "slug": "langchain",
+    "title": "LangChain",
+    "category": "Data & AI",
+    "keywords": "llm ai agents"
+  },
+  {
+    "slug": "nvidia",
+    "title": "NVIDIA",
+    "category": "Data & AI",
+    "keywords": "gpu ai hardware"
+  },
+  {
+    "slug": "discord",
+    "title": "Discord",
+    "category": "Work",
+    "keywords": "chat voice community"
+  },
+  {
+    "slug": "zoom",
+    "title": "Zoom",
+    "category": "Work",
+    "keywords": "video meetings"
+  },
+  {
+    "slug": "googlemeet",
+    "title": "Google Meet",
+    "category": "Work",
+    "keywords": "video meetings"
+  },
+  {
+    "slug": "notion",
+    "title": "Notion",
+    "category": "Work",
+    "keywords": "docs wiki workspace"
+  },
+  {
+    "slug": "atlassian",
+    "title": "Atlassian",
+    "category": "Work",
+    "keywords": "jira teamwork"
+  },
+  {
+    "slug": "jira",
+    "title": "Jira",
+    "category": "Work",
+    "keywords": "issues agile project"
+  },
+  {
+    "slug": "confluence",
+    "title": "Confluence",
+    "category": "Work",
+    "keywords": "wiki documentation"
+  },
+  {
+    "slug": "trello",
+    "title": "Trello",
+    "category": "Work",
+    "keywords": "kanban task project"
+  },
+  {
+    "slug": "asana",
+    "title": "Asana",
+    "category": "Work",
+    "keywords": "task project planning"
+  },
+  {
+    "slug": "linear",
+    "title": "Linear",
+    "category": "Work",
+    "keywords": "issues project planning"
+  },
+  {
+    "slug": "miro",
+    "title": "Miro",
+    "category": "Work",
+    "keywords": "whiteboard collaboration"
+  },
+  {
+    "slug": "googledrive",
+    "title": "Google Drive",
+    "category": "Work",
+    "keywords": "files cloud storage docs"
+  },
+  {
+    "slug": "dropbox",
+    "title": "Dropbox",
+    "category": "Work",
+    "keywords": "files cloud storage"
+  },
+  {
+    "slug": "gmail",
+    "title": "Gmail",
+    "category": "Work",
+    "keywords": "email google"
+  },
+  {
+    "slug": "stripe",
+    "title": "Stripe",
+    "category": "Commerce",
+    "keywords": "payments fintech"
+  },
+  {
+    "slug": "paypal",
+    "title": "PayPal",
+    "category": "Commerce",
+    "keywords": "payments wallet"
+  },
+  {
+    "slug": "visa",
+    "title": "Visa",
+    "category": "Commerce",
+    "keywords": "payments card"
+  },
+  {
+    "slug": "mastercard",
+    "title": "Mastercard",
+    "category": "Commerce",
+    "keywords": "payments card"
+  },
+  {
+    "slug": "shopify",
+    "title": "Shopify",
+    "category": "Commerce",
+    "keywords": "store ecommerce"
+  },
+  {
+    "slug": "woocommerce",
+    "title": "WooCommerce",
+    "category": "Commerce",
+    "keywords": "store ecommerce wordpress"
+  },
+  {
+    "slug": "ebay",
+    "title": "eBay",
+    "category": "Commerce",
+    "keywords": "shopping marketplace auction"
+  },
+  {
+    "slug": "etsy",
+    "title": "Etsy",
+    "category": "Commerce",
+    "keywords": "marketplace handmade"
+  },
+  {
+    "slug": "square",
+    "title": "Square",
+    "category": "Commerce",
+    "keywords": "payments point of sale"
+  },
+  {
+    "slug": "youtube",
+    "title": "YouTube",
+    "category": "Media",
+    "keywords": "video streaming"
+  },
+  {
+    "slug": "tiktok",
+    "title": "TikTok",
+    "category": "Media",
+    "keywords": "video social"
+  },
+  {
+    "slug": "instagram",
+    "title": "Instagram",
+    "category": "Media",
+    "keywords": "social photos"
+  },
+  {
+    "slug": "facebook",
+    "title": "Facebook",
+    "category": "Media",
+    "keywords": "social meta"
+  },
+  {
+    "slug": "threads",
+    "title": "Threads",
+    "category": "Media",
+    "keywords": "social meta"
+  },
+  {
+    "slug": "x",
+    "title": "X",
+    "category": "Media",
+    "keywords": "twitter social"
+  },
+  {
+    "slug": "reddit",
+    "title": "Reddit",
+    "category": "Media",
+    "keywords": "community forum social"
+  },
+  {
+    "slug": "pinterest",
+    "title": "Pinterest",
+    "category": "Media",
+    "keywords": "social images boards"
+  },
+  {
+    "slug": "snapchat",
+    "title": "Snapchat",
+    "category": "Media",
+    "keywords": "social messaging"
+  },
+  {
+    "slug": "whatsapp",
+    "title": "WhatsApp",
+    "category": "Media",
+    "keywords": "chat messaging meta"
+  },
+  {
+    "slug": "telegram",
+    "title": "Telegram",
+    "category": "Media",
+    "keywords": "chat messaging"
+  },
+  {
+    "slug": "signal",
+    "title": "Signal",
+    "category": "Media",
+    "keywords": "chat secure messaging"
+  },
+  {
+    "slug": "spotify",
+    "title": "Spotify",
+    "category": "Media",
+    "keywords": "music audio streaming"
+  },
+  {
+    "slug": "netflix",
+    "title": "Netflix",
+    "category": "Media",
+    "keywords": "movies streaming video"
+  },
+  {
+    "slug": "twitch",
+    "title": "Twitch",
+    "category": "Media",
+    "keywords": "streaming games video"
+  },
+  {
+    "slug": "vimeo",
+    "title": "Vimeo",
+    "category": "Media",
+    "keywords": "video streaming"
+  },
+  {
+    "slug": "soundcloud",
+    "title": "SoundCloud",
+    "category": "Media",
+    "keywords": "music audio"
+  },
+  {
+    "slug": "medium",
+    "title": "Medium",
+    "category": "Media",
+    "keywords": "blog writing publishing"
+  },
+  {
+    "slug": "substack",
+    "title": "Substack",
+    "category": "Media",
+    "keywords": "newsletter writing publishing"
+  },
+  {
+    "slug": "bluesky",
+    "title": "Bluesky",
+    "category": "Media",
+    "keywords": "social posts"
+  },
+  {
+    "slug": "mastodon",
+    "title": "Mastodon",
+    "category": "Media",
+    "keywords": "social fediverse"
+  },
+  {
+    "slug": "apple",
+    "title": "Apple",
+    "category": "Technology",
+    "keywords": "iphone mac ios"
+  },
+  {
+    "slug": "android",
+    "title": "Android",
+    "category": "Technology",
+    "keywords": "google mobile phone"
+  },
+  {
+    "slug": "google",
+    "title": "Google",
+    "category": "Technology",
+    "keywords": "search workspace"
+  },
+  {
+    "slug": "samsung",
+    "title": "Samsung",
+    "category": "Technology",
+    "keywords": "phones electronics"
+  },
+  {
+    "slug": "googlechrome",
+    "title": "Google Chrome",
+    "category": "Technology",
+    "keywords": "browser web"
+  },
+  {
+    "slug": "firefox",
+    "title": "Firefox",
+    "category": "Technology",
+    "keywords": "browser web mozilla"
+  },
+  {
+    "slug": "brave",
+    "title": "Brave",
+    "category": "Technology",
+    "keywords": "browser privacy"
+  },
+  {
+    "slug": "blender",
+    "title": "Blender",
+    "category": "Design",
+    "keywords": "3d animation modeling"
+  },
+  {
+    "slug": "sketch",
+    "title": "Sketch",
+    "category": "Design",
+    "keywords": "ui design vector"
+  },
+  {
+    "slug": "framer",
+    "title": "Framer",
+    "category": "Design",
+    "keywords": "web design prototype"
+  },
+  {
+    "slug": "webflow",
+    "title": "Webflow",
+    "category": "Design",
+    "keywords": "website design no code"
+  },
+  {
+    "slug": "unity",
+    "title": "Unity",
+    "category": "Games",
+    "keywords": "game engine 3d"
+  },
+  {
+    "slug": "unrealengine",
+    "title": "Unreal Engine",
+    "category": "Games",
+    "keywords": "game engine 3d epic"
+  },
+  {
+    "slug": "godotengine",
+    "title": "Godot",
+    "category": "Games",
+    "keywords": "game engine open source"
+  },
+  {
+    "slug": "playstation",
+    "title": "PlayStation",
+    "category": "Games",
+    "keywords": "sony console gaming"
+  },
+  {
+    "slug": "steam",
+    "title": "Steam",
+    "category": "Games",
+    "keywords": "pc games store"
+  },
+  {
+    "slug": "epicgames",
+    "title": "Epic Games",
+    "category": "Games",
+    "keywords": "games store unreal"
+  },
+  {
+    "slug": "tesla",
+    "title": "Tesla",
+    "category": "Transport",
+    "keywords": "electric car ev"
+  },
+  {
+    "slug": "uber",
+    "title": "Uber",
+    "category": "Transport",
+    "keywords": "ride taxi"
+  },
+  {
+    "slug": "lyft",
+    "title": "Lyft",
+    "category": "Transport",
+    "keywords": "ride taxi"
+  },
+  {
+    "slug": "airbnb",
+    "title": "Airbnb",
+    "category": "Travel",
+    "keywords": "stays home booking"
+  },
+  {
+    "slug": "bookingdotcom",
+    "title": "Booking.com",
+    "category": "Travel",
+    "keywords": "hotel travel reservation"
+  },
+  {
+    "slug": "doordash",
+    "title": "DoorDash",
+    "category": "Food & Delivery",
+    "keywords": "food delivery"
+  },
+  {
+    "slug": "deliveroo",
+    "title": "Deliveroo",
+    "category": "Food & Delivery",
+    "keywords": "food delivery"
+  },
+  {
+    "slug": "nasa",
+    "title": "NASA",
+    "category": "Science",
+    "keywords": "space agency"
+  },
+  {
+    "slug": "spacex",
+    "title": "SpaceX",
+    "category": "Science",
+    "keywords": "space rocket launch"
+  },
+  {
+    "slug": "boeing",
+    "title": "Boeing",
+    "category": "Transport",
+    "keywords": "aircraft aviation"
+  }
+]

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Link, Navigate, useLocation, useParams } from "react-router-dom"
 
 import { BOARD_BASES, THEMES } from "@/defaults/themes.ts"
+import { BRAND_ICON_CATALOG } from "@/defaults/brandIcons.generated.ts"
 import { docsPages, docsSectionPages } from "@/pages/docs/docsStructure.ts"
 import { DocsBoardPreview } from "@/pages/docs/DocsBoardPreview.tsx"
 import { DocsSearch } from "@/pages/docs/DocsSearch.tsx"
@@ -1035,17 +1036,10 @@ export function DocsPage() {
                 ].join("\n")}
               />
               <p>
-                Packaged brand marks are available at{" "}
-                <code>/brand-icons/docker.svg</code>,{" "}
-                <code>/brand-icons/python.svg</code>,{" "}
-                <code>/brand-icons/redis.svg</code>,{" "}
-                <code>/brand-icons/nginx.svg</code>,{" "}
-                <code>/brand-icons/ubuntu.svg</code>, and{" "}
-                <code>/brand-icons/postgresql.svg</code>. Use them as{" "}
-                <code>IMAGE</code> objects; Lucide icons such as{" "}
-                <code>container</code>, <code>ship-cargo</code>, and{" "}
-                <code>boxes</code> work as regular animated <code>ICON</code>{" "}
-                objects.
+                Strokeline includes {BRAND_ICON_CATALOG.length} packaged brand SVG marks across developer tools, cloud, data, work, commerce, media, design, games, and more. Search a brand in <strong>Insert object</strong> to preview and add its logo, or reference a listed file such as{" "}
+                <code>/brand-icons/docker.svg</code> as an <code>IMAGE</code> with <code>FIT contain</code>. The generic Lucide library also includes more than 2,100 searchable symbols, including <code>container</code>, <code>ship-cargo</code>, and{" "}
+                <code>boxes</code>. Brand names and marks belong to their respective owners; see the{" "}
+                <a className="underline underline-offset-2" href="https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md" target="_blank" rel="noreferrer">Simple Icons disclaimer</a> for guidance.
               </p>
               <ul className={listCls}>
                 <li>

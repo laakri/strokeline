@@ -417,7 +417,11 @@ END
 
 **Images:** use a user-supplied HTTPS URL unchanged, or a packaged same-origin asset path listed below. Never invent an external URL.
 
-Packaged brand SVGs: `/brand-icons/docker.svg`, `/brand-icons/python.svg`, `/brand-icons/redis.svg`, `/brand-icons/nginx.svg`, `/brand-icons/ubuntu.svg`, `/brand-icons/postgresql.svg`. Use them as `IMAGE` objects with `FIT contain`. Other bundled icons are Lucide `ICON` names; common diagram choices include `container`, `ship-cargo`, `boxes`, `package`, `server`, `terminal`, `cloud`, and `database`. Use the Docker whale mark for Docker itself, then only the specific software marks needed to distinguish image types.
+Packaged brand SVGs available in this project (exact paths):
+
+{{BRAND_ICON_LIST}}
+
+Use a listed logo as an `IMAGE` object with `FIT contain`; search the Insert Object menu by brand name to add it directly. Do not invent or guess an asset path. Other bundled icons are Lucide `ICON` names; common diagram choices include `container`, `ship-cargo`, `boxes`, `package`, `server`, `terminal`, `cloud`, and `database`. Use the Docker whale mark for Docker itself, then only the specific software marks needed to distinguish image types. Brand marks remain the property of their owners; check the brand's usage terms when needed.
 
 ```
 CREATE logo AS IMAGE

@@ -9,6 +9,7 @@
     "test": "vitest run",
     "test:snapshots": "vitest run src/renderer/__tests__/goldenFrames.test.ts",
     "test:update-snapshots": "node scripts/update-golden-snapshots.mjs",
+    "icons:brands": "node scripts/gen-brand-icons.mjs",
     "check": "npm run typecheck && npm run lint && npm test",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
