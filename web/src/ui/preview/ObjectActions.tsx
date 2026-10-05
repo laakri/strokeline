@@ -60,7 +60,7 @@ function EditDialog({
       />
     </label>
   )
-  const wide = node.type === "rectangle" || node.type === "line" || node.type === "image"
+  const wide = node.type === "rectangle" || node.type === "diamond" || node.type === "ellipse" || node.type === "line" || node.type === "image"
   const dimensional = wide || node.type === "table" || node.type === "chart"
   const submit = (event: React.FormEvent) => {
     event.preventDefault()

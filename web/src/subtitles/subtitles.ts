@@ -44,13 +44,25 @@ export function wrapSubtitleText(text: string, maxChars = 44): string[] {
 
 export function scheduleSays(says: SayLine[]): SayLine[] {
   let cursor = 0
-  return says.map((say) => {
-    const need = Math.max(1.8, say.text.length / 15)
+  return says.map((say, index) => {
+    const need = estimateSayDuration(say.text)
     const duration = Math.max(say.duration, need)
     const start = Math.max(say.start, cursor)
-    cursor = start + duration
+    cursor = start + duration + (index < says.length - 1 ? 0.22 : 0)
     return { ...say, start, duration }
   })
+}
+
+/** Estimate natural speech time with a little breathing room for punctuation. */
+export function estimateSayDuration(text: string): number {
+  const spoken = plainSubtitleText(text)
+  const words = spoken.match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []
+  const wordTime = words.length / 2.6
+  const punctuationTime =
+    (spoken.match(/[,，、:：;]/g)?.length ?? 0) * 0.16 +
+    (spoken.match(/[.!?。！？]/g)?.length ?? 0) * 0.32 +
+    (spoken.match(/[—–]/g)?.length ?? 0) * 0.2
+  return Math.max(1.8, Math.ceil((wordTime + punctuationTime) * 10) / 10)
 }
 
 export function scheduleDocumentSays(document: SceneDocument): SceneDocument {

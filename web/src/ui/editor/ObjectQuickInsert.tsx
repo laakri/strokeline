@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import { Plus, Search, X } from "lucide-react"
 import { BRAND_ICON_CATALOG } from "@/defaults/brandIcons.generated.ts"
 import { ICON_NAMES } from "@/dsl/grammar.ts"
@@ -112,16 +112,19 @@ export function ObjectQuickInsert({
   mode = "toolbar",
   context,
   onClose,
+  toolbarContent,
 }: {
   onInsert: (snippet: string, sceneIndex?: number) => boolean
   getSource: () => string
   mode?: "toolbar" | "context"
   context?: InsertContext | null
   onClose?: () => void
+  toolbarContent?: ReactNode
 }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [notice, setNotice] = useState("")
+  const [browseMode, setBrowseMode] = useState<"all" | "icons">("all")
   const contextMode = mode === "context"
   const menuOpen = contextMode ? context !== null && context !== undefined : open
   const closeMenu = () => {
@@ -136,16 +139,23 @@ export function ObjectQuickInsert({
     : undefined
   const options = useMemo(() => {
     const normalized = query.trim().toLowerCase()
+    const inMode = (option: InsertOption) => browseMode === "all" || option.category === "Icon" || option.category.startsWith("Brand · ")
     const filtered = normalized
-      ? objectOptions.filter((option) =>
-          (option.label + " " + option.category + " " + option.keywords).toLowerCase().includes(normalized)
-        )
-      : objectOptions.filter((option) =>
-          (option.category !== "Icon" && !option.category.startsWith("Brand · ")) ||
-          (option.category === "Icon" && ICON_NAMES.indexOf(option.label as typeof ICON_NAMES[number]) < 6)
-        )
+      ? objectOptions.filter((option) => inMode(option) &&
+          (option.label + " " + option.category + " " + option.keywords).toLowerCase().includes(normalized))
+      : objectOptions.filter((option) => inMode(option) && (browseMode === "icons"
+          ? true
+          : (option.category !== "Icon" && !option.category.startsWith("Brand · ")) ||
+            (option.category === "Icon" && ICON_NAMES.indexOf(option.label as typeof ICON_NAMES[number]) < 6)))
     return filtered.slice(0, 80)
-  }, [query])
+  }, [query, browseMode])
+
+  const openLibrary = (nextMode: "all" | "icons") => {
+    setBrowseMode(nextMode)
+    setQuery("")
+    setOpen(true)
+    setNotice("")
+  }
 
   const choose = (option: InsertOption) => {
     if (!onInsert(option.snippet(getSource(), context?.position), context?.sceneIndex)) {
@@ -159,22 +169,28 @@ export function ObjectQuickInsert({
   return (
     <>
       {!contextMode && (
-        <div className="flex h-10 shrink-0 items-center border-b border-border/70 bg-card px-2">
+        <div className="flex h-10 shrink-0 items-center gap-1.5 border-b border-border/70 bg-card px-2">
           <button
             type="button"
-            onClick={() => {
-              setOpen(true)
-              setNotice("")
-            }}
-            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            title="Insert an icon, arrow, chart, table, or callout"
+            onClick={() => openLibrary("icons")}
+            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            title="Search Lucide icons and brand logos"
+            aria-haspopup="dialog"
+          >
+            <Search className="size-3.5" />
+            Search icons
+          </button>
+          <button
+            type="button"
+            onClick={() => openLibrary("all")}
+            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            title="Add an icon, brand logo, arrow, chart, table, or callout"
+            aria-haspopup="dialog"
           >
             <Plus className="size-3.5" />
-            Insert object
+            Add objects
           </button>
-          <span className="ml-2 hidden text-[11px] text-muted-foreground/70 sm:inline">
-            Search icons and add objects without leaving the editor
-          </span>
+          <div className="ml-auto min-w-0">{toolbarContent}</div>
         </div>
       )}
       {menuOpen && (
@@ -190,7 +206,7 @@ export function ObjectQuickInsert({
           <section
             role="dialog"
             aria-modal="true"
-            aria-label="Insert object"
+            aria-label={browseMode === "icons" ? "Search icons" : "Add objects"}
             style={menuPosition}
             className={contextMode
               ? "absolute flex max-h-[72svh] w-[min(22rem,calc(100vw-1rem))] flex-col overflow-hidden rounded-xl bg-popover text-popover-foreground shadow-2xl ring-1 ring-border/70"
@@ -206,8 +222,8 @@ export function ObjectQuickInsert({
                   if (event.key === "Escape") closeMenu()
                   if (event.key === "Enter" && options[0]) choose(options[0])
                 }}
-                placeholder="Search icons, brand logos, arrows, charts…"
-                aria-label="Search objects"
+                placeholder={browseMode === "icons" ? "Search Lucide icons and brand logos…" : "Search icons, brand logos, arrows, charts…"}
+                aria-label={browseMode === "icons" ? "Search icons and brand logos" : "Search objects"}
                 className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
               <button
@@ -245,7 +261,9 @@ export function ObjectQuickInsert({
             <div className="border-t border-border/70 px-3 py-2 text-[11px] text-muted-foreground">
               {notice || (query
                 ? options.length + " matching objects · Enter inserts the first"
-                : "Search " + ICON_NAMES.length.toLocaleString() + "+ Lucide icons and " + BRAND_ICON_CATALOG.length + " brand logos")}
+                : browseMode === "icons"
+                  ? "Search " + ICON_NAMES.length.toLocaleString() + "+ Lucide icons and " + BRAND_ICON_CATALOG.length + " brand logos"
+                  : "Add objects · search " + ICON_NAMES.length.toLocaleString() + "+ Lucide icons and " + BRAND_ICON_CATALOG.length + " brand logos")}
             </div>
           </section>
         </div>

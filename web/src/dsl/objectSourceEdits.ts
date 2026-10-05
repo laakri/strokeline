@@ -158,7 +158,7 @@ export function editObjectProperties(
   if (node.type === "text" || node.type === "icon") entries.push(["SIZE", values.size])
   else if (node.type === "table" || node.type === "chart") entries.push(["SIZE", `${values.width} ${values.height}`])
   else if (node.type === "circle") entries.push(["RADIUS", values.radius])
-  else if (node.type === "image" || node.type === "rectangle" || node.type === "line") {
+  else if (node.type === "image" || node.type === "rectangle" || node.type === "diamond" || node.type === "ellipse" || node.type === "line") {
     entries.push(["WIDTH", values.width], ["HEIGHT", values.height])
   }
   entries.push(["COLOR", values.color], ["OPACITY", values.opacity])

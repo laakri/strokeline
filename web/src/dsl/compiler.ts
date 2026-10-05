@@ -10,6 +10,7 @@ import {
 } from "@/defaults/defaults.ts"
 import { features } from "@/defaults/features.ts"
 import { formatMathText } from "@/lib/mathText.ts"
+import { layoutTable } from "@/lib/tableLayout.ts"
 import { BOARD_BASES, THEMES } from "@/defaults/themes.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
 import { normalizeTextAnchor, positionFromAnchor } from "@/lib/anchors.ts"
@@ -224,7 +225,7 @@ function compileScene(
         const cellHeight = Math.max(...measured.map((box) => box.height))
         containerWidth = columns * cellWidth + gap * (columns - 1)
         containerHeight = rows * cellHeight + gap * (rows - 1)
-        measured.forEach((box, index) => {
+        measured.forEach((_, index) => {
           const column = index % columns
           const row = Math.floor(index / columns)
           positions.push({
@@ -479,6 +480,8 @@ function compileScene(
           route: propString(statement.props, "ROUTE")?.toLowerCase() ?? "straight",
           waypoints: pairPoints(waypointValues),
           head: propString(statement.props, "HEAD")?.toLowerCase() ?? "end",
+          sourceLabel: propString(statement.props, "SOURCELABEL"),
+          targetLabel: propString(statement.props, "TARGETLABEL"),
           _sourceProperties: statement.props.map((prop) => prop.key),
           _sourcePropertyLocations: Object.fromEntries(statement.props.map((prop) => [prop.key, { line: prop.token.line, col: prop.token.col }])),
         },
@@ -692,6 +695,11 @@ function expandMacro(
       case "shape": return { ...statement, id: statement.id ? id(statement.id) : undefined, props: props(statement.props) }
       case "arrow": return { ...statement, from: id(statement.from), to: id(statement.to), props: props(statement.props) }
       case "animate": return { ...statement, targetId: id(statement.targetId), values: statement.values.map(value) }
+      case "say": return {
+        ...statement,
+        text: String(value(statement.text)),
+        duration: statement.duration === undefined ? undefined : value(statement.duration),
+      }
       case "effect": case "loop": return { ...statement, targetId: id(statement.targetId) }
       case "camera": return { ...statement, props: props(statement.props) }
       case "wait": return statement
@@ -706,6 +714,7 @@ function expandMacro(
         props: props(statement.props),
       }
       case "chart": return { ...statement, id: id(statement.id), position: { x: statement.position.x + at.x, y: statement.position.y + at.y } }
+      case "table": return { ...statement, id: id(statement.id), props: props(statement.props) }
       case "parallel": case "group": case "stack": case "grid":
         return { ...statement, id: statement.id ? id(statement.id) : undefined, statements: statement.statements.map(mapStatement) }
       case "use": return { ...statement, id: `${prefix}_${statement.id}`, at: { x: statement.at.x + at.x, y: statement.at.y + at.y }, args: Object.fromEntries(Object.entries(statement.args).map(([key, item]) => [key, value(item)])) }
@@ -926,6 +935,7 @@ function nodeFromCreate(
     strokeWidth:
       propNumber(props, "STROKE") ?? ast.stroke ?? DEFAULT_STROKE_WIDTH,
     fontSize: resolvedFontSize,
+    ...(propString(props, "LINESTYLE") ? { lineStyle: propString(props, "LINESTYLE")?.toLowerCase() as NonNullable<SceneNode["style"]["lineStyle"]> } : {}),
     ...(propString(props, "PEN") ? { pen: propString(props, "PEN") as SceneNode["style"]["pen"] } : {}),
     ...(ast.font && ast.font.toLowerCase() !== "handwritten" ? { fontFamily: fontFamilyName(ast.font) } : {}),
   }
@@ -970,6 +980,7 @@ function nodeFromCreate(
     ...(fitProperty.size ? { fit: fitProperty.size } : {}),
     ...(anchorValue && anchor ? { anchor: anchor as TextAnchor } : {}),
     radius,
+    ...(statement.type.toLowerCase() === "rectangle" ? { cornerRadius: propNumber(props, "CORNERS") ?? 16 } : {}),
     rotation: 0,
     opacity,
     style,
@@ -1243,7 +1254,7 @@ function compileTimeBox(
       height: radius * 2,
     }
   }
-  if (node.type === "rectangle" || node.type === "line" || node.type === "image") {
+  if (node.type === "rectangle" || node.type === "ellipse" || node.type === "line" || node.type === "image") {
     const width = node.size?.width ?? 0
     const height = node.size?.height ?? 0
     if (width <= 0 || height <= 0) return undefined
@@ -1465,6 +1476,12 @@ function nodeFromTable(
     diagnostics.push(error("E_MISSING_REQUIRED_PROP", `TABLE "${statement.id}" needs COLUMNS with at least one header cell.`, statement.token.line, statement.token.col))
   const rowProps = props.filter((prop) => prop.key === "ROW")
   const rows = rowProps.map((prop) => prop.values.map(String))
+  const divider = propNumber(props, "DIVIDER")
+  if (props.some((prop) => prop.key === "DIVIDER") &&
+    (divider === undefined || !Number.isInteger(divider) || divider < 1 || divider > rows.length)) {
+    const dividerProp = props.find((prop) => prop.key === "DIVIDER")
+    diagnostics.push(error("E_BAD_RANGE", `TABLE "${statement.id}" DIVIDER must identify a body row from 1 to ${rows.length}.`, dividerProp?.token.line ?? statement.token.line, dividerProp?.token.col ?? statement.token.col))
+  }
   rowProps.forEach((prop, index) => {
     if (prop.values.length !== columns.length)
       diagnostics.push(error(
@@ -1482,8 +1499,16 @@ function nodeFromTable(
   }
   const maxWidth = Math.max(1, ast.canvas.width - 240)
   const maxHeight = Math.max(1, ast.canvas.height - 200)
-  const width = Math.min(Math.max(1, rawSize[0] ?? 1200), maxWidth)
+  const requestedWidth = Math.min(Math.max(1, rawSize[0] ?? 1200), maxWidth)
   const height = Math.min(Math.max(1, rawSize[1] ?? 400), maxHeight)
+  const contentWidth = layoutTable(
+    columns,
+    rows,
+    requestedWidth,
+    height,
+    fontFamilyName(ast.font),
+  ).width
+  const width = Math.max(requestedWidth, contentWidth)
   const rawPosition = propNumbers(props, "POSITION")
   const position = {
     x: Math.max(120 + width / 2, Math.min(ast.canvas.width - 120 - width / 2, rawPosition[0] ?? ast.canvas.width / 2)),
@@ -1524,6 +1549,7 @@ function nodeFromTable(
       columns,
       rows,
       headerColor: propString(props, "HEADERCOLOR"),
+      divider,
       align: (alignValue === "left" || alignValue === "right" ? alignValue : "center") as TextAlign,
       highlights,
       _sourceProperties: props.map((prop) => prop.key),

@@ -242,7 +242,7 @@ class Parser {
     return { ast: { ...header, macros, scenes }, diagnostics: this.diagnostics }
   }
 
-  private parseHeader(): Omit<ASTScript, "scenes"> {
+  private parseHeader(): Omit<ASTScript, "scenes" | "macros"> {
     this.skipNewlines()
     let version = ""
     let canvas = { width: 1920, height: 1080 }

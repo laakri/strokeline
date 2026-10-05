@@ -40,13 +40,14 @@ export function seedFromId(id: string): number {
 }
 
 export function strokeOptions(node: SceneNode, cameraScale = 1) {
+  const pen = node.style.pen
   return {
     seed: seedFromId(node.id),
     stroke: node.style.color,
     strokeWidth: cameraScaledStrokeWidth(node.style.strokeWidth, cameraScale),
     fill: node.style.fill,
-    roughness: node.style.pen === "chalk" ? 2 : node.style.pen === "pencil" ? 1.5 : node.style.pen === "marker" ? 0.25 : node.style.pen === "brush" ? 1.8 : 1.2,
-    bowing: node.style.pen === "marker" ? 0 : 1,
+    roughness: pen === "clean" ? 0 : pen === "chalk" ? 2 : pen === "pencil" ? 1.5 : pen === "marker" ? 0.25 : pen === "brush" ? 1.8 : 1.2,
+    bowing: pen === "marker" || pen === "clean" ? 0 : 1,
   }
 }
 

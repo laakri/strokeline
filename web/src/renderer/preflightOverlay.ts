@@ -1,6 +1,6 @@
 import type { SceneNode } from "@/ir/types.ts"
 import { applyCamera } from "@/renderer/camera.ts"
-import { arrowEndpoints } from "@/renderer/geometry.ts"
+import { resolveArrowEndpoints } from "@/renderer/geometry.ts"
 import { inkBoundingBox } from "@/renderer/ink/draw.ts"
 import { ShapeRegistry, type BoundingBox } from "@/renderer/shapes/registry.ts"
 import type { CanvasSize, RenderState } from "@/timeline/timeline.ts"
@@ -11,13 +11,9 @@ function nodeBounds(node: SceneNode, nodes: Map<string, SceneNode>): BoundingBox
     const from = nodes.get(String(node.data?.fromId ?? ""))
     const to = nodes.get(String(node.data?.toId ?? ""))
     if (from && to && from.type !== "arrow" && to.type !== "arrow") {
-      const start = from.type === "ink"
-        ? inkBoundingBox(from)
-        : ShapeRegistry[from.type].boundingBox(from)
-      const end = to.type === "ink"
-        ? inkBoundingBox(to)
-        : ShapeRegistry[to.type].boundingBox(to)
-      const points = arrowEndpoints(from, to, start, end)
+      const points = resolveArrowEndpoints(node, nodes, (target) => target.type === "ink"
+        ? inkBoundingBox(target)
+        : ShapeRegistry[target.type].boundingBox(target))
       return {
         x: Math.min(points.start.x, points.end.x),
         y: Math.min(points.start.y, points.end.y),

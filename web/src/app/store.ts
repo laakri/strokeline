@@ -182,6 +182,20 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }
     get().setScript(script)
   },
-  loadScript: (text) => set({ editorLoad: { text }, activeSceneIndex: 0 }),
+  loadScript: (text) => {
+    const source = normalizeScriptSource(text).source
+    saveStoredScript(source)
+    const result = runScript(source)
+    set((state) => ({
+      script: source,
+      compiledSource: source,
+      compiledIR: result.document,
+      scenes: result.document?.scenes ?? [],
+      diagnostics: result.diagnostics,
+      activeSceneIndex: 0,
+      runId: result.document ? state.runId + 1 : state.runId,
+      editorLoad: { text: source },
+    }))
+  },
   clearEditorLoad: () => set({ editorLoad: null }),
 }))

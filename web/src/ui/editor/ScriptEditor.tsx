@@ -29,6 +29,7 @@ import { ObjectQuickInsert } from "@/ui/editor/ObjectQuickInsert.tsx"
 import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
 import { colorSwatches } from "@/ui/editor/colorSwatches.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
+import { DiagramStarterPicker } from "@/ui/editor/DiagramStarterPicker.tsx"
 
 const keywords = new Set([
   ...STATEMENT_KEYWORDS,
@@ -215,7 +216,7 @@ const sourceJumpLine = StateField.define<DecorationSet>({
   provide: (field) => EditorView.decorations.from(field),
 })
 
-export function ScriptEditor() {
+export function ScriptEditor({ onTemplateSelected }: { onTemplateSelected?: () => void } = {}) {
   const container = useRef<HTMLDivElement>(null)
   const view = useRef<EditorView | null>(null)
   const sourceJumpTimeout = useRef<number | null>(null)
@@ -364,6 +365,7 @@ export function ScriptEditor() {
       <ObjectQuickInsert
         onInsert={insertObjectSnippet}
         getSource={() => view.current?.state.doc.toString() ?? script}
+        toolbarContent={<DiagramStarterPicker onSelect={onTemplateSelected} />}
       />
       <div ref={container} className="h-full min-h-0" />
     </div>

@@ -194,6 +194,49 @@ const connectorScript = `SCENE 1 "Three ways to connect"
   END
 END SCENE`
 
+const umlRelationshipsScript = `SCENE 1 "Use case include and extend"
+  CREATE system AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1300
+    HEIGHT 650
+    TEXT "Issue tracker"
+    FILL #FFFFFF
+    COLOR #94A3B8
+  END
+  CREATE createIssue AS ELLIPSE
+    POSITION 650 650
+    WIDTH 300
+    HEIGHT 120
+    TEXT "Create issue"
+    FILL #EFF6FF
+    COLOR #2563EB
+  END
+  CREATE authenticate AS ELLIPSE
+    POSITION 960 800
+    WIDTH 300
+    HEIGHT 120
+    TEXT "Authenticate"
+    FILL #F0FDFA
+    COLOR #0F766E
+  END
+  CREATE attachFile AS ELLIPSE
+    POSITION 1280 650
+    WIDTH 300
+    HEIGHT 120
+    TEXT "Attach file"
+    FILL #FFF7ED
+    COLOR #C2410C
+  END
+  ARROW createIssue -> authenticate
+    LINESTYLE dashed
+    HEAD open
+    LABEL "«include»"
+  ARROW attachFile -> createIssue
+    LINESTYLE dashed
+    HEAD open
+    LABEL "«extend»"
+END SCENE`
+
 const dockerIconScript = `SCENE 1 "Docker image flow"
   CREATE docker AS IMAGE
     URL "/brand-icons/docker.svg"
@@ -870,10 +913,16 @@ export function DocsPage() {
               <p>
                 Use <code>CREATE id AS TYPE</code> and close it with{" "}
                 <code>END</code>. Types are <code>TEXT</code>,{" "}
-                <code>CIRCLE</code>, <code>RECTANGLE</code>, <code>LINE</code>,
+                <code>CIRCLE</code>, <code>ELLIPSE</code>, <code>RECTANGLE</code>, <code>DIAMOND</code>, <code>LINE</code>,
                 <code>ICON</code>, and <code>IMAGE</code>.
               </p>
               <ul className={listCls}>
+                <li>
+                  In the workspace, choose <strong>Templates</strong> to start
+                  a use case, class, sequence, Scrum, flowchart, or entity
+                  relationship diagram. Each starter opens on the editable
+                  canvas and can be played as an animation.
+                </li>
                 <li>
                   Placement and geometry: <code>POSITION x y</code>,{" "}
                   <code>FROM x y</code>, <code>TO x y</code>,{" "}
@@ -883,7 +932,8 @@ export function DocsPage() {
                 <li>
                   Appearance: <code>COLOR #hex</code>, <code>FILL #hex</code>,{" "}
                   <code>STROKE n</code>, <code>OPACITY 0..1</code>,{" "}
-                  <code>PEN style</code>.
+                  <code>PEN style</code>. Rectangles support rounded{" "}
+                  <code>CORNERS n</code> (default 16); shape labels are centered and auto-fit.
                 </li>
                 <li>
                   Text: <code>TEXT "..."</code>, <code>LABEL "..."</code>,{" "}
@@ -961,10 +1011,11 @@ export function DocsPage() {
             <DocsSection id="drawing-layout" title="Drawing and layout">
               <p>
                 Use <code>ARROW fromId -&gt; toId</code> to attach a connector
-                to two created objects. Choose <code>ROUTE straight</code>,{" "}
+                to two created objects. Self-arrows render as message loops. Choose <code>ROUTE straight</code>,{" "}
                 <code>ROUTE elbow</code>, or <code>ROUTE curve</code>. Set{" "}
                 <code>LINESTYLE solid|dashed|dotted</code>,{" "}
-                <code>HEAD none|end|both</code>, <code>STROKE</code>,{" "}
+                <code>HEAD none|end|both|triangle|diamond|diamond-filled|open</code>,{" "}
+                <code>SOURCELABEL</code> and <code>TARGETLABEL</code> for endpoint labels, <code>STROKE</code>,{" "}
                 <code>VIA x1 y1 x2 y2 ...</code>, <code>COLOR</code>,{" "}
                 <code>LABEL</code>, and <code>DRAW</code> on following lines.
                 Dashed lines work well for remote, optional, or return flows;
@@ -972,6 +1023,12 @@ export function DocsPage() {
                 diagram.
               </p>
               <CodeBlock title="Styled diagram connectors" code={connectorScript} />
+              <p>
+                UML use case relationships use dashed dependency arrows with an open head.{" "}
+                <code>«include»</code> points from the including use case to the required one;{" "}
+                <code>«extend»</code> points from the optional extending use case back to the base use case.
+              </p>
+              <CodeBlock title="UML include and extend" code={umlRelationshipsScript} />
               <p>
                 This compact Docker flow pairs the Docker whale and software
                 brand marks with the built-in container and cargo ship icons.
@@ -1069,12 +1126,17 @@ export function DocsPage() {
                 Use <code>TABLE id</code> for comparisons. COLUMNS sets the
                 header; each ROW must provide one value for every column. Keep
                 tables to four columns and five rows or fewer for comfortable
-                reading. Text stays at least 28px and fits inside the safe area.
+                reading. Columns grow to fit their widest cell up to the declared
+                width; longer text shrinks to 18px without wrapping. If a cell
+                still needs more room, the table widens beyond that size instead
+                of clipping its text. Rows keep their set height. Use{" "}
+                <code>DIVIDER n</code> to draw a stronger
+                separator after body row n, such as between class attributes and operations.
               </p>
               <p>
                 Optional properties are <code>POSITION</code>, <code>SIZE</code>,{" "}
                 <code>COLOR</code>, <code>FILL</code>, <code>HEADERCOLOR</code>,{" "}
-                <code>ALIGN left|center|right</code>, <code>STROKE</code>,{" "}
+                <code>ALIGN left|center|right</code>, <code>DIVIDER n</code>, <code>STROKE</code>,{" "}
                 <code>PEN</code>, <code>OPACITY</code>, <code>DRAW</code>, and{" "}
                 <code>REVEAL</code>.
               </p>
@@ -1090,6 +1152,7 @@ export function DocsPage() {
                   '    ROW "Pro" "12" "MP4"',
                   '    ROW "Team" "30" "MP4 + WebM"',
                   "    HEADERCOLOR #2E86AB",
+                  "    DIVIDER 2",
                   "    HIGHLIGHT ROW 2",
                   "    DRAW 1.5s",
                   "  END",

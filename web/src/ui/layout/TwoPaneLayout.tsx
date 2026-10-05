@@ -40,9 +40,11 @@ function clampRatio(ratio: number): number {
 export function TwoPaneLayout({
   presentationMode = false,
   onExitPresentation,
+  onTemplateSelected,
 }: {
   presentationMode?: boolean
   onExitPresentation?: () => void
+  onTemplateSelected?: () => void
 }) {
   const isMobile = useIsMobile()
   const [mobileTab, setMobileTab] = useState<MobileTab>("script")
@@ -122,7 +124,7 @@ export function TwoPaneLayout({
         </div>
         {mobileTab === "script" ? (
           <section data-workspace-guide-target="editor" className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(44px,13rem)] overflow-hidden bg-card">
-            <ScriptEditor />
+            <ScriptEditor onTemplateSelected={onTemplateSelected} />
             <DiagnosticsPanel />
           </section>
         ) : (
@@ -142,7 +144,7 @@ export function TwoPaneLayout({
         className="grid min-h-0 shrink-0 overflow-hidden border-r border-border bg-card grid-rows-[minmax(0,1fr)_minmax(44px,13rem)]"
         style={{ width: `${leftRatio * 100}%`, minWidth: 360, maxWidth: `${MAX_RATIO * 100}%` }}
       >
-        <ScriptEditor />
+        <ScriptEditor onTemplateSelected={onTemplateSelected} />
         <DiagnosticsPanel />
       </section>
 

@@ -1,14 +1,14 @@
 import type { Point, SceneNode } from "@/ir/types.ts"
-import { arrowEndpoints, pointOnBoundary } from "@/renderer/geometry.ts"
-import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
+import { resolveArrowEndpoints } from "@/renderer/geometry.ts"
+import type { RenderContext } from "@/renderer/handdrawn.ts"
 import { inkBoundingBox } from "@/renderer/ink/draw.ts"
 import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
 import { ShapeRegistry } from "@/renderer/shapes/registry.ts"
-import { drawLabel } from "@/renderer/shapes/label.ts"
+import { cameraScaledFontSize, drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 
 type ArrowRoute = "straight" | "elbow" | "curve"
-type ArrowHead = "none" | "end" | "both"
+type ArrowHead = "none" | "end" | "both" | "triangle" | "diamond" | "diamond-filled" | "open"
 
 export function arrowBoundingBox(node: SceneNode): BoundingBox {
   return { x: node.position.x, y: node.position.y, width: 0, height: 0 }
@@ -21,46 +21,64 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
 
   const route = asRoute(node.data?.route)
   const waypoints = readWaypoints(node.data?.waypoints)
-  const fromBox = nodeBounds(from)
-  const toBox = nodeBounds(to)
-  let { start, end } = arrowEndpoints(from, to, fromBox, toBox)
-  if (waypoints.length) {
-    start = pointOnBoundary(from, waypoints[0]!, fromBox)
-    end = pointOnBoundary(to, waypoints[waypoints.length - 1]!, toBox)
-  } else if (route === "elbow") {
-    if (Math.abs(to.position.x - from.position.x) >= Math.abs(to.position.y - from.position.y)) {
-      start = alignedBoundary(from, to.position, fromBox, "horizontal")
-      end = alignedBoundary(to, from.position, toBox, "horizontal")
-    } else {
-      start = alignedBoundary(from, to.position, fromBox, "vertical")
-      end = alignedBoundary(to, from.position, toBox, "vertical")
-    }
-  }
-
-  const path = routePoints(start, end, route, waypoints)
+  const { start, end } = resolveArrowEndpoints(node, renderContext.nodes, nodeBounds)
+  const selfMessage = from.id === to.id
+  const path = selfMessage
+    ? selfLoop(nodeBounds(from), renderContext.cameraScale)
+    : routePoints(start, end, route, waypoints)
   const progress = Math.max(0, Math.min(1, (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1))
-  const visiblePath = trimPath(path, progress)
+  const head = asHead(node.data?.head)
+  let visiblePath = trimPath(path, progress)
+  if (progress >= 1 && isStyledHead(head)) visiblePath = trimPolyline(visiblePath, headLength(head, renderContext.cameraScale))
   if (visiblePath.length > 1) {
-    const options = { ...strokeOptions(node, renderContext.cameraScale) } as ReturnType<typeof strokeOptions> & { strokeLineDash?: number[] }
-    const dashScale = 1 / renderContext.cameraScale
-    if (node.style.lineStyle === "dashed") options.strokeLineDash = [10 * dashScale, 7 * dashScale]
-    if (node.style.lineStyle === "dotted") options.strokeLineDash = [2 * dashScale, 6 * dashScale]
-    const coordinates = visiblePath.map((point) => [point.x, point.y])
-    if (route === "curve" && visiblePath.length >= 4) renderContext.roughCanvas.curve(coordinates, options)
-    else renderContext.roughCanvas.linearPath(coordinates, options)
+    const ctx = renderContext.context
+    ctx.save()
+    ctx.strokeStyle = node.style.color
+    ctx.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    if (node.style.lineStyle === "dashed") ctx.setLineDash([10 / renderContext.cameraScale, 7 / renderContext.cameraScale])
+    if (node.style.lineStyle === "dotted") ctx.setLineDash([2 / renderContext.cameraScale, 6 / renderContext.cameraScale])
+    ctx.beginPath()
+    if (route === "curve" && !selfMessage && visiblePath.length >= 4) {
+      ctx.moveTo(visiblePath[0]!.x, visiblePath[0]!.y)
+      for (let index = 1; index < visiblePath.length; index++) ctx.lineTo(visiblePath[index]!.x, visiblePath[index]!.y)
+    } else traceRoundedPath(ctx, visiblePath, 9 / renderContext.cameraScale)
+    ctx.stroke()
+    ctx.restore()
   }
 
   if (progress < 1 || visiblePath.length < 2) return
-  const head = asHead(node.data?.head)
-  if (head === "end" || head === "both") drawArrowHead(renderContext, node, path[path.length - 2]!, path[path.length - 1]!)
+  if (isStyledHead(head)) drawArrowHead(renderContext, node, head, path[path.length - 2]!, path[path.length - 1]!)
+  if (head === "end" || head === "both") drawArrowHead(renderContext, node, "end", path[path.length - 2]!, path[path.length - 1]!)
   if (head === "both") drawArrowHead(renderContext, node, path[1]!, path[0]!)
+
+  const sourceLabel = String(node.data?.sourceLabel ?? "")
+  const targetLabel = String(node.data?.targetLabel ?? "")
+  const labelFontSize = node.style.fontSize ?? DEFAULT_LABEL_SIZE
+  const endpointLabelStyle = {
+    color: node.style.color,
+    fontSize: labelFontSize,
+    fontFamily: node.style.fontFamily,
+  }
+  const labelScale = renderContext.cameraScale
+  const endpointLabelGap =
+    (cameraScaledFontSize(labelFontSize, labelScale) * 0.65 + 12) / labelScale
+  if (sourceLabel) {
+    const center = endpointLabelPoint(path, true, endpointLabelGap, 8 / labelScale)
+    drawLabel(renderContext, sourceLabel, center, endpointLabelStyle, progress)
+  }
+  if (targetLabel) {
+    const center = endpointLabelPoint(path, false, endpointLabelGap, 8 / labelScale)
+    drawLabel(renderContext, targetLabel, center, endpointLabelStyle, progress)
+  }
 
   const middle = trimPath(path, 0.5)
   const labelPosition = middle[middle.length - 1] ?? end
   const previous = middle[middle.length - 2] ?? start
   const angle = Math.atan2(labelPosition.y - previous.y, labelPosition.x - previous.x)
   const offset = { x: -Math.sin(angle) * 18 / renderContext.cameraScale, y: Math.cos(angle) * 18 / renderContext.cameraScale }
-  drawLabel(renderContext, node.label ?? node.text, labelPosition, { color: node.style.color, fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE, offset }, progress)
+  drawLabel(renderContext, node.label ?? node.text, labelPosition, { color: node.style.color, fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE, fontFamily: node.style.fontFamily, offset }, progress)
 }
 
 export const arrow: ShapeRenderer = { draw: drawArrow, boundingBox: arrowBoundingBox }
@@ -95,6 +113,31 @@ function routePoints(start: Point, end: Point, route: ArrowRoute, waypoints: Poi
     const t = index / 24
     return cubicPoint(start, first, second, end, t)
   })
+}
+
+function selfLoop(box: BoundingBox, scale: number): Point[] {
+  const gap = 14 / scale
+  const lift = Math.max(40 / scale, box.height * 0.45)
+  const start = { x: box.x + box.width * 0.72, y: box.y }
+  const end = { x: box.x + box.width * 0.28, y: box.y }
+  const right = box.x + box.width + gap
+  const top = box.y - lift
+  return [start, { x: right, y: start.y }, { x: right, y: top }, { x: end.x, y: top }, end]
+}
+
+function traceRoundedPath(ctx: CanvasRenderingContext2D, points: Point[], radius: number): void {
+  if (!points.length) return
+  ctx.moveTo(points[0]!.x, points[0]!.y)
+  for (let index = 1; index < points.length - 1; index++) {
+    const previous = points[index - 1]!, corner = points[index]!, next = points[index + 1]!
+    const before = distance(previous, corner), after = distance(corner, next)
+    const inset = Math.min(radius, before / 2, after / 2)
+    const a = { x: corner.x + (previous.x - corner.x) * inset / (before || 1), y: corner.y + (previous.y - corner.y) * inset / (before || 1) }
+    const b = { x: corner.x + (next.x - corner.x) * inset / (after || 1), y: corner.y + (next.y - corner.y) * inset / (after || 1) }
+    ctx.lineTo(a.x, a.y); ctx.quadraticCurveTo(corner.x, corner.y, b.x, b.y)
+  }
+  const last = points[points.length - 1]!
+  if (points.length > 1) ctx.lineTo(last.x, last.y)
 }
 
 function curveThroughPoints(points: Point[]): Point[] {
@@ -162,14 +205,45 @@ function trimPath(path: Point[], progress: number): Point[] {
   return result
 }
 
-function drawArrowHead(renderContext: RenderContext, node: SceneNode, from: Point, tip: Point): void {
+function drawArrowHead(renderContext: RenderContext, node: SceneNode, style: ArrowHead, from: Point, tip: Point): void {
   const angle = Math.atan2(tip.y - from.y, tip.x - from.x)
-  const headLength = 14 / renderContext.cameraScale
-  const headWidth = 6 / renderContext.cameraScale
-  const left = { x: tip.x - headLength * Math.cos(angle) + headWidth * Math.sin(angle), y: tip.y - headLength * Math.sin(angle) - headWidth * Math.cos(angle) }
-  const right = { x: tip.x - headLength * Math.cos(angle) - headWidth * Math.sin(angle), y: tip.y - headLength * Math.sin(angle) + headWidth * Math.cos(angle) }
-  const options = { ...strokeOptions(node, renderContext.cameraScale), strokeLineDash: undefined }
-  renderContext.roughCanvas.polygon([[tip.x, tip.y], [left.x, left.y], [right.x, right.y]], { ...options, fill: node.style.color, fillStyle: "solid" })
+  const length = headLength(style, renderContext.cameraScale)
+  const halfWidth = (style === "diamond" || style === "diamond-filled" ? 8 : 7) / renderContext.cameraScale
+  const ux = Math.cos(angle)
+  const uy = Math.sin(angle)
+  const px = -uy
+  const py = ux
+  const back = { x: tip.x - length * ux, y: tip.y - length * uy }
+  const left = { x: back.x + halfWidth * px, y: back.y + halfWidth * py }
+  const right = { x: back.x - halfWidth * px, y: back.y - halfWidth * py }
+  const ctx = renderContext.context
+  ctx.save()
+  ctx.strokeStyle = node.style.color
+  ctx.fillStyle = node.style.color
+  ctx.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
+  ctx.lineJoin = "round"
+  ctx.lineCap = "round"
+  if (style === "open") {
+    ctx.beginPath(); ctx.moveTo(left.x, left.y); ctx.lineTo(tip.x, tip.y); ctx.lineTo(right.x, right.y); ctx.stroke()
+    ctx.restore()
+    return
+  }
+  if (style === "diamond" || style === "diamond-filled") {
+    const middle = { x: tip.x - length * 0.5 * ux, y: tip.y - length * 0.5 * uy }
+    const points: Array<[number, number]> = [
+      [tip.x, tip.y], [middle.x + halfWidth * px, middle.y + halfWidth * py],
+      [back.x, back.y], [middle.x - halfWidth * px, middle.y - halfWidth * py],
+    ]
+    ctx.beginPath(); ctx.moveTo(points[0]![0], points[0]![1])
+    for (const point of points.slice(1)) ctx.lineTo(point[0], point[1])
+    ctx.closePath()
+    if (style === "diamond-filled") ctx.fill()
+    ctx.stroke(); ctx.restore()
+    return
+  }
+  ctx.beginPath(); ctx.moveTo(tip.x, tip.y); ctx.lineTo(left.x, left.y); ctx.lineTo(right.x, right.y); ctx.closePath()
+  if (style === "end") ctx.fill()
+  ctx.stroke(); ctx.restore()
 }
 
 function asRoute(value: unknown): ArrowRoute {
@@ -177,7 +251,65 @@ function asRoute(value: unknown): ArrowRoute {
 }
 
 function asHead(value: unknown): ArrowHead {
-  return value === "none" || value === "both" ? value : "end"
+  return value === "none" || value === "both" || value === "triangle" || value === "diamond" || value === "diamond-filled" || value === "open" ? value : "end"
+}
+
+function isStyledHead(head: ArrowHead): boolean {
+  return head === "triangle" || head === "diamond" || head === "diamond-filled" || head === "open"
+}
+
+function headLength(head: ArrowHead, scale: number): number {
+  return (head === "diamond" || head === "diamond-filled" ? 20 : 14) / scale
+}
+
+export function endpointLabelPoint(
+  path: Point[],
+  source: boolean,
+  perpendicularOffset: number,
+  tangentOffset: number,
+): Point {
+  const anchor = source ? path[0]! : path[path.length - 1]!
+  const step = source ? 1 : -1
+  let neighborIndex = source ? 1 : path.length - 2
+  while (
+    neighborIndex >= 0 &&
+    neighborIndex < path.length &&
+    distance(anchor, path[neighborIndex]!) === 0
+  ) {
+    neighborIndex += step
+  }
+  const neighbor = path[neighborIndex] ?? anchor
+  const dx = source ? neighbor.x - anchor.x : anchor.x - neighbor.x
+  const dy = source ? neighbor.y - anchor.y : anchor.y - neighbor.y
+  const length = Math.hypot(dx, dy) || 1
+  const tangentX = dx / length
+  const tangentY = dy / length
+  const side = source ? -1 : 1
+  const tangentDirection = source ? 1 : -1
+  return {
+    x: anchor.x + tangentX * tangentOffset * tangentDirection - tangentY * perpendicularOffset * side,
+    y: anchor.y + tangentY * tangentOffset * tangentDirection + tangentX * perpendicularOffset * side,
+  }
+}
+
+function trimPolyline(path: Point[], distanceFromEnd: number): Point[] {
+  if (path.length < 2 || distanceFromEnd <= 0) return path
+  let remaining = distanceFromEnd
+  const result = [...path]
+  while (result.length > 1 && remaining > 0) {
+    const tip = result[result.length - 1]!
+    const previous = result[result.length - 2]!
+    const length = distance(previous, tip)
+    if (length <= remaining) {
+      result.pop()
+      remaining -= length
+    } else {
+      const fraction = (length - remaining) / length
+      result[result.length - 1] = { x: previous.x + (tip.x - previous.x) * fraction, y: previous.y + (tip.y - previous.y) * fraction }
+      remaining = 0
+    }
+  }
+  return result
 }
 
 function readWaypoints(value: unknown): Point[] {
@@ -185,18 +317,6 @@ function readWaypoints(value: unknown): Point[] {
   return value.filter((point): point is Point => typeof point === "object" && point !== null &&
     typeof (point as Point).x === "number" && Number.isFinite((point as Point).x) &&
     typeof (point as Point).y === "number" && Number.isFinite((point as Point).y))
-}
-
-function alignedBoundary(node: SceneNode, toward: Point, box: BoundingBox, axis: "horizontal" | "vertical"): Point {
-  if (node.type === "circle") return pointOnBoundary(node, toward, box)
-  const halfWidth = box.width / 2
-  const halfHeight = box.height / 2
-  if (axis === "horizontal") {
-    const y = Math.max(node.position.y - halfHeight, Math.min(node.position.y + halfHeight, toward.y))
-    return { x: node.position.x + Math.sign(toward.x - node.position.x || 1) * halfWidth, y }
-  }
-  const x = Math.max(node.position.x - halfWidth, Math.min(node.position.x + halfWidth, toward.x))
-  return { x, y: node.position.y + Math.sign(toward.y - node.position.y || 1) * halfHeight }
 }
 
 function distance(left: Point, right: Point): number {

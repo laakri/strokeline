@@ -1,8 +1,10 @@
 import type { SceneNode } from "@/ir/types.ts"
 import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
-import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
+import type { RenderContext } from "@/renderer/handdrawn.ts"
 import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
+import { fitTextFontSize } from "@/lib/textLayout.ts"
+import { measureTextWidth } from "@/lib/textMetrics.ts"
 
 export function rectangleBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -48,21 +50,37 @@ export function drawRectangle(
       (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1
     )
   )
-  const path = rectangleRevealPath(box, progress)
-  if (path.length > 1)
-    renderContext.roughCanvas.linearPath(
-      path,
-      strokeOptions(node, renderContext.cameraScale)
-    )
+  const context = renderContext.context
+  const corner = Math.min(node.cornerRadius ?? 16, box.width / 2, box.height / 2)
+  const label = node.text ?? node.label
+  const baseFont = node.style.fontSize ?? DEFAULT_LABEL_SIZE
+  const fittedFont = label ? fitTextFontSize(label, baseFont, Math.max(0, box.width - 32), Math.max(0, box.height - 24), Math.max(0, box.width - 32), node.lineHeight ?? 1.3, (line, size) => measureTextWidth(line, size, node.style.fontFamily), 18) : baseFont
+  context.save()
+  context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.clip()
+  context.beginPath(); context.rect(box.x, box.y, box.width * progress, box.height); context.clip()
+  if (node.style.fill) {
+    context.fillStyle = node.style.fill
+    context.shadowColor = "rgba(20, 35, 55, 0.14)"
+    context.shadowBlur = 12 / renderContext.cameraScale
+    context.shadowOffsetY = 4 / renderContext.cameraScale
+    context.fillRect(box.x, box.y, box.width, box.height)
+    context.shadowColor = "transparent"
+  }
+  context.strokeStyle = node.style.color
+  context.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
+  context.lineJoin = "round"
+  context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.stroke()
+  context.restore()
   drawLabel(
     renderContext,
     node.text ?? node.label,
     node.position,
     {
       color: node.style.color,
-      fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE,
-      maxWidth: node.maxWidth,
-      align: node.align,
+      fontSize: fittedFont,
+      fontFamily: node.style.fontFamily,
+      maxWidth: Math.max(0, Math.min(node.maxWidth ?? box.width - 32, box.width - 32)),
+      align: node.align ?? "center",
       lineHeight: node.lineHeight,
     },
     progress

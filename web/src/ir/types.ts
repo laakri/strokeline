@@ -1,7 +1,7 @@
 export type EaseName = "linear" | "easeInOut" | "easeOut" | "easeIn" | "bounce" | "easeOutBack" | "easeOutElastic" | "easeInOutCubic" | "spring" | "natural"
 
 export type NodeType =
-  "text" | "circle" | "rectangle" | "line" | "arrow" | "ink" | "icon" | "chart" | "image" | "table"
+  "text" | "circle" | "ellipse" | "rectangle" | "diamond" | "line" | "arrow" | "ink" | "icon" | "chart" | "image" | "table"
 
 export type TableHighlightTarget =
   | { type: "row"; row: number }
@@ -32,7 +32,7 @@ export interface NodeStyle {
   lineStyle?: "solid" | "dashed" | "dotted"
   fontSize?: number
   fontStyle?: "normal" | "bold" | "italic"
-  pen?: "handdrawn" | "chalk" | "marker" | "pencil" | "brush"
+  pen?: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean"
   fontFamily?: string
 }
 
@@ -62,6 +62,7 @@ export interface SceneNode {
   }
   anchor?: TextAnchor
   radius?: number
+  cornerRadius?: number
   rotation: number
   opacity: number
   style: NodeStyle

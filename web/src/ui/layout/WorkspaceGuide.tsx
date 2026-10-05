@@ -12,17 +12,18 @@ type GuideStep = {
 
 const steps: GuideStep[] = [
   {
-    target: "copy-prompt",
-    location: "Copy AI Prompt",
-    title: "Start with the AI guide",
-    description: "Copy this guide and paste it into your AI chat. Then describe the video you want. It teaches the AI Strokeline’s syntax and features.",
+    target: "diagram-templates",
+    mobileTab: "script",
+    location: "Templates",
+    title: "Start with a diagram",
+    description: "Choose a use case, class, sequence, Scrum, flowchart, or data model starter. Each one opens as an editable diagram you can play as an animation.",
   },
   {
     target: "editor",
     mobileTab: "script",
     location: "Script editor",
-    title: "Paste the script here",
-    description: "Copy the AI’s complete script and paste it into this editor. Next, run it to build your animation.",
+    title: "Customize the diagram",
+    description: "Edit labels in the script or click objects on the canvas to move, edit, connect, and remove them.",
   },
   {
     target: "run",

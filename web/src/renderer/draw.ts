@@ -27,6 +27,7 @@ interface CanvasCache {
 
 interface BoardTexture { key: string; canvas: HTMLCanvasElement }
 const boardTextures = new WeakMap<HTMLCanvasElement, BoardTexture>()
+const fogTextures = new WeakMap<HTMLCanvasElement, BoardTexture>()
 
 const canvasCaches = new WeakMap<HTMLCanvasElement, CanvasCache>()
 
@@ -61,6 +62,35 @@ export function drawScene(
   context.setTransform(1, 0, 0, 1, 0, 0)
   context.clearRect(0, 0, canvas.width, canvas.height)
   drawBoard(context, canvas, board, background)
+  const fogLayer = board === "foggywindow" ? getFogLayer(canvas, true) : undefined
+  if (fogLayer) {
+    const fogContext = fogLayer.getContext("2d")
+    if (fogContext) {
+      applyCamera(
+        fogContext,
+        camera ?? state.camera ?? identityCamera(logicalCanvas),
+        logicalCanvas,
+        devicePixelRatio
+      )
+      for (const node of visibleNodes) {
+        if (node.type !== "ink" || node.data?.layoutContainer === true) continue
+        const renderNode = { ...node, style: { ...node.style, pen: node.style.pen ?? mode } }
+        fogContext.save()
+        fogContext.globalAlpha = node.opacity
+        fogContext.globalCompositeOperation = "destination-out"
+        fogContext.translate(node.position.x, node.position.y)
+        fogContext.rotate((node.rotation * Math.PI) / 180)
+        fogContext.scale(node.scale, node.scale)
+        fogContext.translate(-node.position.x, -node.position.y)
+        InkRegistry.ink.draw(
+          createRenderContext(fogContext, nodes, (camera ?? state.camera ?? identityCamera(logicalCanvas)).scale, renderNode.style.pen ?? mode),
+          renderNode
+        )
+        fogContext.restore()
+      }
+      context.drawImage(fogLayer, 0, 0)
+    }
+  }
   applyCamera(
     context,
     camera ?? state.camera ?? identityCamera(logicalCanvas),
@@ -90,6 +120,7 @@ export function drawScene(
   }
   for (const node of visibleNodes) {
     if (node.data?.layoutContainer === true) continue
+    if (fogLayer && node.type === "ink") continue
     const renderer =
       node.type === "ink" ? InkRegistry.ink : ShapeRegistry[node.type]
     if (!renderer) continue
@@ -179,6 +210,10 @@ export function drawBoardPreview(
   context.setTransform(1, 0, 0, 1, 0, 0)
   context.clearRect(0, 0, canvas.width, canvas.height)
   drawBoard(context, canvas, board, base)
+  if (board === "foggywindow") {
+    const fog = getFogLayer(canvas)
+    context.drawImage(fog, 0, 0)
+  }
   context.restore()
 }
 
@@ -190,6 +225,66 @@ function seededRandom(seed: number): () => number {
     state ^= state << 5
     return (state >>> 0) / 4294967296
   }
+}
+
+function drawFogCity(context: CanvasRenderingContext2D, width: number, height: number): void {
+  const sky = context.createLinearGradient(0, 0, 0, height)
+  sky.addColorStop(0, "#0D1626")
+  sky.addColorStop(1, "#2B3D63")
+  context.fillStyle = sky
+  context.fillRect(0, 0, width, height)
+  const buildings = [
+    [0.04, 0.48, 0.115, 0.52], [0.18, 0.35, 0.094, 0.65],
+    [0.30, 0.56, 0.146, 0.44], [0.48, 0.28, 0.104, 0.72],
+    [0.615, 0.46, 0.125, 0.54], [0.77, 0.39, 0.094, 0.61],
+    [0.885, 0.58, 0.115, 0.42],
+  ]
+  context.fillStyle = "#0A0F1A"
+  for (const [x, y, w, h] of buildings) context.fillRect(width * x!, height * y!, width * w!, height * h!)
+  const lights = [
+    [0.094, 0.59, "#FFCF6B"], [0.219, 0.48, "#FFCF6B"], [0.224, 0.63, "#FFCF6B"],
+    [0.365, 0.67, "#FFCF6B"], [0.521, 0.41, "#FFCF6B"], [0.531, 0.56, "#FFCF6B"],
+    [0.677, 0.59, "#FFCF6B"], [0.812, 0.52, "#FFCF6B"], [0.938, 0.70, "#FFCF6B"],
+    [0.135, 0.80, "#6BD6FF"], [0.583, 0.80, "#6BD6FF"], [0.854, 0.78, "#6BD6FF"],
+    [0.417, 0.89, "#FF6B81"], [0.729, 0.87, "#FF6B81"],
+  ] as const
+  for (const [x, y, color] of lights) {
+    context.beginPath()
+    context.fillStyle = color
+    context.arc(width * x, height * y, Math.max(3, width * 0.009), 0, Math.PI * 2)
+    context.fill()
+  }
+}
+
+function getFogLayer(target: HTMLCanvasElement, clone = false): HTMLCanvasElement {
+  const width = target.width, height = target.height
+  const key = `${width}:${height}`
+  let fog = fogTextures.get(target)
+  if (fog?.key !== key) {
+    fog = { key, canvas: createFogLayer(width, height) }
+    fogTextures.set(target, fog)
+  }
+  if (!clone) return fog.canvas
+  const layer = document.createElement("canvas")
+  layer.width = width
+  layer.height = height
+  layer.getContext("2d")?.drawImage(fog.canvas, 0, 0)
+  return layer
+}
+
+function createFogLayer(width: number, height: number): HTMLCanvasElement {
+  const layer = document.createElement("canvas")
+  layer.width = width
+  layer.height = height
+  const context = layer.getContext("2d")
+  if (!context) return layer
+  context.save()
+  context.filter = `blur(${Math.max(5, width * 0.014)}px)`
+  drawFogCity(context, width, height)
+  context.restore()
+  context.fillStyle = "rgba(223, 233, 245, 0.72)"
+  context.fillRect(0, 0, width, height)
+  return layer
 }
 
 function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement, board: string, base: string): void {
@@ -210,6 +305,14 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     const w = canvas.width, h = canvas.height
     ctx.save()
+    if (board === "foggywindow") {
+      drawFogCity(ctx, w, h)
+      ctx.restore()
+      texture = { key, canvas }
+      boardTextures.set(target, texture)
+      context.drawImage(canvas, 0, 0)
+      return
+    }
     ctx.globalAlpha = 0.12
     if (["blueprint", "graph"].includes(board)) {
       ctx.strokeStyle = board === "blueprint" ? "#C9E7FF" : "#777"
@@ -292,32 +395,32 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
         chalkSeed ^= chalkSeed << 5
         return (chalkSeed >>> 0) / 4294967296
       }
-      const surface = ctx.createRadialGradient(w * 0.46, h * 0.42, 0, w * 0.5, h * 0.5, Math.max(w, h) * 0.78)
-      surface.addColorStop(0, "rgba(255,255,255,0.055)")
-      surface.addColorStop(0.62, "rgba(255,255,255,0.012)")
-      surface.addColorStop(1, "rgba(0,0,0,0.16)")
+      const surface = ctx.createLinearGradient(0, 0, 0, h)
+      surface.addColorStop(0, "rgba(255,255,255,0.012)")
+      surface.addColorStop(0.5, "rgba(0,0,0,0)")
+      surface.addColorStop(1, "rgba(0,0,0,0.035)")
       ctx.globalAlpha = 1
       ctx.fillStyle = surface
       ctx.fillRect(0, 0, w, h)
 
-      for (let pass = 0; pass < 8; pass++) {
+      for (let pass = 0; pass < 5; pass++) {
         const y = h * (0.08 + random() * 0.82)
         const band = h * (0.012 + random() * 0.025)
         const wipe = ctx.createLinearGradient(0, y - band, 0, y + band)
         wipe.addColorStop(0, "rgba(238,239,224,0)")
-        wipe.addColorStop(0.5, `rgba(238,239,224,${0.018 + random() * 0.025})`)
+        wipe.addColorStop(0.5, `rgba(238,239,224,${0.006 + random() * 0.008})`)
         wipe.addColorStop(1, "rgba(238,239,224,0)")
         ctx.fillStyle = wipe
         ctx.fillRect(w * 0.04, y - band, w * 0.92, band * 2)
       }
 
       ctx.lineCap = "round"
-      for (let mark = 0; mark < 90; mark++) {
+      for (let mark = 0; mark < 64; mark++) {
         const x = w * (0.04 + random() * 0.9)
         const y = h * (0.05 + random() * 0.9)
         const length = w * (0.004 + random() * 0.025)
-        ctx.globalAlpha = 0.025 + random() * 0.045
-        ctx.strokeStyle = random() > 0.25 ? "#E7E4D8" : "#A9C2B2"
+        ctx.globalAlpha = 0.012 + random() * 0.025
+        ctx.strokeStyle = random() > 0.25 ? "#E7E4D8" : "#A9ADB0"
         ctx.lineWidth = Math.max(1, w * (0.0003 + random() * 0.0007))
         ctx.beginPath()
         ctx.moveTo(x, y)
@@ -326,9 +429,9 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
       }
 
       ctx.lineCap = "butt"
-      for (let i = 0; i < 360; i++) {
-        ctx.globalAlpha = 0.025 + random() * 0.08
-        ctx.fillStyle = random() > 0.4 ? "#F5F1E4" : "#B9C8BA"
+      for (let i = 0; i < 110; i++) {
+        ctx.globalAlpha = 0.012 + random() * 0.035
+        ctx.fillStyle = random() > 0.4 ? "#F5F1E4" : "#B9BEC0"
         const dustSize = Math.max(1, w * (0.00025 + random() * 0.00055))
         ctx.fillRect(random() * w, random() * h, dustSize, dustSize)
       }
@@ -680,15 +783,15 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
       }
     }
     ctx.globalAlpha = 1
-    if (["paper", "kraft", "chalkboard", "celestial", "topographic", "neon-grid", "blackboard", "corkboard", "aurora", "circuit", "sonar", "marble", "spotlight", "prism"].includes(board)) {
+    if (["paper", "kraft", "chalkboard", "celestial", "topographic", "neon-grid", "corkboard", "aurora", "circuit", "sonar", "marble", "spotlight", "prism"].includes(board)) {
       const gradient = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.15, w / 2, h / 2, Math.max(w, h) * 0.72)
       gradient.addColorStop(0, "rgba(255,255,255,0)")
       gradient.addColorStop(1, "rgba(0,0,0,0.2)")
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, w, h)
     }
-    if (["chalkboard", "blackboard", "whiteboard", "glass"].includes(board)) {
-      ctx.globalAlpha = board === "chalkboard" ? 0.07 : board === "blackboard" ? 0.055 : 0.035
+    if (["chalkboard", "whiteboard", "glass"].includes(board)) {
+      ctx.globalAlpha = 0.035
       for (let i = 0; i < 18; i++) {
         const x = (i * 7919 % 1000) / 1000 * w
         const y = (i * 3571 % 1000) / 1000 * h
@@ -700,7 +803,7 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
         ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2)
       }
     }
-    if (board !== "plain") {
+    if (board !== "plain" && board !== "blackboard") {
       ctx.strokeStyle = board === "glass" ? "rgba(255,255,255,.25)" : "rgba(0,0,0,.25)"
       ctx.lineWidth = Math.max(4, w / 240)
       ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, w - ctx.lineWidth, h - ctx.lineWidth)

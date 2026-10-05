@@ -126,7 +126,7 @@ export async function exportPng(
   const at = Math.min(Math.max(0, elapsed), timeline.duration)
   await preloadImages(document)
   await loadHandwrittenFont()
-  const canvas = createCanvas(document.canvas.width, document.canvas.height)
+  const canvas = createCanvas(document.canvas.width * 2, document.canvas.height * 2)
   const context = canvas.getContext("2d")
   if (!context) return
   const subtitleSettings = exportSubtitleSettings(document)

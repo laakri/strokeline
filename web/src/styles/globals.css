@@ -147,6 +147,21 @@
   animation: docker-flow-dash 1.1s linear infinite;
 }
 
+@keyframes diagram-picker-enter {
+  from { opacity: 0; transform: translateY(10px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes diagram-card-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .diagram-picker-panel { animation: diagram-picker-enter 180ms ease-out both; }
+  .diagram-template-card { animation: diagram-card-enter 240ms cubic-bezier(.2,.8,.2,1) both; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .docker-flow-line {
     animation: none;

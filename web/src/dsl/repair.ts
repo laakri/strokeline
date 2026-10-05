@@ -61,7 +61,7 @@ const referenceStatementWords = new Set(["ANIMATE", "ENTER", "EXIT", "DELETE", "
 const referenceProperties = new Set(["ABOVE", "BELOW", "LEFTOF", "RIGHTOF", "CENTERON", "TARGET"])
 const idlessInkModes = new Set(["ARROW", "UNDERLINE", "CIRCLE"])
 const propertyWords = new Set<string>([...PROPERTY_KEYS, ...SHAPE_TYPES])
-const statementBoundaries = new Set(
+const statementBoundaries = new Set<string>(
   STATEMENT_KEYWORDS.filter((keyword) => !propertyWords.has(keyword))
 )
 const colorHex = /^(?:#)?(?:[\da-f]{3}|[\da-f]{6})$/i
@@ -744,7 +744,7 @@ function balanceBlocks(
     const opener = openerName(tokens)
     const isStatementBoundary = statementBoundaries.has(first)
     while (
-      ["CREATE", "INK ARROW", "TABLE", "BARCHART", "LINECHART", "PIECHART"].includes(blocks.at(-1)?.name ?? "") &&
+      (["CREATE", "INK ARROW", "TABLE", "BARCHART", "LINECHART", "PIECHART"] as readonly string[]).includes(blocks.at(-1)?.name ?? "") &&
       (opener !== undefined || isStatementBoundary)
     ) {
       closeBlock(blocks.pop()!, output, fixes, line.number)

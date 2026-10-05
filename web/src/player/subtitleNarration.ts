@@ -26,9 +26,12 @@ export class SubtitleNarration {
   private lastUpdate = 0
   private voice = "af_heart"
   private volume = 1
+  private preparationPaused = false
+  private resumePreparationWaiter?: () => void
 
-  constructor(private readonly onStatus: (status: VoiceStatus) => void = () => {}, volume = 1) {
+  constructor(private readonly onStatus: (status: VoiceStatus) => void = () => {}, volume = 1, voice = "af_heart") {
     this.volume = clampReaderVolume(volume)
+    this.voice = voice
   }
 
   setVolume(volume: number): void {
@@ -42,7 +45,9 @@ export class SubtitleNarration {
     if (this.voice === voice) return
     this.cancel()
     this.voice = voice
-    this.buffers.clear()
+    for (const key of this.buffers.keys()) {
+      if (!key.startsWith(`${voice}:`)) this.buffers.delete(key)
+    }
   }
 
   async unlock(): Promise<void> {
@@ -54,7 +59,6 @@ export class SubtitleNarration {
     voice: string,
     onProgress?: (completed: number, total: number) => void
   ): Promise<{ skipped: number }> {
-    this.setVoice(voice)
     const eligible = new Map<string, string>()
     let skipped = 0
     for (const line of lines) {
@@ -73,6 +77,7 @@ export class SubtitleNarration {
     for (const [key, text] of eligible) {
       if (!this.buffers.has(key)) {
         const generated = await generateKokoroAudio(text, voice)
+        await this.waitForPreparationResume()
         const buffer = this.getContext().createBuffer(
           1,
           generated.samples.length,
@@ -80,12 +85,31 @@ export class SubtitleNarration {
         )
         buffer.copyToChannel(generated.samples, 0)
         this.buffers.set(key, buffer)
+      } else {
+        await this.waitForPreparationResume()
       }
       completed++
       onProgress?.(completed, total)
     }
     this.setStatus("ready")
     return { skipped }
+  }
+
+  pausePreparation(): void {
+    this.preparationPaused = true
+  }
+
+  resumePreparation(): void {
+    this.preparationPaused = false
+    this.resumePreparationWaiter?.()
+    this.resumePreparationWaiter = undefined
+  }
+
+  private async waitForPreparationResume(): Promise<void> {
+    if (!this.preparationPaused) return
+    await new Promise<void>((resolve) => {
+      this.resumePreparationWaiter = resolve
+    })
   }
 
   sync(line: NarratedLine | undefined, scope: string, enabled: boolean, playing: boolean): void {

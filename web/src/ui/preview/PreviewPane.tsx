@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
-import { Check, Eye, EyeOff, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
+import { Check, Eye, EyeOff, LoaderCircle, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
@@ -167,8 +167,11 @@ export function PreviewPane({
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
   const [selectedVoice, setSelectedVoice] = useState(readVoiceSetting)
+  const [readerVoice, setReaderVoice] = useState(readVoiceSetting)
   const [readerVolume, setReaderVolume] = useState(readReaderVolume)
   const [voicePrepProgress, setVoicePrepProgress] = useState({ completed: 0, total: 0 })
+  const [voicePreparationActive, setVoicePreparationActive] = useState(false)
+  const [voicePreparationPaused, setVoicePreparationPaused] = useState(false)
   const [voiceNotice, setVoiceNotice] = useState("")
   const [readerToast, setReaderToast] = useState("")
   const readerToastTimer = useRef<number | null>(null)
@@ -182,7 +185,7 @@ export function PreviewPane({
   }, [])
   const [sequenceStarts, setSequenceStarts] = useState<number[]>([])
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>("idle")
-  const [narration] = useState(() => new SubtitleNarration(setVoiceStatus, readReaderVolume()))
+  const [narration] = useState(() => new SubtitleNarration(setVoiceStatus, readReaderVolume(), readVoiceSetting()))
   const narrationRef = useRef(narration)
   const kokoroState = useSyncExternalStore(subscribeKokoro, getKokoroState, getKokoroState)
   const compiledIR = useAppStore((state) => state.compiledIR)
@@ -205,8 +208,8 @@ export function PreviewPane({
   const requestEditorJump = useAppStore((state) => state.requestEditorJump)
   const scene = compiledIR?.scenes[activeSceneIndex]
   const subtitlesOn = subtitleOverride ?? (compiledIR?.subtitles ?? false)
-  const activeVoice = kokoroState.voices.find((voice) => voice.id === selectedVoice)
-  const activeVoiceLabel = activeVoice?.name || selectedVoice
+  const activeVoice = kokoroState.voices.find((voice) => voice.id === readerVoice)
+  const activeVoiceLabel = activeVoice?.name || readerVoice
     .replace(/^[a-z]{2}_/, "")
     .replace(/^\w/, (letter) => letter.toUpperCase())
   const subtitlesOnRef = useRef(subtitlesOn)
@@ -252,15 +255,12 @@ export function PreviewPane({
   }, [compiledIR?.subtitles])
 
   const enableReader = useCallback(async (voice: string) => {
-    const controller = playerRef.current
-    const time = controller?.currentTime ?? player.elapsed
-    const wasPlaying = controller?.isPlaying ?? player.isPlaying
-    controller?.pause()
-    setPlayerState({ isPlaying: false })
-    narrationRef.current.setVoice(voice)
+    narrationRef.current.resumePreparation()
+    setVoicePreparationPaused(false)
     setVoicePrepProgress({ completed: 0, total: 0 })
+    setVoicePreparationActive(true)
     setVoiceStatus("preparing")
-    setVoiceNotice("Preparing reader and narration…")
+    setVoiceNotice("Preparing narration. The video keeps playing; use the progress button to pause or resume preparation.")
     try {
       await narrationRef.current.unlock()
       const lines = compiledIR?.scenes.flatMap((item) => scheduleSays(item.says ?? [])) ?? []
@@ -270,6 +270,8 @@ export function PreviewPane({
         (completed, total) => setVoicePrepProgress({ completed, total })
       )
       await narrationRef.current.unlock()
+      narrationRef.current.setVoice(voice)
+      setReaderVoice(voice)
       setSelectedVoice(voice)
       try {
         localStorage.setItem(VOICE_STORAGE_KEY, voice)
@@ -283,28 +285,22 @@ export function PreviewPane({
         ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
         : "")
       setVoiceDialogOpen(false)
-      autoplayAll.current = false
-      autoplayNext.current = false
-      preservedPlayback.current = null
-      controller?.pause()
-      setPlayAllMode(true)
-      controller?.seek(0)
-      setPlayerState({ elapsed: 0, isPlaying: false })
       showReaderToast(skipped
-        ? `Reader ready. All scenes reset and paused; ${skipped} Arabic line${skipped === 1 ? " was" : "s were"} skipped.`
+        ? `Reader ready. Playback continued; ${skipped} Arabic line${skipped === 1 ? " was" : "s were"} skipped.`
         : lines.length === 0
-          ? "Reader ready. All scenes reset and paused. Add SAY lines for narration."
-          : "Reader ready. All scenes reset and paused.")
+          ? "Reader ready. Playback continued. Add SAY lines for narration."
+          : "Reader ready. Narration joined at the current point.")
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      narrationRef.current.setVoice(selectedVoice)
       setVoicePrepProgress({ completed: 0, total: 0 })
       setVoiceStatus("error")
       setVoiceNotice(`Kokoro could not prepare narration: ${message}`)
-      if (wasPlaying) controller?.play()
-      setPlayerState({ elapsed: time, isPlaying: wasPlaying })
+    } finally {
+      narrationRef.current.resumePreparation()
+      setVoicePreparationPaused(false)
+      setVoicePreparationActive(false)
     }
-  }, [compiledIR, player.elapsed, player.isPlaying, selectedVoice, setPlayAllMode, setPlayerState, showReaderToast])
+  }, [compiledIR, showReaderToast])
 
   const toggleReadAlong = useCallback(() => {
     if (!voiceSupported) return
@@ -327,6 +323,14 @@ export function PreviewPane({
       setVoiceNotice("")
     }
   }, [enableReader, kokoroState.status, selectedVoice, voiceSupported])
+
+  const togglePreparation = useCallback(() => {
+    setVoicePreparationPaused((paused) => {
+      if (paused) narrationRef.current.resumePreparation()
+      else narrationRef.current.pausePreparation()
+      return !paused
+    })
+  }, [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -812,39 +816,26 @@ export function PreviewPane({
 
   useEffect(() => {
     if (runId <= 0 || handledRunId.current === runId) return
+    // A new run owns the narration now: stop any audio from the previous script
+    // and do not prepare narration unless the reader is explicitly enabled for
+    // this script.
+    narrationRef.current.cancel()
+    readAlongRef.current = false
+    setReadAlongOn(false)
+    setVoiceStatus("idle")
+    setVoicePrepProgress({ completed: 0, total: 0 })
+    setVoiceNotice("New script ready. Reader is off; turn it on if you want narration.")
+    try {
+      localStorage.setItem(READ_ALONG_STORAGE_KEY, "off")
+    } catch {
+      /* storage unavailable */
+    }
     const controller = playerRef.current
     if (!controller) return
     handledRunId.current = runId
     controller.seek(0)
-    if (!readAlongOn || !compiledIR) {
-      controller.play()
-      return
-    }
-    let cancelled = false
-    const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
-    setVoicePrepProgress({ completed: 0, total: 0 })
-    setVoiceNotice(lines.length ? "Preparing narration…" : "This script has no SAY lines to read.")
-    void narrationRef.current.prepare(
-      lines,
-      selectedVoice,
-      (completed, total) => setVoicePrepProgress({ completed, total })
-    ).then(async ({ skipped }) => {
-      if (cancelled) return
-      await narrationRef.current.unlock()
-      if (cancelled) return
-      setVoiceNotice(skipped
-        ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
-        : lines.length ? "" : "This script has no SAY lines to read.")
-      controller.play()
-    }).catch((error: unknown) => {
-      if (cancelled) return
-      setVoicePrepProgress({ completed: 0, total: 0 })
-      setVoiceStatus("error")
-      setVoiceNotice(`Kokoro could not prepare narration: ${error instanceof Error ? error.message : String(error)}`)
-      controller.play()
-    })
-    return () => { cancelled = true }
-  }, [compiledIR, imageReadiness, readAlongOn, runId, selectedVoice])
+    controller.play()
+  }, [imageReadiness, runId, setPlayerState])
 
   const seek = (value: string) => playerRef.current?.seek(Number(value))
   const sceneCount = compiledIR?.scenes.length ?? 0
@@ -1163,21 +1154,26 @@ export function PreviewPane({
         </button>
         <button
           type="button"
-          aria-label={`Spoken narration ${readAlongOn ? "on" : "off"}`}
+          aria-label={voicePreparationActive || voiceStatus === "preparing"
+            ? `Narration preparation ${voicePreparationPaused ? "paused" : "in progress"}, ${voicePrepProgress.completed} of ${voicePrepProgress.total}; click to ${voicePreparationPaused ? "resume" : "pause"} preparation`
+            : `Spoken narration ${readAlongOn ? "on" : "off"}`}
           aria-pressed={readAlongOn}
-          title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voiceNotice || (kokoroState.status === "loading" ? `${kokoroState.message} ${kokoroState.progress}%` : `Kokoro ${readAlongOn ? "on" : "off"} · ${activeVoiceLabel}${activeVoice ? ` · ${activeVoice.language} · ${activeVoice.gender}` : ""}`)}
+          title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voicePreparationActive || voiceStatus === "preparing" ? `${voicePreparationPaused ? "Narration paused" : "Preparing narration"} · ${voicePrepProgress.completed}/${voicePrepProgress.total}. Click to ${voicePreparationPaused ? "resume" : "pause"} preparation.` : readAlongOn ? `Reader on · ${activeVoiceLabel}. Click to turn narration off.` : `Reader off · ${activeVoiceLabel}. Click to prepare narration for this script.`}
           disabled={!voiceSupported}
-          onClick={toggleReadAlong}
+          onClick={voicePreparationActive || voiceStatus === "preparing" ? togglePreparation : toggleReadAlong}
           className={`inline-flex items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${presentationMode
             ? `order-5 ${readAlongOn ? "border-white bg-white text-[#0b0e0d]" : "border-white/20 bg-white/5 text-white hover:bg-white/10"}`
             : readAlongOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
         >
           <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
+          {(voicePreparationActive || voiceStatus === "preparing") && (voicePreparationPaused
+            ? <Play className="size-3" aria-hidden="true" />
+            : <LoaderCircle className="size-3 animate-spin" aria-hidden="true" />)}
           {!presentationMode && (kokoroState.status === "loading"
             ? `${kokoroState.progress}%`
-            : voiceStatus === "preparing"
-            ? voicePrepProgress.total > 0 ? `${voicePrepProgress.completed}/${voicePrepProgress.total}` : "Preparing…"
-            : activeVoiceLabel)}
+            : voicePreparationActive || voiceStatus === "preparing"
+            ? voicePrepProgress.total > 0 ? `${voicePreparationPaused ? "Paused · " : ""}${voicePrepProgress.completed}/${voicePrepProgress.total}` : voicePreparationPaused ? "Paused" : "Preparing…"
+            : `Reader ${readAlongOn ? "on" : "off"}`)}
         </button>
         {!presentationMode && <button
           type="button"
@@ -1215,6 +1211,8 @@ export function PreviewPane({
                     setVoicePrepProgress({ completed: 0, total: 0 })
                     setVoiceNotice("Preparing narration…")
                     const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
+                    narrationRef.current.setVoice(selectedVoice)
+                    setReaderVoice(selectedVoice)
                     const { skipped } = await narrationRef.current.prepare(
                       lines,
                       selectedVoice,
@@ -1334,6 +1332,14 @@ export function PreviewPane({
       key={`${selectedVoice}:${voiceDialogOpen}`}
       open={voiceDialogOpen}
       selectedVoice={selectedVoice}
+      onSelectVoice={(voice) => {
+        setSelectedVoice(voice)
+        try {
+          localStorage.setItem(VOICE_STORAGE_KEY, voice)
+        } catch {
+          /* storage unavailable */
+        }
+      }}
       volume={readerVolume}
       onVolumeChange={(volume) => {
         const savedVolume = saveReaderVolume(volume)
@@ -1341,7 +1347,7 @@ export function PreviewPane({
         narrationRef.current.setVolume(savedVolume)
       }}
       preparing={voicePrepProgress}
-      preparingActive={voiceStatus === "preparing"}
+      preparingActive={voicePreparationActive || voiceStatus === "preparing"}
       narrationLineCount={narrationLineCount}
       error={voiceStatus === "error" ? voiceNotice : ""}
       onClose={() => setVoiceDialogOpen(false)}

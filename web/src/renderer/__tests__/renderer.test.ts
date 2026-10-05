@@ -3,6 +3,7 @@ import type { SceneNode } from "@/ir/types.ts"
 import { features } from "@/defaults/features.ts"
 import { computeFitTransform } from "@/renderer/camera.ts"
 import { pointOnBoundary } from "@/renderer/geometry.ts"
+import { endpointLabelPoint } from "@/renderer/shapes/arrow.ts"
 import { cameraScaledStrokeWidth, strokeOptions } from "@/renderer/handdrawn.ts"
 import { circleBoundingBox } from "@/renderer/shapes/circle.ts"
 import { lineBoundingBox, lineEndpoints } from "@/renderer/shapes/line.ts"
@@ -85,6 +86,12 @@ describe("renderer geometry", () => {
       rectangleBoundingBox(rectangle)
     )
     expect(anchor).toEqual({ x: 140, y: 100 })
+  })
+
+  it("places arrow endpoint label plates beside the connector, not over its line", () => {
+    const path = [{ x: 100, y: 200 }, { x: 700, y: 200 }]
+    expect(endpointLabelPoint(path, true, 30, 8)).toEqual({ x: 108, y: 170 })
+    expect(endpointLabelPoint(path, false, 30, 8)).toEqual({ x: 692, y: 230 })
   })
 
   it.each([

@@ -30,17 +30,21 @@ export function lineBoundingBox(node: SceneNode): BoundingBox {
 
 export function drawLine(renderContext: RenderContext, node: SceneNode): void {
   const box = lineBoundingBox(node)
+  const options = { ...strokeOptions(node, renderContext.cameraScale) } as ReturnType<typeof strokeOptions> & { strokeLineDash?: number[] }
+  const dashScale = 1 / renderContext.cameraScale
+  if (node.style.lineStyle === "dashed") options.strokeLineDash = [10 * dashScale, 7 * dashScale]
+  if (node.style.lineStyle === "dotted") options.strokeLineDash = [2 * dashScale, 6 * dashScale]
   const progress = Math.max(0, Math.min(1, (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1))
   const endpoints = lineEndpoints(node)
   if (endpoints) {
     const start = endpoints.start
     const end = endpoints.end
     const target = { x: start.x + (end.x - start.x) * progress, y: start.y + (end.y - start.y) * progress }
-    renderContext.roughCanvas.line(start.x, start.y, target.x, target.y, strokeOptions(node, renderContext.cameraScale))
+    renderContext.roughCanvas.line(start.x, start.y, target.x, target.y, options)
   } else {
-    renderContext.roughCanvas.line(box.x, box.y, box.x + box.width * progress, box.y + box.height * progress, strokeOptions(node, renderContext.cameraScale))
+    renderContext.roughCanvas.line(box.x, box.y, box.x + box.width * progress, box.y + box.height * progress, options)
   }
-  drawLabel(renderContext, node.text ?? node.label, node.position, { color: node.style.color, fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE }, progress)
+  drawLabel(renderContext, node.text ?? node.label, node.position, { color: node.style.color, fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE, fontFamily: node.style.fontFamily }, progress)
 }
 
 export const line: ShapeRenderer = { draw: drawLine, boundingBox: lineBoundingBox }

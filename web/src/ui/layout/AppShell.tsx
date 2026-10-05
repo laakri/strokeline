@@ -173,6 +173,7 @@ export function AppShell() {
       <TwoPaneLayout
         presentationMode={presentationMode}
         onExitPresentation={exitPresentation}
+        onTemplateSelected={finishGuide}
       />
       {!presentationMode && <WorkspaceGuide step={guideStep} onStepChange={setGuideStep} onFinish={finishGuide} />}
     </main>

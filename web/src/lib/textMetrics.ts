@@ -37,12 +37,17 @@ export function loadTextFont(): Promise<void> {
   return fontPromise
 }
 
-export function measureTextWidth(text: string, fontSize: number, family = HANDWRITTEN_FONT_FAMILY): number {
+export function measureTextWidth(
+  text: string,
+  fontSize: number,
+  family = HANDWRITTEN_FONT_FAMILY,
+  fontWeight: number = 400,
+): number {
   if (!fontReady) {
     throw new Error("The handwritten font must load before measuring text.")
   }
   const context = getMeasureContext()
-  context.font = `${fontSize}px "${family}", "Cambria Math", "STIX Two Math", "Times New Roman", serif`
+  context.font = `${fontWeight} ${fontSize}px "${family}", "Cambria Math", "STIX Two Math", "Times New Roman", serif`
   return context.measureText(text).width
 }
 

@@ -61,7 +61,8 @@ export function drawInk(renderContext: RenderContext, node: SceneNode): void {
   const controls = node.points ?? []
   if (controls.length < 2) return
   const progress = Math.max(0, Math.min(1, (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1))
-  const path = revealedInkPath(controls, progress, node.id, renderContext.mode)
+  const inkMode = renderContext.mode === "clean" ? "clean" : "handdrawn"
+  const path = revealedInkPath(controls, progress, node.id, inkMode)
   if (path.length < 2) return
   const sourceProperties = node.data?._sourceProperties as string[] | undefined
   if (!sourceProperties?.includes("REVEAL")) {

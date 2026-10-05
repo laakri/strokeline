@@ -1,12 +1,13 @@
 import { useEffect, useState, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
-import { Volume2 } from "lucide-react"
+import { LoaderCircle, Volume2 } from "lucide-react"
 
 import { getKokoroState, loadKokoro, subscribeKokoro, type KokoroVoice } from "@/player/kokoro.ts"
 
 type Props = {
   open: boolean
   selectedVoice: string
+  onSelectVoice: (voice: string) => void
   volume: number
   onVolumeChange: (volume: number) => void
   preparing: { completed: number; total: number }
@@ -20,6 +21,7 @@ type Props = {
 export function VoiceSettingsDialog({
   open,
   selectedVoice,
+  onSelectVoice,
   volume,
   onVolumeChange,
   preparing,
@@ -78,7 +80,7 @@ export function VoiceSettingsDialog({
               </span>
             </div>
             <p id="kokoro-description" className="mt-1 text-sm text-muted-foreground">
-              Set up the voice once, then prepare narration for this script.
+              Choose a voice, then prepare its narration. The video keeps playing while audio is prepared.
             </p>
           </div>
           <button
@@ -145,7 +147,11 @@ export function VoiceSettingsDialog({
                 <select
                   aria-label="Kokoro reader voice"
                   value={chosenVoice}
-                  onChange={(event) => setDraftVoice(event.target.value)}
+                  onChange={(event) => {
+                    const voice = event.target.value
+                    setDraftVoice(voice)
+                    onSelectVoice(voice)
+                  }}
                   className="h-10 min-w-0 rounded-lg border border-border bg-background px-3 text-sm"
                 >
                   {kokoro.voices.map((voice) => (
@@ -155,6 +161,7 @@ export function VoiceSettingsDialog({
                 <span className="text-xs font-normal text-muted-foreground">
                   {chosenVoiceInfo ? `${chosenVoiceInfo.language} · ${chosenVoiceInfo.gender || "voice"}` : chosenVoice}
                 </span>
+                <span className="text-xs font-normal text-muted-foreground">Saved automatically in this browser.</span>
               </label>
 
               <label className="grid gap-1.5 text-sm font-medium">
@@ -184,7 +191,7 @@ export function VoiceSettingsDialog({
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                 {narrationLineCount > 0
                   ? `${narrationLineCount} SAY line${narrationLineCount === 1 ? "" : "s"}. Missing audio is prepared before playback; saved clips are reused for the same text and voice.`
-                  : "This script has no SAY lines yet. You can still save this reader choice and turn narration on."}
+                  : "This script has no SAY lines yet. You can still use the selected voice for narration in this browser."}
               </p>
 
               {preparingActive && (
@@ -220,13 +227,14 @@ export function VoiceSettingsDialog({
                 type="button"
                 onClick={() => onUseVoice(chosenVoice)}
                 disabled={preparingActive}
-                className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
               >
+                {preparingActive && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
                 {preparingActive
                   ? "Preparing narration…"
                   : narrationLineCount > 0
-                    ? "Prepare and use reader"
-                    : "Save voice and enable"}
+                    ? "Prepare narration"
+                    : "Use voice"}
               </button>
             </div>
           </div>

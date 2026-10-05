@@ -73,6 +73,7 @@ export function drawIcon(renderContext: RenderContext, node: SceneNode): void {
     {
       color: node.style.color,
       fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE,
+      fontFamily: node.style.fontFamily,
     },
     progress
   )
