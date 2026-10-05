@@ -1026,6 +1026,7 @@ export function DocsPage() {
                   "    WIDTH 400",
                   "    HEIGHT 300",
                   "    CORNERS 32",
+                  "    PADDING 18",
                   "    FIT cover",
                   "    BORDER #FFFFFF",
                   "    OPACITY 1",
@@ -1049,7 +1050,8 @@ export function DocsPage() {
                 <li>
                   Use CORNERS n for rounded corners or MASK circle for a
                   circular crop. BORDER #hex and optional SHADOW add a frame
-                  and depth.
+                  and depth. PADDING n insets the image inside its frame.
+                  Packaged brand SVGs get a soft, padded card by default.
                 </li>
                 <li>
                   Missing, blocked, or failed external URLs and missing

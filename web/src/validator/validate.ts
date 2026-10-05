@@ -250,6 +250,13 @@ export function validate(document: SceneDocument): Diagnostic[] {
               propertyLocations?.CORNERS?.line ?? op.source?.line ?? 1,
               propertyLocations?.CORNERS?.col ?? op.source?.col ?? 1
             ))
+          if (!Number.isFinite(image?.padding) || (image?.padding ?? 0) < 0)
+            diagnostics.push(error(
+              "E_BAD_RANGE",
+              "IMAGE PADDING must be a finite non-negative number.",
+              propertyLocations?.PADDING?.line ?? op.source?.line ?? 1,
+              propertyLocations?.PADDING?.col ?? op.source?.col ?? 1
+            ))
         }
         if (op.node.type === "icon") {
           const iconName = (op.node.data?.iconName ?? op.node.data?.name) as

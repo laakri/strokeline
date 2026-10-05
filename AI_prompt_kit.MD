@@ -421,7 +421,7 @@ Packaged brand SVGs available in this project (exact paths):
 
 {{BRAND_ICON_LIST}}
 
-Use a listed logo as an `IMAGE` object with `FIT contain`; search the Insert Object menu by brand name to add it directly. Do not invent or guess an asset path. Other bundled icons are Lucide `ICON` names; common diagram choices include `container`, `ship-cargo`, `boxes`, `package`, `server`, `terminal`, `cloud`, and `database`. Use the Docker whale mark for Docker itself, then only the specific software marks needed to distinguish image types. Brand marks remain the property of their owners; check the brand's usage terms when needed.
+Use a listed logo as an `IMAGE` object with `FIT contain`; packaged `/brand-icons/` marks automatically get a white padded card, rounded corners, a light border, and a soft shadow. Search the Insert Object menu by brand name to add one directly. `PADDING n` adds space between the mark and its frame; `CORNERS n`, `BORDER #hex`, and `SHADOW` tune the frame. Do not invent or guess an asset path. Other bundled icons are Lucide `ICON` names; common diagram choices include `container`, `ship-cargo`, `boxes`, `package`, `server`, `terminal`, `cloud`, and `database`. Use the Docker whale mark for Docker itself, then only the specific software marks needed to distinguish image types. Brand marks remain the property of their owners; check the brand's usage terms when needed.
 
 ```
 CREATE logo AS IMAGE

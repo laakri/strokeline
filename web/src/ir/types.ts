@@ -54,6 +54,7 @@ export interface SceneNode {
   image?: {
     url?: string
     fit: "cover" | "contain"
+    padding: number
     corners: number
     mask?: "circle"
     border?: string

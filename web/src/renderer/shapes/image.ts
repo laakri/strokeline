@@ -88,6 +88,13 @@ export function drawImage(render: RenderContext, node: SceneNode): void {
   const progress = Math.max(0, Math.min(1, (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1))
   if (progress <= 0 || box.width <= 0 || box.height <= 0) return
   const image = getImage(node.image?.url)
+  const padding = Math.max(0, Math.min(node.image?.padding ?? 0, box.width / 4, box.height / 4))
+  const contentBox = {
+    x: box.x + padding,
+    y: box.y + padding,
+    width: Math.max(1, box.width - padding * 2),
+    height: Math.max(1, box.height - padding * 2),
+  }
   context.save()
   imagePath(context, node, box)
   context.shadowColor = node.image?.shadow ?? "transparent"
@@ -103,7 +110,7 @@ export function drawImage(render: RenderContext, node: SceneNode): void {
   context.beginPath()
   context.rect(box.x, box.y, box.width * progress, box.height)
   context.clip()
-  if (image) drawFittedImage(context, image, box, node.image?.fit ?? "cover")
+  if (image) drawFittedImage(context, image, contentBox, node.image?.fit ?? "cover")
   else drawPlaceholder(context, node, box)
   if (node.image?.border) {
     imagePath(context, node, box)
