@@ -297,6 +297,20 @@ export function validate(document: SceneDocument): Diagnostic[] {
               )
             )
         if (op.node.type === "arrow") {
+          const propertyLocations = op.node.data?._sourcePropertyLocations as
+            | Record<string, { line: number; col: number }>
+            | undefined
+          const lineStyle = op.node.style.lineStyle ?? "solid"
+          const route = String(op.node.data?.route ?? "straight")
+          const head = String(op.node.data?.head ?? "end")
+          if (!("solid dashed dotted".split(" ").includes(lineStyle)))
+            diagnostics.push(error("E_BAD_RANGE", `ARROW LINESTYLE must be solid, dashed, or dotted, received "${lineStyle}".`, propertyLocations?.LINESTYLE?.line ?? op.source?.line ?? 1, propertyLocations?.LINESTYLE?.col ?? op.source?.col ?? 1))
+          if (!("straight elbow curve".split(" ").includes(route)))
+            diagnostics.push(error("E_BAD_RANGE", `ARROW ROUTE must be straight, elbow, or curve, received "${route}".`, propertyLocations?.ROUTE?.line ?? op.source?.line ?? 1, propertyLocations?.ROUTE?.col ?? op.source?.col ?? 1))
+          if (!("none end both".split(" ").includes(head)))
+            diagnostics.push(error("E_BAD_RANGE", `ARROW HEAD must be none, end, or both, received "${head}".`, propertyLocations?.HEAD?.line ?? op.source?.line ?? 1, propertyLocations?.HEAD?.col ?? op.source?.col ?? 1))
+          if (!Number.isFinite(op.node.style.strokeWidth) || op.node.style.strokeWidth <= 0)
+            diagnostics.push(error("E_BAD_RANGE", "ARROW STROKE must be positive.", propertyLocations?.STROKE?.line ?? op.source?.line ?? 1, propertyLocations?.STROKE?.col ?? op.source?.col ?? 1))
           const fromId = String(op.node.data?.fromId ?? "")
           const toId = String(op.node.data?.toId ?? "")
           checkReference(fromId, created, op.t, diagnostics, op.source)

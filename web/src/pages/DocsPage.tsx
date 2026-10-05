@@ -150,6 +150,49 @@ const drawingScript = `SCENE 1 "Draw and arrange"
     COLOR #FFD166
 END SCENE`
 
+const connectorScript = `SCENE 1 "Three ways to connect"
+  CREATE client AS RECTANGLE
+    POSITION 340 520
+    WIDTH 300
+    HEIGHT 170
+    FILL #E8F2F5
+    COLOR #2E86AB
+    TEXT "Client"
+  END
+  CREATE daemon AS RECTANGLE
+    POSITION 960 520
+    WIDTH 340
+    HEIGHT 170
+    FILL #EAF1F8
+    COLOR #4472A1
+    TEXT "Docker daemon"
+  END
+  CREATE registry AS RECTANGLE
+    POSITION 1580 520
+    WIDTH 300
+    HEIGHT 170
+    FILL #F7EFE2
+    COLOR #C27A33
+    TEXT "Registry"
+  END
+
+  PARALLEL
+    ARROW client -> daemon
+      LABEL "command"
+      ROUTE elbow
+      STROKE 6
+      DRAW 0.7s
+    ARROW daemon -> registry
+      LABEL "pull or push"
+      ROUTE curve
+      LINESTYLE dashed
+      HEAD both
+      COLOR #D79842
+      STROKE 5
+      DRAW 1s
+  END
+END SCENE`
+
 const inkScript = `SCENE 1 "Freehand marks"
   CREATE target AS RECTANGLE
     POSITION 1000 500
@@ -864,11 +907,18 @@ export function DocsPage() {
 
             <DocsSection id="drawing-layout" title="Drawing and layout">
               <p>
-                Use <code>ARROW fromId -&gt; toId</code> to connect objects. Put
-                optional arrow properties such as <code>COLOR</code>,{" "}
-                <code>PEN</code>, <code>DRAW</code>, and <code>REVEAL</code> on
-                following lines.
+                Use <code>ARROW fromId -&gt; toId</code> to attach a connector
+                to two created objects. Choose <code>ROUTE straight</code>,{" "}
+                <code>ROUTE elbow</code>, or <code>ROUTE curve</code>. Set{" "}
+                <code>LINESTYLE solid|dashed|dotted</code>,{" "}
+                <code>HEAD none|end|both</code>, <code>STROKE</code>,{" "}
+                <code>VIA x1 y1 x2 y2 ...</code>, <code>COLOR</code>,{" "}
+                <code>LABEL</code>, and <code>DRAW</code> on following lines.
+                Dashed lines work well for remote, optional, or return flows;
+                use waypoints to route connectors around crowded parts of a
+                diagram.
               </p>
+              <CodeBlock title="Styled diagram connectors" code={connectorScript} />
               <p>
                 Raw <code>INK</code> is a freehand path with at least two
                 coordinate pairs. <code>INK ARROW</code> draws between
@@ -883,6 +933,13 @@ export function DocsPage() {
                 and <code>GRID [id] COLUMNS n GAP n [AT x y]</code> arrange
                 measurable child shapes. Both are blocks closed by{" "}
                 <code>END</code>.
+              </p>
+              <p>
+                Put <code>DIRECTION</code>, <code>COLUMNS</code>,{" "}
+                <code>GAP</code>, and <code>AT</code> on the layout header or
+                on separate lines directly below it. Stack related cards in a
+                lane, use a grid for repeated items, and connect the finished
+                layout afterward so connectors animate clearly over it.
               </p>
               <CodeBlock title="Stack and grid" code={layoutScript} />
             </DocsSection>

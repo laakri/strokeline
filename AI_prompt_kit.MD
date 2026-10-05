@@ -13,7 +13,7 @@ You write one script in the Strokeline whiteboard-animation language (version 1.
 
 **When rules conflict, this order wins:** (1) valid syntax and every block closed, (2) readable text inside the safe area, (3) the richness requirements in section 5, (4) style and taste.
 
-**Enabled features are only those in this kit.** These are DISABLED, never write them: PEN, HAND, TRANSITION, GAP, ENTER, EXIT, REVEAL, LOOP, DEFINE, USE, PARALLEL STAGGER, CAMERA DRIFT/SHAKE/FOLLOW, MAXWIDTH, LANG, DETAIL, WHO, INK UNDERLINE, INK CIRCLE, INK RAW. Scenes cut directly into each other.
+Use the syntax documented in this kit; do not invent keywords or property values. Strokeline supports grouped layouts, styled and routed arrows, scene transitions, camera movement, reusable macros, and voice cues when described below. Validate block endings carefully.
 
 ---
 
@@ -28,6 +28,9 @@ You write one script in the Strokeline whiteboard-animation language (version 1.
 | Freehand stroke | `INK id` with `POINTS x y, x y, ...`                       | **YES** `END` |
 | Freehand arrow  | `INK ARROW FROM x y TO x y` (no id)                        | **YES** `END` |
 | Parallel group  | `PARALLEL` ...                                             | **YES** `END` |
+| Logical group   | `GROUP id` ...                                             | **YES** `END` |
+| Auto stack      | `STACK id DIRECTION vertical|horizontal GAP n [AT x y]` ... | **YES** `END` |
+| Auto grid       | `GRID [id] COLUMNS n GAP n [AT x y]` ...                   | **YES** `END` |
 | Table           | `TABLE id` ...                                             | **YES** `END` |
 | Charts          | `BARCHART id`, `LINECHART id`, `PIECHART id` ...           | **YES** `END` |
 | Image           | `CREATE id AS IMAGE` (only with a user-supplied https URL) | **YES** `END` |
@@ -57,6 +60,11 @@ You write one script in the Strokeline whiteboard-animation language (version 1.
 | `NAME iconName`                                                | ICON                                         | Only from the icon list (section 8)                                                       |
 | `DRAW 1s`                                                      | CREATE, INK, TABLE, charts, ARROW            | Reveal time. Not used on ICON                                                             |
 | `DURATION 1s`, `EASE x`                                        | ANIMATE, DELETE, CAMERA                      |                                                                                           |
+| `ROUTE straight\|elbow\|curve`                                 | ARROW                                        | Choose a direct connector, clean right-angle path, or smooth curved path                 |
+| `LINESTYLE solid\|dashed\|dotted`                              | ARROW                                        | Use dash patterns to distinguish the relationship type                                    |
+| `VIA x1 y1 [x2 y2 ...]`                                        | ARROW                                        | Add coordinate waypoints to route around objects; use complete x/y pairs                  |
+| `HEAD none\|end\|both`                                         | ARROW                                        | Select no arrowhead, one at the destination, or arrowheads at both ends                   |
+| `STROKE n`                                                      | ARROW                                        | Connector thickness; otherwise uses the document stroke width                            |
 
 Ids: start with a letter, then letters, digits, underscore only. Unique per scene, defined before use, never a keyword (`end scene text line circle wait group`). Each scene starts on an EMPTY canvas, so re-create what you need with new ids. Never reference a deleted object, and never point an `ARROW` at something you will delete.
 
@@ -113,6 +121,18 @@ END
 
 ARROW boxA -> boxB
   LABEL "optional"
+  ROUTE elbow
+  LINESTYLE dashed
+  HEAD end
+  STROKE 5
+  DRAW 0.8s
+
+ARROW boxB -> boxA
+  ROUTE curve
+  VIA 860 250 1240 250
+  LINESTYLE dotted
+  HEAD both
+  COLOR #6BD6FF
   DRAW 0.8s
 
 ANIMATE id MOVE TO 900 400
@@ -164,6 +184,50 @@ SAY "One spoken line, at most 85 characters."
 `PARALLEL` starts all children together and lasts as long as its longest child. Children may be `CREATE`, `INK`, `INK ARROW`, `ARROW`, `ANIMATE`, `DELETE`, `DUPLICATE`, `CAMERA`. Never put `WAIT` or `SAY` inside. Inside it, `CREATE` and `INK` still close with `END`; `ARROW`, `ANIMATE`, `DELETE`, `DUPLICATE` still do not.
 
 Layering: later objects draw on top of earlier ones. Order: backgrounds, containers, connectors, text, annotations.
+
+### Diagram layout and connector craft
+
+For architecture, process, and dependency diagrams, organize the canvas before adding detail:
+
+1. Use two to four broad, lightly filled lane rectangles for ownership boundaries (for example Client, Host, Registry). Keep lane headings aligned and leave space between lanes for connectors.
+2. Put related objects in a vertical `STACK` or repeated items in a `GRID`. These layout blocks auto-place measurable `CREATE` children. Their options can be on the header or on separate lines immediately below it:
+
+```
+STACK commands DIRECTION vertical GAP 36 AT 260 300
+  CREATE run AS RECTANGLE
+    WIDTH 300
+    HEIGHT 120
+    TEXT "docker run"
+  END
+  CREATE build AS RECTANGLE
+    WIDTH 300
+    HEIGHT 120
+    TEXT "docker build"
+  END
+END
+
+GRID images
+  COLUMNS 2
+  GAP 28
+  AT 1320 300
+  CREATE python AS RECTANGLE
+    WIDTH 220
+    HEIGHT 110
+    TEXT "python image"
+  END
+  CREATE redis AS RECTANGLE
+    WIDTH 220
+    HEIGHT 110
+    TEXT "redis image"
+  END
+END
+```
+
+3. Create every connector endpoint before its `ARROW`; write connectors after the cards so they render over the background. Use `ROUTE elbow` for most system flows to keep lines aligned. Use `ROUTE curve` for feedback or return paths, and reserve `ROUTE straight` for clear direct links. Add `VIA x1 y1 x2 y2` to steer a route around cards, across open gutters, or along the top or bottom edge of a lane. For curves, waypoints are smooth pass-through points; for straight and elbow routes they mark path turns.
+4. Give line styles meaning: solid for local/direct flow, dashed for remote requests or optional links, dotted for low-priority or asynchronous links. Keep the same meaning consistent across the diagram. Use `HEAD both` only for a truly bidirectional relationship; otherwise show the actual direction.
+5. Add concise `LABEL`s only where direction alone is ambiguous. Leave enough room around the route midpoint, where the label is drawn. Avoid crossing unrelated lanes and do not put arrows through cards.
+
+`STACK` and `GRID` position their children from the top-left `AT x y` anchor. `GROUP id` groups statements for organization but does not draw a visible frame; use a `RECTANGLE` when a visible lane or container is needed.
 
 ---
 

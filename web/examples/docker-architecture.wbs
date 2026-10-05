@@ -1,0 +1,327 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F4F6F8
+STYLE clean
+FONT neat
+STROKE 4
+
+SCENE 1 "How Docker moves images"
+  SAY "The client sends commands to the Docker daemon on the host."
+    DURATION 5.2s
+    TONE explain
+
+  PARALLEL
+    CREATE clientLane AS RECTANGLE
+      POSITION 260 570
+      WIDTH 420
+      HEIGHT 900
+      COLOR #3B7DAA
+      FILL #F9FCFE
+      DRAW 0.5s
+    END
+    CREATE hostLane AS RECTANGLE
+      POSITION 960 570
+      WIDTH 940
+      HEIGHT 900
+      COLOR #3B7DAA
+      FILL #FBFCFE
+      DRAW 0.5s
+    END
+    CREATE registryLane AS RECTANGLE
+      POSITION 1660 570
+      WIDTH 420
+      HEIGHT 900
+      COLOR #3B7DAA
+      FILL #F9FCFE
+      DRAW 0.5s
+    END
+    CREATE clientHeading AS TEXT
+      TEXT "Client"
+      POSITION 260 165
+      SIZE 42
+      COLOR #193B55
+      DRAW 0.4s
+    END
+    CREATE hostHeading AS TEXT
+      TEXT "Docker Host"
+      POSITION 960 165
+      SIZE 42
+      COLOR #193B55
+      DRAW 0.4s
+    END
+    CREATE registryHeading AS TEXT
+      TEXT "Registry"
+      POSITION 1660 165
+      SIZE 42
+      COLOR #193B55
+      DRAW 0.4s
+    END
+  END
+
+  PARALLEL
+    STACK commands
+      DIRECTION vertical
+      GAP 46
+      AT 75 300
+      CREATE dockerRun AS RECTANGLE
+        WIDTH 380
+        HEIGHT 140
+        COLOR #4A85A7
+        FILL #EAF3F8
+        TEXT "docker run"
+        SIZE 34
+        DRAW 0.7s
+      END
+      CREATE dockerBuild AS RECTANGLE
+        WIDTH 380
+        HEIGHT 140
+        COLOR #4A85A7
+        FILL #EAF3F8
+        TEXT "docker build"
+        SIZE 34
+        DRAW 0.7s
+      END
+      CREATE dockerPull AS RECTANGLE
+        WIDTH 380
+        HEIGHT 140
+        COLOR #4A85A7
+        FILL #EAF3F8
+        TEXT "docker pull"
+        SIZE 34
+        DRAW 0.7s
+      END
+    END
+
+    CREATE dockerDaemon AS RECTANGLE
+      POSITION 650 565
+      WIDTH 230
+      HEIGHT 660
+      COLOR #59788F
+      FILL #E9F0F4
+      TEXT "Docker daemon"
+      SIZE 34
+      DRAW 0.8s
+    END
+
+    CREATE localImagesFrame AS RECTANGLE
+      POSITION 965 465
+      WIDTH 240
+      HEIGHT 500
+      COLOR #3B7DAA
+      FILL #EFF5F8
+      DRAW 0.6s
+    END
+    CREATE localImagesTitle AS TEXT
+      TEXT "Images"
+      POSITION 965 255
+      SIZE 32
+      COLOR #193B55
+      DRAW 0.4s
+    END
+    STACK localImageList
+      DIRECTION vertical
+      GAP 20
+      AT 865 315
+      CREATE pythonImage AS RECTANGLE
+        WIDTH 200
+        HEIGHT 95
+        COLOR #6D9C72
+        FILL #F6FAF5
+        TEXT "python:3.12"
+        SIZE 30
+        DRAW 0.5s
+      END
+      CREATE redisImage AS RECTANGLE
+        WIDTH 200
+        HEIGHT 95
+        COLOR #BD624F
+        FILL #FCF6F4
+        TEXT "redis:7"
+        SIZE 30
+        DRAW 0.5s
+      END
+      CREATE appImage AS RECTANGLE
+        WIDTH 200
+        HEIGHT 95
+        COLOR #6D9C72
+        FILL #F6FAF5
+        TEXT "storefront:latest"
+        SIZE 28
+        DRAW 0.5s
+      END
+    END
+
+    CREATE containersFrame AS RECTANGLE
+      POSITION 1280 465
+      WIDTH 240
+      HEIGHT 500
+      COLOR #3B7DAA
+      FILL #EFF5F8
+      DRAW 0.6s
+    END
+    CREATE containersTitle AS TEXT
+      TEXT "Containers"
+      POSITION 1280 255
+      SIZE 32
+      COLOR #193B55
+      DRAW 0.4s
+    END
+    STACK containerList
+      DIRECTION vertical
+      GAP 66
+      AT 1180 365
+      CREATE webContainer AS RECTANGLE
+        WIDTH 200
+        HEIGHT 125
+        COLOR #4587B6
+        FILL #EAF4FA
+        TEXT "web: python"
+        SIZE 30
+        DRAW 0.6s
+      END
+      CREATE cacheContainer AS RECTANGLE
+        WIDTH 200
+        HEIGHT 125
+        COLOR #4587B6
+        FILL #EAF4FA
+        TEXT "cache: redis"
+        SIZE 30
+        DRAW 0.6s
+      END
+    END
+
+    CREATE registryImagesFrame AS RECTANGLE
+      POSITION 1660 445
+      WIDTH 360
+      HEIGHT 470
+      COLOR #3B7DAA
+      FILL #EFF5F8
+      DRAW 0.6s
+    END
+    CREATE registryImagesTitle AS TEXT
+      TEXT "Image registry"
+      POSITION 1660 245
+      SIZE 32
+      COLOR #193B55
+      DRAW 0.4s
+    END
+    GRID registryImageGrid
+      COLUMNS 2
+      GAP 16
+      AT 1505 310
+      CREATE nginxImage AS RECTANGLE
+        WIDTH 140
+        HEIGHT 105
+        COLOR #79A877
+        FILL #F7FAF4
+        TEXT "nginx"
+        SIZE 28
+        DRAW 0.5s
+      END
+      CREATE ubuntuImage AS RECTANGLE
+        WIDTH 140
+        HEIGHT 105
+        COLOR #CC7654
+        FILL #FCF5F2
+        TEXT "ubuntu"
+        SIZE 28
+        DRAW 0.5s
+      END
+      CREATE postgresImage AS RECTANGLE
+        WIDTH 140
+        HEIGHT 105
+        COLOR #597CA9
+        FILL #F3F6FA
+        TEXT "postgres"
+        SIZE 28
+        DRAW 0.5s
+      END
+      CREATE alpineImage AS RECTANGLE
+        WIDTH 140
+        HEIGHT 105
+        COLOR #8796A3
+        FILL #F7F9FA
+        TEXT "alpine"
+        SIZE 28
+        DRAW 0.5s
+      END
+    END
+
+    CREATE extensions AS RECTANGLE
+      POSITION 1660 790
+      WIDTH 360
+      HEIGHT 115
+      COLOR #668A74
+      FILL #F2F7F3
+      TEXT "Extensions"
+      SIZE 30
+      DRAW 0.5s
+    END
+    CREATE plugins AS RECTANGLE
+      POSITION 1660 930
+      WIDTH 360
+      HEIGHT 115
+      COLOR #6884A5
+      FILL #F2F5F9
+      TEXT "Plugins"
+      SIZE 30
+      DRAW 0.5s
+    END
+  END
+
+  PARALLEL
+    ARROW dockerRun -> dockerDaemon
+      ROUTE elbow
+      COLOR #2589BC
+      STROKE 6
+      DRAW 0.8s
+    ARROW dockerBuild -> dockerDaemon
+      ROUTE elbow
+      COLOR #D59B36
+      STROKE 6
+      DRAW 0.8s
+    ARROW dockerPull -> dockerDaemon
+      ROUTE elbow
+      COLOR #2589BC
+      STROKE 6
+      DRAW 0.8s
+    ARROW dockerDaemon -> localImagesFrame
+      ROUTE elbow
+      COLOR #2589BC
+      STROKE 5
+      DRAW 0.8s
+    ARROW localImagesFrame -> containersFrame
+      ROUTE straight
+      LABEL "run"
+      COLOR #2589BC
+      STROKE 5
+      DRAW 0.7s
+    ARROW localImagesFrame -> registryImagesFrame
+      ROUTE curve
+      VIA 1110 215 1500 215
+      LINESTYLE dashed
+      HEAD both
+      LABEL "push / pull"
+      COLOR #D59B36
+      STROKE 5
+      DRAW 1s
+  END
+
+  WAIT 3.2s
+
+  SAY "Images are stored in the registry, then downloaded onto the host."
+    DURATION 4.6s
+    TONE explain
+  PARALLEL
+    ANIMATE registryImagesFrame HIGHLIGHT
+      COLOR #FFE3A1
+      DURATION 1.1s
+    ANIMATE localImagesFrame HIGHLIGHT
+      COLOR #D8F0FF
+      DURATION 1.1s
+    ANIMATE containersFrame HIGHLIGHT
+      COLOR #D8F0FF
+      DURATION 1.1s
+  END
+  WAIT 3.5s
+END SCENE

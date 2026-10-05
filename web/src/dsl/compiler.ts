@@ -435,6 +435,21 @@ function compileScene(
       }
     }
     if (statement.kind === "arrow") {
+      const waypointValues = propNumbers(statement.props, "VIA")
+      if (
+        statement.props.some((prop) => prop.key === "VIA") &&
+        (waypointValues.length < 2 || waypointValues.length % 2 !== 0)
+      ) {
+        const viaProp = statement.props.find((prop) => prop.key === "VIA")!
+        diagnostics.push(
+          error(
+            "E_BAD_RANGE",
+            "ARROW VIA needs one or more complete x y coordinate pairs.",
+            viaProp.token.line,
+            viaProp.token.col
+          )
+        )
+      }
       const draw = revealFromProps(
         statement.props,
         diagnostics,
@@ -450,8 +465,9 @@ function compileScene(
         opacity: 1,
         style: {
           color: propString(statement.props, "COLOR") ?? themeInk(ast),
+          lineStyle: (propString(statement.props, "LINESTYLE")?.toLowerCase() ?? "solid") as NonNullable<SceneNode["style"]["lineStyle"]>,
           ...(propString(statement.props, "PEN") ? { pen: propString(statement.props, "PEN") as SceneNode["style"]["pen"] } : {}),
-          strokeWidth: ast.stroke ?? DEFAULT_STROKE_WIDTH,
+          strokeWidth: propNumber(statement.props, "STROKE") ?? ast.stroke ?? DEFAULT_STROKE_WIDTH,
           ...(ast.font && ast.font.toLowerCase() !== "handwritten" ? { fontFamily: fontFamilyName(ast.font) } : {}),
         },
         label,
@@ -460,7 +476,11 @@ function compileScene(
         data: {
           fromId: statement.from,
           toId: statement.to,
+          route: propString(statement.props, "ROUTE")?.toLowerCase() ?? "straight",
+          waypoints: pairPoints(waypointValues),
+          head: propString(statement.props, "HEAD")?.toLowerCase() ?? "end",
           _sourceProperties: statement.props.map((prop) => prop.key),
+          _sourcePropertyLocations: Object.fromEntries(statement.props.map((prop) => [prop.key, { line: prop.token.line, col: prop.token.col }])),
         },
       }
       return {

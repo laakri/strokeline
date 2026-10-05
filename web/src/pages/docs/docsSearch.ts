@@ -59,7 +59,7 @@ export const docsSearchEntries: DocsSearchEntry[] = [
     description: "Position, safe areas, lines, arrows, and readable layouts.",
     page: "objects",
     anchor: "drawing-layout",
-    keywords: ["POSITION LINE ARROW safe area overlap draw ink"],
+    keywords: ["POSITION LINE ARROW dashed dotted route via head safe area overlap draw ink STACK GRID layout diagram architecture lanes"],
   },
   {
     title: "Images",

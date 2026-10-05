@@ -29,6 +29,7 @@ export interface NodeStyle {
   color: string
   fill?: string
   strokeWidth: number
+  lineStyle?: "solid" | "dashed" | "dotted"
   fontSize?: number
   fontStyle?: "normal" | "bold" | "italic"
   pen?: "handdrawn" | "chalk" | "marker" | "pencil" | "brush"

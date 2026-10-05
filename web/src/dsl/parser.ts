@@ -817,9 +817,10 @@ class Parser {
     let columns: number | undefined
     let gap: number | undefined
     let at: { x: number; y: number } | undefined
-    while (!this.atEnd() && this.peek().kind !== "newline") {
+    const parseOption = (): boolean => {
       const keyToken = this.peek()
       const key = this.word()
+      if (!("DIRECTION COLUMNS GAP AT".split(" ").includes(key))) return false
       this.take()
       if (key === "DIRECTION") {
         const value = this.takeValue("E_BAD_RANGE", keyToken).toLowerCase()
@@ -838,15 +839,27 @@ class Parser {
         const x = this.readNumber("E_BAD_RANGE", keyToken)
         const y = this.readNumber("E_BAD_RANGE", keyToken)
         if (x !== undefined && y !== undefined) at = { x, y }
-      } else {
-        this.report(
-          "E_UNKNOWN_PROP",
-          `Unknown ${kind.toUpperCase()} option "${keyToken.value}".`,
-          keyToken
-        )
       }
+      return true
+    }
+    while (!this.atEnd() && this.peek().kind !== "newline") {
+      if (parseOption()) continue
+      const keyToken = this.take()
+      this.report("E_UNKNOWN_PROP", `Unknown ${kind.toUpperCase()} option "${keyToken.value}".`, keyToken)
+      break
     }
     this.endLine()
+    while (!this.atEnd()) {
+      this.skipNewlines()
+      if (!("DIRECTION COLUMNS GAP AT".split(" ").includes(this.word()))) break
+      while (!this.atEnd() && this.peek().kind !== "newline") {
+        if (parseOption()) continue
+        const keyToken = this.take()
+        this.report("E_UNKNOWN_PROP", `Unknown ${kind.toUpperCase()} option "${keyToken.value}".`, keyToken)
+        break
+      }
+      this.endLine()
+    }
     if (kind === "stack" && direction === undefined)
       this.report(
         "E_MISSING_REQUIRED_PROP",
