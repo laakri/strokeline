@@ -16,7 +16,8 @@ const script = [
   "  CREATE registryMark AS ICON",
   '    NAME "ship-cargo"',
   "  ARROW dockerRunCard -> dockerDaemon",
-  "  ARROW registryImagesFrame -> localImagesFrame",
+  "  ARROW dockerDaemon -> registryImagesFrame",
+  "  ARROW registryImagesFrame -> dockerDaemon",
   "END SCENE",
 ]
 
@@ -135,50 +136,50 @@ function LiveDemo() {
           </g>
 
           <g opacity={step > 3 ? 1 : .2} className="transition-opacity duration-500">
-            <rect x="247" y="104" width="117" height="302" rx="13" fill="#eef3f6" stroke="#7892a3" />
-            <rect x="265" y="123" width="81" height="68" rx="12" fill="#fff" stroke="#d6e1e8" />
-            <image href="/brand-icons/docker.svg" x="276" y="132" width="59" height="48" preserveAspectRatio="xMidYMid meet" />
-            <text x="305" y="225" textAnchor="middle" fill="#25384c" fontSize="14" fontWeight="700">Docker</text>
-            <text x="305" y="243" textAnchor="middle" fill="#25384c" fontSize="14">daemon</text>
-            <line x1="268" y1="262" x2="343" y2="262" stroke="#d2dce4" />
-            <circle cx="277" cy="284" r="3" fill="#48a8d5" />
-            <text x="287" y="288" fill="#607387" fontSize="10">API</text>
-            <circle cx="277" cy="308" r="3" fill="#48a8d5" />
-            <text x="287" y="312" fill="#607387" fontSize="10">Engine</text>
-            <circle cx="277" cy="332" r="3" fill="#48a8d5" />
-            <text x="287" y="336" fill="#607387" fontSize="10">Runtime</text>
+            <rect x="247" y="104" width="110" height="302" rx="13" fill="#eef3f6" stroke="#7892a3" />
+            <rect x="262" y="123" width="80" height="68" rx="12" fill="#fff" stroke="#d6e1e8" />
+            <image href="/brand-icons/docker.svg" x="273" y="132" width="58" height="48" preserveAspectRatio="xMidYMid meet" />
+            <text x="302" y="225" textAnchor="middle" fill="#25384c" fontSize="14" fontWeight="700">Docker</text>
+            <text x="302" y="243" textAnchor="middle" fill="#25384c" fontSize="14">daemon</text>
+            <line x1="263" y1="262" x2="341" y2="262" stroke="#d2dce4" />
+            <circle cx="273" cy="284" r="3" fill="#48a8d5" />
+            <text x="283" y="288" fill="#607387" fontSize="10">API</text>
+            <circle cx="273" cy="308" r="3" fill="#48a8d5" />
+            <text x="283" y="312" fill="#607387" fontSize="10">Engine</text>
+            <circle cx="273" cy="332" r="3" fill="#48a8d5" />
+            <text x="283" y="336" fill="#607387" fontSize="10">Runtime</text>
           </g>
 
           <g opacity={step > 4 ? 1 : .2} className="transition-opacity duration-500">
-            <rect x="383" y="104" width="127" height="183" rx="4" fill="#fbfdfe" stroke="#5b8fb6" />
-            <rect x="383" y="104" width="127" height="25" fill="#e9f1f6" stroke="#5b8fb6" />
-            <text x="394" y="121" fill="#334c61" fontSize="10" fontWeight="700">IMAGES</text>
-            <image href="/brand-icons/python.svg" x="393" y="143" width="28" height="28" />
-            <text x="429" y="161" fill="#43566a" fontSize="10">python:3.12</text>
-            <line x1="393" y1="179" x2="500" y2="179" stroke="#e1e7ec" />
-            <image href="/brand-icons/redis.svg" x="393" y="190" width="28" height="28" />
-            <text x="429" y="208" fill="#43566a" fontSize="10">redis:7</text>
-            <line x1="393" y1="226" x2="500" y2="226" stroke="#e1e7ec" />
-            <g transform="translate(395 238)" fill="none" stroke="#5b91b5" strokeWidth="1.8" strokeLinejoin="round">
+            <rect x="388" y="104" width="122" height="183" rx="4" fill="#fbfdfe" stroke="#5b8fb6" />
+            <rect x="388" y="104" width="122" height="25" fill="#e9f1f6" stroke="#5b8fb6" />
+            <text x="399" y="121" fill="#334c61" fontSize="10" fontWeight="700">IMAGES</text>
+            <image href="/brand-icons/python.svg" x="398" y="143" width="28" height="28" />
+            <text x="434" y="161" fill="#43566a" fontSize="10">python:3.12</text>
+            <line x1="398" y1="179" x2="500" y2="179" stroke="#e1e7ec" />
+            <image href="/brand-icons/redis.svg" x="398" y="190" width="28" height="28" />
+            <text x="434" y="208" fill="#43566a" fontSize="10">redis:7</text>
+            <line x1="398" y1="226" x2="500" y2="226" stroke="#e1e7ec" />
+            <g transform="translate(400 238)" fill="none" stroke="#5b91b5" strokeWidth="1.8" strokeLinejoin="round">
               <path d="M1 6 12 1l11 5v12l-11 5-11-5Z" />
               <path d="m1 6 11 5 11-5M12 11v12" />
             </g>
-            <text x="429" y="256" fill="#43566a" fontSize="10">web:latest</text>
+            <text x="434" y="256" fill="#43566a" fontSize="10">web:latest</text>
           </g>
 
           <g opacity={step > 5 ? 1 : .2} className="transition-opacity duration-500">
-            <rect x="528" y="104" width="127" height="183" rx="4" fill="#fbfdfe" stroke="#5b8fb6" />
-            <rect x="528" y="104" width="127" height="25" fill="#e9f1f6" stroke="#5b8fb6" />
-            <text x="539" y="121" fill="#334c61" fontSize="10" fontWeight="700">CONTAINERS</text>
+            <rect x="540" y="104" width="122" height="183" rx="4" fill="#fbfdfe" stroke="#5b8fb6" />
+            <rect x="540" y="104" width="122" height="25" fill="#e9f1f6" stroke="#5b8fb6" />
+            <text x="551" y="121" fill="#334c61" fontSize="10" fontWeight="700">CONTAINERS</text>
             {[151, 218].map((y, index) => (
               <g key={y}>
-                <rect x="546" y={y} width="91" height="53" rx="6" fill="#eef6fb" stroke="#9bb7ca" />
-                <g transform={`translate(553 ${y + 10})`} fill="none" stroke={index === 0 ? "#3186b6" : "#5990b1"} strokeWidth="1.6" strokeLinejoin="round">
+                <rect x="556" y={y} width="91" height="53" rx="6" fill="#eef6fb" stroke="#9bb7ca" />
+                <g transform={`translate(563 ${y + 10})`} fill="none" stroke={index === 0 ? "#3186b6" : "#5990b1"} strokeWidth="1.6" strokeLinejoin="round">
                   <path d="M1 6 14 1l13 5v21l-13 5L1 27Z" />
                   <path d="m1 6 13 5 13-5M14 11v21" />
                 </g>
-                <text x="591" y={y + 30} fill="#405a70" fontSize="9">{index === 0 ? "web_01" : "cache_01"}</text>
-                <circle cx="624" cy={y + 41} r="3" fill="#29a477" />
+                <text x="601" y={y + 30} fill="#405a70" fontSize="9">{index === 0 ? "web_01" : "cache_01"}</text>
+                <circle cx="634" cy={y + 41} r="3" fill="#29a477" />
               </g>
             ))}
           </g>
@@ -237,18 +238,20 @@ function LiveDemo() {
           </g>
           <g fill="none" stroke="#3784b3" strokeWidth="2" markerEnd="url(#docker-arrow)" opacity={step > 6 ? 1 : 0} className="docker-flow-line">
             <path d="M171 132H247" />
-            <path d="M171 222H247" />
-            <path d="M171 312H247" />
-            <path d="M364 185H383" />
-            <path d="M510 185H528" />
+            <path d="M357 185H388" />
+            <path d="M510 185H540" />
           </g>
-          <g fill="none" stroke="#d39137" strokeWidth="2" strokeDasharray="7 5" markerEnd="url(#docker-arrow-muted)" opacity={step > 7 ? 1 : 0} className="docker-flow-line">
-            <path d="M510 302C565 335 655 335 723 302" />
-            <path d="M723 331C655 361 565 361 520 331" />
+          <g fill="none" stroke="#d39137" strokeWidth="2" strokeDasharray="7 5" markerEnd="url(#docker-arrow-muted)" opacity={step > 6 ? 1 : 0} className="docker-flow-line">
+            <path d="M171 222H247" />
+            <path d="M357 104V94H725V104" />
+            <path d="M725 322V330H357" />
+          </g>
+          <g fill="none" stroke="#4e8db7" strokeWidth="2" strokeDasharray="3 4" markerEnd="url(#docker-arrow)" opacity={step > 6 ? 1 : 0} className="docker-flow-line">
+            <path d="M171 312H247" />
           </g>
           <g fill="#976b2f" fontSize="9" fontWeight="700" opacity={step > 7 ? 1 : 0}>
-            <text x="620" y="324" textAnchor="middle">PUSH</text>
-            <text x="620" y="375" textAnchor="middle">PULL</text>
+            <text x="545" y="89" textAnchor="middle">PULL REQUEST</text>
+            <text x="520" y="344" textAnchor="middle">RETURN TO DAEMON</text>
           </g>
         </svg>
         <p
@@ -256,7 +259,7 @@ function LiveDemo() {
             step >= total ? "opacity-100" : "opacity-0"
           }`}
         >
-          Commands reach the Docker daemon. Images become containers, while push and pull connect the host to the registry.
+          Commands reach the Docker daemon. It requests pulled images from the registry, stores them on the host, and starts containers from local images.
         </p>
       </div>
     </div>

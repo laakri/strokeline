@@ -203,8 +203,8 @@ SCENE 1 "Docker image lifecycle"
     END
 
     CREATE localImagesFrame AS RECTANGLE
-      POSITION 1010 540
-      WIDTH 300
+      POSITION 985 540
+      WIDTH 280
       HEIGHT 500
       COLOR #4A83A9
       FILL #FBFDFE
@@ -212,7 +212,7 @@ SCENE 1 "Docker image lifecycle"
     END
     CREATE localImagesTitle AS TEXT
       TEXT "Images"
-      POSITION 1010 320
+      POSITION 985 320
       SIZE 34
       COLOR #263F53
     END
@@ -258,8 +258,8 @@ SCENE 1 "Docker image lifecycle"
     END
 
     CREATE containersFrame AS RECTANGLE
-      POSITION 1315 540
-      WIDTH 260
+      POSITION 1310 540
+      WIDTH 240
       HEIGHT 500
       COLOR #4A83A9
       FILL #FBFDFE
@@ -267,7 +267,7 @@ SCENE 1 "Docker image lifecycle"
     END
     CREATE containersTitle AS TEXT
       TEXT "Containers"
-      POSITION 1315 320
+      POSITION 1310 320
       SIZE 34
       COLOR #263F53
     END
@@ -442,6 +442,13 @@ SCENE 1 "Docker image lifecycle"
       SIZE 44
       COLOR #73936F
     END
+    CREATE imageReturnLabel AS TEXT
+      TEXT "IMAGE RETURN"
+      POSITION 1310 950
+      SIZE 20
+      COLOR #A9762F
+      ALIGN center
+    END
   END
 
   PARALLEL
@@ -464,13 +471,11 @@ SCENE 1 "Docker image lifecycle"
       DRAW 0.8s
     ARROW dockerDaemon -> localImagesFrame
       ROUTE straight
-      LABEL "create image"
       COLOR #3784B3
       STROKE 5
       DRAW 0.8s
     ARROW localImagesFrame -> containersFrame
       ROUTE straight
-      LABEL "run"
       COLOR #3784B3
       STROKE 5
       DRAW 0.8s
@@ -481,27 +486,25 @@ SCENE 1 "Docker image lifecycle"
     TONE explain
 
   PARALLEL
-    ARROW localImagesFrame -> registryImagesFrame
-      ROUTE curve
-      VIA 1150 215 1515 215
+    ARROW dockerDaemon -> registryImagesFrame
+      ROUTE elbow
+      VIA 800 215 1480 215
       LINESTYLE dashed
       HEAD end
-      LABEL "push"
+      LABEL "pull request"
       COLOR #D39A3B
       STROKE 5
       DRAW 1s
-    ARROW registryImagesFrame -> localImagesFrame
-      ROUTE curve
-      VIA 1515 245 1150 245
-      LINESTYLE dashed
+    ARROW registryImagesFrame -> dockerDaemon
+      ROUTE elbow
+      VIA 1480 700 1480 920 800 920
       HEAD end
-      LABEL "pull"
       COLOR #D39A3B
       STROKE 5
       DRAW 1s
   END
 
-  SAY "The host stores images, then starts containers from them. Push sends an image to the registry; pull fetches one back."
+  SAY "The host stores images, then starts containers from them. Pull sends a request to the registry and returns the image to local storage."
     DURATION 8.2s
     TONE explain
   PARALLEL
