@@ -110,8 +110,13 @@ export function drawImage(render: RenderContext, node: SceneNode): void {
   context.beginPath()
   context.rect(box.x, box.y, box.width * progress, box.height)
   context.clip()
-  if (image) drawFittedImage(context, image, contentBox, node.image?.fit ?? "cover")
-  else drawPlaceholder(context, node, box)
+  if (image) {
+    context.save()
+    imagePath(context, node, contentBox)
+    context.clip()
+    drawFittedImage(context, image, contentBox, node.image?.fit ?? "cover")
+    context.restore()
+  } else drawPlaceholder(context, node, box)
   if (node.image?.border) {
     imagePath(context, node, box)
     context.strokeStyle = node.image.border
