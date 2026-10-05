@@ -66,7 +66,8 @@ Use the syntax documented in this kit; do not invent keywords or property values
 | `LINESTYLE solid\|dashed\|dotted`                              | ARROW, LINE                                  | Use dash patterns to distinguish the relationship type                                    |
 | `VIA x1 y1 [x2 y2 ...]`                                        | ARROW                                        | Add coordinate waypoints to route around objects; use complete x/y pairs                  |
 | `HEAD none\|end\|both\|triangle\|diamond\|diamond-filled\|open` | ARROW                                        | `end`/`both` are solid triangular heads. `triangle` is a hollow inheritance head; `diamond` is a hollow aggregation diamond; `diamond-filled` is a filled composition diamond; `open` is the open dependency head. Styled heads sit at the destination. |
-| `SOURCELABEL "text"` / `TARGETLABEL "text"`                     | ARROW                                        | Add small plated labels near the source or destination anchor                             |
+| `LABEL "text"`                                                  | ARROW                                        | Add a concise relation label; the renderer measures it and places it to avoid nearby shapes, routes, and labels when space allows, with a translucent contrast-adaptive glass plate behind it. |
+| `SOURCELABEL "text"` / `TARGETLABEL "text"`                     | ARROW                                        | Add unplated multiplicity or endpoint labels near the source or destination anchor         |
 | `DIVIDER n`                                                     | TABLE                                        | Draw a stronger horizontal rule after body row n; rows are numbered from 1               |
 | `STROKE n`                                                      | ARROW                                        | Connector thickness; otherwise uses the document stroke width                            |
 
@@ -229,7 +230,7 @@ END
 
 3. Create every connector endpoint before its `ARROW`; write connectors after the cards so they render over the background. Use `ROUTE elbow` for most system flows to keep lines aligned. Use `ROUTE curve` for feedback or return paths, and reserve `ROUTE straight` for clear direct links. Add `VIA x1 y1 x2 y2` to steer a route around cards, across open gutters, or along the top or bottom edge of a lane. For curves, waypoints are smooth pass-through points; for straight and elbow routes they mark path turns.
 4. Give line styles meaning: solid for local/direct flow, dashed for remote requests or optional links, dotted for low-priority or asynchronous links. Keep the same meaning consistent across the diagram. Use `HEAD both` only for a truly bidirectional relationship; otherwise show the actual direction.
-5. Add concise `LABEL`s only where direction alone is ambiguous. Leave enough room around the route midpoint, where the label is drawn. Avoid crossing unrelated lanes and do not put arrows through cards.
+5. Add concise `LABEL`s only where direction alone is ambiguous. The renderer measures and positions them to avoid nearby shapes, routes, and other arrow labels when space allows, then draws a translucent contrast-adaptive plate behind the text. This is best-effort in crowded layouts: keep whitespace around connectors and use `VIA` to route the line away from nodes. `SOURCELABEL` and `TARGETLABEL` are unplated endpoint or multiplicity labels.
 
 `STACK` and `GRID` position their children from the top-left `AT x y` anchor. `GROUP id` groups statements for organization but does not draw a visible frame; use a `RECTANGLE` when a visible lane or container is needed.
 

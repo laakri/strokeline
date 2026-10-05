@@ -6,6 +6,7 @@ import {
   ShapeRegistry,
   type ShapeRenderer,
 } from "@/renderer/shapes/registry.ts"
+import { layoutArrowLabels } from "@/renderer/shapes/arrow.ts"
 import type { RenderState } from "@/timeline/timeline.ts"
 import { drawSubtitleLayer } from "@/renderer/subtitles.ts"
 import { getImageStatus } from "@/renderer/images.ts"
@@ -98,11 +99,14 @@ export function drawScene(
     devicePixelRatio
   )
   const resolvedCamera = camera ?? state.camera ?? identityCamera(logicalCanvas)
+  const arrowLabelLayouts = layoutArrowLabels(nodes, resolvedCamera.scale)
   const renderContext = createRenderContext(
     context,
     nodes,
     resolvedCamera.scale,
-    mode
+    mode,
+    arrowLabelLayouts,
+    background,
   )
   for (const highlight of state.highlights) {
     if (highlight.tableTarget) continue
@@ -135,7 +139,7 @@ export function drawScene(
     context.save()
     context.globalAlpha = node.opacity
     const cached =
-      node.revealProgress >= 1 && node.rotation === 0 && tableHighlights.length === 0
+      node.type !== "arrow" && node.revealProgress >= 1 && node.rotation === 0 && tableHighlights.length === 0
         ? getCachedNode(
             canvas,
           renderNode,

@@ -1,9 +1,11 @@
+import { createCanvas } from "@napi-rs/canvas"
 import { describe, expect, it } from "vitest"
 import type { SceneNode } from "@/ir/types.ts"
+import type { RenderContext } from "@/renderer/handdrawn.ts"
 import { features } from "@/defaults/features.ts"
 import { computeFitTransform } from "@/renderer/camera.ts"
 import { pointOnBoundary } from "@/renderer/geometry.ts"
-import { endpointLabelPoint } from "@/renderer/shapes/arrow.ts"
+import { arrowLabelGlass, endpointLabelPoint, placeArrowLabel } from "@/renderer/shapes/arrow.ts"
 import { cameraScaledStrokeWidth, strokeOptions } from "@/renderer/handdrawn.ts"
 import { circleBoundingBox } from "@/renderer/shapes/circle.ts"
 import { lineBoundingBox, lineEndpoints } from "@/renderer/shapes/line.ts"
@@ -12,7 +14,7 @@ import {
   rectangleRevealPath,
 } from "@/renderer/shapes/rectangle.ts"
 import { textBoundingBox } from "@/renderer/shapes/text.ts"
-import { cameraScaledFontSize } from "@/renderer/shapes/label.ts"
+import { cameraScaledFontSize, drawLabel } from "@/renderer/shapes/label.ts"
 import { highlightEllipsePoints } from "@/renderer/animations/highlight.ts"
 
 const base = (type: SceneNode["type"]): SceneNode => ({
@@ -92,6 +94,83 @@ describe("renderer geometry", () => {
     const path = [{ x: 100, y: 200 }, { x: 700, y: 200 }]
     expect(endpointLabelPoint(path, true, 30, 8)).toEqual({ x: 108, y: 170 })
     expect(endpointLabelPoint(path, false, 30, 8)).toEqual({ x: 692, y: 230 })
+  })
+
+  it("moves arrow labels away from nearby shapes and keeps them clear of the line", () => {
+    const path = [{ x: 100, y: 300 }, { x: 700, y: 300 }]
+    const obstacle = { x: 330, y: 245, width: 180, height: 45 }
+    const placement = placeArrowLabel(
+      path,
+      "request details",
+      24,
+      "Inter Variable",
+      [obstacle],
+      [],
+      [],
+      "request",
+    )
+
+    expect(placement.box.x + placement.box.width <= obstacle.x ||
+      placement.box.x >= obstacle.x + obstacle.width ||
+      placement.box.y + placement.box.height <= obstacle.y ||
+      placement.box.y >= obstacle.y + obstacle.height).toBe(true)
+    expect(placement.box.y + placement.box.height < 300 ||
+      placement.box.y > 300).toBe(true)
+  })
+
+  it("places nearby arrow labels in separate deterministic spaces", () => {
+    const path = [{ x: 100, y: 500 }, { x: 900, y: 500 }]
+    const first = placeArrowLabel(path, "first relationship", 24, "Inter Variable", [], [], [], "arrow-a")
+    const second = placeArrowLabel(path, "second relationship", 24, "Inter Variable", [], [], [first.box], "arrow-b")
+    const repeated = placeArrowLabel(path, "first relationship", 24, "Inter Variable", [], [], [], "arrow-a")
+
+    expect(first).toEqual(repeated)
+    expect(first.box.x + first.box.width <= second.box.x ||
+      second.box.x + second.box.width <= first.box.x ||
+      first.box.y + first.box.height <= second.box.y ||
+      second.box.y + second.box.height <= first.box.y).toBe(true)
+  })
+
+  it("uses translucent glass label colors with readable contrast on light and dark boards", () => {
+    const dark = arrowLabelGlass("#101827")
+    const light = arrowLabelGlass("#F7FAFC")
+
+    expect(dark.color).toBe("#FFFFFF")
+    expect(dark.background).toContain("0.16")
+    expect(light.color).toBe("#FFFFFF")
+    expect(light.background).toContain("0.84")
+  })
+
+  it("draws contrasting label text over its glass plate", () => {
+    const canvas = createCanvas(240, 100)
+    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+    context.fillStyle = "#F7FAFC"
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    const glass = arrowLabelGlass("#F7FAFC")
+
+    drawLabel(
+      { context, cameraScale: 1 } as RenderContext,
+      "Readable",
+      { x: 120, y: 50 },
+      {
+        color: glass.color,
+        fontSize: 28,
+        fontFamily: "Inter Variable",
+        background: glass.background,
+        backgroundPadding: 6,
+        backgroundCorners: 6,
+        backgroundBorder: glass.border,
+      },
+    )
+
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data
+    let brightPixels = 0
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index]! > 245 && pixels[index + 1]! > 245 && pixels[index + 2]! > 245) {
+        brightPixels++
+      }
+    }
+    expect(brightPixels).toBeGreaterThan(20)
   })
 
   it.each([

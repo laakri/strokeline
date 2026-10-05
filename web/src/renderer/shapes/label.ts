@@ -19,6 +19,8 @@ export interface LabelOptions {
   backgroundOpacity?: number
   backgroundPadding?: number
   backgroundCorners?: number
+  backgroundBorder?: string
+  backgroundBorderOpacity?: number
 }
 
 export function drawLabel(
@@ -87,12 +89,21 @@ export function drawLabel(
       context.clip()
     }
     if (options.background) {
+      context.save()
       context.globalAlpha *= Math.max(0, Math.min(1, options.backgroundOpacity ?? 0.92))
       context.fillStyle = options.background
       roundedRectPath(context, boxX, boxY, boxWidth, boxHeight, options.backgroundCorners ?? 12)
       context.fill()
+      if (options.backgroundBorder) {
+        context.globalAlpha *= Math.max(0, Math.min(1, options.backgroundBorderOpacity ?? 0.32))
+        context.strokeStyle = options.backgroundBorder
+        context.lineWidth = 1 / renderContext.cameraScale
+        context.stroke()
+      }
+      context.restore()
     }
   }
+  context.fillStyle = options.color
   if (softWipe) {
     let hash = 2166136261
     for (const char of seed) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)

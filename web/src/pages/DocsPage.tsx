@@ -1018,9 +1018,16 @@ export function DocsPage() {
                 <code>SOURCELABEL</code> and <code>TARGETLABEL</code> for endpoint labels, <code>STROKE</code>,{" "}
                 <code>VIA x1 y1 x2 y2 ...</code>, <code>COLOR</code>,{" "}
                 <code>LABEL</code>, and <code>DRAW</code> on following lines.
-                Dashed lines work well for remote, optional, or return flows;
-                use waypoints to route connectors around crowded parts of a
-                diagram.
+                A regular <code>LABEL</code> is measured and placed
+                automatically to avoid nearby shapes, connectors, and other
+                arrow labels; a translucent glass-style plate keeps it legible.{" "}
+                <code>SOURCELABEL</code> and <code>TARGETLABEL</code> are
+                unplated endpoint labels. Keep labels concise and leave
+                whitespace around connectors; in very dense diagrams, automatic
+                placement may not find a collision-free position. Dashed lines
+                work well for remote, optional, or return flows; use{" "}
+                <code>VIA</code> waypoints to route connectors around crowded
+                parts of a diagram.
               </p>
               <CodeBlock title="Styled diagram connectors" code={connectorScript} />
               <p>
