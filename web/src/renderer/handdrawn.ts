@@ -3,8 +3,6 @@ import type { RoughCanvas } from "roughjs/bin/canvas"
 import { features } from "@/defaults/features.ts"
 import { loadTextFont } from "@/lib/textMetrics.ts"
 import type { SceneNode } from "@/ir/types.ts"
-import type { Point } from "@/ir/types.ts"
-import type { BoundingBox } from "@/renderer/shapes/registry.ts"
 
 const roughCanvasCache = new WeakMap<HTMLCanvasElement, RoughCanvas>()
 
@@ -14,17 +12,13 @@ export interface RenderContext {
   nodes: Map<string, SceneNode>
   cameraScale: number
   mode: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean"
-  arrowLabelLayouts?: Map<string, { center: Point; box: BoundingBox }>
-  backgroundColor?: string
 }
 
 export function createRenderContext(
   context: CanvasRenderingContext2D,
   nodes: Map<string, SceneNode>,
   cameraScale = 1,
-  mode: RenderContext["mode"] = "handdrawn",
-  arrowLabelLayouts?: Map<string, { center: Point; box: BoundingBox }>,
-  backgroundColor = "#FAFAFA"
+  mode: RenderContext["mode"] = "handdrawn"
 ): RenderContext {
   if (!context.canvas)
     throw new Error("A canvas-backed 2D context is required.")
@@ -33,7 +27,7 @@ export function createRenderContext(
     roughCanvas = rough.canvas(context.canvas)
     roughCanvasCache.set(context.canvas, roughCanvas)
   }
-  return { context, roughCanvas, nodes, cameraScale, mode, arrowLabelLayouts, backgroundColor }
+  return { context, roughCanvas, nodes, cameraScale, mode }
 }
 
 export function seedFromId(id: string): number {

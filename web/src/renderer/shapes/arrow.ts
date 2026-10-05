@@ -1,6 +1,4 @@
 import type { Point, SceneNode } from "@/ir/types.ts"
-import { formatMathText } from "@/lib/mathText.ts"
-import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { resolveArrowEndpoints } from "@/renderer/geometry.ts"
 import type { RenderContext } from "@/renderer/handdrawn.ts"
 import { inkBoundingBox } from "@/renderer/ink/draw.ts"
@@ -11,32 +9,9 @@ import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 
 type ArrowRoute = "straight" | "elbow" | "curve"
 type ArrowHead = "none" | "end" | "both" | "triangle" | "diamond" | "diamond-filled" | "open"
-type ArrowLabelPlacement = { center: Point; box: BoundingBox }
-
-const LABEL_PADDING = 6
-const LABEL_GAP = 12
 
 export function arrowBoundingBox(node: SceneNode): BoundingBox {
   return { x: node.position.x, y: node.position.y, width: 0, height: 0 }
-}
-
-export function arrowLabelGlass(background: string): {
-  color: string
-  background: string
-  border: string
-} {
-  const luminance = backgroundLuminance(background)
-  return luminance < 0.45
-    ? {
-        color: "#FFFFFF",
-        background: "rgba(235, 245, 255, 0.16)",
-        border: "rgba(235, 245, 255, 0.34)",
-      }
-    : {
-        color: "#FFFFFF",
-        background: "rgba(15, 23, 42, 0.84)",
-        border: "rgba(255, 255, 255, 0.38)",
-      }
 }
 
 export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
@@ -98,249 +73,15 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
     drawLabel(renderContext, targetLabel, center, endpointLabelStyle, progress)
   }
 
-  const labelText = node.label ?? node.text
-  const placement = renderContext.arrowLabelLayouts?.get(node.id) ??
-    placeArrowLabel(
-      path,
-      labelText ?? "",
-      cameraScaledFontSize(node.style.fontSize ?? DEFAULT_LABEL_SIZE, renderContext.cameraScale),
-      node.style.fontFamily,
-      [],
-      [],
-      [],
-      node.id,
-    )
-  const glass = arrowLabelGlass(renderContext.backgroundColor ?? "#FAFAFA")
-  drawLabel(renderContext, labelText, placement.center, {
-    color: glass.color,
-    fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE,
-    fontFamily: node.style.fontFamily,
-    background: glass.background,
-    backgroundOpacity: 1,
-    backgroundPadding: LABEL_PADDING,
-    backgroundCorners: 6,
-    backgroundBorder: glass.border,
-    backgroundBorderOpacity: 1,
-  }, progress)
+  const middle = trimPath(path, 0.5)
+  const labelPosition = middle[middle.length - 1] ?? end
+  const previous = middle[middle.length - 2] ?? start
+  const angle = Math.atan2(labelPosition.y - previous.y, labelPosition.x - previous.x)
+  const offset = { x: -Math.sin(angle) * 18 / renderContext.cameraScale, y: Math.cos(angle) * 18 / renderContext.cameraScale }
+  drawLabel(renderContext, node.label ?? node.text, labelPosition, { color: node.style.color, fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE, fontFamily: node.style.fontFamily, offset }, progress)
 }
 
 export const arrow: ShapeRenderer = { draw: drawArrow, boundingBox: arrowBoundingBox }
-
-export function layoutArrowLabels(
-  nodes: Map<string, SceneNode>,
-  cameraScale: number,
-): Map<string, ArrowLabelPlacement> {
-  const placements = new Map<string, ArrowLabelPlacement>()
-  const reserved: BoundingBox[] = []
-  const arrowNodes = [...nodes.values()]
-    .filter((node) => node.type === "arrow" && (node.label ?? node.text))
-    .sort((left, right) => left.id.localeCompare(right.id))
-  const paths = new Map<string, Point[]>()
-  for (const arrowNode of arrowNodes) {
-    const from = nodes.get(String(arrowNode.data?.fromId ?? ""))
-    const to = nodes.get(String(arrowNode.data?.toId ?? ""))
-    if (!from || !to) continue
-    const endpoints = resolveArrowEndpoints(arrowNode, nodes, nodeBounds)
-    paths.set(arrowNode.id, from.id === to.id
-      ? selfLoop(nodeBounds(from), cameraScale)
-      : routePoints(endpoints.start, endpoints.end, asRoute(arrowNode.data?.route), readWaypoints(arrowNode.data?.waypoints)))
-  }
-
-  for (const arrowNode of arrowNodes) {
-    const path = paths.get(arrowNode.id)
-    const text = arrowNode.label ?? arrowNode.text
-    if (!path || !text) continue
-    const fontSize = cameraScaledFontSize(
-      arrowNode.style.fontSize ?? DEFAULT_LABEL_SIZE,
-      cameraScale,
-    )
-    const sourceId = String(arrowNode.data?.fromId ?? "")
-    const targetId = String(arrowNode.data?.toId ?? "")
-    const obstacles = [...nodes.values()]
-      .filter((candidate) =>
-        candidate.type !== "arrow" &&
-        candidate.id !== sourceId &&
-        candidate.id !== targetId,
-      )
-      .map(nodeBounds)
-    const otherPaths = [...paths.entries()]
-      .filter(([id]) => id !== arrowNode.id)
-      .map(([, otherPath]) => otherPath)
-    const placement = placeArrowLabel(
-      path,
-      text,
-      fontSize,
-      arrowNode.style.fontFamily,
-      obstacles,
-      otherPaths,
-      reserved,
-      arrowNode.id,
-    )
-    placements.set(arrowNode.id, placement)
-    reserved.push(placement.box)
-  }
-  return placements
-}
-
-export function placeArrowLabel(
-  path: Point[],
-  text: string,
-  fontSize: number,
-  fontFamily: string | undefined,
-  obstacles: BoundingBox[],
-  otherPaths: Point[][],
-  reserved: BoundingBox[],
-  seed: string,
-): ArrowLabelPlacement {
-  const width = Math.max(1, measureTextWidth(formatMathText(text), fontSize, fontFamily))
-  const height = fontSize * 1.3
-  const tangentOffsets = [0, -0.5, 0.5, -1, 1]
-  const fractions = [0.5, 0.36, 0.64, 0.22, 0.78]
-  const preferredSide = hashString(seed) % 2 === 0 ? -1 : 1
-  const sideOffsets = [preferredSide, -preferredSide]
-  const candidates: ArrowLabelPlacement[] = []
-  for (const fraction of fractions) {
-    const anchor = pointAlongPath(path, fraction)
-    const tangentRoom = Math.max(LABEL_GAP + width / 2, 24)
-    for (const side of sideOffsets) {
-      for (const tangentOffset of tangentOffsets) {
-        const center = {
-          x: anchor.point.x + anchor.normal.x * side * (height / 2 + LABEL_GAP) + anchor.tangent.x * tangentRoom * tangentOffset,
-          y: anchor.point.y + anchor.normal.y * side * (height / 2 + LABEL_GAP) + anchor.tangent.y * tangentRoom * tangentOffset,
-        }
-        candidates.push({
-          center,
-          box: {
-            x: center.x - width / 2 - LABEL_PADDING,
-            y: center.y - height / 2 - LABEL_PADDING,
-            width: width + LABEL_PADDING * 2,
-            height: height + LABEL_PADDING * 2,
-          },
-        })
-      }
-    }
-  }
-  if (!candidates.length) {
-    const center = path[0] ?? { x: 0, y: 0 }
-    return { center, box: { x: center.x, y: center.y, width, height } }
-  }
-  let best = candidates[0]!
-  let bestScore = Number.POSITIVE_INFINITY
-  for (const candidate of candidates) {
-    const shapeHits = obstacles.filter((box) => boxesOverlap(candidate.box, box)).length
-    const labelHits = reserved.filter((box) => boxesOverlap(candidate.box, box)).length
-    const ownLineHit = pathIntersectsBox(path, inflateBox(candidate.box, 2))
-    const otherLineHits = otherPaths.filter((otherPath) =>
-      pathIntersectsBox(otherPath, inflateBox(candidate.box, 2)),
-    ).length
-    const score = shapeHits * 1000 + labelHits * 800 + (ownLineHit ? 400 : 0) + otherLineHits * 300
-    if (score < bestScore) {
-      best = candidate
-      bestScore = score
-      if (score === 0) break
-    }
-  }
-  return best
-}
-
-function pointAlongPath(path: Point[], fraction: number): {
-  point: Point
-  tangent: Point
-  normal: Point
-} {
-  if (path.length < 2) {
-    const point = path[0] ?? { x: 0, y: 0 }
-    return { point, tangent: { x: 1, y: 0 }, normal: { x: 0, y: -1 } }
-  }
-  const lengths = path.slice(1).map((point, index) => distance(path[index]!, point))
-  const total = lengths.reduce((sum, length) => sum + length, 0)
-  let remaining = total * fraction
-  for (let index = 0; index < lengths.length; index++) {
-    const length = lengths[index]!
-    if (remaining > length && index < lengths.length - 1) {
-      remaining -= length
-      continue
-    }
-    const start = path[index]!
-    const end = path[index + 1]!
-    const tangent = {
-      x: (end.x - start.x) / (length || 1),
-      y: (end.y - start.y) / (length || 1),
-    }
-    const progress = length ? Math.max(0, Math.min(1, remaining / length)) : 0
-    return {
-      point: { x: start.x + (end.x - start.x) * progress, y: start.y + (end.y - start.y) * progress },
-      tangent,
-      normal: { x: -tangent.y, y: tangent.x },
-    }
-  }
-  const end = path[path.length - 1]!
-  return { point: end, tangent: { x: 1, y: 0 }, normal: { x: 0, y: -1 } }
-}
-
-function boxesOverlap(left: BoundingBox, right: BoundingBox): boolean {
-  return left.x < right.x + right.width &&
-    left.x + left.width > right.x &&
-    left.y < right.y + right.height &&
-    left.y + left.height > right.y
-}
-
-function inflateBox(box: BoundingBox, amount: number): BoundingBox {
-  return {
-    x: box.x - amount,
-    y: box.y - amount,
-    width: box.width + amount * 2,
-    height: box.height + amount * 2,
-  }
-}
-
-function pathIntersectsBox(path: Point[], box: BoundingBox): boolean {
-  for (let index = 1; index < path.length; index++) {
-    const start = path[index - 1]!
-    const end = path[index]!
-    let t0 = 0, t1 = 1
-    const dx = end.x - start.x, dy = end.y - start.y
-    const clips: Array<[number, number]> = [
-      [-dx, start.x - box.x],
-      [dx, box.x + box.width - start.x],
-      [-dy, start.y - box.y],
-      [dy, box.y + box.height - start.y],
-    ]
-    let intersects = true
-    for (const [p, q] of clips) {
-      if (p === 0) {
-        if (q < 0) { intersects = false; break }
-      } else {
-        const ratio = q / p
-        if (p < 0) t0 = Math.max(t0, ratio)
-        else t1 = Math.min(t1, ratio)
-        if (t0 > t1) { intersects = false; break }
-      }
-    }
-    if (intersects) return true
-  }
-  return false
-}
-
-function hashString(value: string): number {
-  let hash = 2166136261
-  for (let index = 0; index < value.length; index++) {
-    hash ^= value.charCodeAt(index)
-    hash = Math.imul(hash, 16777619)
-  }
-  return hash >>> 0
-}
-
-function backgroundLuminance(color: string): number {
-  const hex = color.trim().replace(/^#/, "")
-  if (!/^(?:[\da-f]{3}|[\da-f]{6})$/i.test(hex)) return 1
-  const expanded = hex.length === 3 ? [...hex].map((part) => part + part).join("") : hex
-  const channels = [0, 2, 4].map((index) => parseInt(expanded.slice(index, index + 2), 16) / 255)
-  return channels.reduce((sum, channel, index) => {
-    const linear = channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
-    return sum + linear * [0.2126, 0.7152, 0.0722][index]!
-  }, 0)
-}
 
 function routePoints(start: Point, end: Point, route: ArrowRoute, waypoints: Point[]): Point[] {
   if (waypoints.length) {
