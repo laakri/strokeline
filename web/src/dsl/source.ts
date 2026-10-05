@@ -1,4 +1,4 @@
-export const MAX_SCRIPT_LENGTH = 50_000
+export const MAX_SCRIPT_LENGTH = 56_000
 
 export interface NormalizedSource {
   source: string

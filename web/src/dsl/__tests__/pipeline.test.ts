@@ -3,6 +3,7 @@ import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import { runScript } from "@/dsl/index.ts"
+import { MAX_SCRIPT_LENGTH } from "@/dsl/source.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
 import { hashString, underlinePoints } from "@/dsl/ink.ts"
 import { lex } from "@/dsl/lexer.ts"
@@ -149,8 +150,8 @@ END SCENE`)
     ).toBe(true)
   })
 
-  it("rejects oversized input before lexing", () => {
-    const result = runScript("x".repeat(50_001))
+  it("rejects input above the script size limit before lexing", () => {
+    const result = runScript("x".repeat(MAX_SCRIPT_LENGTH + 1))
     expect(result.diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
       "E_SCRIPT_TOO_LARGE",
     ])

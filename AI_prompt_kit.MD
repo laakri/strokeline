@@ -255,7 +255,7 @@ Rules:
 2. Close each scene with exactly one `END SCENE` BEFORE writing the next `SCENE`. Write the comment line `# ---- close scene N ----` right above it so you remember which scene you are closing.
 3. Close nested blocks inside-out: children first, then `PARALLEL`'s `END`, then (after the scene content) `END SCENE`.
 4. Last step before printing: count `SCENE` lines and `END SCENE` lines. They must be equal. Count every `CREATE`, `INK`, `INK ARROW`, `PARALLEL`, `TABLE` and chart opener against its `END`.
-5. If the output is getting long, write fewer objects per scene, never skip closing. A complete shorter script beats a cut-off one. Aim for 8,000 to 30,000 characters (hard limit 50,000).
+5. Keep source concise where possible, but preserve all requested content. Strokeline accepts scripts up to 56,000 characters. If a script would exceed that limit, compact repeated properties or split it into separate scripts; never silently truncate it.
 
 ---
 
