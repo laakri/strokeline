@@ -15,6 +15,7 @@ import {
   type VideoResolution,
 } from "@/export/exporters.ts"
 import { Button } from "@/ui/button"
+import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 
 type ExportKind = "video" | "gif" | "png" | "srt" | "vtt"
 
@@ -130,10 +131,12 @@ export function ExportMenu() {
     try {
       if (kind === "srt") {
         exportSrt(state.compiledIR)
+        trackProductEvent({ name: "export_completed", properties: { format: "srt" } })
       } else if (kind === "vtt") {
         exportVtt(state.compiledIR)
+        trackProductEvent({ name: "export_completed", properties: { format: "vtt" } })
       } else if (kind === "video") {
-        await exportVideo(state.compiledIR, {
+        const format = await exportVideo(state.compiledIR, {
           resolution,
           fps,
           includeNarration,
@@ -143,13 +146,19 @@ export function ExportMenu() {
           onFormat: (format) =>
             setVideoFormatProbe({ key: videoFormatKey, format }),
         })
+        trackProductEvent({
+          name: "export_completed",
+          properties: { format, resolution, fps },
+        })
       } else if (kind === "gif") {
         await exportGif(state.compiledIR, {
           signal: controller.signal,
           onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
         })
+        trackProductEvent({ name: "export_completed", properties: { format: "gif" } })
       } else {
         await exportPng(state.compiledIR, activeSceneIndex, player.elapsed)
+        trackProductEvent({ name: "export_completed", properties: { format: "png" } })
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {

@@ -9,6 +9,11 @@ import {
 import type { RenderState } from "@/timeline/timeline.ts"
 import { drawSubtitleLayer } from "@/renderer/subtitles.ts"
 import { getImageStatus } from "@/renderer/images.ts"
+import { drawWatermark } from "@/renderer/watermark.ts"
+import {
+  FREE_BRANDING_ENTITLEMENTS,
+  type BrandingEntitlements,
+} from "@/branding/entitlements.ts"
 
 interface CachedNode {
   image: HTMLCanvasElement
@@ -41,7 +46,8 @@ export function drawScene(
   board = "plain",
   hand = false,
   subtitlesEnabled = false,
-  readAlong = false
+  readAlong = false,
+  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS
 ): void {
   const canvas = context.canvas
   const logicalCanvas = canvasSize ?? {
@@ -168,6 +174,7 @@ export function drawScene(
   context.restore()
   if (subtitlesEnabled && state.subtitle)
     drawSubtitleLayer(context, state.subtitle, logicalCanvas, devicePixelRatio, readAlong)
+  drawWatermark(context, brandingEntitlements)
 }
 
 function drawHand(context: CanvasRenderingContext2D, node: RenderState["nodes"][number]): void {

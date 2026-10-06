@@ -10,6 +10,8 @@ import { ExportMenu } from "@/ui/layout/ExportMenu.tsx"
 import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
 import { Button } from "@/ui/button"
 import { WorkspaceGuide } from "@/ui/layout/WorkspaceGuide.tsx"
+import { AnalyticsConsent } from "@/ui/layout/AnalyticsConsent.tsx"
+import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import logo from "@/assets/logo.png"
 
 const WORKSPACE_GUIDE_KEY = "strokeline.workspaceGuide.v1"
@@ -68,11 +70,13 @@ export function AppShell() {
     event.target.value = ""
   }
   const enterPresentation = () => {
+    trackProductEvent({ name: "presentation_toggled", properties: { enabled: true } })
     setPresentationMode(true)
     if (document.documentElement.requestFullscreen)
       void document.documentElement.requestFullscreen().catch(() => {})
   }
   const exitPresentation = () => {
+    trackProductEvent({ name: "presentation_toggled", properties: { enabled: false } })
     setPresentationMode(false)
     if (document.fullscreenElement)
       void document.exitFullscreen().catch(() => {})
@@ -87,6 +91,16 @@ export function AppShell() {
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange)
   }, [presentationMode])
 
+  useEffect(() => {
+    trackProductEvent({
+      name: "app_opened",
+      properties: {
+        device_class: matchMedia("(pointer: coarse)").matches ? "touch" : "pointer",
+        viewport: window.innerWidth < 640 ? "compact" : window.innerWidth < 1280 ? "regular" : "wide",
+      },
+    })
+  }, [])
+
   return (
     <main className={presentationMode
       ? "fixed inset-0 z-[100] flex h-svh w-screen flex-col overflow-hidden bg-[#0b0e0d] text-white"
@@ -100,6 +114,7 @@ export function AppShell() {
           <Button variant="ghost" size="icon-sm" aria-label="Workspace guide" title="Workspace guide" onClick={() => setGuideStep(0)}>
             <CircleHelp className="size-4" />
           </Button>
+          <AnalyticsConsent />
           <span className="hidden text-xs text-muted-foreground lg:inline">
             whiteboard animation studio
           </span>

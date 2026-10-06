@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { Check, Eye, EyeOff, LoaderCircle, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
+import {
+  FREE_BRANDING_ENTITLEMENTS,
+  type BrandingEntitlements,
+} from "@/branding/entitlements.ts"
+import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { useAppStore, type EditorSourceEdit } from "@/app/store.ts"
@@ -127,9 +132,11 @@ function readVoiceSetting(): string {
 export function PreviewPane({
   presentationMode = false,
   onExitPresentation,
+  brandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
 }: {
   presentationMode?: boolean
   onExitPresentation?: () => void
+  brandingEntitlements?: BrandingEntitlements
 } = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const preflightCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -411,6 +418,7 @@ export function PreviewPane({
     let cachedTransitionTo: RenderState | null = null
     let cachedTransitionSubtitles: boolean | null = null
     let cachedTransitionReadAlong: boolean | null = null
+    let cachedTransitionCanRemoveWatermark: boolean | null = null
     const controller = effectivePlayAllMode
       ? new SequencePlayer(
           timelines,
@@ -433,7 +441,8 @@ export function PreviewPane({
                 compiledIR.style.board,
                 compiledIR.style.hand,
                 subtitlesOnRef.current,
-                readAlongRef.current
+                readAlongRef.current,
+                brandingEntitlements
               )
             } else {
               const fromContext = transitionFromCanvas.getContext("2d")
@@ -445,7 +454,8 @@ export function PreviewPane({
                   cachedTransitionFrom !== transition.from ||
                   cachedTransitionTo !== transition.to ||
                   cachedTransitionSubtitles !== subtitlesEnabled ||
-                  cachedTransitionReadAlong !== readAlongEnabled
+                  cachedTransitionReadAlong !== readAlongEnabled ||
+                  cachedTransitionCanRemoveWatermark !== brandingEntitlements.canRemoveWatermark
                 ) {
                   drawScene(
                     fromContext,
@@ -457,7 +467,8 @@ export function PreviewPane({
                     compiledIR.style.board,
                     compiledIR.style.hand,
                     subtitlesEnabled,
-                    readAlongEnabled
+                    readAlongEnabled,
+                    brandingEntitlements
                   )
                   drawScene(
                     toContext,
@@ -469,12 +480,14 @@ export function PreviewPane({
                     compiledIR.style.board,
                     compiledIR.style.hand,
                     subtitlesEnabled,
-                    readAlongEnabled
+                    readAlongEnabled,
+                    brandingEntitlements
                   )
                   cachedTransitionFrom = transition.from
                   cachedTransitionTo = transition.to
                   cachedTransitionSubtitles = subtitlesEnabled
                   cachedTransitionReadAlong = readAlongEnabled
+                  cachedTransitionCanRemoveWatermark = brandingEntitlements.canRemoveWatermark
                 }
                 context.save()
                 context.setTransform(1, 0, 0, 1, 0, 0)
@@ -548,7 +561,8 @@ export function PreviewPane({
             compiledIR.style.board,
             compiledIR.style.hand,
             subtitlesOnRef.current,
-            readAlongRef.current
+            readAlongRef.current,
+            brandingEntitlements
           )
           const now = performance.now()
           if (
@@ -591,7 +605,7 @@ export function PreviewPane({
       controller.dispose()
       narrationRef.current?.cancel()
     }
-  }, [compiledIR, activeSceneIndex, scene, effectivePlayAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState])
+  }, [compiledIR, activeSceneIndex, scene, effectivePlayAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState, brandingEntitlements])
 
   useEffect(() => {
     const overlay = preflightCanvasRef.current
@@ -708,7 +722,8 @@ export function PreviewPane({
         compiledIR.style.board,
         compiledIR.style.hand,
         subtitlesOnRef.current,
-        readAlongRef.current
+        readAlongRef.current,
+        brandingEntitlements
       )
     }
     event.preventDefault()
@@ -944,7 +959,13 @@ export function PreviewPane({
       {!presentationMode && (
         <SceneTabs
           activeIndex={playAllMode ? sequenceSceneIndex : activeSceneIndex}
-          onSelect={() => setPlayAllMode(false)}
+          onSelect={(index) => {
+            setPlayAllMode(false)
+            trackProductEvent({
+              name: "scene_selected",
+              properties: { scene_index: index + 1 },
+            })
+          }}
         />
       )}
       <div className={presentationMode
@@ -956,7 +977,12 @@ export function PreviewPane({
             aria-pressed={preflightOn}
             data-workspace-guide-target="preview-layout"
             onClick={() => {
-              setPreflightOn((enabled) => !enabled)
+              const enabled = !preflightOn
+              setPreflightOn(enabled)
+              trackProductEvent({
+                name: "layout_guides_toggled",
+                properties: { enabled },
+              })
               setPreflightSelectedId(null)
               setObjectMenu(null)
               setConnectFrom(null)
@@ -1198,10 +1224,18 @@ export function PreviewPane({
               return
             }
             if (playerRef.current.isPlaying) {
+              trackProductEvent({
+                name: "preview_playback",
+                properties: { action: "pause", mode: effectivePlayAllMode ? "all" : "scene" },
+              })
               narrationRef.current?.pause()
               playerRef.current.pause()
               setPlayerState({ isPlaying: false })
             } else {
+              trackProductEvent({
+                name: "preview_playback",
+                properties: { action: "play", mode: effectivePlayAllMode ? "all" : "scene" },
+              })
               const controller = playerRef.current
               if (!controller) return
               void (async () => {

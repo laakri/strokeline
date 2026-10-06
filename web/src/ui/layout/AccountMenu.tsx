@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import type { Session } from "@supabase/supabase-js"
 import { useTheme } from "@/components/theme-provider.tsx"
 import { supabase } from "@/lib/supabase.ts"
+import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 
 export function AccountMenu({ compact = false }: { compact?: boolean }) {
   const { theme, setTheme } = useTheme()
@@ -21,6 +22,17 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
     })
     const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession)
+      if (_event === "SIGNED_IN") {
+        const provider = nextSession?.user.app_metadata.provider
+        trackProductEvent({
+          name: "auth_signed_in",
+          properties: {
+            provider: provider === "google" || provider === "github" ? provider : "other",
+          },
+        })
+      } else if (_event === "SIGNED_OUT") {
+        trackProductEvent({ name: "auth_signed_out", properties: {} })
+      }
     })
 
     return () => {

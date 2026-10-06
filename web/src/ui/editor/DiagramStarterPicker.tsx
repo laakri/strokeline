@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { ArrowRight, LayoutTemplate, X } from "lucide-react"
 import { useAppStore } from "@/app/store.ts"
+import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import { DIAGRAM_TEMPLATES, type DiagramPreviewKind, type DiagramTemplateCategory } from "@/templates/diagramTemplates.ts"
 
 const categories: Array<"All" | DiagramTemplateCategory> = ["All", "UML", "Agile", "Process"]
@@ -95,7 +96,11 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
     return () => document.removeEventListener("keydown", closeOnEscape)
   }, [open])
 
-  const chooseTemplate = (script: string) => {
+  const chooseTemplate = (templateId: string, script: string) => {
+    trackProductEvent({
+      name: "template_selected",
+      properties: { template_id: templateId },
+    })
     loadScript(script)
     setOpen(false)
     onSelect?.()
@@ -168,7 +173,7 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
                   <button
                     key={template.id}
                     type="button"
-                    onClick={() => chooseTemplate(template.script)}
+                    onClick={() => chooseTemplate(template.id, template.script)}
                     style={{ animationDelay: `${index * 40}ms` }}
                     className="diagram-template-card group overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >

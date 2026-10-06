@@ -9,6 +9,10 @@ import { frameCountForDuration, frameTimestamp } from "@/export/frameTiming.ts"
 import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
 import { getKokoroState, generateKokoroAudio, subscribeKokoro } from "@/player/kokoro.ts"
 import { readReaderVolume } from "@/player/readerVolume.ts"
+import {
+  FREE_BRANDING_ENTITLEMENTS,
+  type BrandingEntitlements,
+} from "@/branding/entitlements.ts"
 
 function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; readAlong: boolean } {
   const readSetting = (key: string): boolean | null => {
@@ -66,6 +70,7 @@ export interface ExportOptions {
   scale?: number
   resolution?: VideoResolution
   includeNarration?: boolean
+  brandingEntitlements?: BrandingEntitlements
   signal?: AbortSignal
   onProgress?: (fraction: number) => void
   onFormat?: (format: VideoExportFormat) => void
@@ -118,7 +123,8 @@ export async function preferredVideoExportFormat(
 export async function exportPng(
   document: SceneDocument,
   sceneIndex: number,
-  elapsed: number
+  elapsed: number,
+  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS
 ): Promise<void> {
   const scene = document.scenes[sceneIndex]
   if (!scene) return
@@ -140,7 +146,8 @@ export async function exportPng(
     document.style.board,
     document.style.hand,
     subtitleSettings.subtitles,
-    subtitleSettings.readAlong
+    subtitleSettings.readAlong,
+    brandingEntitlements
   )
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/png")
@@ -153,7 +160,13 @@ export async function exportGif(
   document: SceneDocument,
   options: ExportOptions = {}
 ): Promise<void> {
-  const { fps = 12, scale = 0.5, signal, onProgress } = options
+  const {
+    fps = 12,
+    scale = 0.5,
+    signal,
+    onProgress,
+    brandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
+  } = options
   await preloadImages(document)
   await loadHandwrittenFont()
   const width = Math.max(1, Math.round(document.canvas.width * scale))
@@ -185,7 +198,8 @@ export async function exportGif(
         document.style.board,
         document.style.hand,
         subtitleSettings.subtitles,
-        subtitleSettings.readAlong
+        subtitleSettings.readAlong,
+        brandingEntitlements
       )
       const { data } = context.getImageData(0, 0, width, height)
       const palette = quantize(data, 256)
@@ -216,6 +230,7 @@ export async function exportVideo(
     onProgress,
     onFormat,
     onMessage,
+    brandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
   } = options
   const voiceEnabled = (options.includeNarration ?? exportSubtitleSettings(document).readAlong) &&
     document.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
@@ -228,7 +243,7 @@ export async function exportVideo(
     await loadHandwrittenFont()
     const { width, height } = videoExportDimensions(document, resolution)
     const timelines = sceneTimelines(document)
-    const sequence = createSequenceRenderer(document, timelines, width, height)
+    const sequence = createSequenceRenderer(document, timelines, width, height, brandingEntitlements)
     const total = sequence.player.duration
     if (total <= 0) {
       sequence.player.dispose()
@@ -355,7 +370,8 @@ function createSequenceRenderer(
   document: SceneDocument,
   timelines: Timeline[],
   width: number,
-  height: number
+  height: number,
+  brandingEntitlements: BrandingEntitlements
 ): SequenceRenderer {
   const canvas = createCanvas(width, height)
   const context = canvas.getContext("2d")
@@ -380,7 +396,8 @@ function createSequenceRenderer(
           document.style.board,
           document.style.hand,
           subtitleSettings.subtitles,
-          subtitleSettings.readAlong
+          subtitleSettings.readAlong,
+          brandingEntitlements
         )
         return
       }
@@ -394,7 +411,8 @@ function createSequenceRenderer(
         document.style.board,
         document.style.hand,
         subtitleSettings.subtitles,
-        subtitleSettings.readAlong
+        subtitleSettings.readAlong,
+        brandingEntitlements
       )
       drawScene(
         toContext,
@@ -406,7 +424,8 @@ function createSequenceRenderer(
         document.style.board,
         document.style.hand,
         subtitleSettings.subtitles,
-        subtitleSettings.readAlong
+        subtitleSettings.readAlong,
+        brandingEntitlements
       )
       context.save()
       context.setTransform(1, 0, 0, 1, 0, 0)

@@ -5,6 +5,7 @@ import { repairSyntax } from "@/dsl/repair.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
 import { normalizeScriptSource } from "@/dsl/source.ts"
 import { formatScript } from "@/dsl/format.ts"
+import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import type { Diagnostic, Scene, SceneDocument } from "@/ir/types.ts"
 
 const STORAGE_KEY = "strokeline.script.v1"
@@ -138,6 +139,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
       set({ script, editorLoad: { text: script } })
     }
     const result = runScript(script)
+    trackProductEvent({
+      name: "script_run",
+      properties: {
+        result: !result.document || result.diagnostics.some(blocksScriptRun)
+          ? "failure"
+          : "success",
+        diagnostic_codes: [...new Set(result.diagnostics.map((item) => item.code))].slice(0, 20),
+        scene_count: result.document?.scenes.length ?? 0,
+      },
+    })
     if (!result.document || result.diagnostics.some(blocksScriptRun)) {
       set({
         compiledIR: null,
