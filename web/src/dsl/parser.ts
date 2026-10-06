@@ -43,6 +43,7 @@ export interface ASTAnimate {
   ease?: string
   at?: ASTValue
   color?: ASTValue
+  arc?: number
   token: Token
 }
 export interface ASTEffect {
@@ -253,7 +254,7 @@ class Parser {
     let board: string | undefined
     let theme: string | undefined
     let hand: boolean | undefined
-    let subtitles = false
+    let subtitles: boolean | undefined
     if (this.word() === "VERSION") {
       this.take()
       version = this.readValue()?.toString() ?? ""
@@ -492,13 +493,14 @@ class Parser {
     const token = this.take()
     const targetId = this.readIdent("E_EXPECTED_ID", token)
     const verb = this.takeValue("E_EXPECTED_ANIMATION", token)
-    if (verb === "MOVE" || verb === "SCALE" || verb === "ROTATE")
+    if (verb === "MOVE" || verb === "SCALE" || verb === "ROTATE" || verb === "OPACITY" || verb === "COLOR")
       this.expect("TO", token)
     const values: ASTValue[] = []
     let duration: ASTValue | undefined
     let ease: string | undefined
     let at: ASTValue | undefined
     let color: ASTValue | undefined
+    let arc: number | undefined
     while (!this.atEnd() && this.peek().kind !== "newline") {
       if (this.word() === "DURATION") {
         this.take()
@@ -518,6 +520,12 @@ class Parser {
       if (this.word() === "COLOR") {
         this.take()
         color = this.readValue()
+        continue
+      }
+      if (this.word() === "ARC") {
+        this.take()
+        const value = this.readValue()
+        arc = typeof value === "number" ? value : Number(value)
         continue
       }
       const value = this.readValue()
@@ -546,6 +554,7 @@ class Parser {
       ease,
       at,
       color,
+      arc,
       token,
     }
   }
@@ -810,7 +819,9 @@ class Parser {
     const id =
       kind === "stack"
         ? this.readIdent("E_EXPECTED_ID", token)
-        : this.peek().kind === "ident" && this.word() !== "COLUMNS"
+        : !this.atEnd() &&
+            this.peek().kind !== "newline" &&
+            !["COLUMNS", "DIRECTION", "GAP", "AT"].includes(this.word())
           ? this.take().value
           : undefined
     let direction: ASTBlock["direction"]

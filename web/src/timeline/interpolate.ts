@@ -69,6 +69,30 @@ export function interpolateAnimation(
     return { ...node, position: { ...node.position, y: node.position.y + Math.sin(phase) * amplitude } }
   }
   if (animation.verb === "move" && target?.position) {
+    if (animation.arc !== undefined) {
+      const progressOnPath = progress
+      const dx = target.position.x - node.position.x
+      const dy = target.position.y - node.position.y
+      const length = Math.hypot(dx, dy) || 1
+      const control = {
+        x: (node.position.x + target.position.x) / 2 - (dy / length) * animation.arc,
+        y: (node.position.y + target.position.y) / 2 + (dx / length) * animation.arc,
+      }
+      const inverse = 1 - progressOnPath
+      return {
+        ...node,
+        position: {
+          x:
+            inverse * inverse * node.position.x +
+            2 * inverse * progressOnPath * control.x +
+            progressOnPath * progressOnPath * target.position.x,
+          y:
+            inverse * inverse * node.position.y +
+            2 * inverse * progressOnPath * control.y +
+            progressOnPath * progressOnPath * target.position.y,
+        },
+      }
+    }
     return {
       ...node,
       position: {
@@ -80,16 +104,75 @@ export function interpolateAnimation(
   if (animation.verb === "fade" && target?.opacity !== undefined) {
     return { ...node, opacity: lerp(node.opacity, target.opacity, progress) }
   }
+  if (animation.verb === "opacity" && target?.opacity !== undefined) {
+    return { ...node, opacity: lerp(node.opacity, target.opacity, progress) }
+  }
+  if (animation.verb === "color" && animation.color) {
+    const color = interpolateHexColor(node.style.color, animation.color, progress)
+    return color ? { ...node, style: { ...node.style, color } } : node
+  }
   if (animation.verb === "scale" && target?.scale !== undefined) {
-    return { ...node, scale: lerp(node.scale, target.scale, progress) }
+    return {
+      ...node,
+      ...(target.position
+        ? {
+            position: {
+              x: lerp(node.position.x, target.position.x, progress),
+              y: lerp(node.position.y, target.position.y, progress),
+            },
+          }
+        : {}),
+      scale: lerp(node.scale, target.scale, progress),
+    }
   }
   if (animation.verb === "rotate" && target?.rotation !== undefined) {
-    return { ...node, rotation: lerp(node.rotation, target.rotation, progress) }
+    return {
+      ...node,
+      ...(target.position
+        ? {
+            position: {
+              x: lerp(node.position.x, target.position.x, progress),
+              y: lerp(node.position.y, target.position.y, progress),
+            },
+          }
+        : {}),
+      rotation: lerp(node.rotation, target.rotation, progress),
+    }
   }
   if (animation.verb === "erase") {
     return { ...node, revealProgress: lerp(node.revealProgress, 0, progress) }
   }
   return node
+}
+
+function interpolateHexColor(
+  start: string,
+  end: string,
+  progress: number
+): string | undefined {
+  const parse = (value: string): [number, number, number] | undefined => {
+    if (/^#[\da-f]{3}$/i.test(value))
+      return [...value.slice(1)].map((digit) => parseInt(digit + digit, 16)) as [
+        number,
+        number,
+        number,
+      ]
+    if (/^#[\da-f]{6}$/i.test(value))
+      return [1, 3, 5].map((offset) =>
+        parseInt(value.slice(offset, offset + 2), 16)
+      ) as [number, number, number]
+    return undefined
+  }
+  const from = parse(start)
+  const to = parse(end)
+  if (!from || !to) return undefined
+  return `#${from
+    .map((value, index) =>
+      Math.round(lerp(value, to[index]!, progress))
+        .toString(16)
+        .padStart(2, "0")
+    )
+    .join("")}`
 }
 
 export interface TimelineBoundingBox {
@@ -123,8 +206,12 @@ export function fitCameraToNode(
   )
 }
 
-export function cameraProgress(elapsed: number, duration: number): number {
-  return easing[DEFAULT_EASE](
+export function cameraProgress(
+  elapsed: number,
+  duration: number,
+  ease: EaseName = DEFAULT_EASE
+): number {
+  return easing[ease](
     duration <= 0 ? (elapsed >= 0 ? 1 : 0) : clamp(elapsed / duration)
   )
 }

@@ -1,8 +1,20 @@
 import type { LucideIcon } from "lucide-react"
-import { GitBranch, Network, PanelsTopLeft, Workflow, UsersRound, Waypoints } from "lucide-react"
+import {
+  ArrowLeftRight,
+  GitBranch,
+  Network,
+  PackageOpen,
+  PanelsTopLeft,
+  Quote,
+  Sparkles,
+  Timer,
+  Workflow,
+  UsersRound,
+  Waypoints,
+} from "lucide-react"
 
-export type DiagramTemplateCategory = "UML" | "Agile" | "Process"
-export type DiagramPreviewKind = "use-case" | "class" | "sequence" | "scrum" | "flowchart" | "erd"
+export type DiagramTemplateCategory = "UML" | "Agile" | "Process" | "Reels"
+export type DiagramPreviewKind = "use-case" | "class" | "sequence" | "scrum" | "flowchart" | "erd" | "reels"
 
 export interface DiagramTemplate {
   id: string
@@ -23,147 +35,259 @@ STROKE 3
 
 `
 
+const reelsHeader = `VERSION 1.0
+CANVAS 1080 1920
+BACKGROUND #101827
+STYLE clean
+FONT neat
+STROKE 4
+
+`
+
 export const DIAGRAM_TEMPLATES: DiagramTemplate[] = [
   {
     id: "use-case",
     title: "Use case diagram",
     category: "UML",
-    description: "Map people, system boundaries, and the actions they need.",
+    description: "Explore a complete use-case model with a smooth guided camera tour.",
     preview: "use-case",
     icon: UsersRound,
-    script: header + `SCENE 1 "Issue tracker use cases"
-  CREATE title AS TEXT
-    TEXT "Issue tracker"
-    POSITION 960 170
-    SIZE 56
-    COLOR #172554
+    script: header.replace("CANVAS 1920 1080", "CANVAS 1920 2200") + `SCENE 1 "Issue tracker use cases"
+  PARALLEL
+    CREATE title AS TEXT
+      TEXT "Issue tracker"
+      POSITION 960 100
+      SIZE 58
+      COLOR #172554
+    END
+    CREATE systemBoundary AS RECTANGLE
+      POSITION 960 1160
+      WIDTH 1250
+      HEIGHT 1930
+      CORNERS 28
+      COLOR #94A3B8
+      FILL #FFFFFF
+      DRAW 0.65s
+    END
+    CREATE systemLabel AS TEXT
+      TEXT "ISSUE TRACKER SYSTEM"
+      POSITION 960 245
+      SIZE 28
+      COLOR #64748B
+    END
+    CREATE discoverySection AS TEXT
+      TEXT "01  DISCOVER & CREATE"
+      POSITION 960 335
+      SIZE 24
+      COLOR #64748B
+    END
+    CREATE workflowSection AS TEXT
+      TEXT "02  COLLABORATE"
+      POSITION 960 900
+      SIZE 24
+      COLOR #64748B
+    END
+    CREATE deliverySection AS TEXT
+      TEXT "03  REPORT & ADMINISTER"
+      POSITION 960 1470
+      SIZE 24
+      COLOR #64748B
+    END
+    CREATE browseIssues AS ELLIPSE
+      TEXT "Browse issues"
+      POSITION 700 465
+      WIDTH 330
+      HEIGHT 132
+      COLOR #2563EB
+      FILL #EFF6FF
+      DRAW 0.65s
+    END
+    CREATE createIssue AS ELLIPSE
+      TEXT "Create an issue"
+      POSITION 700 650
+      WIDTH 330
+      HEIGHT 132
+      COLOR #2563EB
+      FILL #EFF6FF
+      DRAW 0.65s
+    END
+    CREATE triageIssue AS ELLIPSE
+      TEXT "Triage issue"
+      POSITION 1220 465
+      WIDTH 330
+      HEIGHT 132
+      COLOR #0F766E
+      FILL #F0FDFA
+      DRAW 0.65s
+    END
+    CREATE assignIssue AS ELLIPSE
+      TEXT "Assign an issue"
+      POSITION 1220 650
+      WIDTH 330
+      HEIGHT 132
+      COLOR #0F766E
+      FILL #F0FDFA
+      DRAW 0.65s
+    END
+    CREATE commentIssue AS ELLIPSE
+      TEXT "Comment on issue"
+      POSITION 700 1035
+      WIDTH 350
+      HEIGHT 132
+      COLOR #2563EB
+      FILL #EFF6FF
+      DRAW 0.65s
+    END
+    CREATE attachFile AS ELLIPSE
+      TEXT "Attach a file"
+      POSITION 700 1220
+      WIDTH 330
+      HEIGHT 132
+      COLOR #C2410C
+      FILL #FFF7ED
+      DRAW 0.65s
+    END
+    CREATE authenticate AS ELLIPSE
+      TEXT "Authenticate"
+      POSITION 1220 1035
+      WIDTH 330
+      HEIGHT 132
+      COLOR #0F766E
+      FILL #F0FDFA
+      DRAW 0.65s
+    END
+    CREATE notifyTeam AS ELLIPSE
+      TEXT "Notify team"
+      POSITION 1220 1220
+      WIDTH 330
+      HEIGHT 132
+      COLOR #0F766E
+      FILL #F0FDFA
+      DRAW 0.65s
+    END
+    CREATE viewReports AS ELLIPSE
+      TEXT "View reports"
+      POSITION 700 1605
+      WIDTH 330
+      HEIGHT 132
+      COLOR #2563EB
+      FILL #EFF6FF
+      DRAW 0.65s
+    END
+    CREATE exportReport AS ELLIPSE
+      TEXT "Export report"
+      POSITION 700 1790
+      WIDTH 330
+      HEIGHT 132
+      COLOR #2563EB
+      FILL #EFF6FF
+      DRAW 0.65s
+    END
+    CREATE manageTeam AS ELLIPSE
+      TEXT "Manage team"
+      POSITION 1220 1605
+      WIDTH 330
+      HEIGHT 132
+      COLOR #0F766E
+      FILL #F0FDFA
+      DRAW 0.65s
+    END
+    CREATE manageRoles AS ELLIPSE
+      TEXT "Manage roles"
+      POSITION 1220 1790
+      WIDTH 330
+      HEIGHT 132
+      COLOR #0F766E
+      FILL #F0FDFA
+      DRAW 0.65s
+    END
+    CREATE member AS ICON
+      POSITION 180 560
+      SIZE 96
+      NAME user-round
+      COLOR #334155
+    END
+    CREATE memberLabel AS TEXT
+      TEXT "Team member"
+      POSITION 180 635
+      SIZE 26
+      COLOR #334155
+    END
+    CREATE admin AS ICON
+      POSITION 1740 1695
+      SIZE 96
+      NAME shield-user
+      COLOR #334155
+    END
+    CREATE adminLabel AS TEXT
+      TEXT "Administrator"
+      POSITION 1740 1770
+      SIZE 26
+      COLOR #334155
+    END
+    ARROW member -> browseIssues
+      ROUTE straight
+      HEAD none
+      COLOR #94A3B8
+      DRAW 0.65s
+    ARROW member -> createIssue
+      ROUTE straight
+      HEAD none
+      COLOR #94A3B8
+      DRAW 0.65s
+    ARROW admin -> manageTeam
+      ROUTE straight
+      HEAD none
+      COLOR #94A3B8
+      DRAW 0.65s
+    ARROW admin -> manageRoles
+      ROUTE straight
+      HEAD none
+      COLOR #94A3B8
+      DRAW 0.65s
+    ARROW createIssue -> authenticate
+      ROUTE straight
+      LINESTYLE dashed
+      HEAD open
+      LABEL "«include»"
+      COLOR #64748B
+      DRAW 0.65s
+    ARROW attachFile -> createIssue
+      ROUTE straight
+      LINESTYLE dashed
+      HEAD open
+      LABEL "«extend»"
+      COLOR #64748B
+      DRAW 0.65s
   END
-  CREATE systemBoundary AS RECTANGLE
-    POSITION 960 580
-    WIDTH 1130
-    HEIGHT 700
-    COLOR #94A3B8
-    FILL #FFFFFF
-    DRAW 0.5s
-  END
-  CREATE systemLabel AS TEXT
-    TEXT "ISSUE TRACKER SYSTEM"
-    POSITION 960 270
-    SIZE 28
-    COLOR #64748B
-  END
-  CREATE browseIssues AS ELLIPSE
-    TEXT "Browse issues"
-    POSITION 730 440
-    WIDTH 310
-    HEIGHT 132
-    COLOR #2563EB
-    FILL #EFF6FF
-    DRAW 0.55s
-  END
-  CREATE createIssue AS ELLIPSE
-    TEXT "Create an issue"
-    POSITION 730 680
-    WIDTH 310
-    HEIGHT 132
-    COLOR #2563EB
-    FILL #EFF6FF
-    DRAW 0.55s
-  END
-  CREATE manageTeam AS ELLIPSE
-    TEXT "Manage team"
-    POSITION 1190 440
-    WIDTH 310
-    HEIGHT 132
-    COLOR #0F766E
-    FILL #F0FDFA
-    DRAW 0.55s
-  END
-  CREATE closeSprint AS ELLIPSE
-    TEXT "Close sprint"
-    POSITION 1190 720
-    WIDTH 310
-    HEIGHT 132
-    COLOR #0F766E
-    FILL #F0FDFA
-    DRAW 0.55s
-  END
-  CREATE authenticate AS ELLIPSE
-    TEXT "Authenticate"
-    POSITION 730 850
-    WIDTH 300
-    HEIGHT 112
-    COLOR #0F766E
-    FILL #F0FDFA
-    DRAW 0.55s
-  END
-  CREATE attachFile AS ELLIPSE
-    TEXT "Attach a file"
-    POSITION 1360 570
-    WIDTH 260
-    HEIGHT 112
-    COLOR #C2410C
-    FILL #FFF7ED
-    DRAW 0.55s
-  END
-  CREATE member AS ICON
-    POSITION 240 565
-    SIZE 112
-    NAME user-round
-    COLOR #334155
-  END
-  CREATE memberLabel AS TEXT
-    TEXT "Team member"
-    POSITION 240 665
-    SIZE 30
-    COLOR #334155
-  END
-  CREATE admin AS ICON
-    POSITION 1680 565
-    SIZE 112
-    NAME shield-user
-    COLOR #334155
-  END
-  CREATE adminLabel AS TEXT
-    TEXT "Administrator"
-    POSITION 1680 665
-    SIZE 30
-    COLOR #334155
-  END
-  ARROW member -> browseIssues
-    ROUTE straight
-    HEAD none
-    COLOR #64748B
-    DRAW 0.65s
-  ARROW member -> createIssue
-    ROUTE straight
-    HEAD none
-    COLOR #64748B
-    DRAW 0.65s
-  ARROW admin -> manageTeam
-    ROUTE straight
-    HEAD none
-    COLOR #64748B
-    DRAW 0.65s
-  ARROW admin -> closeSprint
-    ROUTE straight
-    HEAD none
-    COLOR #64748B
-    DRAW 0.65s
-  ARROW createIssue -> authenticate
-    ROUTE straight
-    LINESTYLE dashed
-    HEAD open
-    LABEL "«include»"
-    COLOR #64748B
-    DRAW 0.65s
-  ARROW attachFile -> createIssue
-    ROUTE straight
-    LINESTYLE dashed
-    HEAD open
-    LABEL "«extend»"
-    COLOR #64748B
-    DRAW 0.65s
+
+  CAMERA ZOOM
+    TARGET systemBoundary
+    DURATION 1s
+    EASE easeInOut
+  WAIT 0.8s
+  CAMERA ZOOM
+    SCALE 1
+    DURATION 1s
+    EASE easeInOut
+  CAMERA PAN
+    TO 960 520
+    DURATION 1.2s
+    EASE easeInOut
+  WAIT 0.6s
+  CAMERA PAN
+    TO 960 1120
+    DURATION 1.2s
+    EASE easeInOut
+  WAIT 0.6s
+  CAMERA PAN
+    TO 960 1660
+    DURATION 1.2s
+    EASE easeInOut
+  WAIT 0.8s
+  CAMERA RESET
+    DURATION 1s
+    EASE easeInOut
 END SCENE
 `,
   },
@@ -557,6 +681,197 @@ END SCENE
     HEAD none
     COLOR #475569
     DRAW 0.65s
+END SCENE
+`,
+  },
+  {
+    id: "reels-hook-tips",
+    title: "Hook + 3 tips",
+    category: "Reels",
+    description: "A punchy opening followed by three clear, caption-ready tips.",
+    preview: "reels",
+    icon: Sparkles,
+    script: reelsHeader + `SCENE 1 "Three quick tips"
+  CREATE hook AS TEXT
+    TEXT "MAKE IT CLEAR"
+    POSITION 540 390
+    SIZE 78
+    COLOR #F8FAFC
+    DRAW 0.5s
+  END
+  CREATE tip1 AS TEXT
+    TEXT "01  Start with one idea"
+    POSITION 540 670
+    SIZE 42
+    COLOR #A7F3D0
+    DRAW 0.4s
+  END
+  CREATE tip2 AS TEXT
+    TEXT "02  Show, then explain"
+    POSITION 540 920
+    SIZE 42
+    COLOR #BFDBFE
+    DRAW 0.4s
+  END
+  CREATE tip3 AS TEXT
+    TEXT "03  End with a next step"
+    POSITION 540 1170
+    SIZE 42
+    COLOR #FDE68A
+    DRAW 0.4s
+  END
+  SAY "Three quick tips to make your next diagram easier to follow."
+    DURATION 4s
+END SCENE
+`,
+  },
+  {
+    id: "reels-before-after",
+    title: "Before / after",
+    category: "Reels",
+    description: "Contrast a messy starting point with a clean transformation.",
+    preview: "reels",
+    icon: ArrowLeftRight,
+    script: reelsHeader + `SCENE 1 "Before and after"
+  CREATE beforeCard AS RECTANGLE
+    POSITION 540 660
+    WIDTH 760
+    HEIGHT 360
+    CORNERS 32
+    FILL #2B3546
+    COLOR #64748B
+    TEXT "BEFORE   ·   TOO MUCH AT ONCE"
+    SIZE 38
+    DRAW 0.6s
+  END
+  CREATE afterCard AS RECTANGLE
+    POSITION 540 1130
+    WIDTH 760
+    HEIGHT 360
+    CORNERS 32
+    FILL #123B3A
+    COLOR #34D399
+    TEXT "AFTER   ·   ONE CLEAR STORY"
+    SIZE 38
+    DRAW 0.6s
+  END
+  SAY "Same idea. A clearer story."
+    DURATION 2.5s
+END SCENE
+`,
+  },
+  {
+    id: "reels-product-reveal",
+    title: "Product reveal",
+    category: "Reels",
+    description: "A bold product card with space for a name, promise, and call to action.",
+    preview: "reels",
+    icon: PackageOpen,
+    script: reelsHeader + `SCENE 1 "Product reveal"
+  CREATE glow AS CIRCLE
+    POSITION 540 790
+    RADIUS 235
+    FILL #183B55
+    GRADIENT #2563EB #14B8A6
+    SHADOW 32
+    DRAW 0.8s
+  END
+  CREATE product AS TEXT
+    TEXT "YOUR NEXT BIG THING"
+    POSITION 540 790
+    SIZE 64
+    COLOR #FFFFFF
+    DRAW 0.6s
+  END
+  CREATE promise AS TEXT
+    TEXT "A simpler way to get it done."
+    POSITION 540 1190
+    SIZE 38
+    COLOR #CBD5E1
+    DRAW 0.5s
+  END
+  SAY "Meet the product that makes your next step simpler."
+    DURATION 3.5s
+END SCENE
+`,
+  },
+  {
+    id: "reels-quote-card",
+    title: "Quote card",
+    category: "Reels",
+    description: "A high-contrast quote treatment with an editable author line.",
+    preview: "reels",
+    icon: Quote,
+    script: reelsHeader + `SCENE 1 "Quote card"
+  CREATE quotePanel AS RECTANGLE
+    POSITION 540 930
+    WIDTH 820
+    HEIGHT 780
+    CORNERS 40
+    FILL #172554
+    GRADIENT #172554 #134E4A
+    SHADOW 24
+    COLOR #60A5FA
+    DRAW 0.7s
+  END
+  CREATE quote AS TEXT
+    TEXT "“Great work is a series of small, clear steps.”"
+    POSITION 540 850
+    SIZE 58
+    MAXWIDTH 690
+    COLOR #F8FAFC
+    DRAW 0.6s
+  END
+  CREATE author AS TEXT
+    TEXT "— YOUR NAME"
+    POSITION 540 1220
+    SIZE 32
+    COLOR #A7F3D0
+    DRAW 0.4s
+  END
+  SAY "Great work is a series of small, clear steps."
+    DURATION 3s
+END SCENE
+`,
+  },
+  {
+    id: "reels-countdown",
+    title: "Countdown",
+    category: "Reels",
+    description: "A bold 3–2–1 countdown that ends on an editable call to action.",
+    preview: "reels",
+    icon: Timer,
+    script: reelsHeader + `SCENE 1 "Countdown"
+  CREATE title AS TEXT
+    TEXT "READY?"
+    POSITION 540 430
+    SIZE 60
+    COLOR #CBD5E1
+    DRAW 0.4s
+  END
+  CREATE count3 AS TEXT
+    TEXT "3"
+    POSITION 540 720
+    SIZE 180
+    COLOR #60A5FA
+    DRAW 0.35s
+  END
+  CREATE count2 AS TEXT
+    TEXT "2"
+    POSITION 540 960
+    SIZE 180
+    COLOR #34D399
+    DRAW 0.35s
+  END
+  CREATE count1 AS TEXT
+    TEXT "1"
+    POSITION 540 1200
+    SIZE 180
+    COLOR #FBBF24
+    DRAW 0.35s
+  END
+  SAY "Three. Two. One. Let's go."
+    DURATION 3s
 END SCENE
 `,
   },

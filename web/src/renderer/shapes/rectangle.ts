@@ -5,6 +5,7 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
+import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
 
 export function rectangleBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -55,21 +56,22 @@ export function drawRectangle(
   const label = node.text ?? node.label
   const baseFont = node.style.fontSize ?? DEFAULT_LABEL_SIZE
   const fittedFont = label ? fitTextFontSize(label, baseFont, Math.max(0, box.width - 32), Math.max(0, box.height - 24), Math.max(0, box.width - 32), node.lineHeight ?? 1.3, (line, size) => measureTextWidth(line, size, node.style.fontFamily), 18) : baseFont
+  drawShapeShadow(context, node, box, renderContext.cameraScale, () =>
+    context.roundRect(box.x, box.y, box.width, box.height, corner)
+  , progress)
   context.save()
   context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.clip()
   context.beginPath(); context.rect(box.x, box.y, box.width * progress, box.height); context.clip()
-  if (node.style.fill) {
-    context.fillStyle = node.style.fill
-    context.shadowColor = "rgba(20, 35, 55, 0.14)"
-    context.shadowBlur = 12 / renderContext.cameraScale
-    context.shadowOffsetY = 4 / renderContext.cameraScale
-    context.fillRect(box.x, box.y, box.width, box.height)
-    context.shadowColor = "transparent"
-  }
+  fillShape(context, node, box, renderContext.cameraScale, () =>
+    context.roundRect(box.x, box.y, box.width, box.height, corner),
+    false
+  )
   context.strokeStyle = node.style.color
   context.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
   context.lineJoin = "round"
+  applyShapeShadow(context, node, renderContext.cameraScale)
   context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.stroke()
+  clearShapeShadow(context)
   context.restore()
   drawLabel(
     renderContext,

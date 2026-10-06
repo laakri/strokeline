@@ -37,6 +37,11 @@ import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
 import { colorSwatches } from "@/ui/editor/colorSwatches.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
 import { DiagramStarterPicker } from "@/ui/editor/DiagramStarterPicker.tsx"
+import {
+  CANVAS_PRESETS,
+  canvasPresetValue,
+  replaceCanvasSize,
+} from "@/ui/editor/canvasPresets.ts"
 
 const keywords = new Set([
   ...STATEMENT_KEYWORDS,
@@ -394,12 +399,49 @@ export function ScriptEditor({ onTemplateSelected }: { onTemplateSelected?: () =
     return true
   }
 
+  const selectCanvasPreset = (value: string) => {
+    const preset = CANVAS_PRESETS.find(
+      ({ width, height }) => `${width}x${height}` === value
+    )
+    const editor = view.current
+    if (!preset || !editor) return
+    const source = editor.state.doc.toString()
+    const updated = replaceCanvasSize(source, preset.width, preset.height)
+    if (updated === source) return
+    editor.dispatch({
+      changes: { from: 0, to: editor.state.doc.length, insert: updated },
+      annotations: isolateHistory.of("full"),
+    })
+    useAppStore.getState().compileScript()
+  }
+
   return (
     <div className="grid h-full min-h-0 grid-rows-[40px_minmax(0,1fr)]" aria-label="Script editor">
       <ObjectQuickInsert
         onInsert={insertObjectSnippet}
         getSource={() => view.current?.state.doc.toString() ?? script}
-        toolbarContent={<DiagramStarterPicker onSelect={onTemplateSelected} />}
+        toolbarContent={
+          <>
+            <label className="sr-only" htmlFor="canvas-preset">
+              Canvas preset
+            </label>
+            <select
+              id="canvas-preset"
+              aria-label="Canvas preset"
+              className="h-7 max-w-40 rounded-md border border-border bg-background px-2 text-xs text-foreground"
+              value={canvasPresetValue(script)}
+              onChange={(event) => selectCanvasPreset(event.target.value)}
+            >
+              <option value="">Custom canvas</option>
+              {CANVAS_PRESETS.map(({ label, width, height }) => (
+                <option key={`${width}x${height}`} value={`${width}x${height}`}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <DiagramStarterPicker onSelect={onTemplateSelected} />
+          </>
+        }
       />
       <div ref={container} className="h-full min-h-0" />
     </div>

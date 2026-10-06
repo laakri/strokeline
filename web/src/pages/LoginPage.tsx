@@ -168,6 +168,9 @@ export function LoginPage() {
           <p className="mt-8 text-center text-xs text-muted-foreground">
             No email or password required.
           </p>
+          <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">
+            Workspace usage analytics are collected while you are signed in. Your scripts and exports are not collected.
+          </p>
         </div>
       </section>
     </main>

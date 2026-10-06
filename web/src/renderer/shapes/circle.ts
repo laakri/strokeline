@@ -5,6 +5,7 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
+import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
 
 export function circleBoundingBox(node: SceneNode): BoundingBox {
   const diameter = (node.radius ?? 0) * 2
@@ -32,7 +33,21 @@ export function drawCircle(
   const maxWidth = node.maxWidth ?? radius * 1.25
   const fontSize = text ? fitTextFontSize(text, node.style.fontSize ?? DEFAULT_LABEL_SIZE, maxWidth, radius * 1.2, maxWidth,
     node.lineHeight ?? 1.3, (line, size) => measureTextWidth(line, size, node.style.fontFamily), 18) : node.style.fontSize ?? DEFAULT_LABEL_SIZE
-  if (progress > 0)
+  const bounds = circleBoundingBox(node)
+  drawShapeShadow(renderContext.context, node, bounds, renderContext.cameraScale, () =>
+    renderContext.context.arc(node.position.x, node.position.y, radius, 0, Math.PI * 2)
+  , progress)
+  if (progress > 0) {
+    const context = renderContext.context
+    context.save()
+    context.beginPath()
+    context.rect(bounds.x, bounds.y, bounds.width * progress, bounds.height)
+    context.clip()
+    fillShape(context, node, bounds, renderContext.cameraScale, () =>
+      context.arc(node.position.x, node.position.y, radius, 0, Math.PI * 2),
+      false
+    )
+    applyShapeShadow(context, node, renderContext.cameraScale)
     renderContext.roughCanvas.arc(
       node.position.x,
       node.position.y,
@@ -43,6 +58,9 @@ export function drawCircle(
       false,
       strokeOptions(node, renderContext.cameraScale)
     )
+    clearShapeShadow(context)
+    context.restore()
+  }
   drawLabel(
     renderContext,
     text,

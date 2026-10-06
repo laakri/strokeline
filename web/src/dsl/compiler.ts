@@ -69,7 +69,7 @@ export function compile(ast: ASTScript): CompileResult {
       version: "1.0",
       canvas: ast.canvas,
       background: ast.background ?? (ast.board ? BOARD_BASES[board] ?? theme?.background ?? "#FAFAFA" : theme?.background ?? "#FAFAFA"),
-      ...(ast.subtitles ? { subtitles: true } : {}),
+      ...(ast.subtitles !== undefined ? { subtitles: ast.subtitles } : {}),
       style: {
         mode: ["handdrawn", "chalk", "marker", "pencil", "brush", "clean"].includes(mode) ? mode as SceneDocument["style"]["mode"] : theme?.pen ?? "handdrawn",
         strokeWidth: ast.stroke ?? DEFAULT_STROKE_WIDTH,
@@ -515,6 +515,7 @@ function compileScene(
         duration,
         statement.ease,
         statement.color,
+        statement.arc,
         statement.token.line,
         statement.token.col,
         diagnostics
@@ -860,8 +861,15 @@ function nodeFromCreate(
       (line, fontSize) => measureTextWidth(line, fontSize, fontFamilyName(ast.font))
     )
   }
-  const width = propNumber(props, "WIDTH")
-  const height = propNumber(props, "HEIGHT")
+  const type = statement.type.toLowerCase()
+  const sizeValues = propNumbers(props, "SIZE")
+  const legacyShapeSize =
+    ["rectangle", "diamond", "ellipse"].includes(type) &&
+    sizeValues.length === 2
+      ? sizeValues
+      : undefined
+  const width = propNumber(props, "WIDTH") ?? legacyShapeSize?.[0]
+  const height = propNumber(props, "HEIGHT") ?? legacyShapeSize?.[1]
   const radius = propNumber(props, "RADIUS")
   const opacity = propNumber(props, "OPACITY") ?? 1
   const textBackground = isText ? propString(props, "BACKGROUND") : undefined
@@ -932,6 +940,16 @@ function nodeFromCreate(
   const style = {
     color: propString(props, "COLOR") ?? themeInk(ast),
     fill: propString(props, "FILL"),
+    ...(props.some((prop) => prop.key === "GRADIENT")
+      ? {
+          gradient: propValues(props, "GRADIENT").length === 2
+            ? propValues(props, "GRADIENT").map(String) as [string, string]
+            : undefined,
+        }
+      : {}),
+    ...(props.some((prop) => prop.key === "SHADOW")
+      ? { shadow: propNumber(props, "SHADOW") ?? 12 }
+      : {}),
     strokeWidth:
       propNumber(props, "STROKE") ?? ast.stroke ?? DEFAULT_STROKE_WIDTH,
     fontSize: resolvedFontSize,
@@ -980,7 +998,7 @@ function nodeFromCreate(
     ...(fitProperty.size ? { fit: fitProperty.size } : {}),
     ...(anchorValue && anchor ? { anchor: anchor as TextAnchor } : {}),
     radius,
-    ...(statement.type.toLowerCase() === "rectangle" ? { cornerRadius: propNumber(props, "CORNERS") ?? 16 } : {}),
+    ...(type === "rectangle" ? { cornerRadius: propNumber(props, "CORNERS") ?? 16 } : {}),
     rotation: 0,
     opacity,
     style,
@@ -1356,6 +1374,20 @@ function cloneWithOverrides(
         fontSize: fontSize ?? clone.style.fontSize,
       },
     }
+    const gradient = propValues(props, "GRADIENT")
+    const shadow = propNumber(props, "SHADOW")
+    if (gradient.length === 2 || shadow !== undefined || props.some((prop) => prop.key === "SHADOW")) {
+      clone = {
+        ...clone,
+        style: {
+          ...clone.style,
+          ...(gradient.length === 2 ? { gradient: gradient.map(String) as [string, string] } : {}),
+          ...(shadow !== undefined || props.some((prop) => prop.key === "SHADOW")
+            ? { shadow: shadow ?? 12 }
+            : {}),
+        },
+      }
+    }
   }
   const text = propString(props, "TEXT")
   const label = propString(props, "LABEL")
@@ -1408,6 +1440,7 @@ function animationFrom(
   duration: number,
   easeValue: string | undefined,
   colorValue: string | number | undefined,
+  arcValue: number | undefined,
   line: number,
   col: number,
   diagnostics: Diagnostic[]
@@ -1419,6 +1452,7 @@ function animationFrom(
       to: {
         position: { x: Number(values[0]) || 0, y: Number(values[1]) || 0 },
       },
+      ...(arcValue !== undefined ? { arc: arcValue } : {}),
       duration,
       ease,
     }
@@ -1433,6 +1467,20 @@ function animationFrom(
     return {
       verb: "fade",
       to: { opacity: Number(values[0]) || 0 },
+      duration,
+      ease,
+    }
+  if (verb === "OPACITY")
+    return {
+      verb: "opacity",
+      to: { opacity: Number(values[0]) },
+      duration,
+      ease,
+    }
+  if (verb === "COLOR")
+    return {
+      verb: "color",
+      color: String(values[0] ?? ""),
       duration,
       ease,
     }
@@ -1645,6 +1693,9 @@ function propNumbers(props: ASTProperty[], key: string): number[] {
       ?.values.filter((value): value is number => typeof value === "number") ??
     []
   )
+}
+function propValues(props: ASTProperty[], key: string): ASTValue[] {
+  return props.find((prop) => prop.key === key)?.values ?? []
 }
 
 function fitSizeProperty(props: ASTProperty[]): {

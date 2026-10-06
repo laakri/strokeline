@@ -6,19 +6,23 @@ import {
 
 export function drawWatermark(
   context: CanvasRenderingContext2D,
-  entitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS
+  entitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
+  logicalCanvas = { width: context.canvas.width, height: context.canvas.height },
+  devicePixelRatio = context.canvas.width / logicalCanvas.width
 ): void {
   if (!shouldShowWatermark(entitlements)) return
 
-  const canvas = context.canvas
-  const fontSize = Math.max(12, Math.min(18, canvas.width * 0.009))
+  const isVertical = logicalCanvas.height > logicalCanvas.width
+  const fontSize = isVertical
+    ? Math.max(20, Math.min(28, logicalCanvas.width * 0.026))
+    : Math.max(12, Math.min(18, logicalCanvas.width * 0.009))
   const iconSize = fontSize * 0.95
   const paddingX = fontSize * 0.65
   const badgeHeight = fontSize * 2
   const margin = Math.max(12, fontSize * 0.85)
 
   context.save()
-  context.setTransform(1, 0, 0, 1, 0, 0)
+  context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
   context.globalAlpha = 1
   context.font = `600 ${fontSize}px Inter, Arial, sans-serif`
   context.textAlign = "left"
@@ -27,8 +31,8 @@ export function drawWatermark(
   const label = "Made with Strokeline"
   const labelWidth = context.measureText(label).width
   const badgeWidth = paddingX * 2 + iconSize + fontSize * 0.55 + labelWidth
-  const x = canvas.width - badgeWidth - margin
-  const y = canvas.height - badgeHeight - margin
+  const x = logicalCanvas.width - badgeWidth - margin
+  const y = logicalCanvas.height - badgeHeight - margin
   const radius = badgeHeight / 2
 
   context.beginPath()

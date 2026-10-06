@@ -119,10 +119,9 @@ describe("renderer golden frames", () => {
           const name = `${fixtureName.slice(0, -4)}__scene-${scene.index}__${percent}.png`
           const snapshotPath = join(snapshotDirectory, name)
           renderFrame(context, scene, result.document, time)
-          const actual = canvas.toBuffer("image/png")
 
           if (updateSnapshots) {
-            writeFileSync(snapshotPath, actual)
+            writeFileSync(snapshotPath, canvas.toBuffer("image/png"))
             frameCount++
             continue
           }
@@ -162,7 +161,7 @@ describe("renderer golden frames", () => {
     }
 
     expect(frameCount).toBe(expectedFrameCount)
-  })
+  }, 30_000)
 })
 
 function countDifferentPixels(

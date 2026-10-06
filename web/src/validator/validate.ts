@@ -1,5 +1,6 @@
 import { error, warning, type Diagnostic } from "@/dsl/diagnostics.ts"
 import { DEFAULT_TEXT_SIZE } from "@/defaults/defaults.ts"
+import { overlapsReelsUi } from "@/reels/reels.ts"
 import { layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { layoutTable, TABLE_CELL_PADDING } from "@/lib/tableLayout.ts"
@@ -92,6 +93,25 @@ export function validate(document: SceneDocument): Diagnostic[] {
               location(op, "OPACITY").col
             )
           )
+        const nodeSourceProperties =
+          (op.node.data?._sourceProperties as string[] | undefined) ?? []
+        const supportsShapePaint = ["circle", "ellipse", "rectangle", "diamond"].includes(op.node.type)
+        if (
+          nodeSourceProperties.includes("GRADIENT") &&
+          (!supportsShapePaint ||
+            !op.node.style.gradient ||
+            op.node.style.gradient.length !== 2 ||
+            op.node.style.gradient.some((color) => !parseHexColor(color)))
+        )
+          diagnostics.push(error("E_BAD_RANGE", `GRADIENT for "${op.node.id}" needs exactly two #RGB or #RRGGBB colors on a circle, ellipse, rectangle, or diamond.`, location(op, "GRADIENT").line, location(op, "GRADIENT").col))
+        if (
+          op.node.style.shadow !== undefined &&
+          (!supportsShapePaint ||
+            !Number.isFinite(op.node.style.shadow) ||
+            op.node.style.shadow < 0 ||
+            op.node.style.shadow > 100)
+        )
+          diagnostics.push(error("E_BAD_RANGE", `SHADOW for "${op.node.id}" must be between 0 and 100 on a circle, ellipse, rectangle, or diamond.`, location(op, "SHADOW").line, location(op, "SHADOW").col))
         if (op.node.maxWidth !== undefined && op.node.maxWidth <= 0)
           diagnostics.push(
             error(
@@ -349,6 +369,25 @@ export function validate(document: SceneDocument): Diagnostic[] {
             )
           )
         if (
+          op.anim.verb === "opacity" &&
+          (op.anim.to?.opacity === undefined ||
+            !Number.isFinite(op.anim.to.opacity) ||
+            op.anim.to.opacity < 0 ||
+            op.anim.to.opacity > 1)
+        )
+          diagnostics.push(error("E_BAD_RANGE", "Animated OPACITY must be between 0 and 1.", op.source?.line ?? 1, op.source?.col ?? 1))
+        if (
+          op.anim.verb === "color" &&
+          (!op.anim.color || !parseHexColor(op.anim.color))
+        )
+          diagnostics.push(error("E_BAD_RANGE", "Animated COLOR must be a #RGB or #RRGGBB hex color.", op.source?.line ?? 1, op.source?.col ?? 1))
+        if (
+          op.anim.verb === "move" &&
+          op.anim.arc !== undefined &&
+          (!Number.isFinite(op.anim.arc) || Math.abs(op.anim.arc) > 2000)
+        )
+          diagnostics.push(error("E_BAD_RANGE", "MOVE ARC must be a finite value between -2000 and 2000.", op.source?.line ?? 1, op.source?.col ?? 1))
+        if (
           op.anim.verb === "scale" &&
           (!op.anim.to?.scale || op.anim.to.scale <= 0)
         )
@@ -458,6 +497,8 @@ function validateSceneWarnings(
   document: SceneDocument,
   diagnostics: Diagnostic[]
 ): void {
+  const safeMarginX = document.canvas.width / 16
+  const safeMarginY = document.canvas.height * (100 / 1080)
   const creates = scene.ops.filter(
     (op): op is Extract<TimelineOp, { kind: "create" }> =>
       op.kind === "create" && op.node.data?.layoutContainer !== true
@@ -510,7 +551,22 @@ function validateSceneWarnings(
         const bounds = { x: x + TABLE_CELL_PADDING, y: y + (rowHeight - textHeight) / 2, width: Math.min(Math.max(0, cellWidth - TABLE_CELL_PADDING * 2), layout.text.width), height: textHeight }
         textEntries.push({ op: cellOp, text, bounds, fontSize: layout.fontSize, end })
         const source = rowIndex === 0 ? locations?.COLUMNS ?? op.source ?? { line: 1, col: 1 } : rowLocations?.[rowIndex - 1] ?? op.source ?? { line: 1, col: 1 }
-        if (bounds.x < 120 || bounds.x + bounds.width > 1800 || bounds.y < 100 || bounds.y + bounds.height > 980)
+        if (overlapsReelsUi(bounds, document.canvas))
+          diagnostics.push(
+            warning(
+              "W_REELS_UI_OVERLAP",
+              `Table cell "${cellId}" overlaps a Reels, TikTok, or Shorts UI safe zone.`,
+              source.line,
+              source.col,
+              "Move the table text below 250px, above the bottom 400px, and left of the rightmost 120px."
+            )
+          )
+        if (
+          bounds.x < safeMarginX ||
+          bounds.x + bounds.width > document.canvas.width - safeMarginX ||
+          bounds.y < safeMarginY ||
+          bounds.y + bounds.height > document.canvas.height - safeMarginY
+        )
           diagnostics.push(warning("W_TEXT_OFF_SAFE", `Table cell "${cellId}" extends outside the safe area.`, source.line, source.col, "Move or resize the table inside x=120..1800 and y=100..980."))
         if (!layout.fits)
           diagnostics.push(warning("W_TEXT_TOO_SMALL", `Table cell "${cellId}" is clipped at the minimum 18px text size.`, source.line, source.col, "Increase SIZE or shorten the cell text."))
@@ -568,10 +624,10 @@ function validateSceneWarnings(
     const source = location(op, op.node.text ? "TEXT" : "LABEL")
 
     if (
-      bounds.x < 120 ||
-      bounds.x + bounds.width > 1800 ||
-      bounds.y < 100 ||
-      bounds.y + bounds.height > 980
+      bounds.x < safeMarginX ||
+      bounds.x + bounds.width > document.canvas.width - safeMarginX ||
+      bounds.y < safeMarginY ||
+      bounds.y + bounds.height > document.canvas.height - safeMarginY
     ) {
       diagnostics.push(
         warning(
@@ -579,7 +635,18 @@ function validateSceneWarnings(
           `Text "${op.node.id}" extends outside the safe area.`,
           source.line,
           source.col,
-          "Move it inside x=120..1800 and y=100..980."
+          `Keep it inside x=${Math.round(safeMarginX)}..${Math.round(document.canvas.width - safeMarginX)} and y=${Math.round(safeMarginY)}..${Math.round(document.canvas.height - safeMarginY)}.`
+        )
+      )
+    }
+    if (overlapsReelsUi(bounds, document.canvas)) {
+      diagnostics.push(
+        warning(
+          "W_REELS_UI_OVERLAP",
+          `Text "${op.node.id}" overlaps a Reels, TikTok, or Shorts UI safe zone.`,
+          source.line,
+          source.col,
+          "Move text below 250px, above the bottom 400px, and left of the rightmost 120px."
         )
       )
     }

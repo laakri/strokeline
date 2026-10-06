@@ -11,3 +11,16 @@ export function frameCountForDuration(duration: number, fps: number): number {
 export function frameTimestamp(frameIndex: number, fps: number): number {
   return frameIndex / fps
 }
+
+export function pingPongFrameTimes(duration: number, fps: number): number[] {
+  const frameCount = frameCountForDuration(duration, fps)
+  const forward = Array.from(
+    { length: frameCount + 1 },
+    (_, frame) => Math.min(duration, frameTimestamp(frame, fps))
+  )
+  const reverse = Array.from(
+    { length: Math.max(0, frameCount - 1) },
+    (_, index) => frameTimestamp(frameCount - index - 1, fps)
+  )
+  return [...forward, ...reverse]
+}

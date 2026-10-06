@@ -5,7 +5,7 @@ import { useAppStore } from "@/app/store.ts"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import { DIAGRAM_TEMPLATES, type DiagramPreviewKind, type DiagramTemplateCategory } from "@/templates/diagramTemplates.ts"
 
-const categories: Array<"All" | DiagramTemplateCategory> = ["All", "UML", "Agile", "Process"]
+const categories: Array<"All" | DiagramTemplateCategory> = ["All", "Reels", "UML", "Agile", "Process"]
 
 function DiagramThumbnail({ kind }: { kind: DiagramPreviewKind }) {
   const ink = "#334155"
@@ -63,6 +63,17 @@ function DiagramThumbnail({ kind }: { kind: DiagramPreviewKind }) {
         </g>)}
         <path d="M100 80h19m82 0h19" stroke={ink} strokeWidth="2" />
         <circle cx="108" cy="80" r="3" fill={ink} /><circle cx="210" cy="80" r="3" fill={ink} />
+      </>}
+      {kind === "reels" && <>
+        <rect x="119" y="5" width="82" height="150" rx="15" fill="#101827" stroke="#475569" strokeWidth="3" />
+        <rect x="126" y="17" width="68" height="126" rx="9" fill="#172554" />
+        <rect x="126" y="17" width="68" height="22" rx="8" fill="#F43F5E" fillOpacity="0.35" />
+        <rect x="126" y="113" width="68" height="30" rx="5" fill="#F43F5E" fillOpacity="0.35" />
+        <rect x="139" y="53" width="42" height="8" rx="4" fill="#F8FAFC" />
+        <rect x="134" y="69" width="52" height="7" rx="3" fill="#34D399" />
+        <rect x="137" y="83" width="46" height="7" rx="3" fill="#BFDBFE" />
+        <rect x="132" y="97" width="56" height="7" rx="3" fill="#FDE68A" />
+        <circle cx="160" cy="11" r="2" fill="#94A3B8" />
       </>}
     </svg>
   )
@@ -177,7 +188,7 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
                     style={{ animationDelay: `${index * 40}ms` }}
                     className="diagram-template-card group overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <div className="overflow-hidden border-b border-border/70 bg-slate-50 transition-transform duration-300 group-hover:scale-[1.015]">
+                    <div className={`overflow-hidden border-b border-border/70 transition-transform duration-300 group-hover:scale-[1.015] ${template.category === "Reels" ? "bg-slate-950" : "bg-slate-50"}`}>
                       <DiagramThumbnail kind={template.preview} />
                     </div>
                     <div className="p-4">

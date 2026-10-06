@@ -4,6 +4,7 @@ import type { RenderContext } from "@/renderer/handdrawn.ts"
 import { drawLabel } from "@/renderer/shapes/label.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
+import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
 
 export function diamondBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0, height = node.size?.height ?? 0
@@ -17,18 +18,25 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
     { x: node.position.x, y: box.y }, { x: box.x + box.width, y: node.position.y },
     { x: node.position.x, y: box.y + box.height }, { x: box.x, y: node.position.y },
   ]
+  drawShapeShadow(ctx, node, box, render.cameraScale, () => {
+    ctx.moveTo(points[0]!.x, points[0]!.y)
+    for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
+    ctx.closePath()
+  }, progress)
   ctx.save()
   ctx.beginPath(); ctx.rect(box.x, box.y, box.width * progress, box.height); ctx.clip()
   ctx.beginPath(); ctx.moveTo(points[0]!.x, points[0]!.y)
   for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
   ctx.closePath()
-  if (node.style.fill) {
-    ctx.fillStyle = node.style.fill; ctx.shadowColor = "rgba(20,35,55,.14)"
-    ctx.shadowBlur = 12 / render.cameraScale; ctx.shadowOffsetY = 4 / render.cameraScale; ctx.fill()
-  }
-  ctx.shadowColor = "transparent"; ctx.strokeStyle = node.style.color
+  fillShape(ctx, node, box, render.cameraScale, () => {
+    ctx.moveTo(points[0]!.x, points[0]!.y)
+    for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
+    ctx.closePath()
+  }, false)
+  applyShapeShadow(ctx, node, render.cameraScale)
+  ctx.strokeStyle = node.style.color
   ctx.lineWidth = Math.max(1, node.style.strokeWidth / render.cameraScale)
-  ctx.lineJoin = "round"; ctx.stroke(); ctx.restore()
+  ctx.lineJoin = "round"; ctx.stroke(); clearShapeShadow(ctx); ctx.restore()
 
   const text = node.text ?? node.label
   const maxWidth = box.width * 0.58, maxHeight = box.height * 0.42

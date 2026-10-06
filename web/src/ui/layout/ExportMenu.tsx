@@ -16,6 +16,11 @@ import {
 } from "@/export/exporters.ts"
 import { Button } from "@/ui/button"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
+import {
+  estimateDocumentDuration,
+  exceedsDurationPreset,
+  type ReelsDurationPreset,
+} from "@/reels/reels.ts"
 
 type ExportKind = "video" | "gif" | "png" | "srt" | "vtt"
 
@@ -38,6 +43,8 @@ export function ExportMenu() {
   const [exportMessage, setExportMessage] = useState("")
   const [resolution, setResolution] = useState<VideoResolution>("1080p")
   const [fps, setFps] = useState<30 | 60>(30)
+  const [durationPreset, setDurationPreset] = useState<ReelsDurationPreset>(30)
+  const [seamlessLoop, setSeamlessLoop] = useState(false)
   const [includeNarration, setIncludeNarration] = useState(true)
   const [videoFormatProbe, setVideoFormatProbe] = useState<{
     key: string
@@ -62,6 +69,8 @@ export function ExportMenu() {
         : undefined
   const exporting = busy !== null
   const hasNarration = !!compiledIR?.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
+  const scriptDuration = compiledIR ? estimateDocumentDuration(compiledIR) : 0
+  const exceedsTarget = exceedsDurationPreset(scriptDuration, durationPreset)
   const videoFormatKey = `${compiledIR?.canvas.width ?? 0}x${compiledIR?.canvas.height ?? 0}:${resolution}:${fps}:${hasNarration && includeNarration ? "audio" : "silent"}`
   const videoFormat: VideoExportFormat | "checking" =
     videoFormatProbe?.key === videoFormatKey
@@ -71,14 +80,13 @@ export function ExportMenu() {
   useEffect(() => {
     if (!open || !compiledIR) return
     let current = true
-    if (hasNarration && includeNarration) {
-      setVideoFormatProbe({ key: videoFormatKey, format: "webm" })
-      return () => {
-        current = false
-      }
-    }
     const { width, height } = videoExportDimensions(compiledIR, resolution)
-    void preferredVideoExportFormat(width, height, fps).then((format) => {
+    void preferredVideoExportFormat(
+      width,
+      height,
+      fps,
+      hasNarration && includeNarration
+    ).then((format) => {
       if (current) setVideoFormatProbe({ key: videoFormatKey, format })
     })
     return () => {
@@ -153,9 +161,10 @@ export function ExportMenu() {
       } else if (kind === "gif") {
         await exportGif(state.compiledIR, {
           signal: controller.signal,
+          seamlessLoop,
           onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
         })
-        trackProductEvent({ name: "export_completed", properties: { format: "gif" } })
+        trackProductEvent({ name: "export_completed", properties: { format: "gif", seamless_loop: seamlessLoop } })
       } else {
         await exportPng(state.compiledIR, activeSceneIndex, player.elapsed)
         trackProductEvent({ name: "export_completed", properties: { format: "png" } })
@@ -315,6 +324,26 @@ export function ExportMenu() {
                 </select>
               </label>
             </div>
+            <label className="grid gap-1 border-b border-border px-3 py-2 text-xs text-muted-foreground">
+              Duration target
+              <select
+                aria-label="Duration target"
+                value={durationPreset}
+                onChange={(event) =>
+                  setDurationPreset(Number(event.target.value) as ReelsDurationPreset)
+                }
+                className="h-8 rounded-md border border-border bg-background px-2 text-sm text-foreground"
+              >
+                {[7, 15, 30, 60].map((seconds) => (
+                  <option key={seconds} value={seconds}>{seconds} seconds</option>
+                ))}
+              </select>
+              {exceedsTarget && (
+                <span role="status" className="text-amber-600">
+                  Script is {scriptDuration.toFixed(1)}s, longer than the {durationPreset}s target.
+                </span>
+              )}
+            </label>
             {hasNarration && (
               <label className="flex items-center gap-2 border-b border-border px-3 py-2 text-sm">
                 <input
@@ -325,6 +354,14 @@ export function ExportMenu() {
                 Include Kokoro narration in video
               </label>
             )}
+            <label className="flex items-center gap-2 border-b border-border px-3 py-2 text-sm">
+              <input
+                type="checkbox"
+                checked={seamlessLoop}
+                onChange={(event) => setSeamlessLoop(event.target.checked)}
+              />
+              Seamless ping-pong loop for GIF
+            </label>
             {items.map((item) => {
               const itemDisabled = !canExport
               return (

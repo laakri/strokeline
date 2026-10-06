@@ -378,7 +378,7 @@ function fixMechanicalProperties(
     const animateVerb = word(updatedTokens[2])
     if (
       first === "ANIMATE" &&
-      ["MOVE", "SCALE", "ROTATE"].includes(animateVerb) &&
+      ["MOVE", "SCALE", "ROTATE", "OPACITY", "COLOR"].includes(animateVerb) &&
       updatedTokens.length > 3 &&
       !updatedTokens.some((token) => word(token) === "TO")
     ) {

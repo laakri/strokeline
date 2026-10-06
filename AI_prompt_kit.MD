@@ -43,18 +43,36 @@ Use the syntax documented in this kit; do not invent keywords or property values
 | Camera          | `CAMERA ZOOM\|PAN\|RESET`                                  | no            |
 | Narration       | `SAY "text"`                                               | no            |
 
+For a vertical script, each `SAY` cue is also rendered as a large, bold,
+word-highlighted caption by default. Toggle captions and choose Bold, Outline,
+or Coral highlight in the preview controls; these are UI preferences, not DSL
+keywords. Existing `SUBTITLES on|off` remains available as the script default.
+
 ### Properties (one `KEYWORD value` per line, indented)
+
+`CANVAS width height` accepts any positive dimensions. Presets available in the
+editor include `CANVAS 1080 1920` (Reels/9:16), `CANVAS 1080 1350` (4:5),
+`CANVAS 1080 1080` (1:1), and `CANVAS 1920 1080` (landscape/16:9).
+For phone-first videos, use a vertical preset and keep important text out of
+the top 250px, bottom 400px, and rightmost 120px, where social-app controls may
+cover it. The editor's Safe zones overlay previews those regions.
+When asked for a Reels/Shorts/TikTok video, use the Reels template starters
+(Hook + 3 tips, Before / after, Product reveal, Quote card, or Countdown) or
+compose a similar short vertical story. Keep titles and essential copy inside
+the safe area and use concise `SAY` cues for spoken, word-highlighted captions.
 
 | Property                                                       | On                                           | Notes                                                                                     |
 | -------------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `POSITION x y`                                                 | TEXT, CIRCLE, ELLIPSE, RECTANGLE, DIAMOND, ICON, TABLE, charts | Always the CENTER                                                              |
 | `FROM x y` and `TO x y`                                        | LINE                                         | Two SEPARATE lines. Never `FROM 1 1 TO 2 2` on one line (only `INK ARROW` is single-line) |
-| `SIZE n`                                                       | TEXT, ICON                                   | TEXT: font size. TABLE and charts: `SIZE w h`                                             |
-| `WIDTH n` / `HEIGHT n`                                         | RECTANGLE, DIAMOND, ELLIPSE, IMAGE           | Size. On INK, `WIDTH` is stroke thickness (trap)                                          |
+| `SIZE n`                                                       | TEXT, ICON                                   | TEXT: font size. TABLE and charts: `SIZE w h`; legacy dimensional shapes also accept `SIZE w h` |
+| `WIDTH n` / `HEIGHT n`                                         | RECTANGLE, DIAMOND, ELLIPSE, IMAGE           | Preferred shape dimensions (legacy `SIZE w h` is also accepted). On INK, `WIDTH` is stroke thickness (trap) |
 | `CORNERS n`                                                    | RECTANGLE                                     | Rounded corner radius in pixels; defaults to 16                                           |
 | `RADIUS n`                                                     | CIRCLE                                       |                                                                                           |
 | `COLOR #RRGGBB`                                                | all                                          | Outline, or text color                                                                    |
 | `FILL #RRGGBB`                                                 | RECTANGLE, DIAMOND, CIRCLE, ELLIPSE           | Hides what is under it; shape labels are centered and auto-fit                            |
+| `GRADIENT #top #bottom`                                        | RECTANGLE, DIAMOND, CIRCLE, ELLIPSE           | Vertical two-color fill; overrides FILL                                                  |
+| `SHADOW` / `SHADOW blur`                                       | filled shapes                                 | Soft shadow; default blur is 12                                                          |
 | `STROKE n`                                                     | shapes, LINE                                 | Outline thickness                                                                         |
 | `OPACITY 0..1`                                                 | all                                          | Ghosts, shadows                                                                           |
 | `TEXT "..."`                                                   | TEXT; label inside RECTANGLE or CIRCLE       | Prefer the built-in label to a separate overlapping TEXT                                  |
@@ -143,11 +161,23 @@ ANIMATE id MOVE TO 900 400
   DURATION 1s
   EASE easeOut
 
+ANIMATE id MOVE TO 900 400 ARC 120
+  DURATION 1s
+  EASE easeInOut
+
 ANIMATE id SCALE TO 1.3
   DURATION 0.5s
   EASE bounce
 
 ANIMATE id ROTATE TO 10
+  DURATION 0.5s
+  EASE easeInOut
+
+ANIMATE id OPACITY TO 0.35
+  DURATION 0.5s
+  EASE easeInOut
+
+ANIMATE id COLOR TO #2E86AB
   DURATION 0.5s
   EASE easeInOut
 
@@ -183,13 +213,33 @@ SAY "One spoken line, at most 85 characters."
   TONE explain
 ```
 
-`ANIMATE` verbs: `MOVE TO x y`, `SCALE TO n`, `FADE`, `ROTATE TO deg`, `HIGHLIGHT`. Eases: `linear easeIn easeOut easeInOut bounce`.
+`ANIMATE` verbs: `MOVE TO x y [ARC n]`, `SCALE TO n`, `FADE`, `OPACITY TO 0..1`, `COLOR TO #hex`, `ROTATE TO deg`, `HIGHLIGHT`. Add `DURATION` and `EASE` as needed. `ARC n` bends MOVE along a quadratic curve; positive and negative values bend in opposite directions. Eases: `linear easeIn easeOut easeInOut bounce`.
 
 `PARALLEL` starts all children together and lasts as long as its longest child. Children may be `CREATE`, `INK`, `INK ARROW`, `ARROW`, `ANIMATE`, `DELETE`, `DUPLICATE`, `CAMERA`. Never put `WAIT` or `SAY` inside. Inside it, `CREATE` and `INK` still close with `END`; `ARROW`, `ANIMATE`, `DELETE`, `DUPLICATE` still do not.
 
 Layering: later objects draw on top of earlier ones. Order: backgrounds, containers, connectors, text, annotations.
 
 ### Diagram layout and connector craft
+
+### Reels and vertical video
+
+Choose `CANVAS 1080 1920` for 9:16, `CANVAS 1080 1350` for 4:5, or
+`CANVAS 1080 1080` for square. Reels starters in the template picker include
+Hook + 3 tips, Before / after, Product reveal, Quote card, and Countdown.
+Keep titles below y=250, captions above y=1520, and essential copy left of
+x=960 on a 1080x1920 canvas. Add narration/captions with the existing syntax:
+
+```
+SAY "One short spoken line."
+  DURATION 3s
+  TONE hook
+```
+
+The export panel offers duration targets of 7s, 15s, 30s, and 60s and warns
+when the script exceeds the selected target; it does not truncate the script.
+Choose 30 or 60 fps. MP4 with mixed narration audio is used when H.264/AAC is
+supported, otherwise the exporter falls back to WebM. GIF can be exported as a
+seamless ping-pong loop.
 
 For architecture, process, and dependency diagrams, organize the canvas before adding detail:
 
@@ -294,7 +344,7 @@ Use the header settings that fit the requested look. You may choose one `THEME` 
 | B. Hub and spoke     | Hub at (960,540), four satellites at (400,320), (1520,320), (400,760), (1520,760). Connect with `ARROW`                                      |
 | C. Timeline strip    | `LINE` at y=620 from x=240 to x=1680. Stops at x=240, 600, 960, 1320, 1680. Labels alternate above (y=540) and below (y=700)                 |
 | D. Hero and callouts | Big icon or drawing at (960,520) size 240. Callouts at x=420 and x=1500, each with an `INK ARROW` toward the hero                            |
-| E. Before and after  | Object on the left at x=480. Later `ANIMATE MOVE` it to x=1440 and change it (delete and re-create a changed version)                        |
+| E. Before and after  | Object on the left at x=480. Animate it to x=1440; use `OPACITY TO` or `COLOR TO` for a smooth change without deleting and recreating it |
 | F. Table and insight | `TABLE` centered at (960,470) size 1500 x 330. Takeaway text at y=840 and a small drawing at the right                                       |
 | G. Zoom ladder       | One dot at (960,540), then concentric `CIRCLE` rings radius 120, 220, 320, 420 with labels outside                                           |
 | H. Graph             | Axes with `INK`: vertical x=300 from y=380 to y=860, horizontal y=860 from x=300 to x=1000. Curve or bars between. Icon or text on the right |
@@ -352,7 +402,7 @@ The scene ends when its timeline ends; narration is cut at `END SCENE`, so finis
 
 ## 7. MOTION COOKBOOK (copy these patterns)
 
-- **Label swap:** `DELETE oldLabel` (0.4s), then `CREATE newLabel ... END`. Keep one caption slot at the same position.
+- **Label swap:** animate existing content with `ANIMATE id OPACITY TO 0`, update/reveal the replacement, and animate it with `OPACITY TO 1`; use `COLOR TO #hex` to recolor without deleting and recreating.
 - **Traveling object:** create a dot, `ANIMATE dot MOVE TO` along a path in several consecutive steps (`easeOut`).
 - **Drop-in:** create the object at y minus 200, then `ANIMATE MOVE TO` the final spot with `bounce`.
 - **Transformation:** `DELETE` the old drawing, `CREATE` the new one in the same place with a different color or shape.
@@ -360,7 +410,7 @@ The scene ends when its timeline ends; narration is cut at `END SCENE`, so finis
 - **Emphasis:** `SCALE TO 1.3` with `bounce`, or `HIGHLIGHT` with a warm color.
 - **Cascade:** `DUPLICATE` one item into a row inside a `PARALLEL`.
 - **Detail shot:** `CAMERA ZOOM` with `TARGET`, hold with `WAIT`, then `CAMERA RESET`. Every `ZOOM` or `PAN` is followed by a `RESET` in the same scene. Do not create new objects while a `TARGET` zoom is active.
-- **Composite objects** (a car, a face) have no shared handle: to move one, `ANIMATE` every part in one `PARALLEL` with the same `DURATION`, `EASE`, and x/y shift.
+- **Composite objects** (a car, a face): place their parts inside `GROUP id ... END`, then animate the group ID with MOVE, SCALE, ROTATE, or FADE to transform its children together.
 
 Draw the important thing LAST and SLOWEST. Reveal groups in `PARALLEL` so it does not drip.
 

@@ -5,7 +5,11 @@ import { drawScene } from "@/renderer/draw.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { SequencePlayer } from "@/player/usePlayer.ts"
 import { Timeline } from "@/timeline/timeline.ts"
-import { frameCountForDuration, frameTimestamp } from "@/export/frameTiming.ts"
+import {
+  frameCountForDuration,
+  frameTimestamp,
+  pingPongFrameTimes,
+} from "@/export/frameTiming.ts"
 import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
 import { getKokoroState, generateKokoroAudio, subscribeKokoro } from "@/player/kokoro.ts"
 import { readReaderVolume } from "@/player/readerVolume.ts"
@@ -13,8 +17,13 @@ import {
   FREE_BRANDING_ENTITLEMENTS,
   type BrandingEntitlements,
 } from "@/branding/entitlements.ts"
+import { captionStyleFromStorage, isVerticalCanvas } from "@/reels/reels.ts"
 
-function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; readAlong: boolean } {
+function exportSubtitleSettings(document: SceneDocument): {
+  subtitles: boolean
+  readAlong: boolean
+  captionStyle: ReturnType<typeof captionStyleFromStorage>
+} {
   const readSetting = (key: string): boolean | null => {
     try {
       const value = localStorage.getItem(key)
@@ -24,8 +33,13 @@ function exportSubtitleSettings(document: SceneDocument): { subtitles: boolean; 
     }
   }
   return {
-    subtitles: readSetting("strokeline.subtitles.v1") ?? (document.subtitles ?? false),
+    subtitles: readSetting("strokeline.subtitles.v1") ??
+      (document.subtitles ?? (
+        isVerticalCanvas(document.canvas) &&
+        document.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
+      )),
     readAlong: readSetting("strokeline.voice.v1") ?? false,
+    captionStyle: captionStyleFromStorage(),
   }
 }
 
@@ -70,6 +84,7 @@ export interface ExportOptions {
   scale?: number
   resolution?: VideoResolution
   includeNarration?: boolean
+  seamlessLoop?: boolean
   brandingEntitlements?: BrandingEntitlements
   signal?: AbortSignal
   onProgress?: (fraction: number) => void
@@ -91,7 +106,17 @@ export function videoExportDimensions(
   document: SceneDocument,
   resolution: VideoResolution
 ) {
-  const height = resolution === "720p" ? 720 : 1080
+  const target = resolution === "720p" ? 720 : 1080
+  if (document.canvas.height > document.canvas.width) {
+    const width = target
+    const height = Math.max(
+      2,
+      Math.round((document.canvas.height * width) / document.canvas.width / 2) *
+        2
+    )
+    return { width, height }
+  }
+  const height = target
   const width = Math.max(
     2,
     Math.round((document.canvas.width * height) / document.canvas.height / 2) *
@@ -103,16 +128,25 @@ export function videoExportDimensions(
 export async function preferredVideoExportFormat(
   width: number,
   height: number,
-  fps: number
+  fps: number,
+  includeAudio = false
 ): Promise<VideoExportFormat> {
   if (typeof VideoEncoder === "undefined") return "webm"
   try {
-    const { getFirstEncodableVideoCodec } = await import("mediabunny")
+    const {
+      getFirstEncodableAudioCodec,
+      getFirstEncodableVideoCodec,
+    } = await import("mediabunny")
     const codec = await getFirstEncodableVideoCodec(["avc"], {
       width,
       height,
       frameRate: fps,
     })
+    if (
+      codec === "avc" &&
+      includeAudio &&
+      (await getFirstEncodableAudioCodec(["aac"])) !== "aac"
+    ) return "webm"
     return codec === "avc" ? "mp4" : "webm"
   } catch {
     return "webm"
@@ -147,7 +181,8 @@ export async function exportPng(
     document.style.hand,
     subtitleSettings.subtitles,
     subtitleSettings.readAlong,
-    brandingEntitlements
+    brandingEntitlements,
+    subtitleSettings.captionStyle
   )
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/png")
@@ -163,6 +198,7 @@ export async function exportGif(
   const {
     fps = 12,
     scale = 0.5,
+    seamlessLoop = false,
     signal,
     onProgress,
     brandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
@@ -176,6 +212,43 @@ export async function exportGif(
   if (!context) return
   const subtitleSettings = exportSubtitleSettings(document)
   const timelines = sceneTimelines(document)
+  if (seamlessLoop) {
+    const sequence = createSequenceRenderer(
+      document,
+      timelines,
+      width,
+      height,
+      brandingEntitlements
+    )
+    try {
+      const times = pingPongFrameTimes(sequence.player.duration, fps)
+      const encoder = GIFEncoder()
+      const delay = Math.round(1000 / fps)
+      for (const [frame, time] of times.entries()) {
+        throwIfAborted(signal)
+        sequence.renderAt(time)
+        const { data } = context.getImageData(0, 0, width, height)
+        const palette = quantize(data, 256)
+        const index = applyPalette(data, palette)
+        encoder.writeFrame(index, width, height, {
+          palette,
+          delay,
+          repeat: 0,
+        })
+        onProgress?.((frame + 1) / times.length)
+        if (frame % 3 === 0) await yieldToUi()
+      }
+      throwIfAborted(signal)
+      encoder.finish()
+      download(
+        new Blob([encoder.bytes()], { type: "image/gif" }),
+        `strokeline-loop-${timestamp()}.gif`
+      )
+      return
+    } finally {
+      sequence.player.dispose()
+    }
+  }
   const totalFrames = timelines.reduce(
     (sum, timeline) => sum + Math.max(1, Math.round(timeline.duration * fps)),
     0
@@ -199,7 +272,8 @@ export async function exportGif(
         document.style.hand,
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
-        brandingEntitlements
+        brandingEntitlements,
+        subtitleSettings.captionStyle
       )
       const { data } = context.getImageData(0, 0, width, height)
       const palette = quantize(data, 256)
@@ -264,9 +338,12 @@ export async function exportVideo(
             }
           )
         : null
-      const format = narration
-        ? "webm"
-        : await preferredVideoExportFormat(width, height, fps)
+      const format = await preferredVideoExportFormat(
+        width,
+        height,
+        fps,
+        narration !== null
+      )
       onFormat?.(format)
       throwIfAborted(signal)
       onMessage?.(narration ? "Rendering video with narration…" : "Rendering video…")
@@ -397,7 +474,8 @@ function createSequenceRenderer(
           document.style.hand,
           subtitleSettings.subtitles,
           subtitleSettings.readAlong,
-          brandingEntitlements
+          brandingEntitlements,
+          subtitleSettings.captionStyle
         )
         return
       }
@@ -412,7 +490,8 @@ function createSequenceRenderer(
         document.style.hand,
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
-        brandingEntitlements
+        brandingEntitlements,
+        subtitleSettings.captionStyle
       )
       drawScene(
         toContext,
@@ -425,7 +504,8 @@ function createSequenceRenderer(
         document.style.hand,
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
-        brandingEntitlements
+        brandingEntitlements,
+        subtitleSettings.captionStyle
       )
       context.save()
       context.setTransform(1, 0, 0, 1, 0, 0)

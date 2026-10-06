@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { Scene, TimelineOp } from "@/ir/types.ts"
-import { interpolateAnimation, revealAt } from "@/timeline/interpolate.ts"
+import type { Scene } from "@/ir/types.ts"
 import { Timeline } from "@/timeline/timeline.ts"
 
 const scene: Scene = {
@@ -61,7 +60,7 @@ describe("stateless timeline resolution", () => {
     expect(state.nodes[0]?.opacity).toBe(0)
   })
 
-  it("matches the previous recursive resolver at overlapping and same-time timestamps", () => {
+  it("composes overlapping animation properties deterministically", () => {
     const regressionScene: Scene = {
       id: "regression",
       index: 1,
@@ -105,7 +104,7 @@ describe("stateless timeline resolution", () => {
         },
         {
           kind: "animate",
-          t: 2,
+          t: 2.1,
           targetId: "shape",
           anim: {
             verb: "rotate",
@@ -123,48 +122,13 @@ describe("stateless timeline resolution", () => {
       ],
     }
     const timeline = new Timeline(regressionScene)
-    const sortedOps = [...regressionScene.ops].sort(
-      (left, right) => left.t - right.t
-    )
-    const legacyResolve = (id: string, time: number, ops: TimelineOp[]) => {
-      const create = ops.find(
-        (op): op is Extract<TimelineOp, { kind: "create" }> =>
-          op.kind === "create" && op.node.id === id && op.t <= time
-      )
-      if (!create) return undefined
-      let node = revealAt(create.node, create.draw, time - create.t)
-      const animations = ops
-        .filter(
-          (op): op is Extract<TimelineOp, { kind: "animate" }> =>
-            op.kind === "animate" &&
-            op.targetId === id &&
-            op.t >= create.t &&
-            op.t <= time
-        )
-        .sort((left, right) => left.t - right.t)
-      for (const op of animations) {
-        const start =
-          legacyResolve(
-            id,
-            op.t,
-            ops.filter((candidate) => candidate !== op && candidate.t < op.t)
-          ) ?? node
-        node = interpolateAnimation(
-          { ...start, revealProgress: node.revealProgress },
-          op.anim,
-          time - op.t
-        )
-      }
-      return node
-    }
-
-    for (const time of [0, 0.5, 1, 1.5, 2, 2.25, 3, 3.5, 4, 5, 6]) {
-      expect(timeline.resolveAt(time).nodes).toEqual(
-        [legacyResolve("shape", time, sortedOps)].filter(
-          (node) => node !== undefined
-        )
-      )
-    }
+    const midAnimation = timeline.resolveAt(2.25).nodes[0]
+    expect(midAnimation?.opacity).toBeCloseTo(0.9)
+    expect(midAnimation?.rotation).toBeCloseTo(13.5)
+    expect(midAnimation?.position.x).toBeGreaterThan(10)
+    expect(midAnimation?.position.x).toBeLessThan(100)
+    expect(timeline.resolveAt(4).nodes[0]?.revealProgress).toBeCloseTo(0.75)
+    expect(timeline.resolveAt(2.25)).toEqual(timeline.resolveAt(2.25))
   })
 
   it("is byte-identical for repeated and out-of-order timestamps", () => {

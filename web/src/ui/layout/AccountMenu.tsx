@@ -7,7 +7,6 @@ import { supabase } from "@/lib/supabase.ts"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 
 export function AccountMenu({ compact = false }: { compact?: boolean }) {
-  const { theme, setTheme } = useTheme()
   const [session, setSession] = useState<Session | null>(null)
   const [logoutError, setLogoutError] = useState("")
   const [failedAvatarUrl, setFailedAvatarUrl] = useState("")
@@ -24,14 +23,14 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
       setSession(nextSession)
       if (_event === "SIGNED_IN") {
         const provider = nextSession?.user.app_metadata.provider
-        trackProductEvent({
-          name: "auth_signed_in",
-          properties: {
-            provider: provider === "google" || provider === "github" ? provider : "other",
-          },
-        })
-      } else if (_event === "SIGNED_OUT") {
-        trackProductEvent({ name: "auth_signed_out", properties: {} })
+        window.setTimeout(() => {
+          trackProductEvent({
+            name: "auth_signed_in",
+            properties: {
+              provider: provider === "google" || provider === "github" ? provider : "other",
+            },
+          })
+        }, 0)
       }
     })
 
@@ -64,15 +63,18 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
   const user = session?.user
   if (!user) {
     return (
-      <Link
-        to="/login"
-        aria-label="Sign in"
-        title="Sign in"
-        className="inline-flex h-9 items-center justify-center gap-2 rounded-full px-2.5 text-sm font-medium text-muted-foreground no-underline transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      >
-        <UserRound className="size-5" />
-        {!compact && <span>Sign in</span>}
-      </Link>
+      <div className="flex items-center gap-1.5">
+        <ThemeToggleButton />
+        <Link
+          to="/login"
+          aria-label="Sign in"
+          title="Sign in"
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-full px-2.5 text-sm font-medium text-muted-foreground no-underline transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          <UserRound className="size-5" />
+          {!compact && <span>Sign in</span>}
+        </Link>
+      </div>
     )
   }
 
@@ -110,16 +112,12 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
           {user.email && (
             <p className="truncate text-xs text-muted-foreground">{user.email}</p>
           )}
+          <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
+            Usage analytics run while you are signed in. Scripts and exports are not collected.
+          </p>
         </div>
         <div className="my-1 h-px bg-border/70" />
-        <button
-          type="button"
-          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        >
-          {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
-          {theme === "dark" ? "Light theme" : "Dark theme"}
-        </button>
+        <ThemeToggleButton inMenu />
         <div className="my-1 h-px bg-border/70" />
         <button
           type="button"
@@ -142,5 +140,34 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
         )}
       </div>
     </details>
+  )
+}
+
+function ThemeToggleButton({ inMenu = false }: { inMenu?: boolean }) {
+  const { setTheme } = useTheme()
+
+  return (
+    <button
+      type="button"
+      aria-label="Toggle color theme"
+      title="Toggle light/dark theme"
+      className={
+        inMenu
+          ? "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+          : "inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      }
+      onClick={() =>
+        setTheme(document.documentElement.classList.contains("dark") ? "light" : "dark")
+      }
+    >
+      <Sun className="size-4 dark:hidden" />
+      <Moon className="hidden size-4 dark:block" />
+      {inMenu && (
+        <>
+          <span className="dark:hidden">Dark theme</span>
+          <span className="hidden dark:inline">Light theme</span>
+        </>
+      )}
+    </button>
   )
 }

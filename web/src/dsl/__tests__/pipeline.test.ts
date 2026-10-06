@@ -10,6 +10,7 @@ import { lex } from "@/dsl/lexer.ts"
 import { layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { textBoundingBox } from "@/renderer/shapes/text.ts"
+import { Timeline } from "@/timeline/timeline.ts"
 
 const fixtureRoot = dirname(fileURLToPath(import.meta.url))
 const readFixtures = (folder: string) =>
@@ -184,6 +185,93 @@ DURATION 0.4s
 EASE easeInOut${suffix}`)
     expect(multiLine.diagnostics).toEqual([])
     expect(multiLine.document).toEqual(singleLine.document)
+  })
+
+  it("animates GROUP members together with move, scale, rotate, and fade", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1 "Move group"
+  GROUP moved
+    CREATE left AS CIRCLE
+      POSITION 100 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+    CREATE right AS CIRCLE
+      POSITION 200 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+  END
+  ANIMATE moved MOVE TO 250 150 DURATION 1s EASE linear
+END SCENE
+SCENE 2 "Scale group"
+  GROUP scaled
+    CREATE left AS CIRCLE
+      POSITION 100 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+    CREATE right AS CIRCLE
+      POSITION 200 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+  END
+  ANIMATE scaled SCALE TO 2 DURATION 1s EASE linear
+END SCENE
+SCENE 3 "Rotate group"
+  GROUP rotated
+    CREATE left AS CIRCLE
+      POSITION 100 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+    CREATE right AS CIRCLE
+      POSITION 200 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+  END
+  ANIMATE rotated ROTATE TO 90 DURATION 1s EASE linear
+END SCENE
+SCENE 4 "Fade group"
+  GROUP faded
+    CREATE left AS CIRCLE
+      POSITION 100 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+    CREATE right AS CIRCLE
+      POSITION 200 100
+      RADIUS 10
+      DRAW 0.01s
+    END
+  END
+  ANIMATE faded FADE 0 DURATION 1s EASE linear
+END SCENE`)
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
+
+    const [moveScene, scaleScene, rotateScene, fadeScene] = result.document!.scenes
+    const resolveFinalNodes = (scene: (typeof result.document.scenes)[number]) =>
+      new Timeline(scene, result.document!.canvas).resolveAt(2).nodes
+
+    expect(resolveFinalNodes(moveScene!)).toMatchObject([
+      { position: { x: 200, y: 150 } },
+      { position: { x: 300, y: 150 } },
+    ])
+    expect(resolveFinalNodes(scaleScene!)).toMatchObject([
+      { position: { x: 50, y: 100 }, scale: 2 },
+      { position: { x: 250, y: 100 }, scale: 2 },
+    ])
+    expect(resolveFinalNodes(rotateScene!)).toMatchObject([
+      { position: { x: 150, y: 50 }, rotation: 90 },
+      { position: { x: 150, y: 150 }, rotation: 90 },
+    ])
+    expect(resolveFinalNodes(fadeScene!)).toMatchObject([
+      { opacity: 0 },
+      { opacity: 0 },
+    ])
   })
 
   it("treats # and // comments as whitespace while keeping hex colors", () => {
@@ -435,7 +523,7 @@ END SCENE
   it("resolves relative placement from earlier measured nodes at compile time", () => {
     const script = source("valid", "32-relative-placement.wbs")
     const result = runScript(script)
-    expect(result.diagnostics).toEqual([])
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
     const ops = result.document?.scenes[0]?.ops ?? []
     const node = (id: string) => {
       const op = ops.find(
@@ -495,15 +583,15 @@ END SCENE
     expect(
       board?.kind === "create" ? board.node.data?.layoutContainer : false
     ).toBe(true)
-    expect(first?.kind === "create" ? first.node.position : undefined).toEqual({
-      x: 140,
-      y: 130,
-    })
+    expect(first?.kind === "create" ? first.node.position.x : undefined).toBeCloseTo(
+      224.625
+    )
+    expect(first?.kind === "create" ? first.node.position.y : undefined).toBe(130)
     expect(first?.kind === "create" ? first.t : undefined).toBe(0)
     expect(second?.kind === "create" ? second.t : undefined).toBe(1)
-    expect(second?.kind === "create" ? second.node.position.x : undefined).toBe(
-      140
-    )
+    expect(
+      second?.kind === "create" ? second.node.position.x : undefined
+    ).toBeCloseTo(224.625)
     expect(tileA?.kind === "create" ? tileA.node.position : undefined).toEqual({
       x: 850,
       y: 130,

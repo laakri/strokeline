@@ -1,5 +1,5 @@
 import { DEFAULT_HIGHLIGHT_COLOR } from "@/defaults/defaults.ts"
-import type { Point, SayLine, Scene, SceneNode, TableHighlightTarget, TimelineOp } from "@/ir/types.ts"
+import type { AnimationSpec, Point, SayLine, Scene, SceneNode, TableHighlightTarget, TimelineOp } from "@/ir/types.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
 import { clamp } from "@/timeline/easing.ts"
 import {
@@ -64,15 +64,15 @@ export class Timeline {
   constructor(scene: Scene, canvas: CanvasSize = defaultCanvas) {
     this.sceneSays = scheduleSays(scene.says ?? [])
     const creates = scene.ops.filter((op): op is CreateOp => op.kind === "create")
-    const members = new Map<string, string[]>()
+    const members = new Map<string, SceneNode[]>()
     for (const op of creates) if (op.node.groupId) {
-      const group = members.get(op.node.groupId) ?? []
-      group.push(op.node.id)
-      members.set(op.node.groupId, group)
+      const groupMembers = members.get(op.node.groupId) ?? []
+      groupMembers.push(op.node)
+      members.set(op.node.groupId, groupMembers)
     }
     this.ops = scene.ops.flatMap((op) =>
       op.kind === "animate" && members.has(op.targetId)
-        ? (members.get(op.targetId) ?? []).map((targetId) => ({ ...op, targetId }))
+        ? expandGroupAnimation(op, members.get(op.targetId) ?? [])
         : [op]
     ).sort((left, right) => left.t - right.t)
     this.createOps = this.ops.filter(
@@ -81,6 +81,94 @@ export class Timeline {
     for (const op of this.createOps) {
       if (!this.createsById.has(op.node.id))
         this.createsById.set(op.node.id, op)
+    }
+
+    function expandGroupAnimation(
+      op: AnimateOp,
+      members: SceneNode[]
+    ): AnimateOp[] {
+      if (members.length === 0) return []
+
+      const center = members.reduce(
+        (sum, node) => ({
+          x: sum.x + node.position.x / members.length,
+          y: sum.y + node.position.y / members.length,
+        }),
+        { x: 0, y: 0 }
+      )
+
+      if (op.anim.verb === "move" && op.anim.to?.position) {
+        const offset = {
+          x: op.anim.to.position.x - center.x,
+          y: op.anim.to.position.y - center.y,
+        }
+        return members.map((node) => ({
+          ...op,
+          targetId: node.id,
+          anim: {
+            ...op.anim,
+            verb: "move",
+            to: {
+              ...op.anim.to,
+              position: {
+                x: node.position.x + offset.x,
+                y: node.position.y + offset.y,
+              },
+            },
+          },
+        }))
+      }
+
+      if (op.anim.verb === "scale" && op.anim.to?.scale !== undefined) {
+        const factor = op.anim.to.scale
+        return members.map((node) => ({
+          ...op,
+          targetId: node.id,
+          anim: {
+            ...op.anim,
+            to: {
+              ...op.anim.to,
+              position: {
+                x: center.x + (node.position.x - center.x) * factor,
+                y: center.y + (node.position.y - center.y) * factor,
+              },
+            },
+          },
+        }))
+      }
+
+      if (op.anim.verb === "rotate" && op.anim.to?.rotation !== undefined) {
+        const radians = (op.anim.to.rotation * Math.PI) / 180
+        const cosine = Math.cos(radians)
+        const sine = Math.sin(radians)
+        return members.map((node) => {
+          const relative = {
+            x: node.position.x - center.x,
+            y: node.position.y - center.y,
+          }
+          return {
+            ...op,
+            targetId: node.id,
+            anim: {
+              ...op.anim,
+              to: {
+                ...op.anim.to,
+                position: {
+                  x: center.x + relative.x * cosine - relative.y * sine,
+                  y: center.y + relative.x * sine + relative.y * cosine,
+                },
+                rotation: node.rotation + op.anim.to.rotation,
+              },
+            },
+          }
+        })
+      }
+
+      return members.map((node) => ({
+        ...op,
+        targetId: node.id,
+        anim: { ...op.anim } as AnimationSpec,
+      }))
     }
     this.cacheAnimations()
     this.canvas = canvas
@@ -155,13 +243,7 @@ export class Timeline {
     let node = revealAt(create.node, create.draw, time - create.t)
     for (const group of this.animationsById.get(id) ?? []) {
       if (group.t > time) break
-      for (const op of group.ops) {
-        node = interpolateAnimation(
-          { ...group.start, revealProgress: node.revealProgress },
-          op.anim,
-          time - op.t
-        )
-      }
+      node = resolveAnimationGroupAtTime(node, group, time)
     }
     return node
   }
@@ -200,17 +282,8 @@ export class Timeline {
     group: AnimationGroup,
     time: number
   ): ResolvedNode {
-    let node = group.start
-    for (const op of group.ops) {
-      node = interpolateAnimation(
-        { ...group.start, revealProgress: node.revealProgress },
-        op.anim,
-        time - op.t
-      )
-    }
-    return node
+    return resolveAnimationGroupAtTime(group.start, group, time)
   }
-
   private resolveCameraAt(time: number): RenderCamera {
     let camera: RenderCamera = {
       position: { x: this.canvas.width / 2, y: this.canvas.height / 2 },
@@ -218,7 +291,11 @@ export class Timeline {
     }
     for (const op of this.ops) {
       if (op.kind !== "camera" || op.t > time) continue
-      const progress = cameraProgress(time - op.t, op.camera.duration)
+      const progress = cameraProgress(
+        time - op.t,
+        op.camera.duration,
+        op.camera.ease
+      )
       if (op.camera.verb === "reset") {
         camera = {
           position: {
@@ -293,6 +370,58 @@ export class Timeline {
   }
 }
 
+function resolveAnimationGroupAtTime(
+  current: ResolvedNode,
+  group: AnimationGroup,
+  time: number
+): ResolvedNode {
+  let node = current
+  for (const op of group.ops) {
+    const animated = interpolateAnimation(group.start, op.anim, time - op.t)
+    if (op.anim.verb === "move")
+      node = { ...node, position: animated.position }
+    if (op.anim.verb === "scale") {
+      node = {
+        ...node,
+        ...(op.anim.to?.position ? { position: animated.position } : {}),
+        scale: animated.scale,
+      }
+    }
+    if (op.anim.verb === "rotate") {
+      node = {
+        ...node,
+        ...(op.anim.to?.position ? { position: animated.position } : {}),
+        rotation: animated.rotation,
+      }
+    }
+    if (op.anim.verb === "fade" || op.anim.verb === "opacity")
+      node = { ...node, opacity: animated.opacity }
+    if (op.anim.verb === "color")
+      node = { ...node, style: { ...node.style, color: animated.style.color } }
+    if (op.anim.verb === "erase")
+      node = { ...node, revealProgress: animated.revealProgress }
+    if (op.anim.verb === "loop") {
+      if (op.anim.loopName === "pulse" || op.anim.loopName === "breathe")
+        node = { ...node, scale: animated.scale }
+      else if (op.anim.loopName === "blink")
+        node = { ...node, opacity: animated.opacity }
+      else if (op.anim.loopName === "wobble")
+        node = { ...node, rotation: animated.rotation }
+      else node = { ...node, position: animated.position }
+    }
+    if (op.anim.verb === "enter" || op.anim.verb === "exit") {
+      const effect = op.anim.effectName ?? "fade"
+      if (["fade", "write", "erase"].includes(effect)) {
+        node = { ...node, opacity: animated.opacity }
+        if (effect === "write" || effect === "erase")
+          node = { ...node, revealProgress: animated.revealProgress }
+      } else if (["pop", "shrink", "zoom"].includes(effect))
+        node = { ...node, scale: animated.scale }
+      else node = { ...node, position: animated.position }
+    }
+  }
+  return node
+}
 export function resolveAt(
   time: number,
   ops: TimelineOp[],

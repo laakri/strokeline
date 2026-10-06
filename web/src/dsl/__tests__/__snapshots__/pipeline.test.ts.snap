@@ -16,7 +16,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -102,7 +102,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -188,11 +188,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -277,7 +278,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -366,7 +367,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -422,11 +423,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -486,7 +488,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -496,8 +498,23 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
                 "LABEL",
                 "DRAW",
               ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 17,
+                },
+                "LABEL": {
+                  "col": 5,
+                  "line": 16,
+                },
+              },
               "fromId": "a",
+              "head": "end",
+              "route": "straight",
+              "sourceLabel": undefined,
+              "targetLabel": undefined,
               "toId": "b",
+              "waypoints": [],
             },
             "groupId": undefined,
             "id": "arrow_1",
@@ -511,6 +528,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
             "rotation": 0,
             "style": {
               "color": "#222222",
+              "lineStyle": "solid",
               "strokeWidth": 4,
             },
             "type": "arrow",
@@ -549,7 +567,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -650,11 +668,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -773,11 +792,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -837,7 +857,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "camera": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "spring",
             "position": undefined,
             "scale": 1.8,
             "targetId": "box",
@@ -878,7 +898,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "camera": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "spring",
             "position": {
               "x": 500,
               "y": 400,
@@ -897,7 +917,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "camera": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "spring",
             "position": undefined,
             "scale": undefined,
             "targetId": undefined,
@@ -938,7 +958,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 2,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -994,7 +1014,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1050,7 +1070,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1139,7 +1159,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1220,7 +1240,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1286,7 +1306,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1335,7 +1355,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
             "rotation": 0,
             "size": undefined,
             "style": {
-              "color": "#2E86AB",
+              "color": "#205F78",
               "fill": undefined,
               "fontSize": undefined,
               "strokeWidth": 4,
@@ -1352,11 +1372,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -1409,7 +1430,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
               "width": 300,
             },
             "style": {
-              "color": "#E76F51",
+              "color": "#A14531",
               "fill": undefined,
               "fontSize": undefined,
               "strokeWidth": 4,
@@ -1426,7 +1447,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1436,8 +1457,23 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
                 "LABEL",
                 "DRAW",
               ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 5,
+                  "line": 36,
+                },
+                "LABEL": {
+                  "col": 5,
+                  "line": 35,
+                },
+              },
               "fromId": "browser",
+              "head": "end",
+              "route": "straight",
+              "sourceLabel": undefined,
+              "targetLabel": undefined,
               "toId": "server",
+              "waypoints": [],
             },
             "groupId": undefined,
             "id": "arrow_1",
@@ -1451,6 +1487,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
             "rotation": 0,
             "style": {
               "color": "#222222",
+              "lineStyle": "solid",
               "strokeWidth": 4,
             },
             "type": "arrow",
@@ -1464,7 +1501,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "camera": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "spring",
             "position": undefined,
             "scale": 1.8,
             "targetId": "server",
@@ -1476,6 +1513,22 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
             "line": 38,
           },
           "t": 5.5,
+        },
+        {
+          "camera": {
+            "duration": 0.8,
+            "ease": "spring",
+            "position": undefined,
+            "scale": undefined,
+            "targetId": undefined,
+            "verb": "reset",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 42,
+          },
+          "t": 6.5,
         },
       ],
     },
@@ -1505,11 +1558,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -1606,7 +1660,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1699,7 +1753,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1795,7 +1849,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1889,7 +1943,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -1950,7 +2004,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2026,7 +2080,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2126,11 +2180,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -2237,11 +2292,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -2346,11 +2402,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -2420,11 +2477,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -2474,7 +2532,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2543,7 +2601,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2675,7 +2733,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 2,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2781,7 +2839,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2886,7 +2944,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2947,7 +3005,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -2972,6 +3030,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
                   "line": 12,
                 },
               },
+              "targetId": "phrase",
             },
             "groupId": undefined,
             "id": "ink_1",
@@ -3052,11 +3111,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -3121,7 +3181,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3146,6 +3206,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
                   "line": 13,
                 },
               },
+              "targetId": "server",
             },
             "groupId": undefined,
             "id": "ink_1",
@@ -3346,7 +3407,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3442,7 +3503,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3535,7 +3596,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3606,7 +3667,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 1,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3695,7 +3756,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3756,7 +3817,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3781,6 +3842,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
                   "line": 14,
                 },
               },
+              "targetId": "heading",
             },
             "groupId": undefined,
             "id": "ink_1",
@@ -3861,7 +3923,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.8,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -3980,12 +4042,13 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
             "anchor": "left",
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "POSITION",
@@ -4055,7 +4118,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -4152,7 +4215,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -4213,7 +4276,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -4280,11 +4343,12 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
           "node": {
+            "cornerRadius": 16,
             "data": {
               "_sourceProperties": [
                 "WIDTH",
@@ -4344,7 +4408,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -4410,7 +4474,7 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
         {
           "draw": {
             "duration": 0.5,
-            "ease": "easeInOut",
+            "ease": "easeOut",
             "style": "draw-on",
           },
           "kind": "create",
@@ -4462,6 +4526,436 @@ exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting
             "line": 35,
           },
           "t": 2,
+        },
+      ],
+    },
+  ],
+  "style": {
+    "font": "handwritten",
+    "mode": "handdrawn",
+    "strokeWidth": 4,
+  },
+  "version": "1.0",
+}
+`;
+
+exports[`DSL pipeline > compiles every valid fixture and snapshots the resulting IR > 33-layout-containers.wbs 1`] = `
+{
+  "background": "#FAFAFA",
+  "canvas": {
+    "height": 1080,
+    "width": 1920,
+  },
+  "scenes": [
+    {
+      "id": "1",
+      "index": 1,
+      "label": "Container layouts",
+      "ops": [
+        {
+          "draw": {
+            "duration": 0,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "layoutContainer": true,
+            },
+            "id": "flow",
+            "layer": -1,
+            "opacity": 0,
+            "position": {
+              "x": 224.625,
+              "y": 162.8,
+            },
+            "rotation": 0,
+            "size": {
+              "height": 125.6,
+              "width": 129.25,
+            },
+            "style": {
+              "color": "#000000",
+              "strokeWidth": 0,
+            },
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 5,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 1,
+            "ease": "easeOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "cornerRadius": 16,
+            "data": {
+              "_sourceProperties": [
+                "WIDTH",
+                "HEIGHT",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 7,
+                  "line": 9,
+                },
+                "DRAW": {
+                  "col": 7,
+                  "line": 10,
+                },
+                "HEIGHT": {
+                  "col": 7,
+                  "line": 8,
+                },
+                "WIDTH": {
+                  "col": 7,
+                  "line": 7,
+                },
+              },
+            },
+            "groupId": "flow",
+            "id": "first",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 224.625,
+              "y": 130,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 60,
+              "width": 120,
+            },
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 5,
+            "line": 6,
+          },
+          "t": 0,
+        },
+        {
+          "draw": {
+            "duration": 2,
+            "ease": "easeOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "SIZE",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 7,
+                  "line": 15,
+                },
+                "DRAW": {
+                  "col": 7,
+                  "line": 16,
+                },
+                "SIZE": {
+                  "col": 7,
+                  "line": 14,
+                },
+                "TEXT": {
+                  "col": 7,
+                  "line": 13,
+                },
+              },
+            },
+            "groupId": "flow",
+            "id": "second",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 224.625,
+              "y": 204.8,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#2E6F51",
+              "fill": undefined,
+              "fontSize": 32,
+              "strokeWidth": 4,
+            },
+            "text": "Second item",
+            "type": "text",
+          },
+          "source": {
+            "col": 5,
+            "line": 12,
+          },
+          "t": 1,
+        },
+        {
+          "draw": {
+            "duration": 0,
+            "ease": "easeInOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "layoutContainer": true,
+            },
+            "id": "board",
+            "layer": -1,
+            "opacity": 0,
+            "position": {
+              "x": 908,
+              "y": 168,
+            },
+            "rotation": 0,
+            "size": {
+              "height": 136,
+              "width": 216,
+            },
+            "style": {
+              "color": "#000000",
+              "strokeWidth": 0,
+            },
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 3,
+            "line": 20,
+          },
+          "t": 3,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "cornerRadius": 16,
+            "data": {
+              "_sourceProperties": [
+                "WIDTH",
+                "HEIGHT",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 7,
+                  "line": 24,
+                },
+                "DRAW": {
+                  "col": 7,
+                  "line": 25,
+                },
+                "HEIGHT": {
+                  "col": 7,
+                  "line": 23,
+                },
+                "WIDTH": {
+                  "col": 7,
+                  "line": 22,
+                },
+              },
+            },
+            "groupId": "board",
+            "id": "tileA",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 850,
+              "y": 130,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": {
+              "height": 50,
+              "width": 100,
+            },
+            "style": {
+              "color": "#2E86AB",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "rectangle",
+          },
+          "source": {
+            "col": 5,
+            "line": 21,
+          },
+          "t": 3,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "RADIUS",
+                "COLOR",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "COLOR": {
+                  "col": 7,
+                  "line": 29,
+                },
+                "DRAW": {
+                  "col": 7,
+                  "line": 30,
+                },
+                "RADIUS": {
+                  "col": 7,
+                  "line": 28,
+                },
+              },
+            },
+            "groupId": "board",
+            "id": "tileB",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 966,
+              "y": 130,
+            },
+            "radius": 30,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#E76F51",
+              "fill": undefined,
+              "fontSize": undefined,
+              "strokeWidth": 4,
+            },
+            "text": undefined,
+            "type": "circle",
+          },
+          "source": {
+            "col": 5,
+            "line": 27,
+          },
+          "t": 3.5,
+        },
+        {
+          "draw": {
+            "duration": 0.5,
+            "ease": "easeOut",
+            "style": "draw-on",
+          },
+          "kind": "create",
+          "node": {
+            "data": {
+              "_sourceProperties": [
+                "TEXT",
+                "SIZE",
+                "DRAW",
+              ],
+              "_sourcePropertyLocations": {
+                "DRAW": {
+                  "col": 7,
+                  "line": 35,
+                },
+                "SIZE": {
+                  "col": 7,
+                  "line": 34,
+                },
+                "TEXT": {
+                  "col": 7,
+                  "line": 33,
+                },
+              },
+            },
+            "groupId": "board",
+            "id": "tileC",
+            "label": undefined,
+            "layer": 0,
+            "opacity": 1,
+            "position": {
+              "x": 850,
+              "y": 206,
+            },
+            "radius": undefined,
+            "rotation": 0,
+            "size": undefined,
+            "style": {
+              "color": "#222222",
+              "fill": undefined,
+              "fontSize": 36,
+              "strokeWidth": 4,
+            },
+            "text": "Third",
+            "type": "text",
+          },
+          "source": {
+            "col": 5,
+            "line": 32,
+          },
+          "t": 4,
+        },
+        {
+          "camera": {
+            "duration": 0.5,
+            "ease": "spring",
+            "position": undefined,
+            "scale": undefined,
+            "targetId": "board",
+            "verb": "zoom",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 39,
+          },
+          "t": 4.5,
+        },
+        {
+          "camera": {
+            "duration": 1,
+            "ease": "spring",
+            "position": undefined,
+            "scale": undefined,
+            "targetId": undefined,
+            "verb": "reset",
+          },
+          "kind": "camera",
+          "source": {
+            "col": 3,
+            "line": 42,
+          },
+          "t": 5,
         },
       ],
     },

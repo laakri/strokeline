@@ -23,5 +23,5 @@ export function warning(
 }
 
 export function blocksScriptRun(diagnostic: Diagnostic): boolean {
-  return diagnostic.severity === "error" && !diagnostic.code.startsWith("W_")
+  return !diagnostic.code.startsWith("W_")
 }

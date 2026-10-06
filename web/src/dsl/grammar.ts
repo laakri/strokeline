@@ -14,6 +14,8 @@ export const ANIMATION_VERBS = [
   "SCALE",
   "ROTATE",
   "HIGHLIGHT",
+  "OPACITY",
+  "COLOR",
 ] as const
 export const CAMERA_VERBS = ["ZOOM", "PAN", "RESET", "DRIFT", "SHAKE", "FOLLOW"] as const
 export const EASE_NAMES = [
@@ -92,6 +94,7 @@ export const PROPERTY_KEYS = [
   "BORDER",
   "MASK",
   "SHADOW",
+  "GRADIENT",
 ] as const
 
 export { ICON_NAMES, type IconName } from "@/defaults/icons.ts"

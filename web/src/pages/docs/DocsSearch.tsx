@@ -32,8 +32,6 @@ export function DocsSearch() {
     }
   }, [])
 
-  useEffect(() => setActiveIndex(0), [query])
-
   const selectResult = (index: number) => {
     const result = results[index]
     if (!result) return
@@ -79,7 +77,10 @@ export function DocsSearch() {
           className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           placeholder="Find a feature, command, or fix…"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            setQuery(event.target.value)
+            setActiveIndex(0)
+          }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
         />

@@ -28,6 +28,8 @@ export interface Point {
 export interface NodeStyle {
   color: string
   fill?: string
+  gradient?: [string, string]
+  shadow?: number
   strokeWidth: number
   lineStyle?: "solid" | "dashed" | "dotted"
   fontSize?: number
@@ -81,7 +83,7 @@ export interface Reveal {
 }
 
 export interface AnimationSpec {
-  verb: "move" | "scale" | "fade" | "rotate" | "erase" | "highlight" | "loop" | "enter" | "exit"
+  verb: "move" | "scale" | "fade" | "opacity" | "color" | "rotate" | "erase" | "highlight" | "loop" | "enter" | "exit"
   effectName?: string
   loopName?: "float" | "pulse" | "wobble" | "breathe" | "blink"
   amplitude?: number
@@ -90,6 +92,7 @@ export interface AnimationSpec {
     Pick<SceneNode, "position" | "rotation" | "opacity" | "size">
   > & { scale?: number }
   color?: string
+  arc?: number
   tableTarget?: TableHighlightTarget
   duration: number
   ease: EaseName

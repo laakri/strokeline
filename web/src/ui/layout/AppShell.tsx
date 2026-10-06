@@ -10,9 +10,9 @@ import { ExportMenu } from "@/ui/layout/ExportMenu.tsx"
 import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
 import { Button } from "@/ui/button"
 import { WorkspaceGuide } from "@/ui/layout/WorkspaceGuide.tsx"
-import { AnalyticsConsent } from "@/ui/layout/AnalyticsConsent.tsx"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import logo from "@/assets/logo.png"
+import blackLogo from "@/assets/black-logo.png"
 
 const WORKSPACE_GUIDE_KEY = "strokeline.workspaceGuide.v1"
 
@@ -108,13 +108,13 @@ export function AppShell() {
       {!presentationMode && <header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b border-border px-3 py-2 sm:flex sm:min-h-14 sm:gap-3 sm:px-4">
         <div className="order-1 flex shrink-0 items-center gap-3">
           <span className="flex items-center gap-2 font-semibold tracking-tight">
-            <img src={logo} alt="Strokeline Logo" className="h-6 w-6" />
+            <img src={blackLogo} alt="Strokeline Logo" className="h-6 w-6 shrink-0 object-contain dark:hidden" />
+            <img src={logo} alt="" aria-hidden="true" className="hidden h-6 w-6 shrink-0 object-contain dark:block" />
             <span className="hidden sm:inline">Strokeline</span>
           </span>
           <Button variant="ghost" size="icon-sm" aria-label="Workspace guide" title="Workspace guide" onClick={() => setGuideStep(0)}>
             <CircleHelp className="size-4" />
           </Button>
-          <AnalyticsConsent />
           <span className="hidden text-xs text-muted-foreground lg:inline">
             whiteboard animation studio
           </span>

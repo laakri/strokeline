@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { Check, Eye, EyeOff, LoaderCircle, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
+import { fitCanvasToBounds } from "@/renderer/canvasLayout.ts"
 import {
   FREE_BRANDING_ENTITLEMENTS,
   type BrandingEntitlements,
@@ -22,6 +23,12 @@ import type { ObjectEditValues } from "@/dsl/objectSourceEdits.ts"
 import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
 import { VoiceSettingsDialog } from "@/ui/preview/VoiceSettingsDialog.tsx"
 import { readReaderVolume, saveReaderVolume } from "@/player/readerVolume.ts"
+import {
+  captionStyleFromStorage,
+  isVerticalCanvas,
+  REELS_SAFE_ZONES,
+  type CaptionStyle,
+} from "@/reels/reels.ts"
 
 const SUBTITLES_STORAGE_KEY = "strokeline.subtitles.v1"
 const READ_ALONG_STORAGE_KEY = "strokeline.voice.v1"
@@ -139,6 +146,8 @@ export function PreviewPane({
   brandingEntitlements?: BrandingEntitlements
 } = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [displayCanvasSize, setDisplayCanvasSize] = useState({ width: 0, height: 0 })
   const preflightCanvasRef = useRef<HTMLCanvasElement>(null)
   const renderStateRef = useRef<RenderState | null>(null)
   const dragRef = useRef<PreviewDrag | null>(null)
@@ -171,6 +180,8 @@ export function PreviewPane({
   const [connectFrom, setConnectFrom] = useState<{ id: string; sceneIndex: number } | null>(null)
   const [objectNotice, setObjectNotice] = useState("")
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
+  const [captionStyle, setCaptionStyle] = useState<CaptionStyle>(captionStyleFromStorage)
+  const [safeZonesOn, setSafeZonesOn] = useState(false)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
   const [selectedVoice, setSelectedVoice] = useState(readVoiceSetting)
@@ -204,6 +215,37 @@ export function PreviewPane({
   useEffect(() => () => {
     if (readerToastTimer.current !== null) window.clearTimeout(readerToastTimer.current)
   }, [])
+
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage || !compiledIR) return
+    const resize = (width: number, height: number) => {
+      const next = fitCanvasToBounds(compiledIR.canvas, {
+        width,
+        height,
+      })
+      setDisplayCanvasSize((current) =>
+        current.width === next.width && current.height === next.height
+          ? current
+          : next
+      )
+    }
+    const observer = new ResizeObserver((entries) => {
+      const bounds = entries[0]?.contentRect
+      if (bounds) resize(bounds.width, bounds.height)
+    })
+    observer.observe(stage)
+    const computedStyle = window.getComputedStyle(stage)
+    resize(
+      stage.clientWidth -
+        Number.parseFloat(computedStyle.paddingLeft) -
+        Number.parseFloat(computedStyle.paddingRight),
+      stage.clientHeight -
+        Number.parseFloat(computedStyle.paddingTop) -
+        Number.parseFloat(computedStyle.paddingBottom)
+    )
+    return () => observer.disconnect()
+  }, [compiledIR])
   const script = useAppStore((state) => state.script)
   const compiledSource = useAppStore((state) => state.compiledSource)
   const activeSceneIndex = useAppStore((state) => state.activeSceneIndex)
@@ -214,13 +256,18 @@ export function PreviewPane({
   const diagnostics = useAppStore((state) => state.diagnostics)
   const requestEditorJump = useAppStore((state) => state.requestEditorJump)
   const scene = compiledIR?.scenes[activeSceneIndex]
-  const subtitlesOn = subtitleOverride ?? (compiledIR?.subtitles ?? false)
+  const isReelsCanvas = compiledIR ? isVerticalCanvas(compiledIR.canvas) : false
+  const subtitlesOn = subtitleOverride ?? (
+    compiledIR?.subtitles ??
+    (isReelsCanvas && compiledIR?.scenes.some((item) => (item.says?.length ?? 0) > 0))
+  )
   const activeVoice = kokoroState.voices.find((voice) => voice.id === readerVoice)
   const activeVoiceLabel = activeVoice?.name || readerVoice
     .replace(/^[a-z]{2}_/, "")
     .replace(/^\w/, (letter) => letter.toUpperCase())
   const subtitlesOnRef = useRef(subtitlesOn)
   const readAlongRef = useRef(readAlongOn)
+  const captionStyleRef = useRef(captionStyle)
   useEffect(() => {
     let active = true
     if (!compiledIR) {
@@ -240,6 +287,11 @@ export function PreviewPane({
   useEffect(() => {
     readAlongRef.current = readAlongOn
   }, [readAlongOn])
+  useEffect(() => {
+    captionStyleRef.current = captionStyle
+    const controller = playerRef.current
+    if (controller && !controller.isPlaying) controller.seek(controller.currentTime)
+  }, [captionStyle])
   const voiceSupported = typeof window !== "undefined" && "Worker" in window && "AudioContext" in window
 
   const preservePlaybackPosition = () => {
@@ -419,6 +471,7 @@ export function PreviewPane({
     let cachedTransitionSubtitles: boolean | null = null
     let cachedTransitionReadAlong: boolean | null = null
     let cachedTransitionCanRemoveWatermark: boolean | null = null
+    let cachedTransitionCaptionStyle: CaptionStyle | null = null
     const controller = effectivePlayAllMode
       ? new SequencePlayer(
           timelines,
@@ -442,7 +495,8 @@ export function PreviewPane({
                 compiledIR.style.hand,
                 subtitlesOnRef.current,
                 readAlongRef.current,
-                brandingEntitlements
+                brandingEntitlements,
+                captionStyleRef.current
               )
             } else {
               const fromContext = transitionFromCanvas.getContext("2d")
@@ -455,7 +509,8 @@ export function PreviewPane({
                   cachedTransitionTo !== transition.to ||
                   cachedTransitionSubtitles !== subtitlesEnabled ||
                   cachedTransitionReadAlong !== readAlongEnabled ||
-                  cachedTransitionCanRemoveWatermark !== brandingEntitlements.canRemoveWatermark
+                  cachedTransitionCanRemoveWatermark !== brandingEntitlements.canRemoveWatermark ||
+                  cachedTransitionCaptionStyle !== captionStyleRef.current
                 ) {
                   drawScene(
                     fromContext,
@@ -468,7 +523,8 @@ export function PreviewPane({
                     compiledIR.style.hand,
                     subtitlesEnabled,
                     readAlongEnabled,
-                    brandingEntitlements
+                    brandingEntitlements,
+                    captionStyleRef.current
                   )
                   drawScene(
                     toContext,
@@ -481,13 +537,15 @@ export function PreviewPane({
                     compiledIR.style.hand,
                     subtitlesEnabled,
                     readAlongEnabled,
-                    brandingEntitlements
+                    brandingEntitlements,
+                    captionStyleRef.current
                   )
                   cachedTransitionFrom = transition.from
                   cachedTransitionTo = transition.to
                   cachedTransitionSubtitles = subtitlesEnabled
                   cachedTransitionReadAlong = readAlongEnabled
                   cachedTransitionCanRemoveWatermark = brandingEntitlements.canRemoveWatermark
+                  cachedTransitionCaptionStyle = captionStyleRef.current
                 }
                 context.save()
                 context.setTransform(1, 0, 0, 1, 0, 0)
@@ -562,7 +620,8 @@ export function PreviewPane({
             compiledIR.style.hand,
             subtitlesOnRef.current,
             readAlongRef.current,
-            brandingEntitlements
+            brandingEntitlements,
+            captionStyleRef.current
           )
           const now = performance.now()
           if (
@@ -601,9 +660,10 @@ export function PreviewPane({
       autoplayNext.current = false
       controller.play()
     }
+    const narration = narrationRef.current
     return () => {
       controller.dispose()
-      narrationRef.current?.cancel()
+      narration?.cancel()
     }
   }, [compiledIR, activeSceneIndex, scene, effectivePlayAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState, brandingEntitlements])
 
@@ -723,7 +783,8 @@ export function PreviewPane({
         compiledIR.style.hand,
         subtitlesOnRef.current,
         readAlongRef.current,
-        brandingEntitlements
+        brandingEntitlements,
+        captionStyleRef.current
       )
     }
     event.preventDefault()
@@ -968,7 +1029,9 @@ export function PreviewPane({
           }}
         />
       )}
-      <div className={presentationMode
+      <div
+        ref={stageRef}
+        className={presentationMode
         ? "relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#101512] p-3 sm:p-8"
         : "relative flex min-h-0 flex-1 items-center justify-center p-2 sm:p-4"}>
         {!presentationMode && (
@@ -1000,16 +1063,26 @@ export function PreviewPane({
           </button>
         )}
         {scene ? (
-          <div className="relative inline-flex max-h-full max-w-full">
+          <div className="relative flex h-full w-full min-h-0 min-w-0 items-center justify-center">
+            <div
+              className="relative shrink-0"
+              style={{
+                width: displayCanvasSize.width || undefined,
+                height: displayCanvasSize.height || undefined,
+                aspectRatio: `${compiledIR?.canvas.width ?? 1} / ${compiledIR?.canvas.height ?? 1}`,
+              }}
+            >
             <canvas
               ref={canvasRef}
+              style={{ width: "100%", height: "100%" }}
               className={presentationMode
-                ? "block max-h-full max-w-full bg-background shadow-[0_24px_90px_rgba(0,0,0,0.48)]"
-                : "block max-h-full max-w-full border border-border bg-background shadow-sm"}
+                ? "absolute inset-0 box-border block bg-background shadow-[0_24px_90px_rgba(0,0,0,0.48)]"
+                : "absolute inset-0 box-border block border border-border bg-background shadow-sm"}
             />
             {!presentationMode && (
               <canvas
                 ref={preflightCanvasRef}
+                style={{ width: "100%", height: "100%" }}
                 aria-label="Click an object to edit it or connect it; drag to reposition."
                 onClick={handlePreflightClick}
                 onPointerDown={handlePreflightPointerDown}
@@ -1017,9 +1090,25 @@ export function PreviewPane({
                 onPointerUp={handlePreflightPointerUp}
                 onPointerCancel={handlePreflightPointerCancel}
                 title="Click an object for edit, delete, or arrow actions; drag to reposition"
-                className="absolute inset-0 block h-full w-full touch-none cursor-pointer active:cursor-grabbing"
+                className="absolute inset-0 block touch-none cursor-pointer active:cursor-grabbing"
               />
             )}
+            {safeZonesOn && isReelsCanvas && compiledIR && !presentationMode && (
+              <svg
+                viewBox={`0 0 ${compiledIR.canvas.width} ${compiledIR.canvas.height}`}
+                preserveAspectRatio="none"
+                aria-label="Social video interface safe zones"
+                role="img"
+                className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+              >
+                <g fill="#F43F5E" fillOpacity="0.07" stroke="#F43F5E" strokeOpacity="0.55" strokeDasharray="12 10" strokeWidth="3">
+                  <rect x="0" y="0" width={compiledIR.canvas.width} height={REELS_SAFE_ZONES.top} />
+                  <rect x="0" y={compiledIR.canvas.height - REELS_SAFE_ZONES.bottom} width={compiledIR.canvas.width} height={REELS_SAFE_ZONES.bottom} />
+                  <rect x={compiledIR.canvas.width - REELS_SAFE_ZONES.right} y={REELS_SAFE_ZONES.top} width={REELS_SAFE_ZONES.right} height={compiledIR.canvas.height - REELS_SAFE_ZONES.top - REELS_SAFE_ZONES.bottom} />
+                </g>
+              </svg>
+            )}
+            </div>
             {connectFrom && !presentationMode && (
               <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 items-center gap-3 rounded-xl bg-popover px-3 py-2 text-xs text-popover-foreground shadow-xl ring-1 ring-border/70">
                 <span>Click a destination object to connect the arrow.</span>
@@ -1089,11 +1178,12 @@ export function PreviewPane({
         )}
       </div>
       <div className={presentationMode
-        ? "flex shrink-0 flex-wrap items-center gap-2 border-t border-white/10 bg-[#0b0e0d] px-3 py-3 text-white sm:gap-3 sm:px-8"
-        : "flex flex-wrap items-center gap-2 border-t border-border bg-card px-2 py-2 sm:gap-3 sm:px-4 sm:py-3"}>
+        ? "flex min-w-0 shrink-0 flex-nowrap items-center gap-1 overflow-x-auto overscroll-x-contain border-t border-white/10 bg-[#0b0e0d] px-2 py-1.5 text-white sm:gap-1.5 sm:px-4 sm:py-2"
+        : "flex min-w-0 shrink-0 flex-nowrap items-center gap-1 overflow-x-auto overscroll-x-contain border-t border-border bg-card px-2 py-1.5 whitespace-nowrap sm:gap-1.5 sm:px-4 sm:py-2"}>
+        <div className="contents">
         {sceneCount > 1 && !presentationMode && (
           <details className="relative">
-            <summary className="cursor-pointer list-none rounded-md border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-accent">
+            <summary className="shrink-0 cursor-pointer list-none rounded-md border border-border px-2 py-1.5 text-xs font-medium hover:bg-accent sm:px-2.5">
               Scenes
             </summary>
             <div className="absolute bottom-full left-0 z-30 mb-2 grid min-w-56 gap-2 rounded-md border border-border bg-popover p-3 text-xs shadow-lg">
@@ -1167,13 +1257,48 @@ export function PreviewPane({
             </div>
           </details>
         )}
+        {isReelsCanvas && !presentationMode && (
+          <button
+            type="button"
+            aria-pressed={safeZonesOn}
+            onClick={() => setSafeZonesOn((value) => !value)}
+            className={`shrink-0 rounded-md border px-1.5 py-1.5 text-xs font-semibold sm:px-2 ${safeZonesOn ? "border-rose-500 bg-rose-500 text-white" : "border-border hover:bg-accent"}`}
+            title="Preview platform UI cover zones; not included in exports"
+          >
+            <span className="sm:hidden">Zones</span>
+            <span className="hidden sm:inline">Safe zones</span>
+          </button>
+        )}
+        {isReelsCanvas && !presentationMode && (
+          <label className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground sm:gap-1.5">
+            <span className="hidden sm:inline">Caption style</span>
+            <select
+              aria-label="Caption style"
+              value={captionStyle}
+              onChange={(event) => {
+                const style = event.target.value as CaptionStyle
+                setCaptionStyle(style)
+                try {
+                  localStorage.setItem("strokeline.caption-style.v1", style)
+                } catch {
+                  // Caption appearance still updates in this session.
+                }
+              }}
+              className="h-8 max-w-[5.5rem] rounded-md border border-border bg-background px-1 text-foreground sm:max-w-none sm:px-2"
+            >
+              <option value="bold">Bold</option>
+              <option value="minimal">Outline</option>
+              <option value="coral">Coral highlight</option>
+            </select>
+          </label>
+        )}
         <button
           type="button"
           aria-label={`Subtitles ${subtitlesOn ? "on" : "off"}; toggle with K`}
           aria-pressed={subtitlesOn}
           title="Toggle subtitles (K)"
           onClick={toggleSubtitles}
-          className={`rounded-md border px-2 py-1.5 text-xs font-semibold ${presentationMode
+          className={`shrink-0 rounded-md border px-2 py-1.5 text-xs font-semibold ${presentationMode
             ? `order-4 ${subtitlesOn ? "border-white bg-white text-[#0b0e0d]" : "border-white/20 bg-white/5 text-white hover:bg-white/10"}`
             : subtitlesOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
         >
@@ -1188,7 +1313,7 @@ export function PreviewPane({
           title={!voiceSupported ? "Natural voice playback is unavailable in this browser" : voicePreparationActive || voiceStatus === "preparing" ? `${voicePreparationPaused ? "Narration paused" : "Preparing narration"} · ${voicePrepProgress.completed}/${voicePrepProgress.total}. Click to ${voicePreparationPaused ? "resume" : "pause"} preparation.` : readAlongOn ? `Reader on · ${activeVoiceLabel}. Click to turn narration off.` : `Reader off · ${activeVoiceLabel}. Click to prepare narration for this script.`}
           disabled={!voiceSupported}
           onClick={voicePreparationActive || voiceStatus === "preparing" ? togglePreparation : toggleReadAlong}
-          className={`inline-flex items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${presentationMode
+          className={`inline-flex shrink-0 items-center gap-1 rounded-md border px-2 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${presentationMode
             ? `order-5 ${readAlongOn ? "border-white bg-white text-[#0b0e0d]" : "border-white/20 bg-white/5 text-white hover:bg-white/10"}`
             : readAlongOn ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
         >
@@ -1196,21 +1321,23 @@ export function PreviewPane({
           {(voicePreparationActive || voiceStatus === "preparing") && (voicePreparationPaused
             ? <Play className="size-3" aria-hidden="true" />
             : <LoaderCircle className="size-3 animate-spin" aria-hidden="true" />)}
-          {!presentationMode && (kokoroState.status === "loading"
+          {!presentationMode && <span className="hidden sm:inline">{kokoroState.status === "loading"
             ? `${kokoroState.progress}%`
             : voicePreparationActive || voiceStatus === "preparing"
             ? voicePrepProgress.total > 0 ? `${voicePreparationPaused ? "Paused · " : ""}${voicePrepProgress.completed}/${voicePrepProgress.total}` : voicePreparationPaused ? "Paused" : "Preparing…"
-            : `Reader ${readAlongOn ? "on" : "off"}`)}
+            : `Reader ${readAlongOn ? "on" : "off"}`}</span>}
         </button>
         {!presentationMode && <button
           type="button"
           aria-label="Open reader settings"
           title="Reader settings"
           onClick={() => setVoiceDialogOpen(true)}
-          className="inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"
+          className="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border hover:bg-accent"
         >
           <Settings2 className="size-3.5" aria-hidden="true" />
         </button>}
+        </div>
+        <div className="contents">
         <button
           ref={playButtonRef}
           type="button"
@@ -1272,7 +1399,7 @@ export function PreviewPane({
           aria-keyshortcuts="Space"
           className={presentationMode
             ? "order-1 inline-flex size-10 items-center justify-center rounded-full border border-white/20 bg-white text-[#0b0e0d] transition-transform hover:scale-105"
-            : "inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"}
+            : "inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border hover:bg-accent"}
         >
           {player.isPlaying ? (
             <Pause className="size-4" />
@@ -1280,9 +1407,7 @@ export function PreviewPane({
             <Play className="size-4" />
           )}
         </button>
-        <div className={presentationMode
-          ? "relative order-2 min-w-0 basis-full flex-1 sm:basis-auto"
-          : "relative order-last min-w-0 basis-full flex-1 sm:order-none sm:basis-auto"}>
+        <div className="relative min-w-10 flex-1">
           <input
             aria-label="Timeline scrubber"
             type="range"
@@ -1308,11 +1433,11 @@ export function PreviewPane({
           ))}
         </div>
         <span className={presentationMode
-          ? "order-3 w-24 text-right font-mono text-xs text-white/60"
-          : "w-24 text-right font-mono text-xs text-muted-foreground"}>
+          ? "order-3 w-14 shrink-0 text-right font-mono text-[10px] text-white/60 sm:w-24 sm:text-xs"
+          : "w-14 shrink-0 text-right font-mono text-[10px] text-muted-foreground sm:w-24 sm:text-xs"}>
           {presentationMode
-            ? `${formatTime(player.elapsed)} / ${formatTime(player.duration)}`
-            : `${player.elapsed.toFixed(2)} / ${player.duration.toFixed(2)}s`}
+            ? <><span className="sm:hidden">{formatTime(player.elapsed)}</span><span className="hidden sm:inline">{`${formatTime(player.elapsed)} / ${formatTime(player.duration)}`}</span></>
+            : <><span className="sm:hidden">{`${formatTime(player.elapsed)} / ${formatTime(player.duration)}`}</span><span className="hidden sm:inline">{`${player.elapsed.toFixed(2)} / ${player.duration.toFixed(2)}s`}</span></>}
         </span>
         {!presentationMode && !playAllMode && ended && (
           <button
@@ -1322,7 +1447,7 @@ export function PreviewPane({
               playerRef.current?.seek(0)
               playerRef.current?.play()
             }}
-            className="inline-flex size-8 items-center justify-center rounded-md border border-border hover:bg-accent"
+            className="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border hover:bg-accent"
           >
             <RotateCcw className="size-4" />
           </button>
@@ -1340,11 +1465,12 @@ export function PreviewPane({
               autoplayNext.current = true
               setActiveSceneIndex(activeSceneIndex + 1)
             }}
-            className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2 py-1.5 text-xs font-medium hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40 sm:px-2.5"
           >
             <SkipForward className="size-3.5" /> Next scene
           </button>
         )}
+        </div>
       </div>
       {(voiceNotice || voiceStatus === "preparing") && (
         <div

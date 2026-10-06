@@ -14,6 +14,7 @@ import {
   FREE_BRANDING_ENTITLEMENTS,
   type BrandingEntitlements,
 } from "@/branding/entitlements.ts"
+import type { CaptionStyle } from "@/reels/reels.ts"
 
 interface CachedNode {
   image: HTMLCanvasElement
@@ -47,7 +48,8 @@ export function drawScene(
   hand = false,
   subtitlesEnabled = false,
   readAlong = false,
-  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS
+  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
+  captionStyle: CaptionStyle = "bold"
 ): void {
   const canvas = context.canvas
   const logicalCanvas = canvasSize ?? {
@@ -173,8 +175,15 @@ export function drawScene(
   context.globalAlpha = 1
   context.restore()
   if (subtitlesEnabled && state.subtitle)
-    drawSubtitleLayer(context, state.subtitle, logicalCanvas, devicePixelRatio, readAlong)
-  drawWatermark(context, brandingEntitlements)
+    drawSubtitleLayer(
+      context,
+      state.subtitle,
+      logicalCanvas,
+      devicePixelRatio,
+      readAlong,
+      captionStyle
+    )
+  drawWatermark(context, brandingEntitlements, logicalCanvas, devicePixelRatio)
 }
 
 function drawHand(context: CanvasRenderingContext2D, node: RenderState["nodes"][number]): void {

@@ -924,16 +924,31 @@ export function DocsPage() {
                   canvas and can be played as an animation.
                 </li>
                 <li>
+                  Choose a canvas preset in the editor toolbar: landscape 16:9,
+                  Reels 9:16, portrait 4:5, or square 1:1. Custom{" "}
+                  <code>CANVAS width height</code> dimensions remain supported.
+                  The Reels category includes Hook + 3 tips, Before / after,
+                  Product reveal, Quote card, and Countdown starters.
+                </li>
+                <li>
                   Placement and geometry: <code>POSITION x y</code>,{" "}
                   <code>FROM x y</code>, <code>TO x y</code>,{" "}
                   <code>SIZE n</code>, <code>WIDTH n</code>,{" "}
-                  <code>HEIGHT n</code>, <code>RADIUS n</code>.
+                  <code>HEIGHT n</code>, <code>RADIUS n</code>. Dimensional
+                  shapes also accept legacy <code>SIZE width height</code>.
                 </li>
                 <li>
                   Appearance: <code>COLOR #hex</code>, <code>FILL #hex</code>,{" "}
                   <code>STROKE n</code>, <code>OPACITY 0..1</code>,{" "}
                   <code>PEN style</code>. Rectangles support rounded{" "}
                   <code>CORNERS n</code> (default 16); shape labels are centered and auto-fit.
+                </li>
+                <li>
+                  Filled circles, ellipses, rectangles, and diamonds support{" "}
+                  <code>GRADIENT #top #bottom</code> for a vertical two-color
+                  fill and <code>SHADOW</code> or <code>SHADOW blur</code> for a
+                  soft shadow (default blur 12). A gradient takes precedence
+                  over <code>FILL</code>.
                 </li>
                 <li>
                   Text: <code>TEXT "..."</code>, <code>LABEL "..."</code>,{" "}
@@ -1230,8 +1245,17 @@ export function DocsPage() {
                 <li>
                   <code>ANIMATE id MOVE TO x y</code>, <code>SCALE TO n</code>,{" "}
                   <code>ROTATE TO degrees</code>, <code>FADE</code>,{" "}
+                  <code>OPACITY TO 0..1</code>,{" "}
+                  <code>COLOR TO #hex</code>,{" "}
                   <code>HIGHLIGHT</code>; add <code>DURATION</code> and{" "}
                   <code>EASE</code>.
+                </li>
+                <li>
+                  Add <code>ARC n</code> to <code>MOVE TO x y</code> for a
+                  quadratic curved path; positive and negative values curve to
+                  opposite sides. <code>GROUP id</code> wraps related objects;
+                  animating its ID with MOVE, SCALE, ROTATE, FADE, OPACITY, or
+                  COLOR applies the animation to its children together.
                 </li>
                 <li>
                   <code>ENTER id effect</code>: pop, slide-left/right/up/down,
@@ -1309,16 +1333,19 @@ export function DocsPage() {
               </p>
               <p>
                 <code>SUBTITLES on|off</code> sets the initial caption state;
-                missing means off. Use
+                vertical canvases with <code>SAY</code> cues default on unless
+                overridden. Use
                 the CC control or <kbd>K</kbd> to toggle captions; the choice is
                 saved in this browser and overrides the script default. Captions stay in a screen-space layer
                 when the camera moves. SAY lines remain in the script when
                 captions are off.
               </p>
               <p>
-                Optional read-along smoothly tints the already-read caption
-                text as narration progresses, rather than switching color a
-                word at a time. Captions use balanced wrapping, remain fixed
+                Reels captions are large and bold, with the active word
+                highlighted as the SAY cue progresses. Choose Bold, Outline, or
+                Coral highlight in the preview. Landscape captions use balanced
+                wrapping; optional read-along smoothly tints already-read text.
+                Captions remain fixed
                 while the camera moves, and preserve Arabic text with RTL
                 shaping. <code>DETAIL</code> is kept with the cue; the current
                 player displays and reads <code>SAY</code>.
@@ -1355,16 +1382,29 @@ export function DocsPage() {
                   script or open one from your device.
                 </li>
                 <li>
-                  <strong>Video:</strong> export MP4 when the browser supports
-                  it. Narrated video exports as WebM with audio.
+                  <strong>Video:</strong> export MP4 with mixed narration audio
+                  when the browser supports H.264/AAC; otherwise export falls
+                  back to WebM with audio.
                 </li>
                 <li>
                   <strong>Other formats:</strong> export GIF, a PNG frame, or
-                  subtitles in SRT and VTT.
+                  subtitles in SRT and VTT. GIF also offers a seamless
+                  ping-pong loop.
                 </li>
                 <li>
                   <strong>Resolution and frame rate:</strong> choose 720p or
                   1080p and 30 or 60 fps in the export controls.
+                </li>
+                <li>
+                  <strong>Duration target:</strong> choose 7, 15, 30, or 60
+                  seconds. A warning appears when the script runs longer; export
+                  keeps the full script instead of cutting content.
+                </li>
+                <li>
+                  <strong>Social safe zones:</strong> on vertical canvases,
+                  toggle Safe zones in the preview to show the top 250px,
+                  bottom 400px, and rightmost 120px that platform UI may cover.
+                  Text placed there receives a validator warning.
                 </li>
               </ul>
               <p>
