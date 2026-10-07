@@ -1,12 +1,47 @@
 import type { SayLine } from "@/ir/types.ts"
 import { fontFamilyFor } from "@/lib/textMetrics.ts"
-import { wrapSubtitleText } from "@/subtitles/subtitles.ts"
+import { plainSubtitleText, wrapSubtitleText } from "@/subtitles/subtitles.ts"
 import { captionActiveWord, type CaptionStyle } from "@/reels/reels.ts"
 
 const subtitleWidth = 1680
 const subtitleCenterX = 960
 const subtitleCenterY = 1010
 const subtitleFontSize = 36
+
+export function visibleSubtitleLines(
+  text: string,
+  readingProgress: number
+): Array<{ text: string; start: number }> {
+  const normalizedText = plainSubtitleText(text)
+  const lines = wrapSubtitleText(normalizedText)
+  if (lines.length <= 2) {
+    let start = 0
+    return lines.map((line) => {
+      const entry = { text: line, start }
+      start += line.length + 1
+      return entry
+    })
+  }
+
+  const textProgress = Math.max(0, Math.min(1, readingProgress)) * normalizedText.length
+  let activeLine = 0
+  let start = 0
+  const lineStarts = lines.map((line) => {
+    const lineStart = start
+    start += line.length + 1
+    if (textProgress > lineStart + line.length) activeLine += 1
+    return lineStart
+  })
+  activeLine = Math.min(activeLine, lines.length - 1)
+  const firstLine = Math.min(
+    Math.max(0, activeLine - 1),
+    lines.length - 2
+  )
+  return lines.slice(firstLine, firstLine + 2).map((line, index) => ({
+    text: line,
+    start: lineStarts[firstLine + index] ?? 0,
+  }))
+}
 
 export function drawSubtitleLayer(
   context: CanvasRenderingContext2D,
@@ -22,7 +57,7 @@ export function drawSubtitleLayer(
     drawReelsCaption(context, subtitle, canvasSize, devicePixelRatio, captionStyle, opacity)
     return
   }
-  const lines = wrapSubtitleText(subtitle.text).slice(0, 2)
+  const lines = visibleSubtitleLines(subtitle.text, subtitle.readingProgress)
   if (!lines.length) return
   const direction = /^(ar|fa|ur|he|ps|dv)(-|$)/i.test(subtitle.lang ?? "") ||
     /[\u0590-\u08ff]/u.test(subtitle.text)
@@ -50,20 +85,17 @@ export function drawSubtitleLayer(
   )
   const lineGap = 44
   const firstY = subtitleCenterY - ((lines.length - 1) * lineGap) / 2
-  const lineWidths = lines.map((line) => context.measureText(line).width)
-  const lineMetrics = lines.map((line, index) => ({
-    line,
+  const lineWidths = lines.map(({ text }) => context.measureText(text).width)
+  const lineMetrics = lines.map(({ text, start }, index) => ({
+    line: text,
+    start,
     y: firstY + index * lineGap,
     width: lineWidths[index] ?? 0,
   }))
-  const totalChars = lineMetrics.reduce((total, item) => total + item.line.length, 0)
-  let charsBeforeLine = 0
-  lineMetrics.forEach(({ line, y }) => {
-    const lineProgress = totalChars > 0
-      ? Math.max(0, Math.min(1, (subtitle.readingProgress * totalChars - charsBeforeLine) / line.length))
-      : 0
+  const textProgress = subtitle.readingProgress * plainSubtitleText(subtitle.text).length
+  lineMetrics.forEach(({ line, start, y }) => {
+    const lineProgress = Math.max(0, Math.min(1, (textProgress - start) / line.length))
     drawSubtitleLine(context, line, y, direction, emphasized, readAlong ? lineProgress : 0)
-    charsBeforeLine += line.length
   })
   context.restore()
 }

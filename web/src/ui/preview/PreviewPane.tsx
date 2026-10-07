@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
+import { createPortal } from "react-dom"
 import { Check, Eye, EyeOff, LoaderCircle, Pause, Play, RotateCcw, Settings2, SkipForward, Volume2, X } from "lucide-react"
 import { drawScene } from "@/renderer/draw.ts"
 import { fitCanvasToBounds } from "@/renderer/canvasLayout.ts"
@@ -160,6 +161,14 @@ export function PreviewPane({
   const autoplayAll = useRef(false)
   const preservedPlayback = useRef<{ time: number; wasPlaying: boolean } | null>(null)
   const [playAllMode, setPlayAllMode] = useState(true)
+  const sceneMenuTriggerRef = useRef<HTMLButtonElement>(null)
+  const sceneMenuRef = useRef<HTMLDivElement>(null)
+  const [sceneMenuOpen, setSceneMenuOpen] = useState(false)
+  const [sceneMenuPosition, setSceneMenuPosition] = useState<{
+    left: number
+    bottom: number
+    maxHeight: number
+  } | null>(null)
   const effectivePlayAllMode = presentationMode || playAllMode
   const [sequenceSceneIndex, setSequenceSceneIndex] = useState(0)
   const [sceneGapSeconds, setSceneGapSeconds] = useState<number | "script">("script")
@@ -211,6 +220,49 @@ export function PreviewPane({
     document: typeof compiledIR
     ready: boolean
   }>({ document: null, ready: false })
+
+  const updateSceneMenuPosition = useCallback(() => {
+    const trigger = sceneMenuTriggerRef.current
+    if (!trigger) return
+    const bounds = trigger.getBoundingClientRect()
+    const menuWidth = 224
+    setSceneMenuPosition({
+      left: Math.max(8, Math.min(bounds.left, window.innerWidth - menuWidth - 8)),
+      bottom: Math.max(8, window.innerHeight - bounds.top + 8),
+      maxHeight: Math.max(120, bounds.top - 24),
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!sceneMenuOpen) return
+    updateSceneMenuPosition()
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      const target = event.target
+      if (
+        target instanceof Node &&
+        !sceneMenuRef.current?.contains(target) &&
+        !sceneMenuTriggerRef.current?.contains(target)
+      ) {
+        setSceneMenuOpen(false)
+      }
+    }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSceneMenuOpen(false)
+        sceneMenuTriggerRef.current?.focus()
+      }
+    }
+    document.addEventListener("pointerdown", closeOnOutsidePointer)
+    document.addEventListener("keydown", closeOnEscape)
+    window.addEventListener("resize", updateSceneMenuPosition)
+    window.addEventListener("scroll", updateSceneMenuPosition, true)
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer)
+      document.removeEventListener("keydown", closeOnEscape)
+      window.removeEventListener("resize", updateSceneMenuPosition)
+      window.removeEventListener("scroll", updateSceneMenuPosition, true)
+    }
+  }, [sceneMenuOpen, updateSceneMenuPosition])
 
   useEffect(() => () => {
     if (readerToastTimer.current !== null) window.clearTimeout(readerToastTimer.current)
@@ -758,6 +810,7 @@ export function PreviewPane({
         time: controller?.currentTime ?? player.elapsed,
         wasPlaying: false,
       }
+      narrationRef.current?.pause()
       controller?.pause()
       setPlayerState({ isPlaying: false })
     }
@@ -1182,11 +1235,36 @@ export function PreviewPane({
         : "flex min-w-0 shrink-0 flex-nowrap items-center gap-1 overflow-x-auto overscroll-x-contain border-t border-border bg-card px-2 py-1.5 whitespace-nowrap sm:gap-1.5 sm:px-4 sm:py-2"}>
         <div className="contents">
         {sceneCount > 1 && !presentationMode && (
-          <details className="relative">
-            <summary className="shrink-0 cursor-pointer list-none rounded-md border border-border px-2 py-1.5 text-xs font-medium hover:bg-accent sm:px-2.5">
-              Scenes
-            </summary>
-            <div className="absolute bottom-full left-0 z-30 mb-2 grid min-w-56 gap-2 rounded-md border border-border bg-popover p-3 text-xs shadow-lg">
+          <button
+            ref={sceneMenuTriggerRef}
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded={sceneMenuOpen}
+            onClick={() => {
+              if (sceneMenuOpen) {
+                setSceneMenuOpen(false)
+              } else {
+                updateSceneMenuPosition()
+                setSceneMenuOpen(true)
+              }
+            }}
+            className="shrink-0 rounded-md border border-border px-2 py-1.5 text-xs font-medium hover:bg-accent sm:px-2.5"
+          >
+            Scenes
+          </button>
+        )}
+        {sceneMenuOpen && sceneMenuPosition && !presentationMode && createPortal(
+          <div
+            ref={sceneMenuRef}
+            role="dialog"
+            aria-label="Scene playback settings"
+            style={{
+              left: sceneMenuPosition.left,
+              bottom: sceneMenuPosition.bottom,
+              maxHeight: sceneMenuPosition.maxHeight,
+            }}
+            className="fixed z-[150] grid w-56 max-w-[calc(100vw-1rem)] gap-2 overflow-y-auto rounded-md border border-border bg-popover p-3 text-xs text-popover-foreground shadow-xl"
+          >
               <button
                 type="button"
                 aria-pressed={playAllMode}
@@ -1196,6 +1274,7 @@ export function PreviewPane({
                     autoplayAll.current = true
                     setPlayAllMode(true)
                   }
+                  setSceneMenuOpen(false)
                 }}
                 className={`rounded-md border px-2.5 py-1.5 text-left text-xs font-medium ${playAllMode ? "border-foreground bg-foreground text-background" : "border-border hover:bg-accent"}`}
               >
@@ -1254,8 +1333,8 @@ export function PreviewPane({
                   ))}
                 </select>
               </label>
-            </div>
-          </details>
+          </div>,
+          document.body
         )}
         {isReelsCanvas && !presentationMode && (
           <button
