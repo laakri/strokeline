@@ -366,6 +366,7 @@ export function PreviewPane({
   }, [compiledIR?.subtitles])
 
   const enableReader = useCallback(async (voice: string) => {
+    setVoiceDialogOpen(false)
     narrationRef.current.resumePreparation()
     setVoicePreparationPaused(false)
     setVoicePrepProgress({ completed: 0, total: 0 })
@@ -395,7 +396,6 @@ export function PreviewPane({
       setVoiceNotice(skipped
         ? `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; this model does not speak Arabic.`
         : "")
-      setVoiceDialogOpen(false)
       showReaderToast(skipped
         ? `Reader ready. Playback continued; ${skipped} Arabic line${skipped === 1 ? " was" : "s were"} skipped.`
         : lines.length === 0

@@ -190,7 +190,7 @@ export function VoiceSettingsDialog({
               <p className="text-sm font-semibold">Narration for this script</p>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                 {narrationLineCount > 0
-                  ? `${narrationLineCount} SAY line${narrationLineCount === 1 ? "" : "s"}. Missing audio is prepared before playback; saved clips are reused for the same text and voice.`
+                  ? `${narrationLineCount} SAY line${narrationLineCount === 1 ? "" : "s"}. Click prepare and this window will close while narration continues in the background. Saved clips are reused for the same text and voice.`
                   : "This script has no SAY lines yet. You can still use the selected voice for narration in this browser."}
               </p>
 
