@@ -339,6 +339,16 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
     } else if (board === "dotted") {
       ctx.fillStyle = "#444"
       for (let x = 12; x < w; x += 26) for (let y = 12; y < h; y += 26) { ctx.beginPath(); ctx.arc(x, y, 1, 0, Math.PI * 2); ctx.fill() }
+    } else if (board === "landing") {
+      ctx.fillStyle = "#73808A"
+      ctx.globalAlpha = 0.24
+      const step = Math.max(18, Math.round(w / 54))
+      for (let x = step / 2; x < w; x += step)
+        for (let y = step / 2; y < h; y += step) {
+          ctx.beginPath()
+          ctx.arc(x, y, Math.max(1, w / 2200), 0, Math.PI * 2)
+          ctx.fill()
+        }
     } else if (board === "celestial") {
       let starSeed = 0x51f15e
       const nextStar = () => {
@@ -819,7 +829,7 @@ function drawBoard(context: CanvasRenderingContext2D, target: HTMLCanvasElement,
         ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2)
       }
     }
-    if (board !== "plain" && board !== "blackboard") {
+    if (board !== "plain" && board !== "blackboard" && board !== "landing") {
       ctx.strokeStyle = board === "glass" ? "rgba(255,255,255,.25)" : "rgba(0,0,0,.25)"
       ctx.lineWidth = Math.max(4, w / 240)
       ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, w - ctx.lineWidth, h - ctx.lineWidth)

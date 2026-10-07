@@ -875,7 +875,9 @@ export function DocsPage() {
               <p>
                 Featured presentation boards: <code>spotlight</code> gives a cinematic warm glow,
                 <code> atlas</code> frames content with cartographic contours, and <code>prism</code>
-                adds restrained violet and teal light. Use each as <code>THEME name</code> or <code>BOARD name</code>.
+                adds restrained violet and teal light. <code>landing</code> uses the warm,
+                dotted off-white surface from the Strokeline landing page for clean product
+                stories and polished explainers. Use each as <code>THEME name</code> or <code>BOARD name</code>.
               </p>
               <p>
                 A theme combines a board, its base and ink colors, and a default pen.

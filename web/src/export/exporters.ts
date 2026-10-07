@@ -210,14 +210,19 @@ export async function exportGif(
   const canvas = createCanvas(width, height)
   const context = canvas.getContext("2d")
   if (!context) return
+  const renderCanvas = createCanvas(document.canvas.width, document.canvas.height)
+  const renderContext = renderCanvas.getContext("2d")
+  if (!renderContext) return
+  context.imageSmoothingEnabled = true
+  context.imageSmoothingQuality = "high"
   const subtitleSettings = exportSubtitleSettings(document)
   const timelines = sceneTimelines(document)
   if (seamlessLoop) {
     const sequence = createSequenceRenderer(
       document,
       timelines,
-      width,
-      height,
+      document.canvas.width,
+      document.canvas.height,
       brandingEntitlements
     )
     try {
@@ -227,6 +232,8 @@ export async function exportGif(
       for (const [frame, time] of times.entries()) {
         throwIfAborted(signal)
         sequence.renderAt(time)
+        context.clearRect(0, 0, width, height)
+        context.drawImage(sequence.canvas, 0, 0, width, height)
         const { data } = context.getImageData(0, 0, width, height)
         const palette = quantize(data, 256)
         const index = applyPalette(data, palette)
@@ -262,7 +269,7 @@ export async function exportGif(
       throwIfAborted(signal)
       const t = Math.min(timeline.duration, frame / fps)
       drawScene(
-        context,
+        renderContext,
         timeline.resolveAt(t),
         undefined,
         document.canvas,
@@ -275,6 +282,8 @@ export async function exportGif(
         brandingEntitlements,
         subtitleSettings.captionStyle
       )
+      context.clearRect(0, 0, width, height)
+      context.drawImage(renderCanvas, 0, 0, width, height)
       const { data } = context.getImageData(0, 0, width, height)
       const palette = quantize(data, 256)
       const index = applyPalette(data, palette)

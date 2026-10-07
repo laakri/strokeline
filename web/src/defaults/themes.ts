@@ -32,6 +32,7 @@ export const THEMES: Record<string, ThemeStyle> = {
   pulp: { board: "halftone", background: "#F8E9B0", ink: "#1F2A5C", pen: "marker" },
   kyoto: { board: "zengarden", background: "#E6D8B8", ink: "#2A2723", pen: "brush" },
   gilded: { board: "marble", background: "#14161B", ink: "#F4E9CC", pen: "pencil" },
+  landing: { board: "landing", background: "#FBFAF6", ink: "#243C46", pen: "marker" },
 }
 
 export const BOARD_BASES: Record<string, string> = {
@@ -45,4 +46,5 @@ export const BOARD_BASES: Record<string, string> = {
   circuit: "#0D1B2A", notebook: "#FCF8EC", terrazzo: "#F2E7D5",
   sonar: "#06231D", halftone: "#F8E9B0", zengarden: "#E6D8B8", marble: "#14161B",
   spotlight: "#111820", atlas: "#F3EFE4", prism: "#15162B",
+  landing: "#FBFAF6",
 }
