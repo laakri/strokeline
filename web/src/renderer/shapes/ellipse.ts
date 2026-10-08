@@ -6,7 +6,7 @@ import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { drawSampledPathsParallel, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function ellipseBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -48,7 +48,7 @@ export function drawEllipse(render: RenderContext, node: SceneNode): void {
     applyShapeShadow(context, node, render.cameraScale)
     if (roughReveal) {
       const paths = sampledRoughPathsForNode(node, render.cameraScale)
-      drawSampledPathsParallel(context, paths, progress)
+      drawSampledPathGroups(context, groupSampledPaths(paths), progress)
     } else render.roughCanvas.ellipse(
         node.position.x, node.position.y, box.width, box.height, strokeOptions(node, render.cameraScale))
     clearShapeShadow(context)

@@ -3,7 +3,7 @@ import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
 import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
 import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
-import { drawSampledPathsParallel, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function lineEndpoints(node: SceneNode): { start: Point; end: Point } | undefined {
   const from = node.data?.from as { x?: number; y?: number } | undefined
@@ -43,12 +43,12 @@ export function drawLine(renderContext: RenderContext, node: SceneNode): void {
     const target = { x: start.x + (end.x - start.x) * progress, y: start.y + (end.y - start.y) * progress }
     if (shouldUseRoughSampledGeometry(node)) {
       const paths = sampledRoughPathsForNode(node, renderContext.cameraScale)
-      drawSampledPathsParallel(renderContext.context, paths, progress)
+      drawSampledPathGroups(renderContext.context, groupSampledPaths(paths), progress)
     } else renderContext.roughCanvas.line(start.x, start.y, target.x, target.y, options)
   } else {
     if (shouldUseRoughSampledGeometry(node)) {
       const paths = sampledRoughPathsForNode(node, renderContext.cameraScale)
-      drawSampledPathsParallel(renderContext.context, paths, progress)
+      drawSampledPathGroups(renderContext.context, groupSampledPaths(paths), progress)
     } else renderContext.roughCanvas.line(box.x, box.y, box.x + box.width * progress, box.y + box.height * progress, options)
   }
   drawLabel(renderContext, node.text ?? node.label, node.position, { color: node.style.color, fontSize: node.style.fontSize ?? DEFAULT_LABEL_SIZE, fontFamily: node.style.fontFamily }, shouldUseRoughSampledGeometry(node) ? (progress >= 1 ? 1 : 0) : progress)

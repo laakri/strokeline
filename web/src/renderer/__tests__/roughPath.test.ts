@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { Drawable } from "roughjs/bin/core"
-import { drawSampledPaths, drawSampledPathsParallel, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawSampledPathGroups, drawSampledPaths, drawSampledPathsParallel, groupSampledPaths, pointAtSampledGroupProgress, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 import { features } from "@/defaults/features.ts"
 import type { SceneNode } from "@/ir/types.ts"
 
@@ -62,6 +62,32 @@ describe("rough sampled geometry", () => {
     ])
   })
 
+  it("reveals rectangle edge groups sequentially", () => {
+    const paths = [
+      { points: [{ x: 0, y: 0 }, { x: 10, y: 0 }] },
+      { points: [{ x: 0, y: 1 }, { x: 10, y: 1 }] },
+      { points: [{ x: 10, y: 0 }, { x: 10, y: 10 }] },
+      { points: [{ x: 11, y: 0 }, { x: 11, y: 10 }] },
+      { points: [{ x: 10, y: 10 }, { x: 0, y: 10 }] },
+      { points: [{ x: 11, y: 10 }, { x: 1, y: 10 }] },
+      { points: [{ x: 0, y: 10 }, { x: 0, y: 0 }] },
+      { points: [{ x: 1, y: 10 }, { x: 1, y: 0 }] },
+    ]
+    const groups = groupSampledPaths(paths)
+    expect(groups).toHaveLength(4)
+    for (const [progress, expectedLines] of [[0.25, 2], [0.5, 4], [0.75, 6]] as const) {
+      const moves: Array<[string, number[]]> = []
+      const context = {
+        beginPath: () => moves.push(["begin", []]),
+        moveTo: (x: number, y: number) => moves.push(["move", [x, y]]),
+        lineTo: (x: number, y: number) => moves.push(["line", [x, y]]),
+        stroke: () => moves.push(["stroke", []]),
+      } as unknown as CanvasRenderingContext2D
+      drawSampledPathGroups(context, groups, progress)
+      expect(moves.filter(([kind]) => kind === "line").length).toBe(expectedLines)
+    }
+  })
+
   it("keeps sampled geometry opt-in", () => {
     const node = { data: {} } as SceneNode
     const previous = features.roughSampledGeometry
@@ -90,20 +116,7 @@ describe("rough sampled geometry", () => {
     } as SceneNode
     const paths = sampledRoughPathsForNode(node)
     const tip = pointAtSampledProgress(paths, 0.5)
-    const lengths = paths.map((path) => path.points.reduce((sum, point, index) => {
-      const previous = path.points[index - 1]
-      return previous ? sum + Math.hypot(point.x - previous.x, point.y - previous.y) : sum
-    }, 0))
-    const total = lengths.reduce((sum, length) => sum + length, 0)
-    let remaining = total * 0.5
-    let expected = paths[0]!.points.at(-1)!
-    for (let index = 0; index < paths.length; index++) {
-      if (remaining <= lengths[index]!) {
-        expected = pointAtSampledProgress([paths[index]!], lengths[index] ? remaining / lengths[index]! : 0).point
-        break
-      }
-      remaining -= lengths[index]!
-    }
+    const expected = pointAtSampledGroupProgress(groupSampledPaths(paths), 0.5).point
     expect(tip.point).toEqual(expected)
   })
 

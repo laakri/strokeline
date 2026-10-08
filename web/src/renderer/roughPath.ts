@@ -9,6 +9,11 @@ export interface SampledPath {
   points: Point[]
 }
 
+export interface SampledPathGroup {
+  paths: SampledPath[]
+  main: SampledPath
+}
+
 const cache = new Map<string, SampledPath[]>()
 const pathGenerator = rough.generator()
 
@@ -190,15 +195,51 @@ export function pointAtPolylineProgress(points: Point[], progress: number): { po
   }
 
 export function pointAtSampledProgress(paths: SampledPath[], progress: number): { point: Point; angle: number } {
-    const lengths = paths.map((path) => polylineLength(path.points))
-    const total = lengths.reduce((sum, length) => sum + length, 0)
-    let remaining = total * Math.max(0, Math.min(1, progress))
-    for (let index = 0; index < paths.length; index++) {
-      if (remaining <= lengths[index]!) return pointAtPolylineProgress(paths[index]!.points, lengths[index] ? remaining / lengths[index]! : 0)
-      remaining -= lengths[index]!
-    }
+    const groups = groupSampledPaths(paths)
+    return pointAtSampledGroupProgress(groups, progress)
+}
 
-    return pointAtPolylineProgress(paths.at(-1)?.points ?? [], 1)
+function pathEndpoints(path: SampledPath): { start: Point; end: Point } {
+  return { start: path.points[0]!, end: path.points.at(-1)! }
+}
+
+function duplicateStroke(a: SampledPath, b: SampledPath): boolean {
+  const first = pathEndpoints(a)
+  const second = pathEndpoints(b)
+  const length = Math.max(polylineLength(a.points), polylineLength(b.points), 1)
+  const tolerance = Math.max(4, length * 0.12)
+  const sameDirection = Math.hypot(first.start.x - second.start.x, first.start.y - second.start.y) <= tolerance
+    && Math.hypot(first.end.x - second.end.x, first.end.y - second.end.y) <= tolerance
+  const reverseDirection = Math.hypot(first.start.x - second.end.x, first.start.y - second.end.y) <= tolerance
+    && Math.hypot(first.end.x - second.start.x, first.end.y - second.start.y) <= tolerance
+  return sameDirection || reverseDirection
+}
+
+/** Groups Rough's duplicate passes while retaining the generator's edge order. */
+export function groupSampledPaths(paths: SampledPath[]): SampledPathGroup[] {
+  const groups: SampledPathGroup[] = []
+  for (const path of paths) {
+    const previous = groups.at(-1)
+    if (previous && duplicateStroke(previous.main, path)) previous.paths.push(path)
+    else groups.push({ paths: [path], main: path })
+  }
+  return groups
+}
+
+export function pointAtSampledGroupProgress(
+  groups: SampledPathGroup[],
+  progress: number
+): { point: Point; angle: number; groupIndex: number } {
+  const lengths = groups.map((group) => polylineLength(group.main.points))
+  const total = lengths.reduce((sum, length) => sum + length, 0)
+  let remaining = total * Math.max(0, Math.min(1, progress))
+  for (let index = 0; index < groups.length; index++) {
+    if (remaining <= lengths[index]!)
+      return { ...pointAtPolylineProgress(groups[index]!.main.points, lengths[index] ? remaining / lengths[index]! : 0), groupIndex: index }
+    remaining -= lengths[index]!
+  }
+  const last = groups.at(-1)
+  return { ...pointAtPolylineProgress(last?.main.points ?? [], 1), groupIndex: Math.max(0, groups.length - 1) }
 }
 
 /** Follows disconnected sampled strokes without teleporting between their endpoints. */
@@ -284,6 +325,30 @@ export function drawSampledPathsParallel(
     if (points.length < 2) continue
     context.moveTo(points[0]!.x, points[0]!.y)
     for (const point of points.slice(1)) context.lineTo(point.x, point.y)
+  }
+  context.stroke()
+}
+
+/** Reveals one Rough edge group at a time, keeping duplicate passes synchronized. */
+export function drawSampledPathGroups(
+  context: CanvasRenderingContext2D,
+  groups: SampledPathGroup[],
+  progress = 1
+): void {
+  const lengths = groups.map((group) => polylineLength(group.main.points))
+  const total = lengths.reduce((sum, length) => sum + length, 0)
+  let remaining = total * Math.max(0, Math.min(1, progress))
+  context.beginPath()
+  for (let index = 0; index < groups.length; index++) {
+    const local = lengths[index] ? Math.max(0, Math.min(1, remaining / lengths[index]!)) : 0
+    for (const path of groups[index]!.paths) {
+      const points = trimPolyline(path.points, polylineLength(path.points) * local)
+      if (points.length < 2) continue
+      context.moveTo(points[0]!.x, points[0]!.y)
+      for (const point of points.slice(1)) context.lineTo(point.x, point.y)
+    }
+    remaining -= Math.min(remaining, lengths[index]!)
+    if (remaining <= 0) break
   }
   context.stroke()
 }

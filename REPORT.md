@@ -45,6 +45,12 @@
 - Typecheck: passed.
 - Production build: passed; existing `import.meta` and chunk-size warnings remain.
 
+## Follow-up - sequential Rough edge groups
+- Replaced parallel Rough reveal with ordered edge groups: duplicate passes share one edge progress, while the pen follows the group's main pass.
+- Focused diagnostics at 25%, 50%, and 75% report zero pen-tip delta for Rough rectangles, circles, diamonds, lines, arrows, and freehand.
+- Full suite: 28 files / 117 tests passed.
+- Production build: passed; existing `import.meta` and chunk-size warnings remain.
+
 ## Docs, Skills, and verification
 - Updated app docs and `AI_prompt_kit.MD` with the new rough/freehand controls and the supported MORPH set: any pair of CIRCLE, ELLIPSE, RECTANGLE, or DIAMOND, including CIRCLE -> DIAMOND.
 - Changed the runtime Rough.js import to the bundled browser-safe module. This fixed the validator's SSR module-resolution failure.

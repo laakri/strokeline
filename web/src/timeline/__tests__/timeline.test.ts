@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { Scene } from "@/ir/types.ts"
 import { Timeline } from "@/timeline/timeline.ts"
-import { pointAtPolylineProgress, sampledRoughPathsForNode } from "@/renderer/roughPath.ts"
+import { groupSampledPaths, pointAtSampledGroupProgress, sampledRoughPathsForNode } from "@/renderer/roughPath.ts"
 
 const scene: Scene = {
   id: "1",
@@ -204,8 +204,8 @@ describe("stateless timeline resolution", () => {
     const roughTimeline = new Timeline(roughScene, { width: 640, height: 360 })
     const state = roughTimeline.resolveAt(0.5)
     const node = state.nodes[0]!
-    const expected = pointAtPolylineProgress(
-      sampledRoughPathsForNode(node, state.camera.scale)[0]!.points,
+    const expected = pointAtSampledGroupProgress(
+      groupSampledPaths(sampledRoughPathsForNode(node, state.camera.scale)),
       node.revealProgress
     ).point
     expect(state.camera.scale).not.toBe(1)

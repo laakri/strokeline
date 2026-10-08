@@ -6,7 +6,7 @@ import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { drawRoughFill, drawSampledPathsParallel, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function rectangleBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -82,7 +82,7 @@ export function drawRectangle(
   if (roughReveal) {
     const paths = sampledRoughPathsForNode(node, renderContext.cameraScale)
     if (progress >= 1) drawRoughFill(renderContext.roughCanvas, renderContext.roughGenerator, node, renderContext.cameraScale)
-    drawSampledPathsParallel(context, paths, progress)
+    drawSampledPathGroups(context, groupSampledPaths(paths), progress)
   } else if (pathReveal && progress > 0) {
     const reveal = rectangleRevealPath(box, progress)
     context.beginPath()

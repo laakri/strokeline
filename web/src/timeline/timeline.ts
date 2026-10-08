@@ -12,7 +12,7 @@ import {
   interpolateAnimation,
   revealAt,
 } from "@/timeline/interpolate.ts"
-import { pointAtPolylineProgress, pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { groupSampledPaths, pointAtPolylineProgress, pointAtSampledGroupProgress, pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export interface ResolvedNode extends SceneNode {
   revealProgress: number
@@ -254,8 +254,9 @@ export class Timeline {
           const roughPaths = shouldUseRoughSampledGeometry(current.node)
             ? sampledRoughPathsForNode(current.node, cameraScale)
             : undefined
-          const sampled = roughPaths?.[0]?.points.length
-            ? { ...pointAtPolylineProgress(roughPaths[0].points, progress), lift: 0 }
+          const sampledGroups = roughPaths?.length ? groupSampledPaths(roughPaths) : undefined
+          const sampled = sampledGroups?.length
+            ? { ...pointAtSampledGroupProgress(sampledGroups, progress), lift: 0 }
             : undefined
           const position = sampled?.point ?? pointAtProgress(currentPath, progress)
           const tangent = sampled?.angle ?? tangentAtProgress(currentPath, progress)
@@ -277,10 +278,12 @@ export class Timeline {
           const nextRoughPaths = shouldUseRoughSampledGeometry(next.node)
             ? sampledRoughPathsForNode(next.node, cameraScale)
             : undefined
-          const from = currentRoughPaths?.[0]?.points.length
-            ? pointAtPolylineProgress(currentRoughPaths[0].points, 1).point
+          const currentGroups = currentRoughPaths?.length ? groupSampledPaths(currentRoughPaths) : undefined
+          const from = currentGroups?.length
+            ? pointAtSampledGroupProgress(currentGroups, 1).point
             : pointAtProgress(currentPath, 1)
-          const to = nextRoughPaths?.[0]?.points[0] ?? nextPath[0]!
+          const nextGroups = nextRoughPaths?.length ? groupSampledPaths(nextRoughPaths) : undefined
+          const to = nextGroups?.[0]?.main.points[0] ?? nextPath[0]!
           const travelProgress = clamp((at - end) / Math.max(0.001, next.op.t - end))
           const eased = easing.easeInOut(travelProgress)
           return {

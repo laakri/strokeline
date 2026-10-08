@@ -5,7 +5,7 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { drawRoughFill, drawSampledPathsParallel, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function diamondBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0, height = node.size?.height ?? 0
@@ -44,7 +44,7 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
   if (roughReveal) {
     const paths = sampledRoughPathsForNode(node, render.cameraScale)
     if (progress >= 1) drawRoughFill(render.roughCanvas, render.roughGenerator, node, render.cameraScale)
-    drawSampledPathsParallel(ctx, paths, progress)
+    drawSampledPathGroups(ctx, groupSampledPaths(paths), progress)
   } else ctx.stroke()
   clearShapeShadow(ctx); ctx.restore()
 
