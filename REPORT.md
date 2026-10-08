@@ -51,6 +51,11 @@
 - Full suite: 28 files / 117 tests passed.
 - Production build: passed; existing `import.meta` and chunk-size warnings remain.
 
+## Follow-up - Rough patterned fills
+- Kept the existing Rough.js dependency and matched its demo fill settings with explicit `fillWeight` and `hachureGap`.
+- Added a dots-fill generator regression; full suite: 28 files / 118 tests passed.
+- Production build and typecheck passed.
+
 ## Docs, Skills, and verification
 - Updated app docs and `AI_prompt_kit.MD` with the new rough/freehand controls and the supported MORPH set: any pair of CIRCLE, ELLIPSE, RECTANGLE, or DIAMOND, including CIRCLE -> DIAMOND.
 - Changed the runtime Rough.js import to the bundled browser-safe module. This fixed the validator's SSR module-resolution failure.

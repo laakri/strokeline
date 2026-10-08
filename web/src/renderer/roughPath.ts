@@ -54,6 +54,8 @@ export function drawRoughFill(
     ...roughOptions(node, cameraScale),
     fill: node.style.fill,
     fillStyle: fillStyle === "cross-hatch" ? "cross-hatch" : fillStyle,
+    fillWeight: Math.max(1, node.style.strokeWidth / cameraScale),
+    hachureGap: Math.max(4, node.style.strokeWidth * 3 / cameraScale),
     stroke: "transparent",
     strokeWidth: 0,
   }

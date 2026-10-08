@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { Drawable } from "roughjs/bin/core"
-import { drawSampledPathGroups, drawSampledPaths, drawSampledPathsParallel, groupSampledPaths, pointAtSampledGroupProgress, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawRoughFill, drawSampledPathGroups, drawSampledPaths, drawSampledPathsParallel, groupSampledPaths, pointAtSampledGroupProgress, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import rough from "roughjs/bundled/rough.esm.js"
 import { features } from "@/defaults/features.ts"
 import type { SceneNode } from "@/ir/types.ts"
 
@@ -133,6 +134,27 @@ describe("rough sampled geometry", () => {
     const different = sampledRoughPathsForNode({ ...base, data: { ...base.data, roughSeed: 8, roughness: 3 } })
     expect(same).toEqual(sampledRoughPathsForNode({ ...base, data: { ...base.data } }))
     expect(different).not.toEqual(same)
+  })
+
+  it("generates visible Rough dots fill operations", () => {
+    const node = {
+      id: "dots-box",
+      type: "rectangle",
+      position: { x: 100, y: 100 },
+      size: { width: 180, height: 90 },
+      style: { color: "#111", fill: "#f5c542", strokeWidth: 3, pen: "handdrawn" },
+      data: { roughFill: "dots" },
+    } as SceneNode
+    let drawable: { sets: Array<{ type: string }>; options: { fillStyle?: string; fillWeight?: number; hachureGap?: number } } | undefined
+    drawRoughFill(
+      { draw: (value: typeof drawable) => { drawable = value } } as never,
+      rough.generator(),
+      node
+    )
+    expect(drawable?.options.fillStyle).toBe("dots")
+    expect(drawable?.options.fillWeight).toBeGreaterThan(0)
+    expect(drawable?.options.hachureGap).toBeGreaterThan(0)
+    expect(drawable?.sets.some((set) => set.type === "fillSketch")).toBe(true)
   })
 
   it("lifts and travels between disconnected sampled strokes", () => {
