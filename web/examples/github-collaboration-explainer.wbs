@@ -1,0 +1,1007 @@
+VERSION 1.0
+CANVAS 1920 1080
+THEME classroom
+STYLE handdrawn
+FONT handwritten
+STROKE 4
+
+SCENE 1 "Final Final v2"
+
+  # ---- beat 1: hook, split screen, file chaos on the left ----
+  SAY "Two friends, one essay, and a folder full of final finals."
+    DURATION 5.3s
+    TONE hook
+
+  CREATE head1 AS TEXT
+    TEXT "Group project, version chaos"
+    POSITION 620 190
+    SIZE 52
+    COLOR #FFD966
+    DRAW 0.8s
+  END
+
+  STACK files DIRECTION vertical GAP 24 AT 330 300
+    CREATE f1 AS RECTANGLE
+      WIDTH 420
+      HEIGHT 90
+      CORNERS 12
+      COLOR #F2F2E6
+      FILL #2A3A34
+      TEXT "essay.docx"
+      DRAW 0.4s
+    END
+    CREATE f2 AS RECTANGLE
+      WIDTH 420
+      HEIGHT 90
+      CORNERS 12
+      COLOR #F2F2E6
+      FILL #2A3A34
+      TEXT "essay_final.docx"
+      DRAW 0.4s
+    END
+    CREATE f3 AS RECTANGLE
+      WIDTH 420
+      HEIGHT 90
+      CORNERS 12
+      COLOR #F2F2E6
+      FILL #2A3A34
+      TEXT "essay_final_v2.docx"
+      DRAW 0.4s
+    END
+    CREATE f4 AS RECTANGLE
+      WIDTH 420
+      HEIGHT 90
+      CORNERS 12
+      COLOR #F2F2E6
+      FILL #2A3A34
+      TEXT "essay_REAL_final.docx"
+      DRAW 0.4s
+    END
+  END
+
+  ANIMATE f4 ROTATE TO 4
+    DURATION 0.4s
+    EASE easeInOut
+
+  ANIMATE f4 ROTATE TO -4
+    DURATION 0.4s
+    EASE easeInOut
+
+  ANIMATE f4 ROTATE TO 0
+    DURATION 0.3s
+    EASE easeInOut
+
+  WAIT 2.2s
+
+  # ---- beat 2: two editors, one file, collision ----
+  SAY "Mia and Leo both edit the same file at the same time, and nobody knows whose version wins."
+    DURATION 7.4s
+    TONE explain
+
+  PARALLEL
+    CREATE mia AS ICON
+      POSITION 1200 360
+      SIZE 150
+      NAME user
+      COLOR #7FC8F8
+    END
+    CREATE leo AS ICON
+      POSITION 1560 360
+      SIZE 150
+      NAME user
+      COLOR #FF8FA3
+    END
+    CREATE lblMia AS TEXT
+      TEXT "Mia"
+      POSITION 1200 255
+      SIZE 36
+      COLOR #7FC8F8
+      DRAW 0.5s
+    END
+    CREATE lblLeo AS TEXT
+      TEXT "Leo"
+      POSITION 1560 255
+      SIZE 36
+      COLOR #FF8FA3
+      DRAW 0.5s
+    END
+  END
+
+  CREATE essay AS RECTANGLE
+    POSITION 1380 700
+    WIDTH 320
+    HEIGHT 100
+    CORNERS 12
+    COLOR #FFD966
+    FILL #2A3A34
+    TEXT "essay.docx"
+    DRAW 0.5s
+  END
+
+  PARALLEL
+    ARROW mia -> essay
+      ROUTE elbow
+      HEAD end
+      COLOR #7FC8F8
+      DRAW 0.6s
+    ARROW leo -> essay
+      ROUTE elbow
+      HEAD end
+      COLOR #FF8FA3
+      DRAW 0.6s
+  END
+
+  WAIT 1.5s
+
+  PARALLEL
+    ANIMATE essay COLOR TO #FF8FA3
+      DURATION 0.4s
+      EASE easeInOut
+    ANIMATE essay SCALE TO 1.15
+      DURATION 0.4s
+      EASE bounce
+    CREATE clash AS TEXT
+      TEXT "CONFLICT!"
+      POSITION 1380 830
+      SIZE 56
+      COLOR #FF8FA3
+      DRAW 0.4s
+    END
+  END
+
+  ANIMATE essay ROTATE TO 6
+    DURATION 0.3s
+    EASE easeInOut
+
+  ANIMATE essay ROTATE TO -6
+    DURATION 0.3s
+    EASE easeInOut
+
+  ANIMATE essay ROTATE TO 0
+    DURATION 0.3s
+    EASE easeInOut
+
+  WAIT 3.4s
+
+  # ---- beat 3: detail shot on the damage ----
+  SAY "Email attachments cannot merge anything, so someone's hard work quietly vanishes."
+    DURATION 4.8s
+    TONE warning
+
+  ANIMATE f4 COLOR TO #FF8FA3
+    DURATION 0.5s
+    EASE easeInOut
+
+  CAMERA ZOOM
+    TARGET essay
+    SCALE 2
+    DURATION 1.2s
+
+  WAIT 1s
+
+  CAMERA RESET
+    DURATION 1s
+
+  ANIMATE essay OPACITY TO 0.4
+    DURATION 0.5s
+    EASE easeInOut
+
+  WAIT 0.8s
+
+  # ---- beat 4: meet Dot, the motif ----
+  SAY "Enter Dot, a tiny saved snapshot of your work, and the start of a better way."
+    DURATION 6.7s
+    TONE recap
+
+  PARALLEL
+    ANIMATE f1 OPACITY TO 0.15
+      DURATION 0.8s
+      EASE easeOut
+    ANIMATE f2 OPACITY TO 0.15
+      DURATION 0.8s
+      EASE easeOut
+    ANIMATE f3 OPACITY TO 0.15
+      DURATION 0.8s
+      EASE easeOut
+    ANIMATE f4 OPACITY TO 0.15
+      DURATION 0.8s
+      EASE easeOut
+  END
+
+  PARALLEL
+    CREATE dot1 AS CIRCLE
+      POSITION 960 520
+      RADIUS 26
+      COLOR #FFD966
+      FILL #FFD966
+      DRAW 0.4s
+    END
+    CREATE lblDot AS TEXT
+      TEXT "a commit"
+      POSITION 960 610
+      SIZE 36
+      COLOR #FFD966
+      DRAW 0.4s
+    END
+  END
+
+  ANIMATE dot1 SCALE TO 1.4
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 1.2s
+
+  ANIMATE dot1 MOVE TO 960 460
+    DURATION 0.8s
+    EASE easeOut
+
+  WAIT 1s
+
+  ANIMATE dot1 SCALE TO 1.7
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 1.9s
+
+  # ---- close scene 1 ----
+END SCENE
+
+SCENE 2 "The Shared Home"
+
+  # ---- beat 1: hub and spoke, GitHub in the middle ----
+  SAY "GitHub is a cloud home for your project, where every saved snapshot lives safely online."
+    DURATION 6.3s
+    TONE explain
+
+  PARALLEL
+    CREATE hubCard AS RECTANGLE
+      POSITION 960 540
+      WIDTH 260
+      HEIGHT 260
+      CORNERS 24
+      COLOR #F2F2E6
+      FILL #F2F2E6
+      DRAW 0.6s
+    END
+    CREATE hub AS IMAGE
+      URL "/brand-icons/github.svg"
+      POSITION 960 540
+      WIDTH 220
+      HEIGHT 220
+      FIT contain
+      PADDING 12
+      CORNERS 16
+      BORDER #D8E2EC
+      DRAW 0.6s
+    END
+    CREATE cloud AS ICON
+      POSITION 960 300
+      SIZE 110
+      NAME cloud
+      COLOR #7FC8F8
+    END
+  END
+
+  PARALLEL
+    CREATE mia AS ICON
+      POSITION 400 320
+      SIZE 120
+      NAME user
+      COLOR #7FC8F8
+    END
+    CREATE leo AS ICON
+      POSITION 1520 320
+      SIZE 120
+      NAME user
+      COLOR #FF8FA3
+    END
+    CREATE lap AS ICON
+      POSITION 400 760
+      SIZE 120
+      NAME laptop
+      COLOR #9BE7A5
+    END
+    CREATE hist AS ICON
+      POSITION 1520 760
+      SIZE 120
+      NAME history
+      COLOR #FFD966
+    END
+    CREATE lblMia AS TEXT
+      TEXT "Mia"
+      POSITION 400 215
+      SIZE 36
+      COLOR #7FC8F8
+      DRAW 0.5s
+    END
+    CREATE lblLeo AS TEXT
+      TEXT "Leo"
+      POSITION 1520 215
+      SIZE 36
+      COLOR #FF8FA3
+      DRAW 0.5s
+    END
+    CREATE lblLap AS TEXT
+      TEXT "your laptop"
+      POSITION 400 870
+      SIZE 32
+      COLOR #9BE7A5
+      DRAW 0.5s
+    END
+    CREATE lblHist AS TEXT
+      TEXT "full history"
+      POSITION 1520 870
+      SIZE 32
+      COLOR #FFD966
+      DRAW 0.5s
+    END
+  END
+
+  ANIMATE mia SCALE TO 1.2
+    DURATION 0.4s
+    EASE bounce
+
+  ANIMATE leo SCALE TO 1.2
+    DURATION 0.4s
+    EASE bounce
+
+  WAIT 1.3s
+
+  ANIMATE lap ROTATE TO 8
+    DURATION 0.4s
+    EASE easeInOut
+
+  ANIMATE lap ROTATE TO -8
+    DURATION 0.4s
+    EASE easeInOut
+
+  ANIMATE lap ROTATE TO 0
+    DURATION 0.3s
+    EASE easeInOut
+
+  WAIT 2.3s
+
+  # ---- beat 2: push and pull, Dot travels ----
+  SAY "Mia pushes her work up, and Leo pulls it down, so both always see the same thing."
+    DURATION 7s
+    TONE explain
+
+  PARALLEL
+    ARROW mia -> hubCard
+      LABEL "push"
+      ROUTE straight
+      HEAD end
+      COLOR #7FC8F8
+      DRAW 0.7s
+    ARROW hubCard -> leo
+      LABEL "pull"
+      ROUTE straight
+      HEAD end
+      COLOR #FF8FA3
+      DRAW 0.7s
+    ARROW lap -> hubCard
+      LABEL "clone"
+      ROUTE straight
+      HEAD end
+      COLOR #9BE7A5
+      DRAW 0.7s
+    ARROW hubCard -> hist
+      LABEL "saves"
+      ROUTE straight
+      HEAD end
+      COLOR #FFD966
+      DRAW 0.7s
+  END
+
+  CREATE dot2 AS CIRCLE
+    POSITION 470 355
+    RADIUS 22
+    COLOR #FFD966
+    FILL #FFD966
+    DRAW 0.2s
+  END
+
+  ANIMATE dot2 MOVE TO 960 540
+    DURATION 0.8s
+    EASE easeInOut
+
+  ANIMATE dot2 SCALE TO 1.5
+    DURATION 0.4s
+    EASE bounce
+
+  WAIT 0.6s
+
+  ANIMATE dot2 MOVE TO 1450 360 ARC 40
+    DURATION 0.8s
+    EASE easeInOut
+
+  ANIMATE leo SCALE TO 1.35
+    DURATION 0.4s
+    EASE bounce
+
+  WAIT 3.4s
+
+  # ---- beat 3: the time machine ----
+  SAY "Every push adds a snapshot, so you can rewind to any day like a time machine."
+    DURATION 6.7s
+    TONE explain
+
+  ANIMATE hist HIGHLIGHT
+    COLOR #FFF3B0
+    DURATION 1.2s
+
+  ANIMATE hist ROTATE TO -20
+    DURATION 0.4s
+    EASE easeInOut
+
+  ANIMATE hist ROTATE TO 0
+    DURATION 0.4s
+    EASE easeInOut
+
+  ANIMATE dot2 MOVE TO 1400 700 ARC -50
+    DURATION 0.8s
+    EASE easeInOut
+
+  CREATE cap2 AS TEXT
+    TEXT "Shared home + time machine"
+    POSITION 960 940
+    SIZE 44
+    COLOR #FFD966
+    DRAW 0.8s
+  END
+
+  WAIT 3.4s
+
+  # ---- close scene 2 ----
+END SCENE
+
+SCENE 3 "Branch, Review, Merge"
+
+  # ---- beat 1: git graph, Dot rides the branch ----
+  SAY "Instead of editing the main copy, Leo makes a branch, a safe parallel universe for his idea."
+    DURATION 7.1s
+    TONE explain
+
+  PARALLEL
+    CREATE mainLine AS LINE
+      FROM 240 760
+      TO 1680 760
+      COLOR #F2F2E6
+      STROKE 6
+      DRAW 0.8s
+    END
+    CREATE c1 AS CIRCLE
+      POSITION 340 760
+      RADIUS 18
+      COLOR #F2F2E6
+      FILL #F2F2E6
+      DRAW 0.4s
+    END
+    CREATE c2 AS CIRCLE
+      POSITION 520 760
+      RADIUS 18
+      COLOR #F2F2E6
+      FILL #F2F2E6
+      DRAW 0.4s
+    END
+    CREATE c3 AS CIRCLE
+      POSITION 1600 760
+      RADIUS 18
+      COLOR #F2F2E6
+      FILL #F2F2E6
+      DRAW 0.4s
+    END
+    CREATE lblMain AS TEXT
+      TEXT "main"
+      POSITION 340 830
+      SIZE 36
+      COLOR #F2F2E6
+      DRAW 0.5s
+    END
+  END
+
+  INK featurePath
+    POINTS 520 760, 560 640, 640 520, 740 470, 860 460, 1100 460, 1240 470, 1340 540, 1420 640, 1480 760
+    COLOR #7FC8F8
+    WIDTH 6
+    DRAW 1.8s
+  END
+
+  PARALLEL
+    CREATE fc1 AS CIRCLE
+      POSITION 860 460
+      RADIUS 18
+      COLOR #7FC8F8
+      FILL #7FC8F8
+      DRAW 0.5s
+    END
+    CREATE fc2 AS CIRCLE
+      POSITION 1000 460
+      RADIUS 18
+      COLOR #7FC8F8
+      FILL #7FC8F8
+      DRAW 0.5s
+    END
+    CREATE fc3 AS CIRCLE
+      POSITION 1140 460
+      RADIUS 18
+      COLOR #7FC8F8
+      FILL #7FC8F8
+      DRAW 0.5s
+    END
+    CREATE lblFeat AS TEXT
+      TEXT "feature branch"
+      POSITION 1000 390
+      SIZE 32
+      COLOR #7FC8F8
+      DRAW 0.5s
+    END
+  END
+
+  CREATE dot3 AS CIRCLE
+    POSITION 520 760
+    RADIUS 22
+    COLOR #FFD966
+    FILL #FFD966
+    DRAW 0.2s
+  END
+
+  ANIMATE dot3 MOVE TO 860 460 ARC 60
+    DURATION 0.7s
+    EASE easeInOut
+
+  ANIMATE dot3 MOVE TO 1140 460
+    DURATION 0.6s
+    EASE easeInOut
+
+  WAIT 2.9s
+
+  # ---- beat 2: pull request and review ----
+  SAY "Then he opens a pull request, which is a polite way of asking the team to take a look."
+    DURATION 7.8s
+    TONE explain
+
+  CREATE pr AS RECTANGLE
+    POSITION 1140 260
+    WIDTH 420
+    HEIGHT 100
+    CORNERS 14
+    COLOR #FFD966
+    FILL #2A3A34
+    TEXT "Pull Request"
+    DRAW 0.5s
+  END
+
+  ARROW fc3 -> pr
+    ROUTE straight
+    HEAD end
+    COLOR #FFD966
+    DRAW 0.5s
+
+  CREATE rev AS ICON
+    POSITION 1560 260
+    SIZE 110
+    NAME eye
+    COLOR #9BE7A5
+  END
+
+  PARALLEL
+    ARROW pr -> rev
+      ROUTE straight
+      HEAD end
+      COLOR #9BE7A5
+      DRAW 0.5s
+    CREATE lblRev AS TEXT
+      TEXT "Review"
+      POSITION 1560 350
+      SIZE 32
+      COLOR #9BE7A5
+      DRAW 0.4s
+    END
+  END
+
+  ANIMATE rev SCALE TO 1.2
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 1.5s
+
+  CREATE approved AS ICON
+    POSITION 1700 260
+    SIZE 100
+    NAME check-circle
+    COLOR #9BE7A5
+  END
+
+  ANIMATE approved SCALE TO 1.3
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 4.2s
+
+  # ---- beat 3: merge home, detail shot ----
+  SAY "Once approved, the branch merges home, and main gains his work without losing anyone's."
+    DURATION 6.1s
+    TONE punchline
+
+  ANIMATE dot3 MOVE TO 1480 760 ARC -60
+    DURATION 0.9s
+    EASE easeInOut
+
+  ANIMATE dot3 SCALE TO 1.6
+    DURATION 0.5s
+    EASE bounce
+
+  CREATE mergedTxt AS TEXT
+    TEXT "merged!"
+    POSITION 1480 850
+    SIZE 40
+    COLOR #FFD966
+    DRAW 0.4s
+  END
+
+  CAMERA ZOOM
+    TARGET dot3
+    SCALE 2
+    DURATION 1.2s
+
+  WAIT 1s
+
+  CAMERA RESET
+    DURATION 1s
+
+  WAIT 1.4s
+
+  # ---- close scene 3 ----
+END SCENE
+
+SCENE 4 "Superpowers"
+
+  # ---- beat 1: four feature cards, block system ----
+  SAY "On top of that core, GitHub adds helpers for planning, testing, and coding."
+    DURATION 5.7s
+    TONE explain
+
+  CREATE head4 AS TEXT
+    TEXT "GitHub superpowers"
+    POSITION 560 170
+    SIZE 56
+    COLOR #FFD966
+    DRAW 0.8s
+  END
+
+  PARALLEL
+    CREATE cardIssues AS RECTANGLE
+      POSITION 330 560
+      WIDTH 360
+      HEIGHT 420
+      CORNERS 28
+      COLOR #FFD966
+      FILL #24332E
+      STROKE 5
+      SHADOW 14
+      DRAW 0.6s
+    END
+    CREATE cardActions AS RECTANGLE
+      POSITION 750 560
+      WIDTH 360
+      HEIGHT 420
+      CORNERS 28
+      COLOR #9BE7A5
+      FILL #24332E
+      STROKE 5
+      SHADOW 14
+      DRAW 0.6s
+    END
+    CREATE cardProjects AS RECTANGLE
+      POSITION 1170 560
+      WIDTH 360
+      HEIGHT 420
+      CORNERS 28
+      COLOR #7FC8F8
+      FILL #24332E
+      STROKE 5
+      SHADOW 14
+      DRAW 0.6s
+    END
+    CREATE cardCopilot AS RECTANGLE
+      POSITION 1590 560
+      WIDTH 360
+      HEIGHT 420
+      CORNERS 28
+      COLOR #FF8FA3
+      FILL #24332E
+      STROKE 5
+      SHADOW 14
+      DRAW 0.6s
+    END
+  END
+
+  PARALLEL
+    CREATE iIssue AS ICON
+      POSITION 330 430
+      SIZE 120
+      NAME list-todo
+      COLOR #FFD966
+    END
+    CREATE iAct AS ICON
+      POSITION 750 430
+      SIZE 120
+      NAME bot
+      COLOR #9BE7A5
+    END
+    CREATE iProj AS ICON
+      POSITION 1170 430
+      SIZE 120
+      NAME kanban
+      COLOR #7FC8F8
+    END
+    CREATE iCop AS ICON
+      POSITION 1590 430
+      SIZE 120
+      NAME sparkles
+      COLOR #FF8FA3
+    END
+    CREATE nIssue AS TEXT
+      TEXT "Issues"
+      POSITION 330 580
+      SIZE 44
+      COLOR #FFD966
+      DRAW 0.6s
+    END
+    CREATE nAct AS TEXT
+      TEXT "Actions"
+      POSITION 750 580
+      SIZE 44
+      COLOR #9BE7A5
+      DRAW 0.6s
+    END
+    CREATE nProj AS TEXT
+      TEXT "Projects"
+      POSITION 1170 580
+      SIZE 44
+      COLOR #7FC8F8
+      DRAW 0.6s
+    END
+    CREATE nCop AS TEXT
+      TEXT "Copilot"
+      POSITION 1590 580
+      SIZE 44
+      COLOR #FF8FA3
+      DRAW 0.6s
+    END
+    CREATE dIssue AS TEXT
+      TEXT "Track bugs, ideas"
+      POSITION 330 665
+      SIZE 30
+      COLOR #F2F2E6
+      DRAW 0.6s
+    END
+    CREATE dAct AS TEXT
+      TEXT "Tests run for you"
+      POSITION 750 665
+      SIZE 30
+      COLOR #F2F2E6
+      DRAW 0.6s
+    END
+    CREATE dProj AS TEXT
+      TEXT "Plan on boards"
+      POSITION 1170 665
+      SIZE 30
+      COLOR #F2F2E6
+      DRAW 0.6s
+    END
+    CREATE dCop AS TEXT
+      TEXT "Suggests code"
+      POSITION 1590 665
+      SIZE 30
+      COLOR #F2F2E6
+      DRAW 0.6s
+    END
+  END
+
+  ANIMATE cardIssues SCALE TO 1.08
+    DURATION 0.4s
+    EASE bounce
+
+  ANIMATE cardActions SCALE TO 1.08
+    DURATION 0.4s
+    EASE bounce
+
+  ANIMATE cardProjects SCALE TO 1.08
+    DURATION 0.4s
+    EASE bounce
+
+  ANIMATE cardCopilot SCALE TO 1.08
+    DURATION 0.4s
+    EASE bounce
+
+  WAIT 2.9s
+
+  # ---- beat 2: detail shot on Copilot ----
+  SAY "Copilot even suggests your next line while you type, like autocomplete for code."
+    DURATION 5.5s
+    TONE punchline
+
+  ANIMATE cardCopilot COLOR TO #FFFFFF
+    DURATION 0.4s
+    EASE easeInOut
+
+  CAMERA ZOOM
+    TARGET cardCopilot
+    SCALE 1.8
+    DURATION 1.2s
+
+  WAIT 1.2s
+
+  CAMERA RESET
+    DURATION 1s
+
+  ANIMATE iCop ROTATE TO 12
+    DURATION 0.3s
+    EASE easeInOut
+
+  ANIMATE iCop ROTATE TO -12
+    DURATION 0.3s
+    EASE easeInOut
+
+  ANIMATE iCop ROTATE TO 0
+    DURATION 0.3s
+    EASE easeInOut
+
+  WAIT 0.8s
+
+  # ---- close scene 4 ----
+END SCENE
+
+SCENE 5 "Built Together"
+
+  # ---- beat 1: strangers help, open source ----
+  SAY "Open projects let strangers suggest fixes, so great software gets built together."
+    DURATION 5.1s
+    TONE explain
+
+  CREATE centerPr AS ICON
+    POSITION 960 440
+    SIZE 200
+    NAME git-pull-request
+    COLOR #FFD966
+  END
+
+  PARALLEL
+    CREATE p1 AS ICON
+      POSITION 460 160
+      SIZE 100
+      NAME user
+      COLOR #7FC8F8
+    END
+    CREATE p2 AS ICON
+      POSITION 1460 160
+      SIZE 100
+      NAME user
+      COLOR #FF8FA3
+    END
+    CREATE p3 AS ICON
+      POSITION 460 160
+      SIZE 100
+      NAME user
+      COLOR #9BE7A5
+    END
+    CREATE p4 AS ICON
+      POSITION 1460 160
+      SIZE 100
+      NAME user
+      COLOR #7FC8F8
+    END
+  END
+
+  PARALLEL
+    ANIMATE p1 MOVE TO 460 320
+      DURATION 0.8s
+      EASE bounce
+    ANIMATE p2 MOVE TO 1460 320
+      DURATION 0.8s
+      EASE bounce
+    ANIMATE p3 MOVE TO 460 580
+      DURATION 0.8s
+      EASE bounce
+    ANIMATE p4 MOVE TO 1460 580
+      DURATION 0.8s
+      EASE bounce
+  END
+
+  PARALLEL
+    ARROW p1 -> centerPr
+      ROUTE curve
+      HEAD end
+      COLOR #7FC8F8
+      DRAW 0.7s
+    ARROW p2 -> centerPr
+      ROUTE curve
+      HEAD end
+      COLOR #FF8FA3
+      DRAW 0.7s
+    ARROW p3 -> centerPr
+      ROUTE curve
+      HEAD end
+      COLOR #9BE7A5
+      DRAW 0.7s
+    ARROW p4 -> centerPr
+      ROUTE curve
+      HEAD end
+      COLOR #7FC8F8
+      DRAW 0.7s
+  END
+
+  ANIMATE centerPr SCALE TO 1.3
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 3.1s
+
+  # ---- beat 2: payoff ----
+  SAY "So remember: small commits, big progress, and a team that never overwrites you."
+    DURATION 5.8s
+    TONE punchline
+
+  CREATE cap5 AS TEXT
+    TEXT "Small commits -> big progress"
+    POSITION 960 930
+    SIZE 52
+    COLOR #FFD966
+    DRAW 0.8s
+  END
+
+  CREATE dot5 AS CIRCLE
+    POSITION 1500 930
+    RADIUS 20
+    COLOR #FFD966
+    FILL #FFD966
+    DRAW 0.3s
+  END
+
+  ANIMATE dot5 SCALE TO 1.6
+    DURATION 0.5s
+    EASE bounce
+
+  INK star
+    POINTS 960 690, 975 735, 1022 736, 984 764, 998 810, 960 782, 922 810, 936 764, 898 736, 945 735, 960 690
+    COLOR #FFD966
+    WIDTH 5
+    DRAW 1s
+  END
+
+  ANIMATE star ROTATE TO 12
+    DURATION 0.5s
+    EASE easeInOut
+
+  ANIMATE centerPr SCALE TO 1.5
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 2.5s
+
+  # ---- beat 3: LinkedIn call to action ----
+  SAY "Which GitHub feature saves you the most time?"
+    DURATION 3.5s
+    TONE hook
+
+  CREATE cta AS RECTANGLE
+    POSITION 960 835
+    WIDTH 1100
+    HEIGHT 80
+    CORNERS 40
+    COLOR #9BE7A5
+    FILL #24332E
+    TEXT "Which feature saves you the most time?"
+    DRAW 0.6s
+  END
+
+  ANIMATE cta SCALE TO 1.1
+    DURATION 0.5s
+    EASE bounce
+
+  WAIT 2.4s
+
+  # ---- close scene 5 ----
+END SCENE
