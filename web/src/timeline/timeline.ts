@@ -3,6 +3,8 @@ import * as flubberModule from "flubber"
 import type { AnimationSpec, Point, SayLine, Scene, SceneNode, TableHighlightTarget, TimelineOp } from "@/ir/types.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
 import { clamp, easing } from "@/timeline/easing.ts"
+import { inkPathPoints } from "@/renderer/ink/draw.ts"
+import { arrowPathForNode } from "@/renderer/shapes/arrow.ts"
 import {
   cameraProgress,
   clampCameraState,
@@ -247,7 +249,7 @@ export class Timeline {
         const start = current.op.t
         const end = start + current.op.draw.duration
         if (at >= start && at < end) {
-          const progress = clamp((at - start) / Math.max(0.001, current.op.draw.duration))
+          const progress = clamp(current.node.revealProgress)
           const roughPaths = shouldUseRoughSampledGeometry(current.node)
             ? sampledRoughPathsForNode(current.node)
             : undefined
@@ -294,6 +296,9 @@ export class Timeline {
     }
 
     function penPath(node: ResolvedNode): Point[] {
+      if (node.type === "ink" && node.data?.freehand === true && node.points && node.points.length > 1)
+        return inkPathPoints(node.points, node.id, node.style.pen === "clean" ? "clean" : "handdrawn")
+      if (node.type === "arrow") return arrowPathForNode(node, new Map(nodes.map((candidate) => [candidate.id, candidate])))
       if (node.points && node.points.length > 1) return node.points
       const from = node.data?.from as Point | undefined
       const to = node.data?.to as Point | undefined
@@ -309,6 +314,8 @@ export class Timeline {
       }
       if (node.type === "diamond" && width > 0 && height > 0)
         return [{ x: node.position.x, y: node.position.y - height / 2 }, { x: node.position.x + width / 2, y: node.position.y }, { x: node.position.x, y: node.position.y + height / 2 }, { x: node.position.x - width / 2, y: node.position.y }, { x: node.position.x, y: node.position.y - height / 2 }]
+      if (node.type === "line" && (width > 0 || height > 0))
+        return [{ x: node.position.x - width / 2, y: node.position.y - height / 2 }, { x: node.position.x + width / 2, y: node.position.y + height / 2 }]
       if (node.type === "circle" && node.radius) {
         return Array.from({ length: 33 }, (_, index) => {
           const angle = -Math.PI / 2 + (index / 32) * Math.PI * 2

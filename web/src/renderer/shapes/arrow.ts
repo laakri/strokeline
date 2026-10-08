@@ -22,12 +22,8 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
   if (!from || !to) return
 
   const route = asRoute(node.data?.route)
-  const waypoints = readWaypoints(node.data?.waypoints)
   const { start, end } = resolveArrowEndpoints(node, renderContext.nodes, nodeBounds)
-  const selfMessage = from.id === to.id
-  const path = selfMessage
-    ? selfLoop(nodeBounds(from), renderContext.cameraScale)
-    : routePoints(start, end, route, waypoints)
+  const path = arrowPathForNode(node, renderContext.nodes, renderContext.cameraScale)
   const progress = Math.max(0, Math.min(1, (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1))
   const head = asHead(node.data?.head)
   let visiblePath = trimPath(path, progress)
@@ -93,6 +89,22 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
 }
 
 export const arrow: ShapeRenderer = { draw: drawArrow, boundingBox: arrowBoundingBox }
+
+export function arrowPathForNode(
+  node: SceneNode,
+  nodes: Map<string, SceneNode>,
+  cameraScale = 1
+): Point[] {
+  const from = nodes.get(String(node.data?.fromId ?? ""))
+  const to = nodes.get(String(node.data?.toId ?? ""))
+  if (!from || !to) return []
+  const route = asRoute(node.data?.route)
+  const waypoints = readWaypoints(node.data?.waypoints)
+  const { start, end } = resolveArrowEndpoints(node, nodes, nodeBounds)
+  return from.id === to.id
+    ? selfLoop(nodeBounds(from), cameraScale)
+    : routePoints(start, end, route, waypoints)
+}
 
 function routePoints(start: Point, end: Point, route: ArrowRoute, waypoints: Point[]): Point[] {
   if (waypoints.length) {

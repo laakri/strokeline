@@ -61,6 +61,7 @@ export function drawRectangle(
     context.roundRect(box.x, box.y, box.width, box.height, corner)
   , progress)
   const roughReveal = shouldUseRoughSampledGeometry(node)
+  const pathReveal = node.data?.penFollow === true
   context.save()
   if (!roughReveal) {
     context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.clip()
@@ -70,6 +71,10 @@ export function drawRectangle(
     context.roundRect(box.x, box.y, box.width, box.height, corner),
     roughReveal ? progress >= 1 : false
   )
+  if (!roughReveal && pathReveal) {
+    context.restore()
+    context.save()
+  }
   context.strokeStyle = node.style.color
   context.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
   context.lineJoin = "round"
@@ -77,7 +82,13 @@ export function drawRectangle(
   if (roughReveal) {
     const paths = sampledRoughPathsForNode(node, renderContext.cameraScale)
     drawSampledPaths(context, paths, progress)
-  } else {
+  } else if (pathReveal && progress > 0) {
+    const reveal = rectangleRevealPath(box, progress)
+    context.beginPath()
+    context.moveTo(reveal[0]![0], reveal[0]![1])
+    for (const point of reveal.slice(1)) context.lineTo(point[0], point[1])
+    context.stroke()
+  } else if (!pathReveal) {
     context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.stroke()
   }
   clearShapeShadow(context)

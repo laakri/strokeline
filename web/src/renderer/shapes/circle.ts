@@ -6,6 +6,7 @@ import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
+import { drawSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function circleBoundingBox(node: SceneNode): BoundingBox {
   const diameter = (node.radius ?? 0) * 2
@@ -48,16 +49,20 @@ export function drawCircle(
       false
     )
     applyShapeShadow(context, node, renderContext.cameraScale)
-    renderContext.roughCanvas.arc(
-      node.position.x,
-      node.position.y,
-      radius * 2,
-      radius * 2,
-      -Math.PI / 2,
-      -Math.PI / 2 + progress * Math.PI * 2,
-      false,
-      strokeOptions(node, renderContext.cameraScale)
-    )
+    if (shouldUseRoughSampledGeometry(node)) {
+      drawSampledPaths(context, sampledRoughPathsForNode(node, renderContext.cameraScale), progress)
+    } else {
+      renderContext.roughCanvas.arc(
+        node.position.x,
+        node.position.y,
+        radius * 2,
+        radius * 2,
+        -Math.PI / 2,
+        -Math.PI / 2 + progress * Math.PI * 2,
+        false,
+        strokeOptions(node, renderContext.cameraScale)
+      )
+    }
     clearShapeShadow(context)
     context.restore()
   }
