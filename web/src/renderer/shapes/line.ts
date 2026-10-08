@@ -3,7 +3,7 @@ import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
 import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
 import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
-import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
+import { drawSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function lineEndpoints(node: SceneNode): { start: Point; end: Point } | undefined {
   const from = node.data?.from as { x?: number; y?: number } | undefined
@@ -42,14 +42,12 @@ export function drawLine(renderContext: RenderContext, node: SceneNode): void {
     const end = endpoints.end
     const target = { x: start.x + (end.x - start.x) * progress, y: start.y + (end.y - start.y) * progress }
     if (shouldUseRoughSampledGeometry(node)) {
-      const paths = cachedSampledRoughPath(`line:${node.id}:${start.x}:${start.y}:${end.x}:${end.y}:${node.style.pen}:${node.style.strokeWidth}:${renderContext.cameraScale}`, () =>
-        sampleRoughDrawable(renderContext.roughGenerator.line(start.x, start.y, end.x, end.y, options)))
+      const paths = sampledRoughPathsForNode(node, renderContext.cameraScale)
       drawSampledPaths(renderContext.context, paths, progress)
     } else renderContext.roughCanvas.line(start.x, start.y, target.x, target.y, options)
   } else {
     if (shouldUseRoughSampledGeometry(node)) {
-      const paths = cachedSampledRoughPath(`line:${node.id}:${box.x}:${box.y}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${renderContext.cameraScale}`, () =>
-        sampleRoughDrawable(renderContext.roughGenerator.line(box.x, box.y, box.x + box.width, box.y + box.height, options)))
+      const paths = sampledRoughPathsForNode(node, renderContext.cameraScale)
       drawSampledPaths(renderContext.context, paths, progress)
     } else renderContext.roughCanvas.line(box.x, box.y, box.x + box.width * progress, box.y + box.height * progress, options)
   }

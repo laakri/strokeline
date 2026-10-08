@@ -1,12 +1,15 @@
 import type { Drawable, Op } from "roughjs/bin/core"
+import rough from "roughjs/bin/rough"
 import type { Point, SceneNode } from "@/ir/types.ts"
 import { features } from "@/defaults/features.ts"
+import { strokeOptions } from "@/renderer/handdrawn.ts"
 
 export interface SampledPath {
   points: Point[]
 }
 
 const cache = new Map<string, SampledPath[]>()
+const pathGenerator = rough.generator()
 
 function sampleCubic(start: Point, data: number[], samples: number): Point[] {
   const [x1, y1, x2, y2, x3, y3] = data
@@ -61,6 +64,39 @@ export function cachedSampledRoughPath(
   return paths
 }
 
+/** Returns the exact sampled outline used by opt-in geometric renderers. */
+export function sampledRoughPathsForNode(
+  node: SceneNode,
+  cameraScale = 1
+): SampledPath[] {
+  const width = node.size?.width ?? 0
+  const height = node.size?.height ?? 0
+  const options = strokeOptions(node, cameraScale)
+  const key = `node:${node.id}:${node.type}:${node.position.x}:${node.position.y}:${width}:${height}:${node.radius ?? 0}:${node.style.pen}:${node.style.strokeWidth}:${cameraScale}`
+  return cachedSampledRoughPath(key, () => {
+    if (node.type === "rectangle")
+      return sampleRoughDrawable(pathGenerator.rectangle(node.position.x - width / 2, node.position.y - height / 2, width, height, options))
+    if (node.type === "ellipse")
+      return sampleRoughDrawable(pathGenerator.ellipse(node.position.x, node.position.y, width, height, options))
+    if (node.type === "circle")
+      return sampleRoughDrawable(pathGenerator.ellipse(node.position.x, node.position.y, (node.radius ?? 0) * 2, (node.radius ?? 0) * 2, options))
+    if (node.type === "diamond") {
+      const points: [number, number][] = [
+        [node.position.x, node.position.y - height / 2],
+        [node.position.x + width / 2, node.position.y],
+        [node.position.x, node.position.y + height / 2],
+        [node.position.x - width / 2, node.position.y],
+      ]
+      return sampleRoughDrawable(pathGenerator.polygon(points, options))
+    }
+    const from = node.data?.from as Point | undefined
+    const to = node.data?.to as Point | undefined
+    if ((node.type === "line" || node.type === "arrow") && from && to)
+      return sampleRoughDrawable(pathGenerator.line(from.x, from.y, to.x, to.y, options))
+    return []
+  })
+}
+
 export function roughSampledGeometryEnabled(node: SceneNode): boolean {
   return node.data?.roughSampledGeometry === true || node.data?._roughSampledGeometry === true
 }
@@ -75,6 +111,37 @@ export function polylineLength(points: Point[]): number {
     length += Math.hypot(points[index]!.x - points[index - 1]!.x, points[index]!.y - points[index - 1]!.y)
   }
   return length
+}
+
+export function pointAtPolylineProgress(points: Point[], progress: number): { point: Point; angle: number } {
+    const distance = polylineLength(points) * Math.max(0, Math.min(1, progress))
+    let travelled = 0
+    for (let index = 1; index < points.length; index++) {
+      const previous = points[index - 1]!, current = points[index]!
+      const length = Math.hypot(current.x - previous.x, current.y - previous.y)
+      if (travelled + length >= distance) {
+        const amount = length ? (distance - travelled) / length : 0
+        return {
+          point: { x: previous.x + (current.x - previous.x) * amount, y: previous.y + (current.y - previous.y) * amount },
+          angle: Math.atan2(current.y - previous.y, current.x - previous.x),
+        }
+      }
+      travelled += length
+    }
+    const end = points.at(-1) ?? { x: 0, y: 0 }
+    const previous = points.at(-2) ?? end
+    return { point: end, angle: Math.atan2(end.y - previous.y, end.x - previous.x) }
+  }
+
+export function pointAtSampledProgress(paths: SampledPath[], progress: number): { point: Point; angle: number } {
+    const lengths = paths.map((path) => polylineLength(path.points))
+    const total = lengths.reduce((sum, length) => sum + length, 0)
+    let remaining = total * Math.max(0, Math.min(1, progress))
+    for (let index = 0; index < paths.length; index++) {
+      if (remaining <= lengths[index]!) return pointAtPolylineProgress(paths[index]!.points, lengths[index] ? remaining / lengths[index]! : 0)
+      remaining -= lengths[index]!
+    }
+    return pointAtPolylineProgress(paths.at(-1)?.points ?? [], 1)
 }
 
 function trimPolyline(points: Point[], distance: number): Point[] {

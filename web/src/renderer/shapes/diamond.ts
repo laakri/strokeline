@@ -5,8 +5,7 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
-import { strokeOptions } from "@/renderer/handdrawn.ts"
+import { drawSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function diamondBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0, height = node.size?.height ?? 0
@@ -43,8 +42,7 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
   ctx.lineWidth = Math.max(1, node.style.strokeWidth / render.cameraScale)
   ctx.lineJoin = "round"
   if (roughReveal) {
-    const paths = cachedSampledRoughPath(`diamond:${node.id}:${box.x}:${box.y}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${render.cameraScale}`, () =>
-      sampleRoughDrawable(render.roughGenerator.polygon(points, strokeOptions(node, render.cameraScale))))
+    const paths = sampledRoughPathsForNode(node, render.cameraScale)
     drawSampledPaths(ctx, paths, progress)
   } else ctx.stroke()
   clearShapeShadow(ctx); ctx.restore()

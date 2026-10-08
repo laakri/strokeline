@@ -10,6 +10,7 @@ import {
   interpolateAnimation,
   revealAt,
 } from "@/timeline/interpolate.ts"
+import { pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export interface ResolvedNode extends SceneNode {
   revealProgress: number
@@ -231,11 +232,15 @@ export class Timeline {
         const end = start + current.op.draw.duration
         if (at >= start && at < end) {
           const progress = clamp((at - start) / Math.max(0.001, current.op.draw.duration))
-          const position = pointAtProgress(currentPath, progress)
+          const roughPaths = shouldUseRoughSampledGeometry(current.node)
+            ? sampledRoughPathsForNode(current.node)
+            : undefined
+          const sampled = roughPaths?.length ? pointAtSampledProgress(roughPaths, progress) : undefined
+          const position = sampled?.point ?? pointAtProgress(currentPath, progress)
           return {
             targetId: current.node.id,
             position,
-            angle: -0.9,
+            angle: sampled?.angle ?? -0.9,
             opacity: Math.min(1, progress * 12, (1 - progress) * 12),
             phase: "drawing",
             lift: 0,
@@ -244,8 +249,16 @@ export class Timeline {
         const next = candidates[index + 1]
         if (next && at >= end && at < next.op.t) {
           const nextPath = penPath(next.node)
-          const from = pointAtProgress(currentPath, 1)
-          const to = nextPath[0]!
+          const currentRoughPaths = shouldUseRoughSampledGeometry(current.node)
+            ? sampledRoughPathsForNode(current.node)
+            : undefined
+          const nextRoughPaths = shouldUseRoughSampledGeometry(next.node)
+            ? sampledRoughPathsForNode(next.node)
+            : undefined
+          const from = currentRoughPaths?.length
+            ? pointAtSampledProgress(currentRoughPaths, 1).point
+            : pointAtProgress(currentPath, 1)
+          const to = nextRoughPaths?.[0]?.points[0] ?? nextPath[0]!
           const travelProgress = clamp((at - end) / Math.max(0.001, next.op.t - end))
           const eased = easing.easeInOut(travelProgress)
           return {

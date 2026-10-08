@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { Drawable } from "roughjs/bin/core"
-import { drawSampledPaths, sampleRoughDrawable, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawSampledPaths, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 import { features } from "@/defaults/features.ts"
 import type { SceneNode } from "@/ir/types.ts"
 
@@ -52,5 +52,36 @@ describe("rough sampled geometry", () => {
     } finally {
       features.roughSampledGeometry = previous
     }
+  })
+
+  it("uses the same sampled rough tip for pen progress", () => {
+    const node = {
+      id: "rough-line",
+      type: "line",
+      position: { x: 0, y: 0 },
+      data: {
+        roughSampledGeometry: true,
+        from: { x: 0, y: 0 },
+        to: { x: 100, y: 0 },
+      },
+      style: { color: "#111", strokeWidth: 3, pen: "handdrawn" },
+    } as SceneNode
+    const paths = sampledRoughPathsForNode(node)
+    const tip = pointAtSampledProgress(paths, 0.5)
+    const lengths = paths.map((path) => path.points.reduce((sum, point, index) => {
+      const previous = path.points[index - 1]
+      return previous ? sum + Math.hypot(point.x - previous.x, point.y - previous.y) : sum
+    }, 0))
+    const total = lengths.reduce((sum, length) => sum + length, 0)
+    let remaining = total * 0.5
+    let expected = paths[0]!.points.at(-1)!
+    for (let index = 0; index < paths.length; index++) {
+      if (remaining <= lengths[index]!) {
+        expected = pointAtSampledProgress([paths[index]!], lengths[index] ? remaining / lengths[index]! : 0).point
+        break
+      }
+      remaining -= lengths[index]!
+    }
+    expect(tip.point).toEqual(expected)
   })
 })

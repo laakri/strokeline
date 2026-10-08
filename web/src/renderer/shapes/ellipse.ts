@@ -1,12 +1,12 @@
 import type { SceneNode } from "@/ir/types.ts"
 import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
-import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
+import type { RenderContext } from "@/renderer/handdrawn.ts"
 import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
+import { drawSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export function ellipseBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -47,8 +47,7 @@ export function drawEllipse(render: RenderContext, node: SceneNode): void {
     )
     applyShapeShadow(context, node, render.cameraScale)
     if (roughReveal) {
-      const paths = cachedSampledRoughPath(`ellipse:${node.id}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${render.cameraScale}`, () =>
-        sampleRoughDrawable(render.roughGenerator.ellipse(node.position.x, node.position.y, box.width, box.height, strokeOptions(node, render.cameraScale))))
+      const paths = sampledRoughPathsForNode(node, render.cameraScale)
       drawSampledPaths(context, paths, progress)
     } else render.roughCanvas.ellipse(
         node.position.x, node.position.y, box.width, box.height, strokeOptions(node, render.cameraScale))
