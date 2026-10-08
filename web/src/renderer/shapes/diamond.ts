@@ -5,6 +5,8 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
+import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
+import { strokeOptions } from "@/renderer/handdrawn.ts"
 
 export function diamondBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0, height = node.size?.height ?? 0
@@ -36,14 +38,20 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
   applyShapeShadow(ctx, node, render.cameraScale)
   ctx.strokeStyle = node.style.color
   ctx.lineWidth = Math.max(1, node.style.strokeWidth / render.cameraScale)
-  ctx.lineJoin = "round"; ctx.stroke(); clearShapeShadow(ctx); ctx.restore()
+  ctx.lineJoin = "round"
+  if (shouldUseRoughSampledGeometry(node)) {
+    const paths = cachedSampledRoughPath(`diamond:${node.id}:${box.x}:${box.y}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${render.cameraScale}`, () =>
+      sampleRoughDrawable(render.roughGenerator.polygon(points, strokeOptions(node, render.cameraScale))))
+    drawSampledPaths(ctx, paths, progress)
+  } else ctx.stroke()
+  clearShapeShadow(ctx); ctx.restore()
 
   const text = node.text ?? node.label
   const maxWidth = box.width * 0.58, maxHeight = box.height * 0.42
   const fontSize = text ? fitTextFontSize(text, node.style.fontSize ?? 40, maxWidth, maxHeight, maxWidth, node.lineHeight ?? 1.3,
     (line, size) => measureTextWidth(line, size, node.style.fontFamily), 18) : node.style.fontSize ?? 40
   drawLabel(render, text, node.position, { color: node.style.color, fontSize, fontFamily: node.style.fontFamily,
-    maxWidth, align: "center", lineHeight: node.lineHeight }, progress)
+    maxWidth, align: "center", lineHeight: node.lineHeight }, shouldUseRoughSampledGeometry(node) ? (progress >= 1 ? 1 : 0) : progress)
 }
 
 export const diamond: ShapeRenderer = { draw: drawDiamond, boundingBox: diamondBoundingBox }

@@ -16,6 +16,7 @@ export const ANIMATION_VERBS = [
   "HIGHLIGHT",
   "OPACITY",
   "COLOR",
+  "MORPH",
 ] as const
 export const CAMERA_VERBS = ["ZOOM", "PAN", "RESET", "DRIFT", "SHAKE", "FOLLOW"] as const
 export const EASE_NAMES = [
@@ -43,6 +44,7 @@ export const PROPERTY_KEYS = [
   "HEIGHT",
   "RADIUS",
   "COLOR",
+  "MORPH",
   "FILL",
   "BACKGROUND",
   "STROKE",
@@ -86,6 +88,9 @@ export const PROPERTY_KEYS = [
   "DRAW",
   "REVEAL",
   "POINTS",
+  "FREEHAND",
+  "PENFOLLOW",
+  "ROUGH",
   "NAME",
   "ICON",
   "PEN",

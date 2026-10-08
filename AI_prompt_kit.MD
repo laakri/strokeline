@@ -91,6 +91,9 @@ the safe area and use concise `SAY` cues for spoken, word-highlighted captions.
 | `BACKGROUND #hex`, `PADDING n`, `CORNERS n`, `BOXOPACITY 0..1` | TEXT                                         | Plate behind a label that must sit over lines                                             |
 | `NAME iconName`                                                | ICON                                         | Only from the icon list (section 8)                                                       |
 | `DRAW 1s`                                                      | CREATE, INK, TABLE, charts, ARROW            | Reveal time. Not used on ICON                                                             |
+| `ROUGH on\|off`                                                | geometric CREATE, LINE, ARROW                | Opt-in deterministic rough sampled outline and draw-on reveal; omitted preserves legacy rendering |
+| `PENFOLLOW on\|off`                                            | drawing CREATE, LINE, ARROW, INK              | Opt-in vector pen at the active reveal tip; omitted preserves legacy hand behavior       |
+| `FREEHAND on\|off`                                             | INK                                          | Opt-in perfect-freehand variable-width filled stroke; omitted preserves roughjs ink      |
 | `DURATION 1s`, `EASE x`                                        | ANIMATE, DELETE, CAMERA                      |                                                                                           |
 | `ROUTE straight\|elbow\|curve`                                 | ARROW                                        | Choose a direct connector, clean right-angle path, or smooth curved path                 |
 | `LINESTYLE solid\|dashed\|dotted`                              | ARROW, LINE                                  | Use dash patterns to distinguish the relationship type                                    |

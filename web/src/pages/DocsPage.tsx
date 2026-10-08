@@ -1061,6 +1061,14 @@ export function DocsPage() {
                 coordinate pairs. <code>INK ARROW</code> draws between
                 coordinates; <code>INK UNDERLINE id</code> and{" "}
                 <code>INK CIRCLE id</code> mark an existing object.
+                Add <code>FREEHAND on</code> inside an <code>INK</code> block
+                to opt into a filled perfect-freehand outline; the default
+                renderer remains unchanged.
+                Use <code>ROUGH on</code> on a geometric object for the
+                deterministic sampled rough outline and draw-on reveal, and
+                <code>PENFOLLOW on</code> to show a pen at the active reveal
+                tip. These options are opt-in; omitted options preserve the
+                legacy renderer.
               </p>
               <CodeBlock title="Freehand ink" code={inkScript} />
               <p>

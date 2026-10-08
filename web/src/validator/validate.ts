@@ -314,6 +314,24 @@ export function validate(document: SceneDocument): Diagnostic[] {
         }
         const sourceProperties =
           (op.node.data?._sourceProperties as string[] | undefined) ?? []
+        if (sourceProperties.includes("FREEHAND")) {
+          const freehandSetting = String(op.node.data?.freehandSetting ?? "").toLowerCase()
+          if (op.node.type !== "ink")
+            diagnostics.push(error("E_UNSUPPORTED", "FREEHAND is only supported on INK objects.", location(op, "FREEHAND").line, location(op, "FREEHAND").col))
+          else if (freehandSetting !== "on" && freehandSetting !== "off")
+            diagnostics.push(error("E_BAD_RANGE", `FREEHAND for "${op.node.id}" must be on or off.`, location(op, "FREEHAND").line, location(op, "FREEHAND").col))
+        }
+        if (sourceProperties.includes("PENFOLLOW")) {
+          const value = String(op.node.data?.penFollow === true ? "on" : op.node.data?.penFollow === false ? "off" : "").toLowerCase()
+          if (!["on", "off"].includes(value))
+            diagnostics.push(error("E_BAD_RANGE", `PENFOLLOW for "${op.node.id}" must be on or off.`, location(op, "PENFOLLOW").line, location(op, "PENFOLLOW").col))
+        }
+        if (sourceProperties.includes("ROUGH")) {
+          const value = op.node.data?.roughSampledGeometry
+          const raw = value === true ? "on" : value === false ? "off" : ""
+          if (!["on", "off"].includes(raw))
+            diagnostics.push(error("E_BAD_RANGE", `ROUGH for "${op.node.id}" must be on or off.`, location(op, "ROUGH").line, location(op, "ROUGH").col))
+        }
         for (const property of sourceProperties)
           if (!knownProperties.has(property))
             diagnostics.push(

@@ -74,6 +74,7 @@ export interface ASTInk {
   from?: { x: number; y: number }
   to?: { x: number; y: number }
   targetId?: string
+  freehand?: boolean
   props: ASTProperty[]
   token: Token
 }
@@ -493,7 +494,7 @@ class Parser {
     const token = this.take()
     const targetId = this.readIdent("E_EXPECTED_ID", token)
     const verb = this.takeValue("E_EXPECTED_ANIMATION", token)
-    if (verb === "MOVE" || verb === "SCALE" || verb === "ROTATE" || verb === "OPACITY" || verb === "COLOR")
+    if (verb === "MOVE" || verb === "SCALE" || verb === "ROTATE" || verb === "OPACITY" || verb === "COLOR" || verb === "MORPH")
       this.expect("TO", token)
     const values: ASTValue[] = []
     let duration: ASTValue | undefined
@@ -748,7 +749,7 @@ class Parser {
       this.endLine()
       const props = this.parseProperties(["END"])
       this.parseInkEnd(token, "INK ARROW")
-      return { kind: "ink", mode: "arrow", from, to, props, token }
+      return { kind: "ink", mode: "arrow", from, to, props, freehand: inkFreehand(props), token }
     }
     if (mode === "UNDERLINE") {
       this.take()
@@ -756,7 +757,7 @@ class Parser {
       this.endLine()
       const props = this.parseProperties(["END"])
       this.parseInkEndOptional()
-      return { kind: "ink", mode: "underline", targetId, props, token }
+      return { kind: "ink", mode: "underline", targetId, props, freehand: inkFreehand(props), token }
     }
     if (mode === "CIRCLE") {
       this.take()
@@ -764,13 +765,13 @@ class Parser {
       this.endLine()
       const props = this.parseProperties(["END"])
       this.parseInkEndOptional()
-      return { kind: "ink", mode: "circle", targetId, props, token }
+      return { kind: "ink", mode: "circle", targetId, props, freehand: inkFreehand(props), token }
     }
     const id = this.readIdent("E_EXPECTED_ID", token)
     this.endLine()
     const props = this.parseProperties(["END"])
     this.parseInkEnd(token, "INK")
-    return { kind: "ink", mode: "raw", id, props, token }
+    return { kind: "ink", mode: "raw", id, props, freehand: inkFreehand(props), token }
   }
 
   private parseInkEnd(token: Token, label: string): void {
@@ -1043,4 +1044,9 @@ class Parser {
   private atEnd(): boolean {
     return this.peek().kind === "eof"
   }
+}
+
+function inkFreehand(props: ASTProperty[]): boolean | undefined {
+  const value = props.find((prop) => prop.key === "FREEHAND")?.values[0]
+  return value === undefined ? undefined : String(value).toLowerCase() === "on"
 }

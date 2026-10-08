@@ -6,6 +6,8 @@ import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
 import { ShapeRegistry } from "@/renderer/shapes/registry.ts"
 import { cameraScaledFontSize, drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
+import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
+import { strokeOptions } from "@/renderer/handdrawn.ts"
 
 type ArrowRoute = "straight" | "elbow" | "curve"
 type ArrowHead = "none" | "end" | "both" | "triangle" | "diamond" | "diamond-filled" | "open"
@@ -39,12 +41,21 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
     ctx.lineJoin = "round"
     if (node.style.lineStyle === "dashed") ctx.setLineDash([10 / renderContext.cameraScale, 7 / renderContext.cameraScale])
     if (node.style.lineStyle === "dotted") ctx.setLineDash([2 / renderContext.cameraScale, 6 / renderContext.cameraScale])
-    ctx.beginPath()
-    if (route === "curve" && !selfMessage && visiblePath.length >= 4) {
-      ctx.moveTo(visiblePath[0]!.x, visiblePath[0]!.y)
-      for (let index = 1; index < visiblePath.length; index++) ctx.lineTo(visiblePath[index]!.x, visiblePath[index]!.y)
-    } else traceRoundedPath(ctx, visiblePath, 9 / renderContext.cameraScale)
-    ctx.stroke()
+    if (shouldUseRoughSampledGeometry(node)) {
+      const roughOptions = strokeOptions(node, renderContext.cameraScale)
+      const paths = cachedSampledRoughPath(
+        `arrow:${node.id}:${path.map((point) => `${point.x},${point.y}`).join(";")}:${node.style.pen}:${node.style.strokeWidth}:${renderContext.cameraScale}`,
+        () => sampleRoughDrawable(renderContext.roughGenerator.linearPath(path, roughOptions))
+      )
+      drawSampledPaths(ctx, paths, progress)
+    } else {
+      ctx.beginPath()
+      if (route === "curve" && !selfMessage && visiblePath.length >= 4) {
+        ctx.moveTo(visiblePath[0]!.x, visiblePath[0]!.y)
+        for (let index = 1; index < visiblePath.length; index++) ctx.lineTo(visiblePath[index]!.x, visiblePath[index]!.y)
+      } else traceRoundedPath(ctx, visiblePath, 9 / renderContext.cameraScale)
+      ctx.stroke()
+    }
     ctx.restore()
   }
 

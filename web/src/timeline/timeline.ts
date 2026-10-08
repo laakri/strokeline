@@ -1,7 +1,8 @@
 import { DEFAULT_HIGHLIGHT_COLOR } from "@/defaults/defaults.ts"
+import flubber from "flubber"
 import type { AnimationSpec, Point, SayLine, Scene, SceneNode, TableHighlightTarget, TimelineOp } from "@/ir/types.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
-import { clamp } from "@/timeline/easing.ts"
+import { clamp, easing } from "@/timeline/easing.ts"
 import {
   cameraProgress,
   clampCameraState,
@@ -33,7 +34,16 @@ export interface RenderState {
   nodes: ResolvedNode[]
   highlights: HighlightState[]
   camera: RenderCamera
+  pen?: PenState
   subtitle?: SayLine & { opacity: number; readingProgress: number }
+}
+
+export interface PenState {
+  targetId: string
+  position: Point
+  angle: number
+  opacity: number
+  phase: "drawing" | "traveling"
 }
 
 type CreateOp = Extract<TimelineOp, { kind: "create" }>
@@ -192,11 +202,74 @@ export class Timeline {
       .filter((op) => op.t <= at)
       .map((op) => this.resolveNodeAt(op.node.id, at))
       .filter((node): node is ResolvedNode => node !== undefined)
+    const pen = resolvePen(nodes)
     return {
       nodes,
       highlights: this.resolveHighlightsAt(at),
       camera: this.resolveCameraAt(at),
+      ...(pen ? { pen } : {}),
       ...this.resolveSubtitleAt(at),
+    }
+
+    function resolvePen(nodes: ResolvedNode[]): PenState | undefined {
+      const node = nodes.find((candidate) =>
+        candidate.data?.penFollow === true &&
+        candidate.revealProgress > 0 &&
+        candidate.revealProgress < 1
+      )
+      if (!node) return undefined
+      const points = penPath(node)
+      if (points.length < 2) return undefined
+      const position = pointAtProgress(points, node.revealProgress)
+      const next = pointAtProgress(points, Math.min(1, node.revealProgress + 0.01))
+      return {
+        targetId: node.id,
+        position,
+        angle: Math.atan2(next.y - position.y, next.x - position.x),
+        opacity: Math.min(1, node.revealProgress * 12, (1 - node.revealProgress) * 12),
+        phase: "drawing",
+      }
+    }
+
+    function penPath(node: ResolvedNode): Point[] {
+      if (node.points && node.points.length > 1) return node.points
+      const from = node.data?.from as Point | undefined
+      const to = node.data?.to as Point | undefined
+      if (from && to) return [from, to]
+      const width = node.size?.width ?? 0
+      const height = node.size?.height ?? 0
+      if (node.type === "rectangle" && width > 0 && height > 0) {
+        const left = node.position.x - width / 2
+        const right = node.position.x + width / 2
+        const top = node.position.y - height / 2
+        const bottom = node.position.y + height / 2
+        return [{ x: left, y: top }, { x: right, y: top }, { x: right, y: bottom }, { x: left, y: bottom }, { x: left, y: top }]
+      }
+      if (node.type === "diamond" && width > 0 && height > 0)
+        return [{ x: node.position.x, y: node.position.y - height / 2 }, { x: node.position.x + width / 2, y: node.position.y }, { x: node.position.x, y: node.position.y + height / 2 }, { x: node.position.x - width / 2, y: node.position.y }, { x: node.position.x, y: node.position.y - height / 2 }]
+      if (node.type === "circle" && node.radius) {
+        return Array.from({ length: 33 }, (_, index) => {
+          const angle = -Math.PI / 2 + (index / 32) * Math.PI * 2
+          return { x: node.position.x + Math.cos(angle) * node.radius!, y: node.position.y + Math.sin(angle) * node.radius! }
+        })
+      }
+      return []
+    }
+
+    function pointAtProgress(points: Point[], progress: number): Point {
+      const lengths = [0]
+      for (let index = 1; index < points.length; index++)
+        lengths.push(lengths[index - 1]! + Math.hypot(points[index]!.x - points[index - 1]!.x, points[index]!.y - points[index - 1]!.y))
+      const total = lengths.at(-1) ?? 0
+      const distance = total * clamp(progress)
+      for (let index = 1; index < lengths.length; index++) {
+        if (distance <= lengths[index]!) {
+          const segment = lengths[index]! - lengths[index - 1]!
+          const amount = segment ? (distance - lengths[index - 1]!) / segment : 0
+          return { x: points[index - 1]!.x + (points[index]!.x - points[index - 1]!.x) * amount, y: points[index - 1]!.y + (points[index]!.y - points[index - 1]!.y) * amount }
+        }
+      }
+      return points.at(-1)!
     }
   }
 
@@ -243,7 +316,9 @@ export class Timeline {
     let node = revealAt(create.node, create.draw, time - create.t)
     for (const group of this.animationsById.get(id) ?? []) {
       if (group.t > time) break
-      node = resolveAnimationGroupAtTime(node, group, time)
+      node = resolveAnimationGroupAtTime(node, group, time, (targetId) =>
+        this.createsById.get(targetId)?.node
+      )
     }
     return node
   }
@@ -282,7 +357,9 @@ export class Timeline {
     group: AnimationGroup,
     time: number
   ): ResolvedNode {
-    return resolveAnimationGroupAtTime(group.start, group, time)
+    return resolveAnimationGroupAtTime(group.start, group, time, (targetId) =>
+      this.createsById.get(targetId)?.node
+    )
   }
   private resolveCameraAt(time: number): RenderCamera {
     let camera: RenderCamera = {
@@ -373,11 +450,33 @@ export class Timeline {
 function resolveAnimationGroupAtTime(
   current: ResolvedNode,
   group: AnimationGroup,
-  time: number
+  time: number,
+  lookupNode: (id: string) => SceneNode | undefined
 ): ResolvedNode {
   let node = current
   for (const op of group.ops) {
     const animated = interpolateAnimation(group.start, op.anim, time - op.t)
+    if (op.anim.verb === "morph" && op.anim.morphTargetId) {
+      const target = lookupNode(op.anim.morphTargetId)
+      if (target) {
+        const progress = clamp((time - op.t) / Math.max(op.anim.duration, 0.001))
+        const eased = easing[op.anim.ease](clamp(progress))
+        const fromPath = geometryPath(group.start)
+        const toPath = geometryPath(target)
+        if (fromPath && toPath) {
+          const path = flubber.interpolate(fromPath, toPath)(eased)
+          node = {
+            ...node,
+            position: {
+              x: group.start.position.x + (target.position.x - group.start.position.x) * eased,
+              y: group.start.position.y + (target.position.y - group.start.position.y) * eased,
+            },
+            data: { ...node.data, morphPath: path },
+          }
+        }
+      }
+      continue
+    }
     if (op.anim.verb === "move")
       node = { ...node, position: animated.position }
     if (op.anim.verb === "scale") {
@@ -386,6 +485,7 @@ function resolveAnimationGroupAtTime(
         ...(op.anim.to?.position ? { position: animated.position } : {}),
         scale: animated.scale,
       }
+
     }
     if (op.anim.verb === "rotate") {
       node = {
@@ -421,6 +521,24 @@ function resolveAnimationGroupAtTime(
     }
   }
   return node
+}
+
+function geometryPath(node: SceneNode): string | undefined {
+  const { x, y } = node.position
+  if (node.type === "circle") {
+    const r = node.radius ?? 0
+    return `M ${x - r},${y} A ${r},${r} 0 1 0 ${x + r},${y} A ${r},${r} 0 1 0 ${x - r},${y}`
+  }
+  const width = node.size?.width
+  const height = node.size?.height
+  if (width === undefined || height === undefined) return undefined
+  if (node.type === "diamond")
+    return `M ${x},${y - height / 2} L ${x + width / 2},${y} L ${x},${y + height / 2} L ${x - width / 2},${y} Z`
+  if (node.type === "ellipse")
+    return `M ${x - width / 2},${y} A ${width / 2},${height / 2} 0 1 0 ${x + width / 2},${y} A ${width / 2},${height / 2} 0 1 0 ${x - width / 2},${y}`
+  if (node.type === "rectangle")
+    return `M ${x - width / 2},${y - height / 2} L ${x + width / 2},${y - height / 2} L ${x + width / 2},${y + height / 2} L ${x - width / 2},${y + height / 2} Z`
+  return undefined
 }
 export function resolveAt(
   time: number,

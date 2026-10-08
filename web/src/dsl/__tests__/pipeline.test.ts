@@ -21,6 +21,50 @@ const source = (folder: string, file: string) =>
   readFileSync(join(fixtureRoot, folder, file), "utf8")
 
 describe("DSL pipeline", () => {
+  it("supports explicit MORPH only between compatible geometric shapes", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  CREATE source AS CIRCLE
+    POSITION 100 100
+    RADIUS 20
+  END
+  CREATE target AS RECTANGLE
+    POSITION 300 100
+    WIDTH 80
+    HEIGHT 40
+  END
+  ANIMATE source MORPH TO target DURATION 1s
+END SCENE`)
+    expect(result.diagnostics).toEqual([])
+    const timeline = new Timeline(result.document!.scenes[0]!, result.document!.canvas)
+    const first = timeline.resolveAt(2)
+    const second = timeline.resolveAt(2)
+    expect(first).toEqual(second)
+    expect(result.document?.scenes[0]?.ops).toContainEqual(
+      expect.objectContaining({
+        kind: "animate",
+        anim: expect.objectContaining({ verb: "morph", morphTargetId: "target" }),
+      })
+    )
+
+    const rejected = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  CREATE line AS LINE
+    FROM 0 0
+    TO 100 100
+  END
+  CREATE target AS RECTANGLE
+    POSITION 300 100
+    WIDTH 80
+    HEIGHT 40
+  END
+  ANIMATE line MORPH TO target
+END SCENE`)
+    expect(rejected.diagnostics.some((item) => item.code === "E_BAD_MORPH")).toBe(true)
+  })
+
   it("parses and compiles SAY narration with optional metadata", () => {
     const result = runScript(`VERSION 1.0
 CANVAS 1920 1080

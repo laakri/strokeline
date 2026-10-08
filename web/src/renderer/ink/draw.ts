@@ -1,4 +1,5 @@
 import type { Point, SceneNode } from "@/ir/types.ts"
+import { getStroke } from "perfect-freehand"
 import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
 import { smoothPath } from "@/renderer/ink/path.ts"
 import { wobblePath } from "@/renderer/ink/wobble.ts"
@@ -64,6 +65,29 @@ export function drawInk(renderContext: RenderContext, node: SceneNode): void {
   const inkMode = renderContext.mode === "clean" ? "clean" : "handdrawn"
   const path = revealedInkPath(controls, progress, node.id, inkMode)
   if (path.length < 2) return
+  if (node.data?.freehand === true) {
+    const outline = getStroke(
+      path.map((point) => [point.x, point.y] as [number, number]),
+      {
+        size: Math.max(0.5, node.style.strokeWidth),
+        thinning: 0,
+        smoothing: 0.65,
+        streamline: 0.35,
+        easing: (value: number) => value,
+      }
+    )
+    if (outline.length < 3) return
+    const freehandPath = new Path2D()
+    freehandPath.moveTo(outline[0]![0]!, outline[0]![1]!)
+    for (let index = 1; index < outline.length; index++)
+      freehandPath.lineTo(outline[index]![0]!, outline[index]![1]!)
+    freehandPath.closePath()
+    renderContext.context.save()
+    renderContext.context.fillStyle = node.style.color
+    renderContext.context.fill(freehandPath)
+    renderContext.context.restore()
+    return
+  }
   const sourceProperties = node.data?._sourceProperties as string[] | undefined
   if (!sourceProperties?.includes("REVEAL")) {
     renderContext.roughCanvas.linearPath(path.map((point) => [point.x, point.y] as [number, number]), strokeOptions(node, renderContext.cameraScale))

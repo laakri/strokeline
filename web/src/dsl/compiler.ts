@@ -482,6 +482,12 @@ function compileScene(
           head: propString(statement.props, "HEAD")?.toLowerCase() ?? "end",
           sourceLabel: propString(statement.props, "SOURCELABEL"),
           targetLabel: propString(statement.props, "TARGETLABEL"),
+          ...(propString(statement.props, "PENFOLLOW") !== undefined
+            ? { penFollow: propString(statement.props, "PENFOLLOW")?.toLowerCase() === "on" }
+            : {}),
+          ...(propString(statement.props, "ROUGH") !== undefined
+            ? { roughSampledGeometry: propString(statement.props, "ROUGH")?.toLowerCase() === "on" }
+            : {}),
           _sourceProperties: statement.props.map((prop) => prop.key),
           _sourcePropertyLocations: Object.fromEntries(statement.props.map((prop) => [prop.key, { line: prop.token.line, col: prop.token.col }])),
         },
@@ -520,6 +526,24 @@ function compileScene(
         statement.token.col,
         diagnostics
       )
+      if (statement.verb === "MORPH") {
+        const source = sceneNodes.get(statement.targetId)
+        const targetId = String(statement.values[0] ?? "")
+        const target = sceneNodes.get(targetId)
+        const compatible = (node: SceneNode | undefined) =>
+          node !== undefined &&
+          ["circle", "ellipse", "rectangle", "diamond"].includes(node.type)
+        if (!compatible(source) || !compatible(target)) {
+          diagnostics.push(error(
+            "E_BAD_MORPH",
+            "MORPH supports only existing circle, ellipse, rectangle, or diamond objects.",
+            statement.token.line,
+            statement.token.col
+          ))
+        } else {
+          anim.morphTargetId = targetId
+        }
+      }
       return {
         ops: [
           {
@@ -1042,6 +1066,12 @@ function nodeFromCreate(
           }
         : {}),
       ...(isIcon || iconName ? { iconName, name: iconName } : {}),
+      ...(propString(props, "PENFOLLOW") !== undefined
+        ? { penFollow: propString(props, "PENFOLLOW")?.toLowerCase() === "on" }
+        : {}),
+      ...(propString(props, "ROUGH") !== undefined
+        ? { roughSampledGeometry: propString(props, "ROUGH")?.toLowerCase() === "on" }
+        : {}),
     },
   }
 }
@@ -1150,6 +1180,15 @@ function inkNodeFrom(
         ])
       ),
       ...(statement.targetId ? { targetId: statement.targetId } : {}),
+      ...(propString(props, "PENFOLLOW") !== undefined
+        ? { penFollow: propString(props, "PENFOLLOW")?.toLowerCase() === "on" }
+        : {}),
+      ...(propString(props, "FREEHAND") !== undefined
+        ? {
+            freehand: propString(props, "FREEHAND")?.toLowerCase() === "on",
+            freehandSetting: propString(props, "FREEHAND"),
+          }
+        : {}),
     },
   }
   return { node }
@@ -1503,6 +1542,8 @@ function animationFrom(
       ease,
     }
   }
+  if (verb === "MORPH")
+    return { verb: "morph", duration, ease }
   diagnostics.push(
     error("E_UNKNOWN_ANIMATION", `Unknown animation verb "${verb}".`, line, col)
   )

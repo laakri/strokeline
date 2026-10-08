@@ -12,6 +12,7 @@ export type VisualFeature =
   | "positionAnchors"
   | "relativePlacement"
   | "layoutContainers"
+  | "roughSampledGeometry"
 
 export const features: Record<VisualFeature, boolean> = {
   iconDrawing: true,
@@ -27,4 +28,5 @@ export const features: Record<VisualFeature, boolean> = {
   positionAnchors: true,
   relativePlacement: true,
   layoutContainers: true,
+  roughSampledGeometry: false,
 }

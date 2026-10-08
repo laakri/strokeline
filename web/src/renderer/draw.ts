@@ -166,12 +166,25 @@ export function drawScene(
       context.rotate((node.rotation * Math.PI) / 180)
       context.scale(node.scale, node.scale)
       context.translate(-node.position.x, -node.position.y)
-      renderer.draw(createRenderContext(context, nodes, resolvedCamera.scale, renderNode.style.pen ?? mode), renderNode)
+      const morphPath = renderNode.data?.morphPath
+      if (typeof morphPath === "string" && typeof Path2D !== "undefined") {
+        context.restore()
+        context.save()
+        context.fillStyle = renderNode.style.fill ?? "transparent"
+        context.strokeStyle = renderNode.style.color
+        context.lineWidth = Math.max(1, renderNode.style.strokeWidth / resolvedCamera.scale)
+        const path = new Path2D(morphPath)
+        if (renderNode.style.fill) context.fill(path)
+        context.stroke(path)
+      } else {
+        renderer.draw(createRenderContext(context, nodes, resolvedCamera.scale, renderNode.style.pen ?? mode), renderNode)
+      }
     }
     if (hand && node.revealProgress > 0 && node.revealProgress < 1 && ["ink", "line", "text"].includes(node.type))
       drawHand(context, node)
     context.restore()
   }
+  if (state.pen) drawPen(context, state.pen, resolvedCamera.scale)
   context.globalAlpha = 1
   context.restore()
   if (subtitlesEnabled && state.subtitle)
@@ -184,6 +197,32 @@ export function drawScene(
       captionStyle
     )
   drawWatermark(context, brandingEntitlements, logicalCanvas, devicePixelRatio)
+}
+
+function drawPen(
+  context: CanvasRenderingContext2D,
+  pen: NonNullable<RenderState["pen"]>,
+  cameraScale: number
+): void {
+  context.save()
+  context.translate(pen.position.x, pen.position.y)
+  context.rotate(pen.angle)
+  context.globalAlpha = pen.opacity
+  context.fillStyle = "#F4B942"
+  context.strokeStyle = "#241A12"
+  context.lineWidth = Math.max(1, 2 / cameraScale)
+  context.beginPath()
+  context.roundRect(-18 / cameraScale, -5 / cameraScale, 24 / cameraScale, 10 / cameraScale, 4 / cameraScale)
+  context.fill()
+  context.stroke()
+  context.fillStyle = "#241A12"
+  context.beginPath()
+  context.moveTo(6 / cameraScale, -5 / cameraScale)
+  context.lineTo(14 / cameraScale, 0)
+  context.lineTo(6 / cameraScale, 5 / cameraScale)
+  context.closePath()
+  context.fill()
+  context.restore()
 }
 
 function drawHand(context: CanvasRenderingContext2D, node: RenderState["nodes"][number]): void {

@@ -1,14 +1,17 @@
 import rough from "roughjs/bin/rough"
 import type { RoughCanvas } from "roughjs/bin/canvas"
+import type { RoughGenerator } from "roughjs/bin/generator"
 import { features } from "@/defaults/features.ts"
 import { loadTextFont } from "@/lib/textMetrics.ts"
 import type { SceneNode } from "@/ir/types.ts"
 
 const roughCanvasCache = new WeakMap<HTMLCanvasElement, RoughCanvas>()
+const roughGenerator = rough.generator()
 
 export interface RenderContext {
   context: CanvasRenderingContext2D
   roughCanvas: RoughCanvas
+  roughGenerator: RoughGenerator
   nodes: Map<string, SceneNode>
   cameraScale: number
   mode: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean"
@@ -27,7 +30,7 @@ export function createRenderContext(
     roughCanvas = rough.canvas(context.canvas)
     roughCanvasCache.set(context.canvas, roughCanvas)
   }
-  return { context, roughCanvas, nodes, cameraScale, mode }
+  return { context, roughCanvas, roughGenerator, nodes, cameraScale, mode }
 }
 
 export function seedFromId(id: string): number {

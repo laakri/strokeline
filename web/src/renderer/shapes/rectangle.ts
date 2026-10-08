@@ -6,6 +6,8 @@ import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
+import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
+import { strokeOptions } from "@/renderer/handdrawn.ts"
 
 export function rectangleBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -70,7 +72,13 @@ export function drawRectangle(
   context.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
   context.lineJoin = "round"
   applyShapeShadow(context, node, renderContext.cameraScale)
-  context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.stroke()
+  if (shouldUseRoughSampledGeometry(node)) {
+    const paths = cachedSampledRoughPath(`rectangle:${node.id}:${box.x}:${box.y}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${renderContext.cameraScale}`, () =>
+      sampleRoughDrawable(renderContext.roughGenerator.rectangle(box.x, box.y, box.width, box.height, strokeOptions(node, renderContext.cameraScale))))
+    drawSampledPaths(context, paths, progress)
+  } else {
+    context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.stroke()
+  }
   clearShapeShadow(context)
   context.restore()
   drawLabel(
@@ -85,7 +93,7 @@ export function drawRectangle(
       align: node.align ?? "center",
       lineHeight: node.lineHeight,
     },
-    progress
+    shouldUseRoughSampledGeometry(node) ? (progress >= 1 ? 1 : 0) : progress
   )
 }
 
