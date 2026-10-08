@@ -1,4 +1,6 @@
 import type { Drawable, Op } from "roughjs/bin/core"
+import type { RoughCanvas } from "roughjs/bin/canvas"
+import type { RoughGenerator } from "roughjs/bin/generator"
 import rough from "roughjs/bundled/rough.esm.js"
 import type { Point, SceneNode } from "@/ir/types.ts"
 import { features } from "@/defaults/features.ts"
@@ -17,6 +19,7 @@ function roughOptions(node: SceneNode, cameraScale: number) {
     hash ^= node.id.charCodeAt(index)
     hash = Math.imul(hash, 16777619)
   }
+
   const roughness = typeof node.data?.roughness === "number"
     ? node.data.roughness
     : pen === "clean" ? 0 : pen === "chalk" ? 2 : pen === "pencil" ? 1.5 : pen === "marker" ? 0.25 : pen === "brush" ? 1.8 : 1.2
@@ -32,6 +35,36 @@ function roughOptions(node: SceneNode, cameraScale: number) {
     bowing,
     fillStyle: node.data?.roughFill === "none" ? undefined : node.data?.roughFill,
   }
+}
+
+export function drawRoughFill(
+  roughCanvas: RoughCanvas,
+  generator: RoughGenerator,
+  node: SceneNode,
+  cameraScale = 1
+): void {
+  const fillStyle = node.data?.roughFill
+  if (!node.style.fill || typeof fillStyle !== "string" || fillStyle === "none") return
+  const options = {
+    ...roughOptions(node, cameraScale),
+    fill: node.style.fill,
+    fillStyle: fillStyle === "cross-hatch" ? "cross-hatch" : fillStyle,
+    stroke: "transparent",
+    strokeWidth: 0,
+  }
+  const width = node.size?.width ?? 0
+  const height = node.size?.height ?? 0
+  if (node.type === "rectangle")
+    roughCanvas.draw(generator.rectangle(node.position.x - width / 2, node.position.y - height / 2, width, height, options))
+  else if (node.type === "ellipse" || node.type === "circle")
+    roughCanvas.draw(generator.ellipse(node.position.x, node.position.y, node.type === "circle" ? (node.radius ?? 0) * 2 : width, node.type === "circle" ? (node.radius ?? 0) * 2 : height, options))
+  else if (node.type === "diamond")
+    roughCanvas.draw(generator.polygon([
+      [node.position.x, node.position.y - height / 2],
+      [node.position.x + width / 2, node.position.y],
+      [node.position.x, node.position.y + height / 2],
+      [node.position.x - width / 2, node.position.y],
+    ], options))
 }
 
 function sampleCubic(start: Point, data: number[], samples: number): Point[] {
