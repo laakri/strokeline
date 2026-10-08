@@ -10,7 +10,7 @@ import { lex } from "@/dsl/lexer.ts"
 import { layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { textBoundingBox } from "@/renderer/shapes/text.ts"
-import { Timeline } from "@/timeline/timeline.ts"
+import { Timeline, morphInterpolatorCacheSize } from "@/timeline/timeline.ts"
 
 const fixtureRoot = dirname(fileURLToPath(import.meta.url))
 const readFixtures = (folder: string) =>
@@ -63,6 +63,29 @@ SCENE 1
   ANIMATE line MORPH TO target
 END SCENE`)
     expect(rejected.diagnostics.some((item) => item.code === "E_BAD_MORPH")).toBe(true)
+  })
+
+  it("caches one morph interpolator for repeated resolution", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  CREATE source AS CIRCLE
+    POSITION 120 120
+    RADIUS 20
+  END
+  CREATE target AS DIAMOND
+    POSITION 320 120
+    WIDTH 90
+    HEIGHT 70
+  END
+  ANIMATE source MORPH TO target DURATION 1s
+END SCENE`)
+    expect(result.diagnostics).toEqual([])
+    const timeline = new Timeline(result.document!.scenes[0]!, result.document!.canvas)
+    const before = morphInterpolatorCacheSize()
+    timeline.resolveAt(2)
+    timeline.resolveAt(2)
+    expect(morphInterpolatorCacheSize()).toBe(before + 1)
   })
 
   it("parses and compiles SAY narration with optional metadata", () => {

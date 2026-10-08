@@ -57,6 +57,21 @@ interface AnimationGroup {
   start: ResolvedNode
 }
 
+const morphInterpolatorCache = new Map<string, (progress: number) => string>()
+
+export function morphInterpolatorCacheSize(): number {
+  return morphInterpolatorCache.size
+}
+
+function cachedMorphInterpolator(fromPath: string, toPath: string, options = {}): (progress: number) => string {
+  const key = JSON.stringify([fromPath, toPath, options])
+  const existing = morphInterpolatorCache.get(key)
+  if (existing) return existing
+  const interpolator = flubber.interpolate(fromPath, toPath, options)
+  morphInterpolatorCache.set(key, interpolator)
+  return interpolator
+}
+
 export interface CanvasSize {
   width: number
   height: number
@@ -510,7 +525,7 @@ function resolveAnimationGroupAtTime(
         const fromPath = geometryPath(group.start)
         const toPath = geometryPath(target)
         if (fromPath && toPath) {
-          const path = flubber.interpolate(fromPath, toPath)(eased)
+          const path = cachedMorphInterpolator(fromPath, toPath)(eased)
           node = {
             ...node,
             position: {
