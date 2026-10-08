@@ -44,6 +44,7 @@ export interface PenState {
   angle: number
   opacity: number
   phase: "drawing" | "traveling"
+  lift: number
 }
 
 type CreateOp = Extract<TimelineOp, { kind: "create" }>
@@ -202,6 +203,7 @@ export class Timeline {
       .filter((op) => op.t <= at)
       .map((op) => this.resolveNodeAt(op.node.id, at))
       .filter((node): node is ResolvedNode => node !== undefined)
+    const timeline = this
     const pen = resolvePen(nodes)
     return {
       nodes,
@@ -212,23 +214,54 @@ export class Timeline {
     }
 
     function resolvePen(nodes: ResolvedNode[]): PenState | undefined {
-      const node = nodes.find((candidate) =>
-        candidate.data?.penFollow === true &&
-        candidate.revealProgress > 0 &&
-        candidate.revealProgress < 1
-      )
-      if (!node) return undefined
-      const points = penPath(node)
-      if (points.length < 2) return undefined
-      const position = pointAtProgress(points, node.revealProgress)
-      const next = pointAtProgress(points, Math.min(1, node.revealProgress + 0.01))
-      return {
-        targetId: node.id,
-        position,
-        angle: Math.atan2(next.y - position.y, next.x - position.x),
-        opacity: Math.min(1, node.revealProgress * 12, (1 - node.revealProgress) * 12),
-        phase: "drawing",
+      const candidates = timeline.createOps
+        .filter((op) => op.node.data?.penFollow === true)
+        .map((op, index) => ({
+          op,
+          node: nodes.find((candidate) => candidate.id === op.node.id) ?? timeline.resolveNodeAt(op.node.id, at),
+          order: index,
+        }))
+        .filter((candidate): candidate is typeof candidate & { node: ResolvedNode } => {
+          return candidate.node !== undefined && penPath(candidate.node).length > 1
+        })
+      for (let index = 0; index < candidates.length; index++) {
+        const current = candidates[index]!
+        const currentPath = penPath(current.node)
+        const start = current.op.t
+        const end = start + current.op.draw.duration
+        if (at >= start && at < end) {
+          const progress = clamp((at - start) / Math.max(0.001, current.op.draw.duration))
+          const position = pointAtProgress(currentPath, progress)
+          return {
+            targetId: current.node.id,
+            position,
+            angle: -0.9,
+            opacity: Math.min(1, progress * 12, (1 - progress) * 12),
+            phase: "drawing",
+            lift: 0,
+          }
+        }
+        const next = candidates[index + 1]
+        if (next && at >= end && at < next.op.t) {
+          const nextPath = penPath(next.node)
+          const from = pointAtProgress(currentPath, 1)
+          const to = nextPath[0]!
+          const travelProgress = clamp((at - end) / Math.max(0.001, next.op.t - end))
+          const eased = easing.easeInOut(travelProgress)
+          return {
+            targetId: current.node.id,
+            position: {
+              x: from.x + (to.x - from.x) * eased,
+              y: from.y + (to.y - from.y) * eased,
+            },
+            angle: -0.9,
+            opacity: 0.78,
+            phase: "traveling",
+            lift: Math.sin(travelProgress * Math.PI),
+          }
+        }
       }
+      return undefined
     }
 
     function penPath(node: ResolvedNode): Point[] {

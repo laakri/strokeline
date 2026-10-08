@@ -205,31 +205,30 @@ function drawPen(
   cameraScale: number
 ): void {
   context.save()
-  context.translate(pen.position.x, pen.position.y)
-  context.rotate(pen.angle)
-  context.globalAlpha = pen.opacity
   const scale = 1 / cameraScale
-  context.fillStyle = "#F4B942"
-  context.strokeStyle = "#241A12"
-  context.lineWidth = Math.max(1, 1.75 * scale)
+  const lift = pen.lift * 20 * scale
+  context.translate(pen.position.x, pen.position.y - lift)
+  context.rotate(-0.9)
+  context.globalAlpha = pen.opacity
+  context.fillStyle = "rgba(0,0,0,0.12)"
   context.beginPath()
-  context.roundRect(-32 * scale, -6 * scale, 24 * scale, 12 * scale, 4 * scale)
+  context.ellipse(6 * scale, lift + 6 * scale, 9 * scale, 3 * scale, 0, 0, Math.PI * 2)
   context.fill()
-  context.stroke()
-  context.fillStyle = "#D68B2C"
+  context.fillStyle = "#2B3138"
   context.beginPath()
-  context.roundRect(-11 * scale, -6 * scale, 5 * scale, 12 * scale, 2 * scale)
+  context.rect(-5 * scale, -86 * scale, 10 * scale, 70 * scale)
   context.fill()
-  context.stroke()
-  context.fillStyle = "#241A12"
+  context.fillStyle = "#E0A100"
   context.beginPath()
-  context.moveTo(-8 * scale, -6 * scale)
-  context.lineTo(0, 0)
-  context.lineTo(-8 * scale, 6 * scale)
+  context.rect(-5 * scale, -20 * scale, 10 * scale, 10 * scale)
+  context.fill()
+  context.fillStyle = "#2B3138"
+  context.beginPath()
+  context.moveTo(-5 * scale, -10 * scale)
+  context.lineTo(5 * scale, -10 * scale)
+  context.lineTo(1.5 * scale, 0)
+  context.lineTo(-1.5 * scale, 0)
   context.closePath()
-  context.fill()
-  context.beginPath()
-  context.arc(-34 * scale, 0, 2.5 * scale, 0, Math.PI * 2)
   context.fill()
   context.restore()
 }
