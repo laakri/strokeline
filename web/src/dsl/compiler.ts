@@ -536,7 +536,7 @@ function compileScene(
         if (!compatible(source) || !compatible(target)) {
           diagnostics.push(error(
             "E_BAD_MORPH",
-            "MORPH supports only existing circle, ellipse, rectangle, or diamond objects.",
+            "MORPH supports any pair of existing circle, ellipse, rectangle, or diamond objects, including cross-type pairs.",
             statement.token.line,
             statement.token.col
           ))

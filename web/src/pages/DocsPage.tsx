@@ -1069,6 +1069,10 @@ export function DocsPage() {
                 <code>PENFOLLOW on</code> to show a pen at the active reveal
                 tip. These options are opt-in; omitted options preserve the
                 legacy renderer.
+                <code>MORPH</code> supports every pair whose source and target
+                are <code>CIRCLE</code>, <code>ELLIPSE</code>,{" "}
+                <code>RECTANGLE</code>, or <code>DIAMOND</code>; cross-type
+                pairs such as circle to diamond are valid.
               </p>
               <CodeBlock title="Freehand ink" code={inkScript} />
               <p>

@@ -94,6 +94,7 @@ the safe area and use concise `SAY` cues for spoken, word-highlighted captions.
 | `ROUGH on\|off`                                                | geometric CREATE, LINE, ARROW                | Opt-in deterministic rough sampled outline and draw-on reveal; omitted preserves legacy rendering |
 | `PENFOLLOW on\|off`                                            | drawing CREATE, LINE, ARROW, INK              | Opt-in vector pen at the active reveal tip; omitted preserves legacy hand behavior       |
 | `FREEHAND on\|off`                                             | INK                                          | Opt-in perfect-freehand variable-width filled stroke; omitted preserves roughjs ink      |
+| `MORPH`                                                        | `ANIMATE id MORPH TO target`                 | Flubber morph between any circle, ellipse, rectangle, or diamond pair, including cross-type pairs |
 | `DURATION 1s`, `EASE x`                                        | ANIMATE, DELETE, CAMERA                      |                                                                                           |
 | `ROUTE straight\|elbow\|curve`                                 | ARROW                                        | Choose a direct connector, clean right-angle path, or smooth curved path                 |
 | `LINESTYLE solid\|dashed\|dotted`                              | ARROW, LINE                                  | Use dash patterns to distinguish the relationship type                                    |
