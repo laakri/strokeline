@@ -56,6 +56,13 @@
 - Added a dots-fill generator regression; full suite: 28 files / 118 tests passed.
 - Production build and typecheck passed.
 
+## Follow-up - smooth arrow routes and documentation
+- Arrow route geometry now uses rounded elbows and finely sampled curves. Rendering, draw-on trimming, arrowhead tangent placement, and pen following use the same sampled path; self-message loops also use rounded corners.
+- Updated the Docs page and generator kit with route smoothing, shared reveal/pen path behavior, Rough edge sequencing, and patterned-fill setup.
+- `npm run typecheck`: passed.
+- `npm test -- --run`: passed, 29 files / 123 tests (golden-frame and determinism tests included).
+- `npm run build`: passed; existing `import.meta` and large-chunk warnings remain.
+
 ## Docs, Skills, and verification
 - Updated app docs and `AI_prompt_kit.MD` with the new rough/freehand controls and the supported MORPH set: any pair of CIRCLE, ELLIPSE, RECTANGLE, or DIAMOND, including CIRCLE -> DIAMOND.
 - Changed the runtime Rough.js import to the bundled browser-safe module. This fixed the validator's SSR module-resolution failure.
@@ -67,6 +74,6 @@
 
 ## Blocked or incomplete
 - ELK layout was not started; no `elkjs` dependency was added.
-- Patterned Rough fill-set rendering is parsed/documented but not implemented.
+- Patterned Rough fills and smooth arrow routing are implemented; verify in the app for your preferred visual feel.
 - Legacy IR comparison against `d72f664` was not rerun because the repository has no reusable comparison command.
 - Showcase PNG/GIF export, camera-moved pixel alignment coverage, and browser-authenticated verification were not run in this autonomous pass.

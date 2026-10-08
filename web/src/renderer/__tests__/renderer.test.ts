@@ -14,6 +14,7 @@ import {
 import { textBoundingBox } from "@/renderer/shapes/text.ts"
 import { cameraScaledFontSize } from "@/renderer/shapes/label.ts"
 import { highlightEllipsePoints } from "@/renderer/animations/highlight.ts"
+import { arrowPathForNode } from "@/renderer/shapes/arrow.ts"
 
 const base = (type: SceneNode["type"]): SceneNode => ({
   id: type,
@@ -26,6 +27,59 @@ const base = (type: SceneNode["type"]): SceneNode => ({
 })
 
 describe("renderer geometry", () => {
+  it("uses smooth sampled geometry for elbow and curved arrows", () => {
+    const source = { ...base("rectangle"), id: "source", position: { x: 100, y: 100 }, size: { width: 80, height: 50 } }
+    const target = { ...base("rectangle"), id: "target", position: { x: 600, y: 400 }, size: { width: 100, height: 70 } }
+    const nodes = new Map([[source.id, source], [target.id, target]])
+    const elbow = {
+      ...base("arrow"),
+      id: "elbow",
+      data: { fromId: source.id, toId: target.id, route: "elbow" },
+    }
+    const curve = {
+      ...base("arrow"),
+      id: "curve",
+      data: {
+        fromId: source.id,
+        toId: target.id,
+        route: "curve",
+        waypoints: [{ x: 300, y: 150 }, { x: 450, y: 350 }],
+      },
+    }
+    const loop = {
+      ...base("arrow"),
+      id: "loop",
+      data: { fromId: source.id, toId: source.id, route: "elbow" },
+    }
+    const elbowPath = arrowPathForNode(elbow, nodes)
+    const curvePath = arrowPathForNode(curve, nodes)
+    const loopPath = arrowPathForNode(loop, nodes)
+    expect(elbowPath.length).toBeGreaterThan(20)
+    expect(curvePath.length).toBeGreaterThan(60)
+    expect(loopPath.length).toBeGreaterThan(30)
+    expect(curvePath).toContainEqual({ x: 300, y: 150 })
+    expect(curvePath).toContainEqual({ x: 450, y: 350 })
+    expect(elbowPath[0]).not.toEqual(elbowPath.at(-1))
+    expect(curvePath[0]).not.toEqual(curvePath.at(-1))
+
+    for (const path of [elbowPath, curvePath, loopPath]) {
+      const segments = path.slice(1).flatMap((point, index) => {
+        const previous = path[index]!
+        return Math.hypot(point.x - previous.x, point.y - previous.y) > 0
+          ? [Math.atan2(point.y - previous.y, point.x - previous.x)]
+          : []
+      })
+      const angles = segments
+      for (let index = 1; index < angles.length; index++) {
+        const difference = Math.atan2(
+          Math.sin(angles[index]! - angles[index - 1]!),
+          Math.cos(angles[index]! - angles[index - 1]!)
+        )
+        expect(Math.abs(difference)).toBeLessThan(0.35)
+      }
+    }
+  })
+
   it("returns sane bounding boxes for every v1 shape", () => {
     const circle = { ...base("circle"), radius: 20 }
     const rectangle = { ...base("rectangle"), size: { width: 80, height: 40 } }

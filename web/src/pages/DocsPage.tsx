@@ -1037,7 +1037,11 @@ export function DocsPage() {
                 <code>LABEL</code>, and <code>DRAW</code> on following lines.
                 Dashed lines work well for remote, optional, or return flows;
                 use waypoints to route connectors around crowded parts of a
-                diagram.
+                diagram. Elbow routes have rounded corners, and curve routes
+                use a finely sampled smooth curve through their waypoints.
+                Draw-on reveal and <code>PENFOLLOW</code> share that same
+                smoothed path, so the pen stays on the connector. Arrowheads
+                appear when the shaft finishes.
               </p>
               <CodeBlock title="Styled diagram connectors" code={connectorScript} />
               <p>
@@ -1072,8 +1076,11 @@ export function DocsPage() {
                 Rough geometry also accepts <code>ROUGHNESS 0..4</code>,{" "}
                 <code>ROUGHSEED integer</code>, <code>BOWING number</code>,
                 and <code>ROUGHFILL hachure|cross-hatch|zigzag|dots|solid</code>{" "}
-                for deterministic Rough.js patterned fills. The fill is
-                rendered after the outline completes. Freehand ink accepts{" "}
+                for Rough.js patterned fills. Add <code>FILL #hex</code> to
+                color the pattern; patterned fills appear after the outline
+                completes and are not covered by a solid fill. Rough draw-on
+                reveals edges in sequence; paired sketch/overdraw passes reveal
+                together while the pen follows the main pass. Freehand ink accepts{" "}
                 <code>INKSIZE</code>,{" "}
                 <code>THINNING</code>, <code>SMOOTHING</code>,{" "}
                 <code>STREAMLINE</code>, and <code>TAPER on|off</code>.

@@ -91,15 +91,15 @@ the safe area and use concise `SAY` cues for spoken, word-highlighted captions.
 | `BACKGROUND #hex`, `PADDING n`, `CORNERS n`, `BOXOPACITY 0..1` | TEXT                                         | Plate behind a label that must sit over lines                                             |
 | `NAME iconName`                                                | ICON                                         | Only from the icon list (section 8)                                                       |
 | `DRAW 1s`                                                      | CREATE, INK, TABLE, charts, ARROW            | Reveal time. Not used on ICON                                                             |
-| `ROUGH on\|off`                                                | geometric CREATE, LINE, ARROW                | Opt-in deterministic rough sampled outline and draw-on reveal; omitted preserves legacy rendering |
+| `ROUGH on\|off`                                                | geometric CREATE, LINE, ARROW                | Opt-in deterministic rough sampled outline and draw-on reveal; edges progress in order and duplicate sketch passes reveal together |
 | `ROUGHNESS 0..4` / `ROUGHSEED integer` / `BOWING number`        | ROUGH geometric objects                      | Explicit deterministic Rough.js geometry controls |
-| `ROUGHFILL hachure\|cross-hatch\|zigzag\|dots\|solid`          | ROUGH geometric objects                      | Rough.js patterned fill; rendered after the outline completes. Requires `FILL #hex`. |
-| `PENFOLLOW on\|off`                                            | drawing CREATE, LINE, ARROW, INK              | Opt-in vector pen at the active reveal tip; omitted preserves legacy hand behavior       |
+| `ROUGHFILL hachure\|cross-hatch\|zigzag\|dots\|solid`          | ROUGH geometric objects                      | Rough.js patterned fill; rendered after outline completion and requires `FILL #hex`. |
+| `PENFOLLOW on\|off`                                            | drawing CREATE, LINE, ARROW, INK              | Opt-in pen follows the active reveal path; Rough duplicate passes do not cause retracing |
 | `FREEHAND on\|off`                                             | INK                                          | Opt-in perfect-freehand variable-width filled stroke; omitted preserves roughjs ink      |
 | `INKSIZE n`, `THINNING n`, `SMOOTHING n`, `STREAMLINE n`, `TAPER on\|off` | FREEHAND INK | Optional perfect-freehand controls; defaults preserve the current renderer |
 | `MORPH`                                                        | `ANIMATE id MORPH TO target`                 | Flubber morph between any circle, ellipse, rectangle, or diamond pair, including cross-type pairs |
 | `DURATION 1s`, `EASE x`                                        | ANIMATE, DELETE, CAMERA                      |                                                                                           |
-| `ROUTE straight\|elbow\|curve`                                 | ARROW                                        | Choose a direct connector, clean right-angle path, or smooth curved path                 |
+| `ROUTE straight\|elbow\|curve`                                 | ARROW                                        | Choose direct, rounded-elbow, or finely sampled smooth curve path; draw-on and pen follow use that same path |
 | `LINESTYLE solid\|dashed\|dotted`                              | ARROW, LINE                                  | Use dash patterns to distinguish the relationship type                                    |
 | `VIA x1 y1 [x2 y2 ...]`                                        | ARROW                                        | Add coordinate waypoints to route around objects; use complete x/y pairs                  |
 | `HEAD none\|end\|both\|triangle\|diamond\|diamond-filled\|open` | ARROW                                        | `end`/`both` are solid triangular heads. `triangle` is a hollow inheritance head; `diamond` is a hollow aggregation diamond; `diamond-filled` is a filled composition diamond; `open` is the open dependency head. Styled heads sit at the destination. |
@@ -231,6 +231,8 @@ SAY "One spoken line, at most 85 characters."
   DURATION 3.3s
   TONE explain
 ```
+
+Arrow elbows use rounded corners; `ROUTE curve` uses a finely sampled smooth path, including when `VIA` waypoints are present. The shaft reveal and `PENFOLLOW` share the routed path, and arrowheads appear after the shaft completes.
 
 `ANIMATE` verbs: `MOVE TO x y [ARC n]`, `SCALE TO n`, `FADE`, `OPACITY TO 0..1`, `COLOR TO #hex`, `ROTATE TO deg`, `HIGHLIGHT`. Add `DURATION` and `EASE` as needed. `ARC n` bends MOVE along a quadratic curve; positive and negative values bend in opposite directions. Eases: `linear easeIn easeOut easeInOut bounce`.
 

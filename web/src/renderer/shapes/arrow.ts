@@ -46,10 +46,9 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
       drawSampledPathGroups(ctx, groupSampledPaths(paths), progress)
     } else {
       ctx.beginPath()
-      if (route === "curve" && !selfMessage && visiblePath.length >= 4) {
-        ctx.moveTo(visiblePath[0]!.x, visiblePath[0]!.y)
-        for (let index = 1; index < visiblePath.length; index++) ctx.lineTo(visiblePath[index]!.x, visiblePath[index]!.y)
-      } else traceRoundedPath(ctx, visiblePath, 9 / renderContext.cameraScale)
+      ctx.moveTo(visiblePath[0]!.x, visiblePath[0]!.y)
+      for (let index = 1; index < visiblePath.length; index++)
+        ctx.lineTo(visiblePath[index]!.x, visiblePath[index]!.y)
       ctx.stroke()
     }
     ctx.restore()
@@ -102,25 +101,28 @@ export function arrowPathForNode(
   const waypoints = readWaypoints(node.data?.waypoints)
   const { start, end } = resolveArrowEndpoints(node, nodes, nodeBounds)
   return from.id === to.id
-    ? selfLoop(nodeBounds(from), cameraScale)
-    : routePoints(start, end, route, waypoints)
+    ? roundPolylineCorners(selfLoop(nodeBounds(from), cameraScale), 9 / cameraScale)
+    : routePoints(start, end, route, waypoints, 9 / cameraScale)
 }
 
-function routePoints(start: Point, end: Point, route: ArrowRoute, waypoints: Point[]): Point[] {
+function routePoints(start: Point, end: Point, route: ArrowRoute, waypoints: Point[], cornerRadius: number): Point[] {
   if (waypoints.length) {
     const anchors = [start, ...waypoints, end]
     if (route === "curve") return curveThroughPoints(anchors)
-    if (route === "elbow") return elbowThroughPoints(anchors)
-    return anchors
+    if (route === "elbow") return roundPolylineCorners(elbowThroughPoints(anchors), cornerRadius)
+    return roundPolylineCorners(anchors, cornerRadius)
   }
   if (route === "straight") return [start, end]
   if (route === "elbow") {
+    let points: Point[]
     if (Math.abs(end.x - start.x) >= Math.abs(end.y - start.y)) {
       const middleX = (start.x + end.x) / 2
-      return [start, { x: middleX, y: start.y }, { x: middleX, y: end.y }, end]
+      points = [start, { x: middleX, y: start.y }, { x: middleX, y: end.y }, end]
+    } else {
+      const middleY = (start.y + end.y) / 2
+      points = [start, { x: start.x, y: middleY }, { x: end.x, y: middleY }, end]
     }
-    const middleY = (start.y + end.y) / 2
-    return [start, { x: start.x, y: middleY }, { x: end.x, y: middleY }, end]
+    return roundPolylineCorners(points, cornerRadius)
   }
   const dx = end.x - start.x
   const dy = end.y - start.y
@@ -132,8 +134,8 @@ function routePoints(start: Point, end: Point, route: ArrowRoute, waypoints: Poi
   const second = horizontal
     ? { x: end.x - Math.sign(dx || 1) * bend, y: end.y }
     : { x: end.x, y: end.y - Math.sign(dy || 1) * bend }
-  return Array.from({ length: 25 }, (_, index) => {
-    const t = index / 24
+  return Array.from({ length: 65 }, (_, index) => {
+    const t = index / 64
     return cubicPoint(start, first, second, end, t)
   })
 }
@@ -148,23 +150,41 @@ function selfLoop(box: BoundingBox, scale: number): Point[] {
   return [start, { x: right, y: start.y }, { x: right, y: top }, { x: end.x, y: top }, end]
 }
 
-function traceRoundedPath(ctx: CanvasRenderingContext2D, points: Point[], radius: number): void {
-  if (!points.length) return
-  ctx.moveTo(points[0]!.x, points[0]!.y)
+function roundPolylineCorners(points: Point[], radius: number): Point[] {
+  if (points.length < 3 || radius <= 0) return points
+  const result: Point[] = [points[0]!]
   for (let index = 1; index < points.length - 1; index++) {
-    const previous = points[index - 1]!, corner = points[index]!, next = points[index + 1]!
-    const before = distance(previous, corner), after = distance(corner, next)
-    const inset = Math.min(radius, before / 2, after / 2)
-    const a = { x: corner.x + (previous.x - corner.x) * inset / (before || 1), y: corner.y + (previous.y - corner.y) * inset / (before || 1) }
-    const b = { x: corner.x + (next.x - corner.x) * inset / (after || 1), y: corner.y + (next.y - corner.y) * inset / (after || 1) }
-    ctx.lineTo(a.x, a.y); ctx.quadraticCurveTo(corner.x, corner.y, b.x, b.y)
+    const previous = points[index - 1]!
+    const corner = points[index]!
+    const next = points[index + 1]!
+    const incoming = distance(previous, corner)
+    const outgoing = distance(corner, next)
+    if (incoming === 0 || outgoing === 0) continue
+    const inset = Math.min(radius, incoming / 2, outgoing / 2)
+    const entry = {
+      x: corner.x + (previous.x - corner.x) * inset / incoming,
+      y: corner.y + (previous.y - corner.y) * inset / incoming,
+    }
+    const exit = {
+      x: corner.x + (next.x - corner.x) * inset / outgoing,
+      y: corner.y + (next.y - corner.y) * inset / outgoing,
+    }
+    result.push(entry)
+    for (let step = 1; step <= 12; step++) {
+      const amount = step / 12
+      const inverse = 1 - amount
+      result.push({
+        x: inverse * inverse * entry.x + 2 * inverse * amount * corner.x + amount * amount * exit.x,
+        y: inverse * inverse * entry.y + 2 * inverse * amount * corner.y + amount * amount * exit.y,
+      })
+    }
   }
-  const last = points[points.length - 1]!
-  if (points.length > 1) ctx.lineTo(last.x, last.y)
+  result.push(points.at(-1)!)
+  return result
 }
 
 function curveThroughPoints(points: Point[]): Point[] {
-  if (points.length < 3) return routePoints(points[0]!, points[points.length - 1]!, "curve", [])
+  if (points.length < 3) return routePoints(points[0]!, points[points.length - 1]!, "curve", [], 0)
   const curve: Point[] = []
   for (let index = 0; index < points.length - 1; index++) {
     const start = points[index]!
@@ -173,7 +193,7 @@ function curveThroughPoints(points: Point[]): Point[] {
     const next = points[index + 2] ?? end
     const firstControl = { x: start.x + (end.x - previous.x) / 6, y: start.y + (end.y - previous.y) / 6 }
     const secondControl = { x: end.x - (next.x - start.x) / 6, y: end.y - (next.y - start.y) / 6 }
-    for (let step = 0; step < 8; step++) curve.push(cubicPoint(start, firstControl, secondControl, end, step / 8))
+    for (let step = 0; step < 24; step++) curve.push(cubicPoint(start, firstControl, secondControl, end, step / 24))
   }
   curve.push(points[points.length - 1]!)
   return curve
