@@ -1071,8 +1071,10 @@ export function DocsPage() {
                 legacy renderer.
                 Rough geometry also accepts <code>ROUGHNESS 0..4</code>,{" "}
                 <code>ROUGHSEED integer</code>, <code>BOWING number</code>,
-                and <code>ROUGHFILL</code> (stored for deterministic fill
-                rendering). Freehand ink accepts <code>INKSIZE</code>,{" "}
+                and <code>ROUGHFILL hachure|cross-hatch|zigzag|dots|solid</code>{" "}
+                for deterministic Rough.js patterned fills. The fill is
+                rendered after the outline completes. Freehand ink accepts{" "}
+                <code>INKSIZE</code>,{" "}
                 <code>THINNING</code>, <code>SMOOTHING</code>,{" "}
                 <code>STREAMLINE</code>, and <code>TAPER on|off</code>.
                 <code>MORPH</code> supports every pair whose source and target

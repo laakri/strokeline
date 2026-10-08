@@ -93,7 +93,7 @@ the safe area and use concise `SAY` cues for spoken, word-highlighted captions.
 | `DRAW 1s`                                                      | CREATE, INK, TABLE, charts, ARROW            | Reveal time. Not used on ICON                                                             |
 | `ROUGH on\|off`                                                | geometric CREATE, LINE, ARROW                | Opt-in deterministic rough sampled outline and draw-on reveal; omitted preserves legacy rendering |
 | `ROUGHNESS 0..4` / `ROUGHSEED integer` / `BOWING number`        | ROUGH geometric objects                      | Explicit deterministic Rough.js geometry controls |
-| `ROUGHFILL style`                                              | ROUGH geometric objects                      | Records the requested fill style; patterned fill rendering is not yet enabled |
+| `ROUGHFILL hachure\|cross-hatch\|zigzag\|dots\|solid`          | ROUGH geometric objects                      | Rough.js patterned fill; rendered after the outline completes. Requires `FILL #hex`. |
 | `PENFOLLOW on\|off`                                            | drawing CREATE, LINE, ARROW, INK              | Opt-in vector pen at the active reveal tip; omitted preserves legacy hand behavior       |
 | `FREEHAND on\|off`                                             | INK                                          | Opt-in perfect-freehand variable-width filled stroke; omitted preserves roughjs ink      |
 | `INKSIZE n`, `THINNING n`, `SMOOTHING n`, `STREAMLINE n`, `TAPER on\|off` | FREEHAND INK | Optional perfect-freehand controls; defaults preserve the current renderer |
