@@ -61,18 +61,21 @@ export function drawRectangle(
   drawShapeShadow(context, node, box, renderContext.cameraScale, () =>
     context.roundRect(box.x, box.y, box.width, box.height, corner)
   , progress)
+  const roughReveal = shouldUseRoughSampledGeometry(node)
   context.save()
-  context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.clip()
-  context.beginPath(); context.rect(box.x, box.y, box.width * progress, box.height); context.clip()
+  if (!roughReveal) {
+    context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.clip()
+    context.beginPath(); context.rect(box.x, box.y, box.width * progress, box.height); context.clip()
+  }
   fillShape(context, node, box, renderContext.cameraScale, () =>
     context.roundRect(box.x, box.y, box.width, box.height, corner),
-    false
+    roughReveal ? progress >= 1 : false
   )
   context.strokeStyle = node.style.color
   context.lineWidth = Math.max(1, node.style.strokeWidth / renderContext.cameraScale)
   context.lineJoin = "round"
   applyShapeShadow(context, node, renderContext.cameraScale)
-  if (shouldUseRoughSampledGeometry(node)) {
+  if (roughReveal) {
     const paths = cachedSampledRoughPath(`rectangle:${node.id}:${box.x}:${box.y}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${renderContext.cameraScale}`, () =>
       sampleRoughDrawable(renderContext.roughGenerator.rectangle(box.x, box.y, box.width, box.height, strokeOptions(node, renderContext.cameraScale))))
     drawSampledPaths(context, paths, progress)
@@ -93,7 +96,7 @@ export function drawRectangle(
       align: node.align ?? "center",
       lineHeight: node.lineHeight,
     },
-    shouldUseRoughSampledGeometry(node) ? (progress >= 1 ? 1 : 0) : progress
+    roughReveal ? (progress >= 1 ? 1 : 0) : progress
   )
 }
 

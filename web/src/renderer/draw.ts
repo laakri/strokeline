@@ -208,19 +208,28 @@ function drawPen(
   context.translate(pen.position.x, pen.position.y)
   context.rotate(pen.angle)
   context.globalAlpha = pen.opacity
+  const scale = 1 / cameraScale
   context.fillStyle = "#F4B942"
   context.strokeStyle = "#241A12"
-  context.lineWidth = Math.max(1, 2 / cameraScale)
+  context.lineWidth = Math.max(1, 1.75 * scale)
   context.beginPath()
-  context.roundRect(-18 / cameraScale, -5 / cameraScale, 24 / cameraScale, 10 / cameraScale, 4 / cameraScale)
+  context.roundRect(-32 * scale, -6 * scale, 24 * scale, 12 * scale, 4 * scale)
+  context.fill()
+  context.stroke()
+  context.fillStyle = "#D68B2C"
+  context.beginPath()
+  context.roundRect(-11 * scale, -6 * scale, 5 * scale, 12 * scale, 2 * scale)
   context.fill()
   context.stroke()
   context.fillStyle = "#241A12"
   context.beginPath()
-  context.moveTo(6 / cameraScale, -5 / cameraScale)
-  context.lineTo(14 / cameraScale, 0)
-  context.lineTo(6 / cameraScale, 5 / cameraScale)
+  context.moveTo(-8 * scale, -6 * scale)
+  context.lineTo(0, 0)
+  context.lineTo(-8 * scale, 6 * scale)
   context.closePath()
+  context.fill()
+  context.beginPath()
+  context.arc(-34 * scale, 0, 2.5 * scale, 0, Math.PI * 2)
   context.fill()
   context.restore()
 }

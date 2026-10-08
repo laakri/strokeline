@@ -32,18 +32,21 @@ export function drawEllipse(render: RenderContext, node: SceneNode): void {
   drawShapeShadow(render.context, node, box, render.cameraScale, () =>
     render.context.ellipse(node.position.x, node.position.y, box.width / 2, box.height / 2, 0, 0, Math.PI * 2)
   , progress)
+  const roughReveal = shouldUseRoughSampledGeometry(node)
   if (progress > 0) {
     const context = render.context
     context.save()
-    context.beginPath()
-    context.rect(box.x, box.y, box.width * progress, box.height)
-    context.clip()
+    if (!roughReveal) {
+      context.beginPath()
+      context.rect(box.x, box.y, box.width * progress, box.height)
+      context.clip()
+    }
     fillShape(context, node, box, render.cameraScale, () =>
       context.ellipse(node.position.x, node.position.y, box.width / 2, box.height / 2, 0, 0, Math.PI * 2),
-      false
+      roughReveal ? progress >= 1 : false
     )
     applyShapeShadow(context, node, render.cameraScale)
-    if (shouldUseRoughSampledGeometry(node)) {
+    if (roughReveal) {
       const paths = cachedSampledRoughPath(`ellipse:${node.id}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${render.cameraScale}`, () =>
         sampleRoughDrawable(render.roughGenerator.ellipse(node.position.x, node.position.y, box.width, box.height, strokeOptions(node, render.cameraScale))))
       drawSampledPaths(context, paths, progress)
@@ -64,7 +67,7 @@ export function drawEllipse(render: RenderContext, node: SceneNode): void {
       align: node.align ?? "center",
       lineHeight: node.lineHeight,
     },
-    shouldUseRoughSampledGeometry(node) ? (progress >= 1 ? 1 : 0) : progress
+    roughReveal ? (progress >= 1 ? 1 : 0) : progress
   )
 }
 

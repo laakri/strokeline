@@ -25,8 +25,11 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
     for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
     ctx.closePath()
   }, progress)
+  const roughReveal = shouldUseRoughSampledGeometry(node)
   ctx.save()
-  ctx.beginPath(); ctx.rect(box.x, box.y, box.width * progress, box.height); ctx.clip()
+  if (!roughReveal) {
+    ctx.beginPath(); ctx.rect(box.x, box.y, box.width * progress, box.height); ctx.clip()
+  }
   ctx.beginPath(); ctx.moveTo(points[0]!.x, points[0]!.y)
   for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
   ctx.closePath()
@@ -34,12 +37,12 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
     ctx.moveTo(points[0]!.x, points[0]!.y)
     for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
     ctx.closePath()
-  }, false)
+  }, roughReveal ? progress >= 1 : false)
   applyShapeShadow(ctx, node, render.cameraScale)
   ctx.strokeStyle = node.style.color
   ctx.lineWidth = Math.max(1, node.style.strokeWidth / render.cameraScale)
   ctx.lineJoin = "round"
-  if (shouldUseRoughSampledGeometry(node)) {
+  if (roughReveal) {
     const paths = cachedSampledRoughPath(`diamond:${node.id}:${box.x}:${box.y}:${box.width}:${box.height}:${node.style.pen}:${node.style.strokeWidth}:${render.cameraScale}`, () =>
       sampleRoughDrawable(render.roughGenerator.polygon(points, strokeOptions(node, render.cameraScale))))
     drawSampledPaths(ctx, paths, progress)
@@ -51,7 +54,7 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
   const fontSize = text ? fitTextFontSize(text, node.style.fontSize ?? 40, maxWidth, maxHeight, maxWidth, node.lineHeight ?? 1.3,
     (line, size) => measureTextWidth(line, size, node.style.fontFamily), 18) : node.style.fontSize ?? 40
   drawLabel(render, text, node.position, { color: node.style.color, fontSize, fontFamily: node.style.fontFamily,
-    maxWidth, align: "center", lineHeight: node.lineHeight }, shouldUseRoughSampledGeometry(node) ? (progress >= 1 ? 1 : 0) : progress)
+    maxWidth, align: "center", lineHeight: node.lineHeight }, roughReveal ? (progress >= 1 ? 1 : 0) : progress)
 }
 
 export const diamond: ShapeRenderer = { draw: drawDiamond, boundingBox: diamondBoundingBox }
