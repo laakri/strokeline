@@ -152,8 +152,8 @@ describe("rough sampled geometry", () => {
       node
     )
     expect(drawable?.options.fillStyle).toBe("dots")
-    expect(drawable?.options.fillWeight).toBeGreaterThan(0)
-    expect(drawable?.options.hachureGap).toBeGreaterThan(0)
+    expect(drawable?.options.fillWeight).toBe(2)
+    expect(drawable?.options.hachureGap).toBe(7)
     expect(drawable?.sets.some((set) => set.type === "fillSketch")).toBe(true)
   })
 

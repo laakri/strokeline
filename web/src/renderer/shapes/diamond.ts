@@ -5,7 +5,7 @@ import { drawLabel } from "@/renderer/shapes/label.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry, usesPatternedRoughFill } from "@/renderer/roughPath.ts"
 
 export function diamondBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0, height = node.size?.height ?? 0
@@ -19,12 +19,15 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
     { x: node.position.x, y: box.y }, { x: box.x + box.width, y: node.position.y },
     { x: node.position.x, y: box.y + box.height }, { x: box.x, y: node.position.y },
   ]
-  drawShapeShadow(ctx, node, box, render.cameraScale, () => {
-    ctx.moveTo(points[0]!.x, points[0]!.y)
-    for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
-    ctx.closePath()
-  }, progress)
   const roughReveal = shouldUseRoughSampledGeometry(node)
+  const patternedFill = roughReveal && usesPatternedRoughFill(node)
+  if (!patternedFill) {
+    drawShapeShadow(ctx, node, box, render.cameraScale, () => {
+      ctx.moveTo(points[0]!.x, points[0]!.y)
+      for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
+      ctx.closePath()
+    }, progress)
+  }
   ctx.save()
   if (!roughReveal) {
     ctx.beginPath(); ctx.rect(box.x, box.y, box.width * progress, box.height); ctx.clip()
@@ -32,11 +35,13 @@ export function drawDiamond(render: RenderContext, node: SceneNode): void {
   ctx.beginPath(); ctx.moveTo(points[0]!.x, points[0]!.y)
   for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
   ctx.closePath()
-  fillShape(ctx, node, box, render.cameraScale, () => {
-    ctx.moveTo(points[0]!.x, points[0]!.y)
-    for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
-    ctx.closePath()
-  }, roughReveal ? progress >= 1 : false)
+  if (!patternedFill) {
+    fillShape(ctx, node, box, render.cameraScale, () => {
+      ctx.moveTo(points[0]!.x, points[0]!.y)
+      for (const point of points.slice(1)) ctx.lineTo(point.x, point.y)
+      ctx.closePath()
+    }, roughReveal ? progress >= 1 : false)
+  }
   applyShapeShadow(ctx, node, render.cameraScale)
   ctx.strokeStyle = node.style.color
   ctx.lineWidth = Math.max(1, node.style.strokeWidth / render.cameraScale)

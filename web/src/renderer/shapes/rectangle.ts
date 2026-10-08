@@ -6,7 +6,7 @@ import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
-import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry, usesPatternedRoughFill } from "@/renderer/roughPath.ts"
 
 export function rectangleBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -54,23 +54,28 @@ export function drawRectangle(
   )
   const context = renderContext.context
   const corner = Math.min(node.cornerRadius ?? 16, box.width / 2, box.height / 2)
+  const roughReveal = shouldUseRoughSampledGeometry(node)
+  const patternedFill = roughReveal && usesPatternedRoughFill(node)
   const label = node.text ?? node.label
   const baseFont = node.style.fontSize ?? DEFAULT_LABEL_SIZE
   const fittedFont = label ? fitTextFontSize(label, baseFont, Math.max(0, box.width - 32), Math.max(0, box.height - 24), Math.max(0, box.width - 32), node.lineHeight ?? 1.3, (line, size) => measureTextWidth(line, size, node.style.fontFamily), 18) : baseFont
-  drawShapeShadow(context, node, box, renderContext.cameraScale, () =>
-    context.roundRect(box.x, box.y, box.width, box.height, corner)
-  , progress)
-  const roughReveal = shouldUseRoughSampledGeometry(node)
+  if (!patternedFill) {
+    drawShapeShadow(context, node, box, renderContext.cameraScale, () =>
+      context.roundRect(box.x, box.y, box.width, box.height, corner)
+    , progress)
+  }
   const pathReveal = node.data?.penFollow === true
   context.save()
   if (!roughReveal) {
     context.beginPath(); context.roundRect(box.x, box.y, box.width, box.height, corner); context.clip()
     context.beginPath(); context.rect(box.x, box.y, box.width * progress, box.height); context.clip()
   }
-  fillShape(context, node, box, renderContext.cameraScale, () =>
-    context.roundRect(box.x, box.y, box.width, box.height, corner),
-    roughReveal ? progress >= 1 : false
-  )
+  if (!patternedFill) {
+    fillShape(context, node, box, renderContext.cameraScale, () =>
+      context.roundRect(box.x, box.y, box.width, box.height, corner),
+      roughReveal ? progress >= 1 : false
+    )
+  }
   if (!roughReveal && pathReveal) {
     context.restore()
     context.save()

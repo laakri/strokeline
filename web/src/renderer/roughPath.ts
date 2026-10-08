@@ -54,11 +54,12 @@ export function drawRoughFill(
     ...roughOptions(node, cameraScale),
     fill: node.style.fill,
     fillStyle: fillStyle === "cross-hatch" ? "cross-hatch" : fillStyle,
-    fillWeight: Math.max(1, node.style.strokeWidth / cameraScale),
-    hachureGap: Math.max(4, node.style.strokeWidth * 3 / cameraScale),
+    fillWeight: 2 / cameraScale,
+    hachureGap: 7 / cameraScale,
     stroke: "transparent",
     strokeWidth: 0,
   }
+
   const width = node.size?.width ?? 0
   const height = node.size?.height ?? 0
   if (node.type === "rectangle")
@@ -72,6 +73,11 @@ export function drawRoughFill(
       [node.position.x, node.position.y + height / 2],
       [node.position.x - width / 2, node.position.y],
     ], options))
+}
+
+export function usesPatternedRoughFill(node: SceneNode): boolean {
+  const fillStyle = node.data?.roughFill
+  return typeof fillStyle === "string" && fillStyle !== "none" && fillStyle !== "solid"
 }
 
 function sampleCubic(start: Point, data: number[], samples: number): Point[] {
