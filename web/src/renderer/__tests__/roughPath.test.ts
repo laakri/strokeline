@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { Drawable } from "roughjs/bin/core"
-import { drawSampledPaths, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawSampledPaths, drawSampledPathsParallel, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 import { features } from "@/defaults/features.ts"
 import type { SceneNode } from "@/ir/types.ts"
 
@@ -36,6 +36,28 @@ describe("rough sampled geometry", () => {
       ["begin", []],
       ["move", [0, 0]],
       ["line", [5, 0]],
+      ["stroke", []],
+    ])
+  })
+
+  it("reveals Rough overdraw strokes in parallel", () => {
+    const moves: Array<[string, number[]]> = []
+    const context = {
+      beginPath: () => moves.push(["begin", []]),
+      moveTo: (x: number, y: number) => moves.push(["move", [x, y]]),
+      lineTo: (x: number, y: number) => moves.push(["line", [x, y]]),
+      stroke: () => moves.push(["stroke", []]),
+    } as unknown as CanvasRenderingContext2D
+    drawSampledPathsParallel(context, [
+      { points: [{ x: 0, y: 0 }, { x: 10, y: 0 }] },
+      { points: [{ x: 0, y: 1 }, { x: 10, y: 1 }] },
+    ], 0.5)
+    expect(moves).toEqual([
+      ["begin", []],
+      ["move", [0, 0]],
+      ["line", [5, 0]],
+      ["move", [0, 1]],
+      ["line", [5, 1]],
       ["stroke", []],
     ])
   })

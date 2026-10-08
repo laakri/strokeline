@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { Scene } from "@/ir/types.ts"
 import { Timeline } from "@/timeline/timeline.ts"
+import { pointAtPolylineProgress, sampledRoughPathsForNode } from "@/renderer/roughPath.ts"
 
 const scene: Scene = {
   id: "1",
@@ -165,6 +166,50 @@ describe("stateless timeline resolution", () => {
     const camera = zoomTimeline.resolveAt(2).camera
     expect(camera.position).toEqual({ x: 320, y: 180 })
     expect(camera.scale).toBe(3)
+  })
+
+  it("uses the resolved camera scale for Rough pen geometry", () => {
+    const roughScene: Scene = {
+      id: "rough-camera",
+      index: 1,
+      ops: [
+        {
+          kind: "create",
+          t: 0,
+          node: {
+            id: "rough-box",
+            type: "rectangle",
+            position: { x: 320, y: 180 },
+            size: { width: 160, height: 90 },
+            rotation: 0,
+            opacity: 1,
+            style: { color: "#000", strokeWidth: 4 },
+            layer: 0,
+            data: { penFollow: true, roughSampledGeometry: true, roughSeed: 7, roughness: 2 },
+          },
+          draw: { duration: 2, ease: "linear", style: "draw-on" },
+        },
+        {
+          kind: "camera",
+          t: 0,
+          camera: {
+            verb: "zoom",
+            targetId: "rough-box",
+            duration: 1,
+            ease: "linear",
+          },
+        },
+      ],
+    }
+    const roughTimeline = new Timeline(roughScene, { width: 640, height: 360 })
+    const state = roughTimeline.resolveAt(0.5)
+    const node = state.nodes[0]!
+    const expected = pointAtPolylineProgress(
+      sampledRoughPathsForNode(node, state.camera.scale)[0]!.points,
+      node.revealProgress
+    ).point
+    expect(state.camera.scale).not.toBe(1)
+    expect(state.pen?.position).toEqual(expected)
   })
 
   it("fits camera targets to multiline text height", () => {

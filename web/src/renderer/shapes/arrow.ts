@@ -6,7 +6,7 @@ import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
 import { ShapeRegistry } from "@/renderer/shapes/registry.ts"
 import { cameraScaledFontSize, drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
-import { cachedSampledRoughPath, drawSampledPaths, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
+import { cachedSampledRoughPath, drawSampledPathsParallel, shouldUseRoughSampledGeometry, sampleRoughDrawable } from "@/renderer/roughPath.ts"
 import { strokeOptions } from "@/renderer/handdrawn.ts"
 
 type ArrowRoute = "straight" | "elbow" | "curve"
@@ -43,7 +43,7 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
         `arrow:${node.id}:${path.map((point) => `${point.x},${point.y}`).join(";")}:${node.style.pen}:${node.style.strokeWidth}:${renderContext.cameraScale}`,
         () => sampleRoughDrawable(renderContext.roughGenerator.linearPath(path, roughOptions))
       )
-      drawSampledPaths(ctx, paths, progress)
+      drawSampledPathsParallel(ctx, paths, progress)
     } else {
       ctx.beginPath()
       if (route === "curve" && !selfMessage && visiblePath.length >= 4) {

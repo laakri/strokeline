@@ -270,3 +270,20 @@ export function drawSampledPaths(
   }
   context.stroke()
 }
+
+/** Reveals Rough.js overdraw strokes together so the pen never retraces them. */
+export function drawSampledPathsParallel(
+  context: CanvasRenderingContext2D,
+  paths: SampledPath[],
+  progress = 1
+): void {
+  const clamped = Math.max(0, Math.min(1, progress))
+  context.beginPath()
+  for (const path of paths) {
+    const points = trimPolyline(path.points, polylineLength(path.points) * clamped)
+    if (points.length < 2) continue
+    context.moveTo(points[0]!.x, points[0]!.y)
+    for (const point of points.slice(1)) context.lineTo(point.x, point.y)
+  }
+  context.stroke()
+}

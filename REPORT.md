@@ -34,7 +34,16 @@
 - Added DSL parsing/compiler data for `ROUGHNESS`, `ROUGHSEED`, `BOWING`, `ROUGHFILL`, `INKSIZE`, `THINNING`, `SMOOTHING`, `STREAMLINE`, and `TAPER`.
 - Rough sampled geometry cache keys include all explicit rough controls; explicit seeds and roughness are deterministic and tested.
 - Freehand rendering now consumes the explicit size/thinning/smoothing/streamline/taper controls, with existing defaults preserved.
-- `ROUGHFILL` is parsed and retained in scene data, but patterned Rough.js fill-set rendering is not yet wired into shape renderers.
+- `ROUGHFILL` is parsed and retained in scene data, with patterned Rough.js fill-set rendering wired into geometric shape renderers.
+
+## Follow-up - duplicate Rough stroke pen retracing
+- Confirmed the apparent pen teleporting on Rough rectangles/circles was caused by Rough.js overdraw paths being revealed in one combined length stream.
+- Rough outlines now reveal every sampled stroke at the same progress, while PENFOLLOW follows the first continuous sampled outline only. The sketchy duplicate stroke remains visible without making the pen replay an already-drawn edge.
+- Added a regression test for parallel overdraw reveal.
+- Focused tests: 2 files / 19 tests passed.
+- Full suite: 28 files / 115 tests passed.
+- Typecheck: passed.
+- Production build: passed; existing `import.meta` and chunk-size warnings remain.
 
 ## Docs, Skills, and verification
 - Updated app docs and `AI_prompt_kit.MD` with the new rough/freehand controls and the supported MORPH set: any pair of CIRCLE, ELLIPSE, RECTANGLE, or DIAMOND, including CIRCLE -> DIAMOND.

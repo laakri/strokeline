@@ -12,7 +12,7 @@ import {
   interpolateAnimation,
   revealAt,
 } from "@/timeline/interpolate.ts"
-import { pointAtSampledPenProgress, pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { pointAtPolylineProgress, pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export interface ResolvedNode extends SceneNode {
   revealProgress: number
@@ -223,16 +223,17 @@ export class Timeline {
       .map((op) => this.resolveNodeAt(op.node.id, at))
       .filter((node): node is ResolvedNode => node !== undefined)
     const timeline = this
-    const pen = resolvePen(nodes)
+    const camera = this.resolveCameraAt(at)
+    const pen = resolvePen(nodes, camera.scale)
     return {
       nodes,
       highlights: this.resolveHighlightsAt(at),
-      camera: this.resolveCameraAt(at),
+      camera,
       ...(pen ? { pen } : {}),
       ...this.resolveSubtitleAt(at),
     }
 
-    function resolvePen(nodes: ResolvedNode[]): PenState | undefined {
+    function resolvePen(nodes: ResolvedNode[], cameraScale: number): PenState | undefined {
       const candidates = timeline.createOps
         .filter((op) => op.node.data?.penFollow === true)
         .map((op, index) => ({
@@ -251,9 +252,11 @@ export class Timeline {
         if (at >= start && at < end) {
           const progress = clamp(current.node.revealProgress)
           const roughPaths = shouldUseRoughSampledGeometry(current.node)
-            ? sampledRoughPathsForNode(current.node)
+            ? sampledRoughPathsForNode(current.node, cameraScale)
             : undefined
-          const sampled = roughPaths?.length ? pointAtSampledPenProgress(roughPaths, progress) : undefined
+          const sampled = roughPaths?.[0]?.points.length
+            ? { ...pointAtPolylineProgress(roughPaths[0].points, progress), lift: 0 }
+            : undefined
           const position = sampled?.point ?? pointAtProgress(currentPath, progress)
           const tangent = sampled?.angle ?? tangentAtProgress(currentPath, progress)
           return {
@@ -269,13 +272,13 @@ export class Timeline {
         if (next && at >= end && at < next.op.t) {
           const nextPath = penPath(next.node)
           const currentRoughPaths = shouldUseRoughSampledGeometry(current.node)
-            ? sampledRoughPathsForNode(current.node)
+            ? sampledRoughPathsForNode(current.node, cameraScale)
             : undefined
           const nextRoughPaths = shouldUseRoughSampledGeometry(next.node)
-            ? sampledRoughPathsForNode(next.node)
+            ? sampledRoughPathsForNode(next.node, cameraScale)
             : undefined
-          const from = currentRoughPaths?.length
-            ? pointAtSampledProgress(currentRoughPaths, 1).point
+          const from = currentRoughPaths?.[0]?.points.length
+            ? pointAtPolylineProgress(currentRoughPaths[0].points, 1).point
             : pointAtProgress(currentPath, 1)
           const to = nextRoughPaths?.[0]?.points[0] ?? nextPath[0]!
           const travelProgress = clamp((at - end) / Math.max(0.001, next.op.t - end))
