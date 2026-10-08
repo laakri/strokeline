@@ -1,4 +1,4 @@
-import rough from "roughjs/bin/rough"
+import rough from "roughjs/bundled/rough.esm.js"
 import type { RoughCanvas } from "roughjs/bin/canvas"
 import type { RoughGenerator } from "roughjs/bin/generator"
 import { features } from "@/defaults/features.ts"

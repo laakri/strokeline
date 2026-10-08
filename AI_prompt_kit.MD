@@ -92,8 +92,11 @@ the safe area and use concise `SAY` cues for spoken, word-highlighted captions.
 | `NAME iconName`                                                | ICON                                         | Only from the icon list (section 8)                                                       |
 | `DRAW 1s`                                                      | CREATE, INK, TABLE, charts, ARROW            | Reveal time. Not used on ICON                                                             |
 | `ROUGH on\|off`                                                | geometric CREATE, LINE, ARROW                | Opt-in deterministic rough sampled outline and draw-on reveal; omitted preserves legacy rendering |
+| `ROUGHNESS 0..4` / `ROUGHSEED integer` / `BOWING number`        | ROUGH geometric objects                      | Explicit deterministic Rough.js geometry controls |
+| `ROUGHFILL style`                                              | ROUGH geometric objects                      | Records the requested fill style; patterned fill rendering is not yet enabled |
 | `PENFOLLOW on\|off`                                            | drawing CREATE, LINE, ARROW, INK              | Opt-in vector pen at the active reveal tip; omitted preserves legacy hand behavior       |
 | `FREEHAND on\|off`                                             | INK                                          | Opt-in perfect-freehand variable-width filled stroke; omitted preserves roughjs ink      |
+| `INKSIZE n`, `THINNING n`, `SMOOTHING n`, `STREAMLINE n`, `TAPER on\|off` | FREEHAND INK | Optional perfect-freehand controls; defaults preserve the current renderer |
 | `MORPH`                                                        | `ANIMATE id MORPH TO target`                 | Flubber morph between any circle, ellipse, rectangle, or diamond pair, including cross-type pairs |
 | `DURATION 1s`, `EASE x`                                        | ANIMATE, DELETE, CAMERA                      |                                                                                           |
 | `ROUTE straight\|elbow\|curve`                                 | ARROW                                        | Choose a direct connector, clean right-angle path, or smooth curved path                 |

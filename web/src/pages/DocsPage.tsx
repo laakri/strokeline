@@ -1069,6 +1069,12 @@ export function DocsPage() {
                 <code>PENFOLLOW on</code> to show a pen at the active reveal
                 tip. These options are opt-in; omitted options preserve the
                 legacy renderer.
+                Rough geometry also accepts <code>ROUGHNESS 0..4</code>,{" "}
+                <code>ROUGHSEED integer</code>, <code>BOWING number</code>,
+                and <code>ROUGHFILL</code> (stored for deterministic fill
+                rendering). Freehand ink accepts <code>INKSIZE</code>,{" "}
+                <code>THINNING</code>, <code>SMOOTHING</code>,{" "}
+                <code>STREAMLINE</code>, and <code>TAPER on|off</code>.
                 <code>MORPH</code> supports every pair whose source and target
                 are <code>CIRCLE</code>, <code>ELLIPSE</code>,{" "}
                 <code>RECTANGLE</code>, or <code>DIAMOND</code>; cross-type
