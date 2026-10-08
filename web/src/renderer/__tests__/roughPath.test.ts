@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { Drawable } from "roughjs/bin/core"
-import { drawSampledPaths, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { drawSampledPaths, pointAtSampledPenProgress, pointAtSampledProgress, sampleRoughDrawable, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 import { features } from "@/defaults/features.ts"
 import type { SceneNode } from "@/ir/types.ts"
 
@@ -98,5 +98,16 @@ describe("rough sampled geometry", () => {
     const different = sampledRoughPathsForNode({ ...base, data: { ...base.data, roughSeed: 8, roughness: 3 } })
     expect(same).toEqual(sampledRoughPathsForNode({ ...base, data: { ...base.data } }))
     expect(different).not.toEqual(same)
+  })
+
+  it("lifts and travels between disconnected sampled strokes", () => {
+    const paths = [
+      { points: [{ x: 0, y: 0 }, { x: 100, y: 0 }] },
+      { points: [{ x: 300, y: 100 }, { x: 400, y: 100 }] },
+    ]
+    const result = pointAtSampledPenProgress(paths, 0.5)
+    expect(result.lift).toBeGreaterThan(0)
+    expect(result.point.x).toBeGreaterThan(100)
+    expect(result.point.x).toBeLessThan(300)
   })
 })

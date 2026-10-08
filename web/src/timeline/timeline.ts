@@ -12,7 +12,7 @@ import {
   interpolateAnimation,
   revealAt,
 } from "@/timeline/interpolate.ts"
-import { pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
+import { pointAtSampledPenProgress, pointAtSampledProgress, sampledRoughPathsForNode, shouldUseRoughSampledGeometry } from "@/renderer/roughPath.ts"
 
 export interface ResolvedNode extends SceneNode {
   revealProgress: number
@@ -253,7 +253,7 @@ export class Timeline {
           const roughPaths = shouldUseRoughSampledGeometry(current.node)
             ? sampledRoughPathsForNode(current.node)
             : undefined
-          const sampled = roughPaths?.length ? pointAtSampledProgress(roughPaths, progress) : undefined
+          const sampled = roughPaths?.length ? pointAtSampledPenProgress(roughPaths, progress) : undefined
           const position = sampled?.point ?? pointAtProgress(currentPath, progress)
           const tangent = sampled?.angle ?? tangentAtProgress(currentPath, progress)
           return {
@@ -262,7 +262,7 @@ export class Timeline {
             angle: -0.9 + Math.cos(tangent) * 0.12,
             opacity: Math.min(1, progress * 12, (1 - progress) * 12),
             phase: "drawing",
-            lift: 0,
+            lift: sampled?.lift ?? 0,
           }
         }
         const next = candidates[index + 1]

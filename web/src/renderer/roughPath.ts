@@ -164,7 +164,39 @@ export function pointAtSampledProgress(paths: SampledPath[], progress: number): 
       if (remaining <= lengths[index]!) return pointAtPolylineProgress(paths[index]!.points, lengths[index] ? remaining / lengths[index]! : 0)
       remaining -= lengths[index]!
     }
+
     return pointAtPolylineProgress(paths.at(-1)?.points ?? [], 1)
+}
+
+/** Follows disconnected sampled strokes without teleporting between their endpoints. */
+export function pointAtSampledPenProgress(
+  paths: SampledPath[],
+  progress: number
+): { point: Point; angle: number; lift: number } {
+  const lengths = paths.map((path) => polylineLength(path.points))
+  const total = lengths.reduce((sum, length) => sum + length, 0)
+  if (!total) return { ...pointAtSampledProgress(paths, progress), lift: 0 }
+  const normalized = Math.max(0, Math.min(1, progress))
+  let travelled = 0
+  for (let index = 0; index < paths.length - 1; index++) {
+    travelled += lengths[index]!
+    const boundary = travelled / total
+    const window = Math.min(0.025, 12 / total)
+    if (normalized >= boundary - window && normalized <= boundary + window) {
+      const before = paths[index]!.points.at(-1)!
+      const after = paths[index + 1]!.points[0]!
+      const amount = (normalized - (boundary - window)) / (window * 2)
+      return {
+        point: {
+          x: before.x + (after.x - before.x) * amount,
+          y: before.y + (after.y - before.y) * amount,
+        },
+        angle: Math.atan2(after.y - before.y, after.x - before.x),
+        lift: Math.sin(amount * Math.PI),
+      }
+    }
+  }
+  return { ...pointAtSampledProgress(paths, normalized), lift: 0 }
 }
 
 function trimPolyline(points: Point[], distance: number): Point[] {

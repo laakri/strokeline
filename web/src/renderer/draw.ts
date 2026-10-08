@@ -208,7 +208,7 @@ function drawPen(
   const scale = 1 / cameraScale
   const lift = pen.lift * 20 * scale
   context.translate(pen.position.x, pen.position.y - lift)
-  context.rotate(-0.9)
+  context.rotate(pen.angle)
   context.globalAlpha = pen.opacity
   context.fillStyle = "rgba(0,0,0,0.12)"
   context.beginPath()
