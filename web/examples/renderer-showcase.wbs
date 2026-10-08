@@ -1,0 +1,164 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F6F8FC
+STYLE handdrawn
+FONT handwritten
+STROKE 4
+
+SCENE 1 "Ideas in motion"
+  CREATE title AS TEXT
+    TEXT "Ideas in motion"
+    POSITION 960 155
+    SIZE 76
+    MAXWIDTH 1000
+    COLOR #17324D
+    DRAW 0.7s
+  END
+
+  CREATE subtitle AS TEXT
+    TEXT "A full-canvas tour of Strokeline's sketch renderer"
+    POSITION 960 245
+    SIZE 32
+    MAXWIDTH 1300
+    COLOR #53677C
+    DRAW 0.5s
+  END
+
+  PARALLEL
+    CREATE sketch AS RECTANGLE
+      POSITION 270 465
+      WIDTH 280
+      HEIGHT 210
+      CORNERS 28
+      TEXT "Sketch"
+      SIZE 42
+      COLOR #17324D
+      FILL #DCEBFA
+      ROUGH on
+      ROUGHNESS 1.5
+      ROUGHSEED 7
+      ROUGHFILL dots
+      PENFOLLOW on
+      DRAW 1.1s
+    END
+
+    CREATE shape AS CIRCLE
+      POSITION 615 465
+      RADIUS 112
+      TEXT "Shape"
+      SIZE 40
+      COLOR #713F12
+      FILL #FEF0C7
+      ROUGH on
+      ROUGHNESS 1.4
+      ROUGHSEED 13
+      ROUGHFILL hachure
+      DRAW 1.1s
+    END
+
+    CREATE route AS DIAMOND
+      POSITION 960 465
+      WIDTH 285
+      HEIGHT 220
+      TEXT "Route"
+      SIZE 40
+      COLOR #14532D
+      FILL #DCF5E7
+      ROUGH on
+      ROUGHNESS 1.3
+      ROUGHSEED 23
+      ROUGHFILL cross-hatch
+      DRAW 1.1s
+    END
+
+    CREATE motion AS ELLIPSE
+      POSITION 1305 465
+      WIDTH 285
+      HEIGHT 190
+      TEXT "Motion"
+      SIZE 40
+      COLOR #7F1D1D
+      FILL #FCE2E2
+      ROUGH on
+      ROUGHNESS 1.5
+      ROUGHSEED 31
+      ROUGHFILL zigzag
+      DRAW 1.1s
+    END
+
+    CREATE finish AS RECTANGLE
+      POSITION 1650 465
+      WIDTH 280
+      HEIGHT 210
+      CORNERS 28
+      TEXT "Export"
+      SIZE 42
+      COLOR #4C1D95
+      FILL #EDE2FF
+      ROUGH on
+      ROUGHNESS 1.2
+      ROUGHSEED 41
+      ROUGHFILL solid
+      DRAW 1.1s
+    END
+  END
+
+  PARALLEL
+    ARROW sketch -> shape
+      LABEL "add texture"
+      ROUTE curve
+      HEAD end
+      PENFOLLOW on
+      COLOR #52718D
+      STROKE 5
+      DRAW 0.75s
+
+    ARROW shape -> route
+      LABEL "connect ideas"
+      ROUTE elbow
+      HEAD end
+      COLOR #52718D
+      STROKE 5
+      DRAW 0.75s
+
+    ARROW route -> motion
+      LABEL "guide the flow"
+      ROUTE curve
+      VIA 1090 610 1170 610
+      HEAD end
+      COLOR #52718D
+      STROKE 5
+      DRAW 0.75s
+
+    ARROW motion -> finish
+      LABEL "ready to share"
+      ROUTE elbow
+      HEAD end
+      COLOR #52718D
+      STROKE 5
+      DRAW 0.75s
+  END
+
+  CREATE note AS TEXT
+    TEXT "One continuous stroke. A little character in every frame."
+    POSITION 960 790
+    SIZE 36
+    MAXWIDTH 1300
+    COLOR #17324D
+    DRAW 0.6s
+  END
+
+  INK flourish
+    POINTS 430 900, 610 865, 790 900, 970 865, 1150 900, 1330 865, 1490 895
+    COLOR #2E86AB
+    WIDTH 7
+    FREEHAND on
+    INKSIZE 12
+    THINNING 0.45
+    SMOOTHING 0.7
+    STREAMLINE 0.55
+    TAPER on
+    PENFOLLOW on
+    DRAW 1.1s
+  END
+END SCENE

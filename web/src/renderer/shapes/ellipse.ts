@@ -1,6 +1,6 @@
 import type { SceneNode } from "@/ir/types.ts"
 import type { BoundingBox, ShapeRenderer } from "@/renderer/shapes/registry.ts"
-import type { RenderContext } from "@/renderer/handdrawn.ts"
+import { strokeOptions, type RenderContext } from "@/renderer/handdrawn.ts"
 import { drawLabel } from "@/renderer/shapes/label.ts"
 import { DEFAULT_LABEL_SIZE } from "@/defaults/defaults.ts"
 import { fitTextFontSize } from "@/lib/textLayout.ts"
