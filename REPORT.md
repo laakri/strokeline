@@ -35,3 +35,18 @@
 - Rough sampled geometry cache keys include all explicit rough controls; explicit seeds and roughness are deterministic and tested.
 - Freehand rendering now consumes the explicit size/thinning/smoothing/streamline/taper controls, with existing defaults preserved.
 - `ROUGHFILL` is parsed and retained in scene data, but patterned Rough.js fill-set rendering is not yet wired into shape renderers.
+
+## Docs, Skills, and verification
+- Updated app docs and `AI_prompt_kit.MD` with the new rough/freehand controls and the supported MORPH set: any pair of CIRCLE, ELLIPSE, RECTANGLE, or DIAMOND, including CIRCLE -> DIAMOND.
+- Changed the runtime Rough.js import to the bundled browser-safe module. This fixed the validator's SSR module-resolution failure.
+- Skills branch: `demos-complete`, commit `0b06b78`; added `advanced-render-controls.wbs` and syntax reference entries.
+- Skills validation: 18 files, 0 blocking diagnostics, 0 quality warnings.
+- Final app typecheck: passed.
+- Final app test suite: 28 files, 113 tests passed.
+- Final production build: passed; existing import.meta and chunk-size warnings remain.
+
+## Blocked or incomplete
+- ELK layout was not started; no `elkjs` dependency was added.
+- Patterned Rough fill-set rendering is parsed/documented but not implemented.
+- Legacy IR comparison against `d72f664` was not rerun because the repository has no reusable comparison command.
+- Showcase PNG/GIF export, camera-moved pixel alignment coverage, and browser-authenticated verification were not run in this autonomous pass.
