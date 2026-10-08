@@ -1,8 +1,7 @@
 import type { Drawable, Op } from "roughjs/bin/core"
-import rough from "roughjs/bin/rough"
+import rough from "roughjs/bundled/rough.esm.js"
 import type { Point, SceneNode } from "@/ir/types.ts"
 import { features } from "@/defaults/features.ts"
-import { strokeOptions } from "@/renderer/handdrawn.ts"
 
 export interface SampledPath {
   points: Point[]
@@ -10,6 +9,23 @@ export interface SampledPath {
 
 const cache = new Map<string, SampledPath[]>()
 const pathGenerator = rough.generator()
+
+function roughOptions(node: SceneNode, cameraScale: number) {
+  const pen = node.style.pen
+  let hash = 2166136261
+  for (let index = 0; index < node.id.length; index++) {
+    hash ^= node.id.charCodeAt(index)
+    hash = Math.imul(hash, 16777619)
+  }
+  return {
+    seed: hash >>> 0,
+    stroke: node.style.color,
+    strokeWidth: node.style.strokeWidth / cameraScale,
+    fill: node.style.fill,
+    roughness: pen === "clean" ? 0 : pen === "chalk" ? 2 : pen === "pencil" ? 1.5 : pen === "marker" ? 0.25 : pen === "brush" ? 1.8 : 1.2,
+    bowing: pen === "marker" || pen === "clean" ? 0 : 1,
+  }
+}
 
 function sampleCubic(start: Point, data: number[], samples: number): Point[] {
   const [x1, y1, x2, y2, x3, y3] = data
@@ -71,7 +87,7 @@ export function sampledRoughPathsForNode(
 ): SampledPath[] {
   const width = node.size?.width ?? 0
   const height = node.size?.height ?? 0
-  const options = strokeOptions(node, cameraScale)
+  const options = roughOptions(node, cameraScale)
   const key = `node:${node.id}:${node.type}:${node.position.x}:${node.position.y}:${width}:${height}:${node.radius ?? 0}:${node.style.pen}:${node.style.strokeWidth}:${cameraScale}`
   return cachedSampledRoughPath(key, () => {
     if (node.type === "rectangle")

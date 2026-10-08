@@ -546,12 +546,6 @@ class Parser {
       else if (property.value.toUpperCase() === "COLOR") color = value
       else at = value
     }
-    // Accept a standalone END after an animation for authoring ergonomics.
-    // END SCENE remains handled by the scene parser because it has a second token.
-    if (this.word() === "END" && this.tokens[this.position + 1]?.kind === "newline") {
-      this.take()
-      this.endLine()
-    }
     return {
       kind: "animate",
       targetId,

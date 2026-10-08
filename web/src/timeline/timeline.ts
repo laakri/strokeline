@@ -1,5 +1,5 @@
 import { DEFAULT_HIGHLIGHT_COLOR } from "@/defaults/defaults.ts"
-import flubber from "flubber"
+import * as flubberModule from "flubber"
 import type { AnimationSpec, Point, SayLine, Scene, SceneNode, TableHighlightTarget, TimelineOp } from "@/ir/types.ts"
 import { scheduleSays } from "@/subtitles/subtitles.ts"
 import { clamp, easing } from "@/timeline/easing.ts"
@@ -67,7 +67,8 @@ function cachedMorphInterpolator(fromPath: string, toPath: string, options = {})
   const key = JSON.stringify([fromPath, toPath, options])
   const existing = morphInterpolatorCache.get(key)
   if (existing) return existing
-  const interpolator = flubber.interpolate(fromPath, toPath, options)
+  const flubber = flubberModule as typeof flubberModule & { default?: { interpolate: typeof flubberModule.interpolate } }
+  const interpolator = (flubber.interpolate ?? flubber.default?.interpolate)(fromPath, toPath, options)
   morphInterpolatorCache.set(key, interpolator)
   return interpolator
 }
