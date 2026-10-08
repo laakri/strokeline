@@ -85,6 +85,28 @@ describe("non-blocking measured layout diagnostics", () => {
       }),
       createOp(textNode("late", 1400, 700, "Late"), 70, 1),
       createOp({
+        id: "pen-first",
+        type: "line",
+        position: { x: 200, y: 900 },
+        size: { width: 200, height: 0 },
+        rotation: 0,
+        opacity: 1,
+        style: { color: "#222222", strokeWidth: 4 },
+        data: { penFollow: true },
+        layer: 0,
+      }, 10, 2),
+      createOp({
+        id: "pen-second",
+        type: "line",
+        position: { x: 500, y: 900 },
+        size: { width: 200, height: 0 },
+        rotation: 0,
+        opacity: 1,
+        style: { color: "#222222", strokeWidth: 4 },
+        data: { penFollow: true },
+        layer: 0,
+      }, 11, 2),
+      createOp({
         id: "arrow-1",
         type: "arrow",
         position: { x: 0, y: 0 },
@@ -123,6 +145,7 @@ describe("non-blocking measured layout diagnostics", () => {
       "W_SCENE_LENGTH",
       "W_DEAD_AIR",
       "W_CAMERA_NOT_RESET",
+      "W_PENFOLLOW_OVERLAP",
     ]) {
       expect(codes.has(code), code).toBe(true)
     }

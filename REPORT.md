@@ -22,3 +22,10 @@
 - `npm run build`: passed; only existing `import.meta` and chunk-size warnings.
 - Legacy IR regression against `d72f664`: not rerun in this phase because no reusable regression command exists in the repository; this remains an explicit verification item.
 - Camera-moved pixel coverage: not added yet; camera transform code applies to both scene and pen and remains a Phase 0 follow-up risk.
+
+## Phase 1 - pen polish
+- Pen rotation now follows the active path tangent with the requested bounded tilt formula.
+- Overlapping PENFOLLOW create operations resolve deterministically to the first declared candidate.
+- Validator emits `W_PENFOLLOW_OVERLAP` with a suggestion describing the single-pen rule.
+- Targeted validation: 2 files / 4 tests passed.
+- Full-suite, build, and golden reruns are required before the Phase 1 commit.

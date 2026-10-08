@@ -521,6 +521,22 @@ function validateSceneWarnings(
     (op): op is Extract<TimelineOp, { kind: "create" }> =>
       op.kind === "create" && op.node.data?.layoutContainer !== true
   )
+  const penFollowers = creates.filter((op) => op.node.data?.penFollow === true)
+  for (let index = 0; index < penFollowers.length; index++) {
+    const left = penFollowers[index]!
+    for (const right of penFollowers.slice(index + 1)) {
+      if (left.t < right.t + right.draw.duration && right.t < left.t + left.draw.duration) {
+        const location = right.source ?? { line: 1, col: 1 }
+        diagnostics.push(warning(
+          "W_PENFOLLOW_OVERLAP",
+          `PENFOLLOW elements "${left.node.id}" and "${right.node.id}" overlap in time.`,
+          location.line,
+          location.col,
+          "Only the first declared PENFOLLOW element controls the single pen during the overlap."
+        ))
+      }
+    }
+  }
   const createsById = new Map(creates.map((op) => [op.node.id, op.node]))
   const erasures = new Map<string, number>()
   for (const op of scene.ops) {

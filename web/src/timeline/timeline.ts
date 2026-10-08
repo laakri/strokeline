@@ -255,10 +255,11 @@ export class Timeline {
             : undefined
           const sampled = roughPaths?.length ? pointAtSampledProgress(roughPaths, progress) : undefined
           const position = sampled?.point ?? pointAtProgress(currentPath, progress)
+          const tangent = sampled?.angle ?? tangentAtProgress(currentPath, progress)
           return {
             targetId: current.node.id,
             position,
-            angle: sampled?.angle ?? -0.9,
+            angle: -0.9 + Math.cos(tangent) * 0.12,
             opacity: Math.min(1, progress * 12, (1 - progress) * 12),
             phase: "drawing",
             lift: 0,
@@ -339,6 +340,29 @@ export class Timeline {
         }
       }
       return points.at(-1)!
+    }
+
+    function tangentAtProgress(points: Point[], progress: number): number {
+      const distance = totalPathLength(points) * clamp(progress)
+      let travelled = 0
+      for (let index = 1; index < points.length; index++) {
+        const from = points[index - 1]!
+        const to = points[index]!
+        const length = Math.hypot(to.x - from.x, to.y - from.y)
+        if (distance <= travelled + length)
+          return Math.atan2(to.y - from.y, to.x - from.x)
+        travelled += length
+      }
+      const from = points.at(-2) ?? points[0]!
+      const to = points.at(-1) ?? points[0]!
+      return Math.atan2(to.y - from.y, to.x - from.x)
+    }
+
+    function totalPathLength(points: Point[]): number {
+      let total = 0
+      for (let index = 1; index < points.length; index++)
+        total += Math.hypot(points[index]!.x - points[index - 1]!.x, points[index]!.y - points[index - 1]!.y)
+      return total
     }
   }
 
