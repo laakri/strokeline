@@ -84,4 +84,19 @@ describe("rough sampled geometry", () => {
     }
     expect(tip.point).toEqual(expected)
   })
+
+  it("honors explicit rough seed and roughness options", () => {
+    const base = {
+      id: "rough-options",
+      type: "rectangle",
+      position: { x: 100, y: 100 },
+      size: { width: 180, height: 90 },
+      style: { color: "#111", strokeWidth: 3, pen: "handdrawn" },
+      data: { roughSampledGeometry: true, roughSeed: 7, roughness: 0 },
+    } as SceneNode
+    const same = sampledRoughPathsForNode({ ...base, data: { ...base.data } })
+    const different = sampledRoughPathsForNode({ ...base, data: { ...base.data, roughSeed: 8, roughness: 3 } })
+    expect(same).toEqual(sampledRoughPathsForNode({ ...base, data: { ...base.data } }))
+    expect(different).not.toEqual(same)
+  })
 })

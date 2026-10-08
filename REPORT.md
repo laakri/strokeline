@@ -29,3 +29,9 @@
 - Validator emits `W_PENFOLLOW_OVERLAP` with a suggestion describing the single-pen rule.
 - Targeted validation: 2 files / 4 tests passed.
 - Full-suite, build, and golden reruns are required before the Phase 1 commit.
+
+## Phase 2/3 - opt-in rough and ink controls
+- Added DSL parsing/compiler data for `ROUGHNESS`, `ROUGHSEED`, `BOWING`, `ROUGHFILL`, `INKSIZE`, `THINNING`, `SMOOTHING`, `STREAMLINE`, and `TAPER`.
+- Rough sampled geometry cache keys include all explicit rough controls; explicit seeds and roughness are deterministic and tested.
+- Freehand rendering now consumes the explicit size/thinning/smoothing/streamline/taper controls, with existing defaults preserved.
+- `ROUGHFILL` is parsed and retained in scene data, but patterned Rough.js fill-set rendering is not yet wired into shape renderers.

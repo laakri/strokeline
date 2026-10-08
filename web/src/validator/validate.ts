@@ -332,6 +332,17 @@ export function validate(document: SceneDocument): Diagnostic[] {
           if (!["on", "off"].includes(raw))
             diagnostics.push(error("E_BAD_RANGE", `ROUGH for "${op.node.id}" must be on or off.`, location(op, "ROUGH").line, location(op, "ROUGH").col))
         }
+        const roughness = op.node.data?.roughness
+        if (roughness !== undefined && (typeof roughness !== "number" || roughness < 0 || roughness > 4))
+          diagnostics.push(error("E_BAD_RANGE", `ROUGHNESS for "${op.node.id}" must be between 0 and 4.`, location(op, "ROUGHNESS").line, location(op, "ROUGHNESS").col))
+        const bowing = op.node.data?.bowing
+        if (bowing !== undefined && (typeof bowing !== "number" || !Number.isFinite(bowing)))
+          diagnostics.push(error("E_BAD_RANGE", `BOWING for "${op.node.id}" must be finite.`, location(op, "BOWING").line, location(op, "BOWING").col))
+        for (const [key, minimum, maximum] of [["THINNING", -0.9, 0.9], ["SMOOTHING", 0, 1], ["STREAMLINE", 0, 1]] as const) {
+          const value = op.node.data?.[key.toLowerCase()]
+          if (value !== undefined && (typeof value !== "number" || value < minimum || value > maximum))
+            diagnostics.push(error("E_BAD_RANGE", `${key} for "${op.node.id}" must be between ${minimum} and ${maximum}.`, location(op, key).line, location(op, key).col))
+        }
         for (const property of sourceProperties)
           if (!knownProperties.has(property))
             diagnostics.push(

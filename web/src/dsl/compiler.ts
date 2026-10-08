@@ -1072,6 +1072,15 @@ function nodeFromCreate(
       ...(propString(props, "ROUGH") !== undefined
         ? { roughSampledGeometry: propString(props, "ROUGH")?.toLowerCase() === "on" }
         : {}),
+      ...(propNumber(props, "ROUGHNESS") !== undefined ? { roughness: propNumber(props, "ROUGHNESS") } : {}),
+      ...(propNumber(props, "ROUGHSEED") !== undefined ? { roughSeed: propNumber(props, "ROUGHSEED") } : {}),
+      ...(propNumber(props, "BOWING") !== undefined ? { bowing: propNumber(props, "BOWING") } : {}),
+      ...(propString(props, "ROUGHFILL") !== undefined ? { roughFill: propString(props, "ROUGHFILL")?.toLowerCase() } : {}),
+      ...(propNumber(props, "INKSIZE") !== undefined ? { inkSize: propNumber(props, "INKSIZE") } : {}),
+      ...(propNumber(props, "THINNING") !== undefined ? { thinning: propNumber(props, "THINNING") } : {}),
+      ...(propNumber(props, "SMOOTHING") !== undefined ? { smoothing: propNumber(props, "SMOOTHING") } : {}),
+      ...(propNumber(props, "STREAMLINE") !== undefined ? { streamline: propNumber(props, "STREAMLINE") } : {}),
+      ...(propString(props, "TAPER") !== undefined ? { taper: propString(props, "TAPER")?.toLowerCase() === "on" } : {}),
     },
   }
 }

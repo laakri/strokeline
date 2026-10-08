@@ -17,13 +17,20 @@ function roughOptions(node: SceneNode, cameraScale: number) {
     hash ^= node.id.charCodeAt(index)
     hash = Math.imul(hash, 16777619)
   }
+  const roughness = typeof node.data?.roughness === "number"
+    ? node.data.roughness
+    : pen === "clean" ? 0 : pen === "chalk" ? 2 : pen === "pencil" ? 1.5 : pen === "marker" ? 0.25 : pen === "brush" ? 1.8 : 1.2
+  const bowing = typeof node.data?.bowing === "number"
+    ? node.data.bowing
+    : pen === "marker" || pen === "clean" ? 0 : 1
   return {
-    seed: hash >>> 0,
+    seed: typeof node.data?.roughSeed === "number" ? node.data.roughSeed : hash >>> 0,
     stroke: node.style.color,
     strokeWidth: node.style.strokeWidth / cameraScale,
     fill: node.style.fill,
-    roughness: pen === "clean" ? 0 : pen === "chalk" ? 2 : pen === "pencil" ? 1.5 : pen === "marker" ? 0.25 : pen === "brush" ? 1.8 : 1.2,
-    bowing: pen === "marker" || pen === "clean" ? 0 : 1,
+    roughness,
+    bowing,
+    fillStyle: node.data?.roughFill === "none" ? undefined : node.data?.roughFill,
   }
 }
 
@@ -88,7 +95,7 @@ export function sampledRoughPathsForNode(
   const width = node.size?.width ?? 0
   const height = node.size?.height ?? 0
   const options = roughOptions(node, cameraScale)
-  const key = `node:${node.id}:${node.type}:${node.position.x}:${node.position.y}:${width}:${height}:${node.radius ?? 0}:${node.style.pen}:${node.style.strokeWidth}:${cameraScale}`
+  const key = `node:${node.id}:${node.type}:${node.position.x}:${node.position.y}:${width}:${height}:${node.radius ?? 0}:${node.style.pen}:${node.style.strokeWidth}:${cameraScale}:${String(node.data?.roughness)}:${String(node.data?.roughSeed)}:${String(node.data?.bowing)}:${String(node.data?.roughFill)}`
   return cachedSampledRoughPath(key, () => {
     if (node.type === "rectangle")
       return sampleRoughDrawable(pathGenerator.rectangle(node.position.x - width / 2, node.position.y - height / 2, width, height, options))

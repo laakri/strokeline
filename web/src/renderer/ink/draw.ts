@@ -69,10 +69,12 @@ export function drawInk(renderContext: RenderContext, node: SceneNode): void {
     const outline = getStroke(
       path.map((point) => [point.x, point.y] as [number, number]),
       {
-        size: Math.max(0.5, node.style.strokeWidth),
-        thinning: 0,
-        smoothing: 0.65,
-        streamline: 0.35,
+        size: Math.max(0.5, typeof node.data?.inkSize === "number" ? node.data.inkSize : node.style.strokeWidth),
+        thinning: typeof node.data?.thinning === "number" ? node.data.thinning : 0,
+        smoothing: typeof node.data?.smoothing === "number" ? node.data.smoothing : 0.65,
+        streamline: typeof node.data?.streamline === "number" ? node.data.streamline : 0.35,
+        start: node.data?.taper !== false,
+        end: node.data?.taper !== false,
         easing: (value: number) => value,
       }
     )
