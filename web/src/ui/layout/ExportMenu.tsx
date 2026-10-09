@@ -134,7 +134,7 @@ export function ExportMenu() {
     setExportError("")
     setCancelling(false)
     setExportMessage("")
-    setProgress(["png", "srt", "vtt"].includes(kind) ? 100 : 0)
+    setProgress(["srt", "vtt"].includes(kind) ? 100 : 0)
     setOpen(false)
     try {
       if (kind === "srt") {
@@ -166,7 +166,10 @@ export function ExportMenu() {
         })
         trackProductEvent({ name: "export_completed", properties: { format: "gif", seamless_loop: seamlessLoop } })
       } else {
-        await exportPng(state.compiledIR, activeSceneIndex, player.elapsed)
+        await exportPng(state.compiledIR, activeSceneIndex, player.elapsed, undefined, {
+          signal: controller.signal,
+          onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
+        })
         trackProductEvent({ name: "export_completed", properties: { format: "png" } })
       }
     } catch (error) {

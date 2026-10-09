@@ -6,17 +6,17 @@ import {
 } from "@/export/pngSizing.ts"
 
 describe("PNG export sizing", () => {
-  it("preserves 2x output for a standard HD canvas", () => {
+  it("preserves 1x output for a standard HD canvas", () => {
     expect(pngExportSize({ width: 1920, height: 1080 })).toEqual({
-      width: 3840,
-      height: 2160,
+      width: 1920,
+      height: 1080,
     })
   })
 
   it("caps pixel count for large canvases while preserving aspect ratio", () => {
     const size = pngExportSize({ width: 8000, height: 5000 })
     expect(size.width * size.height).toBeLessThanOrEqual(MAX_PNG_EXPORT_PIXELS)
-    expect(size.width).toBeLessThan(8000 * 2)
+    expect(size.width).toBeLessThan(8000)
     expect(size.width / size.height).toBeCloseTo(8000 / 5000, 2)
   })
 

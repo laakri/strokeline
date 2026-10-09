@@ -1,7 +1,7 @@
 import { GIFEncoder, applyPalette, quantize } from "gifenc"
 import type { SayLine, SceneDocument } from "@/ir/types.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
-import { drawScene } from "@/renderer/draw.ts"
+import { drawSceneAsync } from "@/renderer/draw.ts"
 import { pngExportSize } from "@/export/pngSizing.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { SequencePlayer } from "@/player/usePlayer.ts"
@@ -159,7 +159,8 @@ export async function exportPng(
   document: SceneDocument,
   sceneIndex: number,
   elapsed: number,
-  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS
+  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
+  options: ExportOptions = {}
 ): Promise<void> {
   const scene = document.scenes[sceneIndex]
   if (!scene) return
@@ -167,26 +168,35 @@ export async function exportPng(
   const at = Math.min(Math.max(0, elapsed), timeline.duration)
   await preloadImages(document)
   await loadHandwrittenFont()
+  throwIfAborted(options.signal)
   const outputSize = pngExportSize(document.canvas)
   const canvas = createCanvas(outputSize.width, outputSize.height)
   const context = canvas.getContext("2d")
   if (!context) return
   const subtitleSettings = exportSubtitleSettings(document)
-  drawScene(
-    context,
-    timeline.resolveAt(at),
-    undefined,
-    document.canvas,
-    document.background,
-    document.style.mode,
-    document.style.board,
-    document.style.hand,
-    subtitleSettings.subtitles,
-    subtitleSettings.readAlong,
-    brandingEntitlements,
-    subtitleSettings.captionStyle,
-    false
+  await drawSceneAsync(
+    [
+      context,
+      timeline.resolveAt(at),
+      undefined,
+      document.canvas,
+      document.background,
+      document.style.mode,
+      document.style.board,
+      document.style.hand,
+      subtitleSettings.subtitles,
+      subtitleSettings.readAlong,
+      brandingEntitlements,
+      subtitleSettings.captionStyle,
+      false,
+    ],
+    {
+      batchSize: 4,
+      signal: options.signal,
+      onProgress: options.onProgress,
+    }
   )
+  throwIfAborted(options.signal)
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/png")
   )

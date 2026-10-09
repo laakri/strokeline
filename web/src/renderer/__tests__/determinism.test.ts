@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { fileURLToPath } from "node:url"
 import { createCanvas, DOMMatrix, GlobalFonts, Path2D } from "@napi-rs/canvas"
 import { runScript } from "@/dsl/index.ts"
-import { drawScene } from "@/renderer/draw.ts"
+import { drawScene, drawSceneAsync } from "@/renderer/draw.ts"
 import { Timeline } from "@/timeline/timeline.ts"
 
 const originalDocument = globalThis.document
@@ -56,6 +56,71 @@ SCENE 1
 END SCENE`
 
 describe("opt-in renderer determinism", () => {
+  it("renders the same frame when work is split across asynchronous batches", async () => {
+    const result = runScript(source)
+    expect(result.diagnostics).toEqual([])
+    const document = result.document!
+    const timeline = new Timeline(document.scenes[0]!, document.canvas)
+    const state = timeline.resolveAt(5)
+    const synchronousCanvas = createCanvas(800, 600)
+    const synchronousContext = synchronousCanvas.getContext("2d")
+    drawScene(
+      synchronousContext as unknown as CanvasRenderingContext2D,
+      state,
+      undefined,
+      document.canvas,
+      document.background
+    )
+    const asynchronousCanvas = createCanvas(800, 600)
+    const asynchronousContext = asynchronousCanvas.getContext("2d")
+    const progress: number[] = []
+    await drawSceneAsync(
+      [
+        asynchronousContext as unknown as CanvasRenderingContext2D,
+        state,
+        undefined,
+        document.canvas,
+        document.background,
+      ],
+      { batchSize: 1, onProgress: (value) => progress.push(value) }
+    )
+
+    expect(
+      asynchronousCanvas.toBuffer("image/png").equals(
+        synchronousCanvas.toBuffer("image/png")
+      )
+    ).toBe(true)
+    expect(progress.length).toBeGreaterThan(1)
+    expect(progress.at(-1)).toBe(1)
+  })
+
+  it("stops between rendering batches when the export is cancelled", async () => {
+    const result = runScript(source)
+    expect(result.diagnostics).toEqual([])
+    const document = result.document!
+    const timeline = new Timeline(document.scenes[0]!, document.canvas)
+    const canvas = createCanvas(800, 600)
+    const context = canvas.getContext("2d")
+    const controller = new AbortController()
+
+    await expect(
+      drawSceneAsync(
+        [
+          context as unknown as CanvasRenderingContext2D,
+          timeline.resolveAt(5),
+          undefined,
+          document.canvas,
+          document.background,
+        ],
+        {
+          batchSize: 1,
+          signal: controller.signal,
+          onProgress: () => controller.abort(),
+        }
+      )
+    ).rejects.toMatchObject({ name: "AbortError" })
+  })
+
   it("resolves and renders identically across repeated and scrubbed reads", () => {
     const result = runScript(source)
     expect(result.diagnostics).toEqual([])

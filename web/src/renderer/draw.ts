@@ -37,21 +37,75 @@ const fogTextures = new WeakMap<HTMLCanvasElement, BoardTexture>()
 
 const canvasCaches = new WeakMap<HTMLCanvasElement, CanvasCache>()
 
-export function drawScene(
+type DrawSceneArguments = [
   context: CanvasRenderingContext2D,
   state: RenderState,
   camera?: Camera,
   canvasSize?: { width: number; height: number },
-  background = "#FAFAFA",
-  mode: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean" = "handdrawn",
-  board = "plain",
-  hand = false,
-  subtitlesEnabled = false,
-  readAlong = false,
-  brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
-  captionStyle: CaptionStyle = "bold",
-  cacheNodes = true
-): void {
+  background?: string,
+  mode?: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean",
+  board?: string,
+  hand?: boolean,
+  subtitlesEnabled?: boolean,
+  readAlong?: boolean,
+  brandingEntitlements?: BrandingEntitlements,
+  captionStyle?: CaptionStyle,
+  cacheNodes?: boolean,
+]
+
+export function drawScene(...args: DrawSceneArguments): void {
+  const steps = drawSceneSteps(args)
+  let step = steps.next()
+  while (!step.done) step = steps.next()
+}
+
+export async function drawSceneAsync(
+  args: DrawSceneArguments,
+  options: {
+    batchSize?: number
+    signal?: AbortSignal
+    onProgress?: (progress: number) => void
+  } = {}
+): Promise<void> {
+  const batchSize = Math.max(1, Math.floor(options.batchSize ?? 12))
+  const totalNodes = Math.max(1, args[1].nodes.length)
+  const steps = drawSceneSteps(args, batchSize)
+  while (true) {
+    if (options.signal?.aborted)
+      throw new DOMException("The export was cancelled.", "AbortError")
+    const step = steps.next()
+    if (step.done) break
+    options.onProgress?.(Math.min(0.98, step.value / totalNodes))
+    await new Promise<void>((resolve) => {
+      if (typeof requestAnimationFrame === "function")
+        requestAnimationFrame(() => resolve())
+      else setTimeout(resolve, 0)
+    })
+  }
+  if (options.signal?.aborted)
+    throw new DOMException("The export was cancelled.", "AbortError")
+  options.onProgress?.(1)
+}
+
+function* drawSceneSteps(
+  args: DrawSceneArguments,
+  yieldEveryNodes = 0
+): Generator<number, void, void> {
+  const [
+    context,
+    state,
+    camera,
+    canvasSize,
+    background = "#FAFAFA",
+    mode = "handdrawn",
+    board = "plain",
+    hand = false,
+    subtitlesEnabled = false,
+    readAlong = false,
+    brandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
+    captionStyle = "bold",
+    cacheNodes = true,
+  ] = args
   const canvas = context.canvas
   const logicalCanvas = canvasSize ?? {
     width: canvas.width,
@@ -127,6 +181,7 @@ export function drawScene(
     )
     context.restore()
   }
+  let renderedNodes = 0
   for (const node of visibleNodes) {
     if (node.data?.layoutContainer === true) continue
     if (fogLayer && node.type === "ink") continue
@@ -184,6 +239,9 @@ export function drawScene(
     if (hand && node.revealProgress > 0 && node.revealProgress < 1 && ["ink", "line", "text"].includes(node.type))
       drawHand(context, node)
     context.restore()
+    renderedNodes++
+    if (yieldEveryNodes > 0 && renderedNodes % yieldEveryNodes === 0)
+      yield renderedNodes
   }
   if (state.pen) drawPen(context, state.pen, resolvedCamera.scale)
   context.globalAlpha = 1

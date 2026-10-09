@@ -1,6 +1,6 @@
-export const MAX_PNG_EXPORT_PIXELS = 16_000_000
+export const MAX_PNG_EXPORT_PIXELS = 4_000_000
 export const MAX_PNG_EXPORT_DIMENSION = 8192
-export const PNG_EXPORT_SCALE = 2
+export const PNG_EXPORT_SCALE = 1
 
 export interface PixelSize {
   width: number
