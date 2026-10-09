@@ -615,13 +615,7 @@ For long narration, keep all of the wording and split it at natural sentence bou
 
 ## 15. WORKED EXAMPLE (valid and rich; copy its habits, not its words)
 
-For a longer, character-led explanation, see
-[`web/examples/github-collaboration-explainer.wbs`](web/examples/github-collaboration-explainer.wbs).
-It is a reference for turning an abstract workflow into a concrete story:
-introduce a relatable problem, keep one visual motif across scenes, explain
-each concept through cause and effect, and end with a concise takeaway. Treat
-it as a storytelling example, not a source of facts or a template to copy
-verbatim.
+Storytelling example: [`github-collaboration-explainer.wbs`](web/examples/github-collaboration-explainer.wbs).
 
 ```
 VERSION 1.0
