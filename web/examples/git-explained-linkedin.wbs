@@ -1,0 +1,187 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F7F6F2
+STYLE clean
+FONT neat
+STROKE 3
+
+SCENE 1 "Git: save points for code"
+  PARALLEL
+    CREATE eyebrow AS TEXT
+      POSITION 960 125
+      SIZE 28
+      MAXWIDTH 1200
+      COLOR #55736D
+      TEXT "A SIMPLE GUIDE TO VERSION CONTROL"
+    END
+
+    CREATE title AS TEXT
+      POSITION 960 180
+      SIZE 60
+      MAXWIDTH 1200
+      COLOR #172B3A
+      TEXT "Git gives your code a history"
+    END
+
+    CREATE subtitle AS TEXT
+      POSITION 960 235
+      SIZE 30
+      MAXWIDTH 1500
+      COLOR #536575
+      TEXT "Save progress. Explore ideas safely. Bring the best work together."
+    END
+
+    CREATE mainLabel AS TEXT
+      POSITION 430 445
+      SIZE 28
+      COLOR #9A4E3F
+      TEXT "MAIN"
+    END
+
+    CREATE branchLabel AS TEXT
+      POSITION 930 280
+      SIZE 28
+      COLOR #26704E
+      TEXT "FEATURE BRANCH"
+    END
+
+    CREATE main1 AS CIRCLE
+      POSITION 300 560
+      RADIUS 44
+      FILL #E5EFF4
+      COLOR #31566A
+    END
+
+    CREATE main2 AS CIRCLE
+      POSITION 620 560
+      RADIUS 44
+      FILL #E5EFF4
+      COLOR #31566A
+    END
+
+    CREATE main3 AS CIRCLE
+      POSITION 940 560
+      RADIUS 44
+      FILL #E5EFF4
+      COLOR #31566A
+    END
+
+    CREATE feature1 AS CIRCLE
+      POSITION 800 360
+      RADIUS 44
+      FILL #E4F1E7
+      COLOR #26704E
+    END
+
+    CREATE feature2 AS CIRCLE
+      POSITION 1080 360
+      RADIUS 44
+      FILL #E4F1E7
+      COLOR #26704E
+    END
+
+    CREATE merge AS CIRCLE
+      POSITION 1320 560
+      RADIUS 54
+      FILL #FFF0CC
+      COLOR #A36B19
+    END
+
+    CREATE githubHub AS CIRCLE
+      POSITION 1650 560
+      RADIUS 76
+      FILL #FFFFFF
+      COLOR #25364A
+      STROKE 3
+    END
+
+    CREATE githubLogo AS IMAGE
+      URL "/brand-icons/github.svg"
+      POSITION 1650 560
+      WIDTH 88
+      HEIGHT 88
+      FIT contain
+      PADDING 10
+    END
+
+    ARROW main1 -> main2
+      ROUTE straight
+      HEAD end
+      COLOR #B45B48
+      STROKE 4
+    ARROW main2 -> main3
+      ROUTE straight
+      HEAD end
+      COLOR #B45B48
+      STROKE 4
+    ARROW main3 -> merge
+      ROUTE straight
+      HEAD end
+      COLOR #B45B48
+      STROKE 4
+    ARROW main2 -> feature1
+      ROUTE straight
+      HEAD end
+      COLOR #39815D
+      STROKE 4
+    ARROW feature1 -> feature2
+      ROUTE straight
+      HEAD end
+      COLOR #39815D
+      STROKE 4
+    ARROW feature2 -> merge
+      ROUTE straight
+      HEAD end
+      COLOR #39815D
+      STROKE 4
+    ARROW merge -> githubHub
+      ROUTE straight
+      HEAD end
+      COLOR #B45B48
+      STROKE 4
+
+    CREATE mergeLabel AS TEXT
+      POSITION 1320 665
+      SIZE 28
+      COLOR #8A5A12
+      TEXT "MERGE"
+    END
+    CREATE hubLabel AS TEXT
+      POSITION 1650 665
+      SIZE 28
+      COLOR #25364A
+      TEXT "GitHub"
+    END
+
+    CREATE commitCard AS TEXT
+      POSITION 350 835
+      SIZE 28
+      MAXWIDTH 470
+      COLOR #25364A
+      BACKGROUND #E5EFF4
+      PADDING 22
+      CORNERS 18
+      TEXT "COMMIT   Save a checkpoint you can return to."
+    END
+    CREATE branchCard AS TEXT
+      POSITION 960 835
+      SIZE 28
+      MAXWIDTH 500
+      COLOR #25364A
+      BACKGROUND #E4F1E7
+      PADDING 22
+      CORNERS 18
+      TEXT "BRANCH   Experiment without changing main."
+    END
+    CREATE mergeCard AS TEXT
+      POSITION 1500 835
+      SIZE 28
+      MAXWIDTH 500
+      COLOR #25364A
+      BACKGROUND #FFF0CC
+      PADDING 22
+      CORNERS 18
+      TEXT "MERGE   Bring the finished work back together."
+    END
+  END
+END SCENE
