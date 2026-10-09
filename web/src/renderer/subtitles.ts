@@ -1,7 +1,7 @@
 import type { SayLine } from "@/ir/types.ts"
 import { fontFamilyFor } from "@/lib/textMetrics.ts"
 import { plainSubtitleText, wrapSubtitleText } from "@/subtitles/subtitles.ts"
-import { captionActiveWord, type CaptionStyle } from "@/reels/reels.ts"
+import { type CaptionStyle } from "@/reels/reels.ts"
 import { watermarkLayout } from "@/renderer/watermark.ts"
 
 const subtitleWidth = 1680
@@ -111,34 +111,28 @@ function drawReelsCaption(
   style: CaptionStyle,
   opacity: number
 ): void {
-  const allWords = subtitle.text
+  const words = subtitle.text
     .replace(/\*([^*]+)\*/g, "$1")
     .replace(/\*/g, "")
     .trim()
     .split(/\s+/u)
     .filter(Boolean)
-  if (!allWords.length) return
-  const activeWord = captionActiveWord(subtitle.readingProgress, allWords.length)
-  const visibleStart = Math.max(
-    0,
-    Math.min(allWords.length - 10, activeWord - 4)
-  )
-  const words = allWords.slice(visibleStart, visibleStart + 10)
+  if (!words.length) return
   const direction = /^(ar|fa|ur|he|ps|dv)(-|$)/i.test(subtitle.lang ?? "") ||
     /[\u0590-\u08ff]/u.test(subtitle.text)
     ? "rtl"
     : "ltr"
-  const maxWidth = Math.min(
-    canvasSize.width * 0.88,
-    canvasSize.width - 2 * 120
+  const maxWidth = Math.max(
+    1,
+    Math.min(canvasSize.width * 0.88, canvasSize.width - 48)
   )
   const family = direction === "rtl" ? "Amiri" : fontFamilyFor("neat")
   let fontSize = reelsCaptionFontSize(canvasSize.width)
   let lines: string[][] = []
-  while (fontSize >= 26) {
+  while (fontSize >= 18) {
     context.font = `800 ${fontSize}px "${family}"`
     lines = wrapWords(words, maxWidth, (word) => context.measureText(word).width)
-    if (lines.length <= 3) break
+    if (lines.length * fontSize * 1.18 <= canvasSize.height * 0.3) break
     fontSize -= 2
   }
   context.font = `800 ${fontSize}px "${family}"`
@@ -157,7 +151,6 @@ function drawReelsCaption(
     canvasSize.height * 0.87,
     watermark.y - watermarkGap - paddingY - contentHeight / 2
   )
-  const visibleActiveWord = activeWord - visibleStart
 
   context.save()
   context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
@@ -176,31 +169,18 @@ function drawReelsCaption(
 
   context.font = `800 ${fontSize}px "${family}"`
   context.textBaseline = "middle"
-  context.textAlign = direction === "rtl" ? "right" : "left"
-  let wordIndex = 0
+  context.textAlign = "center"
   lines.forEach((line, lineIndex) => {
-    const lineWidth = widths[lineIndex] ?? 0
-    let x = direction === "rtl"
-      ? (canvasSize.width + lineWidth) / 2
-      : (canvasSize.width - lineWidth) / 2
     const y = centerY + (lineIndex - (lines.length - 1) / 2) * lineHeight
-    line.forEach((word) => {
-      const width = context.measureText(word).width
-      context.fillStyle =
-        wordIndex === visibleActiveWord
-          ? style === "coral" ? "#FF8066" : "#FFD84D"
-          : style === "coral" ? "#FFFFFF" : "#F8FAFC"
-      if (style === "minimal") {
-        context.strokeStyle = "rgba(0, 0, 0, 0.9)"
-        context.lineWidth = fontSize * 0.12
-        context.lineJoin = "round"
-        context.strokeText(word, x, y)
-      }
-      context.fillText(word, x, y)
-      x += (direction === "rtl" ? -1 : 1) *
-        (width + context.measureText(" ").width)
-      wordIndex++
-    })
+    const text = line.join(" ")
+    context.fillStyle = style === "coral" ? "#FF8066" : "#F8FAFC"
+    if (style === "minimal") {
+      context.strokeStyle = "rgba(0, 0, 0, 0.9)"
+      context.lineWidth = fontSize * 0.12
+      context.lineJoin = "round"
+      context.strokeText(text, canvasSize.width / 2, y, maxWidth)
+    }
+    context.fillText(text, canvasSize.width / 2, y, maxWidth)
   })
   context.restore()
 }

@@ -71,14 +71,40 @@ describe("Reels captions", () => {
     expect(maxY).toBeGreaterThan(1350 * 0.8)
   })
 
-  it("renders distinct word-highlight caption styles in the lower third", () => {
+  it("shows static subtitle text without a moving word highlight", () => {
+    const render = (readingProgress: number) => {
+      const canvas = createCanvas(540, 960)
+      const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+      drawSubtitleLayer(
+        context,
+        {
+          text: "Three quick tips for better diagrams keep captions simple and clear",
+          start: 0,
+          duration: 3,
+          opacity: 1,
+          readingProgress,
+        },
+        { width: 540, height: 960 },
+        1,
+        false,
+        "bold"
+      )
+      return Buffer.from(context.getImageData(0, 0, 540, 960).data)
+    }
+
+    const start = render(0)
+    expect(start.some((channel) => channel !== 0)).toBe(true)
+    expect(start.equals(render(0.8))).toBe(true)
+  })
+
+  it("keeps the three caption styles visually distinct", () => {
     const render = (style: "bold" | "minimal" | "coral") => {
       const canvas = createCanvas(540, 960)
       const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
       drawSubtitleLayer(
         context,
         {
-          text: "Three quick tips for better diagrams",
+          text: "Simple clear captions",
           start: 0,
           duration: 3,
           opacity: 1,
@@ -92,9 +118,7 @@ describe("Reels captions", () => {
       return Buffer.from(context.getImageData(0, 0, 540, 960).data)
     }
 
-    const bold = render("bold")
-    expect(bold.some((channel) => channel !== 0)).toBe(true)
-    expect(bold.equals(render("minimal"))).toBe(false)
-    expect(bold.equals(render("coral"))).toBe(false)
+    expect(render("bold").equals(render("minimal"))).toBe(false)
+    expect(render("bold").equals(render("coral"))).toBe(false)
   })
 })
