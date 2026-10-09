@@ -21,6 +21,50 @@ const source = (folder: string, file: string) =>
   readFileSync(join(fixtureRoot, folder, file), "utf8")
 
 describe("DSL pipeline", () => {
+  it("normalizes natural easing and rejects unsupported runtime eases", () => {
+    const valid = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  CREATE marker AS CIRCLE
+    POSITION 200 200
+    RADIUS 30
+  END
+  CAMERA ZOOM SCALE 1.1
+    DURATION 2s
+    EASE natural
+  ANIMATE marker MOVE TO 300 250
+    DURATION 2s
+    EASE natural
+END SCENE`)
+
+    expect(valid.diagnostics.filter(blocksScriptRun)).toEqual([])
+    const scene = valid.document?.scenes[0]
+    expect(scene?.ops.find((op) => op.kind === "camera")).toMatchObject({
+      kind: "camera",
+      camera: { ease: "spring" },
+    })
+    expect(scene?.ops.find((op) => op.kind === "animate")).toMatchObject({
+      kind: "animate",
+      anim: { ease: "spring" },
+    })
+    expect(() => new Timeline(scene!, { width: 800, height: 600 }).resolveAt(1)).not.toThrow()
+
+    const invalid = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  CAMERA DRIFT
+    DURATION 2s
+    EASE notAnEase
+END SCENE`)
+    expect(invalid.document).toBeNull()
+    expect(invalid.diagnostics).toContainEqual(
+      expect.objectContaining({
+        code: "E_BAD_EASE",
+        message: 'Unknown easing "notAnEase".',
+      })
+    )
+  })
+
   it("explains that RAW is not an INK mode", () => {
     const result = runScript(`VERSION 1.0
 CANVAS 800 600

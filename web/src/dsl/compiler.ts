@@ -1504,7 +1504,7 @@ function animationFrom(
   col: number,
   diagnostics: Diagnostic[]
 ): AnimationSpec {
-  const ease = (easeValue ?? DEFAULT_EASE) as EaseName
+  const ease = resolveEase(easeValue, line, col, diagnostics)
   if (verb === "MOVE")
     return {
       verb: "move",
@@ -1714,7 +1714,7 @@ function cameraFrom(statement: ASTCamera, diagnostics: Diagnostic[]): CameraOp {
         )
   const targetId = propString(statement.props, "TARGET")
   const scale = propNumber(statement.props, "SCALE")
-  const ease = (propString(statement.props, "EASE") ?? "spring") as EaseName
+  const ease = resolveEase(propString(statement.props, "EASE"), statement.token.line, statement.token.col, diagnostics, "spring")
   const to = propNumbers(statement.props, "TO")
   return {
     verb: statement.verb.toLowerCase() as CameraOp["verb"],
@@ -1724,6 +1724,30 @@ function cameraFrom(statement: ASTCamera, diagnostics: Diagnostic[]): CameraOp {
     duration,
     ease,
   }
+}
+
+function resolveEase(
+  value: string | undefined,
+  line: number,
+  col: number,
+  diagnostics: Diagnostic[],
+  fallback: EaseName = DEFAULT_EASE
+): EaseName {
+  const normalized = value === "natural" ? "spring" : value ?? fallback
+  const supported: readonly EaseName[] = [
+    "linear",
+    "easeIn",
+    "easeOut",
+    "easeInOut",
+    "bounce",
+    "easeOutBack",
+    "easeOutElastic",
+    "easeInOutCubic",
+    "spring",
+  ]
+  if (supported.includes(normalized as EaseName)) return normalized as EaseName
+  diagnostics.push(error("E_BAD_EASE", `Unknown easing "${normalized}".`, line, col))
+  return fallback
 }
 
 function durationSeconds(
