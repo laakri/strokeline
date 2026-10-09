@@ -1252,6 +1252,17 @@ function inkModePoints(
       hashString(`arrow:${from.x},${from.y}-${to.x},${to.y}`)
     )
   }
+  else if (statement.mode === "raw" && statement.id?.toUpperCase() === "RAW") {
+    diagnostics.push(
+      error(
+        "E_INVALID_POINTS",
+        "INK RAW is not a mode. For a raw stroke, use INK <id> with at least two POINTS coordinate pairs.",
+        statement.token.line,
+        statement.token.col
+      )
+    )
+    return undefined
+  }
   // 3. Annotation mode (underline / circle)
   else {
     const targetId = statement.targetId ?? ""

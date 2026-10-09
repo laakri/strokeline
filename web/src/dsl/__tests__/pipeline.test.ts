@@ -21,6 +21,24 @@ const source = (folder: string, file: string) =>
   readFileSync(join(fixtureRoot, folder, file), "utf8")
 
 describe("DSL pipeline", () => {
+  it("explains that RAW is not an INK mode", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  INK RAW
+  END
+END SCENE`)
+
+    expect(result.document).toBeNull()
+    expect(result.diagnostics).toContainEqual(
+      expect.objectContaining({
+        code: "E_INVALID_POINTS",
+        message:
+          "INK RAW is not a mode. For a raw stroke, use INK <id> with at least two POINTS coordinate pairs.",
+      })
+    )
+  })
+
   it("compiles layered and transparent table backgrounds", () => {
     const result = runScript(`VERSION 1.0
 CANVAS 800 600
@@ -230,6 +248,7 @@ END SCENE`)
       "19-ink-arrow-same.wbs": [["E_INVALID_POINTS", 4]],
       "20-ink-underline-unknown.wbs": [["E_UNKNOWN_REF", 4]],
       "21-ink-circle-unknown.wbs": [["E_UNKNOWN_REF", 4]],
+      "22-ink-raw-mode.wbs": [["E_INVALID_POINTS", 4]],
     }
     for (const file of readFixtures("broken").filter(
       (file) => file !== "14-markdown-fenced.wbs"

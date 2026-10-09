@@ -21,4 +21,10 @@ Use direct image URLs that Strokeline can load, not Pexels page URLs, and do
 not substitute images from other sites. If a usable Pexels image URL cannot be
 confirmed, omit the image or ask the user.
 
-Return a complete editable script in the format the user requests.
+Before returning, validate the complete script with Strokeline's parser and
+validator. Fix every error and review every warning. In particular, raw ink is
+`INK <id>` with at least two `POINTS` coordinate pairs; `INK RAW` is not a mode.
+Resolve low-contrast text and `W_SAY_ECHO` warnings by improving contrast and
+rewriting narration to add context instead of repeating visible text. Re-run
+validation after fixes, then return the complete editable script in the format
+the user requests.
