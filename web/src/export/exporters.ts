@@ -88,6 +88,7 @@ export interface ExportOptions {
   seamlessLoop?: boolean
   brandingEntitlements?: BrandingEntitlements
   signal?: AbortSignal
+  previewCanvas?: HTMLCanvasElement
   onProgress?: (fraction: number) => void
   onFormat?: (format: VideoExportFormat) => void
   onMessage?: (message: string) => void
@@ -154,7 +155,7 @@ export async function preferredVideoExportFormat(
   }
 }
 
-/** Snapshot of one scene at a given playhead second, as a PNG file. */
+/** Snapshot the displayed preview frame, or render the requested timeline time. */
 export async function exportPng(
   document: SceneDocument,
   sceneIndex: number,
@@ -162,40 +163,53 @@ export async function exportPng(
   brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
   options: ExportOptions = {}
 ): Promise<void> {
-  const scene = document.scenes[sceneIndex]
-  if (!scene) return
-  const timeline = new Timeline(scene, document.canvas)
-  const at = Math.min(Math.max(0, elapsed), timeline.duration)
-  await preloadImages(document)
-  await loadHandwrittenFont()
-  throwIfAborted(options.signal)
+  if (!document.scenes[sceneIndex]) return
   const outputSize = pngExportSize(document.canvas)
   const canvas = createCanvas(outputSize.width, outputSize.height)
   const context = canvas.getContext("2d")
   if (!context) return
-  const subtitleSettings = exportSubtitleSettings(document)
-  await drawSceneAsync(
-    [
-      context,
-      timeline.resolveAt(at),
-      undefined,
-      document.canvas,
-      document.background,
-      document.style.mode,
-      document.style.board,
-      document.style.hand,
-      subtitleSettings.subtitles,
-      subtitleSettings.readAlong,
-      brandingEntitlements,
-      subtitleSettings.captionStyle,
-      false,
-    ],
-    {
-      batchSize: 4,
-      signal: options.signal,
-      onProgress: options.onProgress,
-    }
-  )
+  if (options.previewCanvas) {
+    if (options.previewCanvas.width <= 0 || options.previewCanvas.height <= 0)
+      throw new Error("The preview frame is not ready to export.")
+    context.drawImage(
+      options.previewCanvas,
+      0,
+      0,
+      outputSize.width,
+      outputSize.height
+    )
+    options.onProgress?.(1)
+  } else {
+    const scene = document.scenes[sceneIndex]!
+    const timeline = new Timeline(scene, document.canvas)
+    const at = Math.min(Math.max(0, elapsed), timeline.duration)
+    await preloadImages(document)
+    await loadHandwrittenFont()
+    throwIfAborted(options.signal)
+    const subtitleSettings = exportSubtitleSettings(document)
+    await drawSceneAsync(
+      [
+        context,
+        timeline.resolveAt(at),
+        undefined,
+        document.canvas,
+        document.background,
+        document.style.mode,
+        document.style.board,
+        document.style.hand,
+        subtitleSettings.subtitles,
+        subtitleSettings.readAlong,
+        brandingEntitlements,
+        subtitleSettings.captionStyle,
+        false,
+      ],
+      {
+        batchSize: 4,
+        signal: options.signal,
+        onProgress: options.onProgress,
+      }
+    )
+  }
   throwIfAborted(options.signal)
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/png")

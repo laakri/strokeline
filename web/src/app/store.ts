@@ -76,6 +76,7 @@ interface AppStore {
   editorLoad: { text: string } | null
   editorSourceReader: (() => string) | null
   editorSourceWriter: ((edits: EditorSourceEdit[]) => void) | null
+  previewCanvasReader: (() => HTMLCanvasElement | null) | null
   player: PlayerState
   setScript: (script: string) => void
   compileScript: () => void
@@ -87,6 +88,7 @@ interface AppStore {
   clearEditorJump: () => void
   setEditorSourceReader: (reader: (() => string) | null) => void
   setEditorSourceWriter: (writer: ((edits: EditorSourceEdit[]) => void) | null) => void
+  setPreviewCanvasReader: (reader: (() => HTMLCanvasElement | null) | null) => void
   applyEditorSourceEdits: (edits: EditorSourceEdit[]) => void
   loadScript: (text: string) => void
   clearEditorLoad: () => void
@@ -104,6 +106,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   editorLoad: null,
   editorSourceReader: null,
   editorSourceWriter: null,
+  previewCanvasReader: null,
   player: { elapsed: 0, duration: 0, isPlaying: false },
   setScript: (script) => {
     const normalized = normalizeScriptSource(script).source
@@ -183,6 +186,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   clearEditorJump: () => set({ editorJump: null }),
   setEditorSourceReader: (editorSourceReader) => set({ editorSourceReader }),
   setEditorSourceWriter: (editorSourceWriter) => set({ editorSourceWriter }),
+  setPreviewCanvasReader: (previewCanvasReader) => set({ previewCanvasReader }),
   applyEditorSourceEdits: (edits) => {
     const writer = get().editorSourceWriter
     if (writer) {

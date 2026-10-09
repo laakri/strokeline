@@ -131,8 +131,8 @@ export function ExportMenu() {
       currentState.editorSourceReader?.() ?? currentState.script
     ).source
     const runnableSource = formatScript(repairSyntax(editorSource).script)
-    if (runnableSource !== currentState.compiledSource && !currentState.run())
-      return
+    const reranScript = runnableSource !== currentState.compiledSource
+    if (reranScript && !currentState.run()) return
     const state = useAppStore.getState()
     if (!state.compiledIR) return
     const controller = new AbortController()
@@ -180,6 +180,9 @@ export function ExportMenu() {
           undefined,
           {
             signal: controller.signal,
+            previewCanvas: reranScript
+              ? undefined
+              : (state.previewCanvasReader?.() ?? undefined),
             onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
           }
         )

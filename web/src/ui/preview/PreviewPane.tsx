@@ -160,6 +160,17 @@ export function PreviewPane({
   const autoplayNext = useRef(false)
   const autoplayAll = useRef(false)
   const preservedPlayback = useRef<{ time: number; wasPlaying: boolean } | null>(null)
+  const setPreviewCanvasReader = useAppStore(
+    (state) => state.setPreviewCanvasReader
+  )
+  useEffect(() => {
+    const readPreviewCanvas = () => canvasRef.current
+    setPreviewCanvasReader(readPreviewCanvas)
+    return () => {
+      if (useAppStore.getState().previewCanvasReader === readPreviewCanvas)
+        setPreviewCanvasReader(null)
+    }
+  }, [setPreviewCanvasReader])
   const [playAllMode, setPlayAllMode] = useState(true)
   const sceneMenuTriggerRef = useRef<HTMLButtonElement>(null)
   const sceneMenuRef = useRef<HTMLDivElement>(null)
