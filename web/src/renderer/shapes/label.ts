@@ -38,7 +38,9 @@ export function drawLabel(
     renderContext.cameraScale
   )
   const clampedProgress = Math.max(0, Math.min(1, revealProgress))
-  const visibleText = softWipe ? text : text.slice(0, Math.ceil(text.length * clampedProgress))
+  const visibleText = softWipe
+    ? text
+    : text.slice(0, Math.ceil(text.length * clampedProgress))
   if (!visibleText) return
 
   context.font = `${fontSize}px "${options.fontFamily ?? "Caveat Variable"}", "Cambria Math", "STIX Two Math", "Times New Roman", serif`
@@ -70,37 +72,63 @@ export function drawLabel(
   const padding = Math.max(0, options.backgroundPadding ?? 0)
   const boxWidth = layout.width + padding * 2
   const boxHeight = layout.height + padding * 2
-  const boxX = alignment === "left"
-    ? startX - padding
-    : alignment === "right"
-      ? startX + blockWidth - layout.width - padding
-      : center.x + (options.offset?.x ?? 0) - boxWidth / 2
+  const boxX =
+    alignment === "left"
+      ? startX - padding
+      : alignment === "right"
+        ? startX + blockWidth - layout.width - padding
+        : center.x + (options.offset?.x ?? 0) - boxWidth / 2
   const boxY = center.y + (options.offset?.y ?? 0) - boxHeight / 2
   if (softWipe || options.background) {
     context.save()
     if (softWipe) {
       let hash = 2166136261
-      for (const char of seed) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)
+      for (const char of seed)
+        hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)
       const jitter = ((hash >>> 0) % 7) - 3
       context.beginPath()
-      context.rect(startX - padding, boxY, (blockWidth + padding * 2) * clampedProgress + jitter, boxHeight)
+      context.rect(
+        startX - padding,
+        boxY,
+        (blockWidth + padding * 2) * clampedProgress + jitter,
+        boxHeight
+      )
       context.clip()
     }
     if (options.background) {
-      context.globalAlpha *= Math.max(0, Math.min(1, options.backgroundOpacity ?? 0.92))
+      context.save()
+      context.globalAlpha *= Math.max(
+        0,
+        Math.min(1, options.backgroundOpacity ?? 0.92)
+      )
       context.fillStyle = options.background
-      roundedRectPath(context, boxX, boxY, boxWidth, boxHeight, options.backgroundCorners ?? 12)
+      roundedRectPath(
+        context,
+        boxX,
+        boxY,
+        boxWidth,
+        boxHeight,
+        options.backgroundCorners ?? 12
+      )
       context.fill()
+      context.restore()
     }
   }
   if (softWipe) {
     let hash = 2166136261
-    for (const char of seed) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)
+    for (const char of seed)
+      hash = Math.imul(hash ^ char.charCodeAt(0), 16777619)
     const jitter = ((hash >>> 0) % 7) - 3
     context.beginPath()
-    context.rect(startX - 2, center.y - layout.height / 2, blockWidth * clampedProgress + jitter, layout.height + fontSize * 0.2)
+    context.rect(
+      startX - 2,
+      center.y - layout.height / 2,
+      blockWidth * clampedProgress + jitter,
+      layout.height + fontSize * 0.2
+    )
     context.clip()
   }
+  context.fillStyle = options.color
   layout.lines.forEach((line, index) => {
     context.fillText(
       line,
