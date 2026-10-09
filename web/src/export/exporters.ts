@@ -2,6 +2,7 @@ import { GIFEncoder, applyPalette, quantize } from "gifenc"
 import type { SayLine, SceneDocument } from "@/ir/types.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { drawScene } from "@/renderer/draw.ts"
+import { pngExportSize } from "@/export/pngSizing.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { SequencePlayer } from "@/player/usePlayer.ts"
 import { Timeline } from "@/timeline/timeline.ts"
@@ -166,7 +167,8 @@ export async function exportPng(
   const at = Math.min(Math.max(0, elapsed), timeline.duration)
   await preloadImages(document)
   await loadHandwrittenFont()
-  const canvas = createCanvas(document.canvas.width * 2, document.canvas.height * 2)
+  const outputSize = pngExportSize(document.canvas)
+  const canvas = createCanvas(outputSize.width, outputSize.height)
   const context = canvas.getContext("2d")
   if (!context) return
   const subtitleSettings = exportSubtitleSettings(document)
@@ -182,12 +184,14 @@ export async function exportPng(
     subtitleSettings.subtitles,
     subtitleSettings.readAlong,
     brandingEntitlements,
-    subtitleSettings.captionStyle
+    subtitleSettings.captionStyle,
+    false
   )
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, "image/png")
   )
-  if (blob) download(blob, `strokeline-${timestamp()}.png`)
+  if (!blob) throw new Error("The browser could not encode the PNG snapshot.")
+  download(blob, `strokeline-${timestamp()}.png`)
 }
 
 /** Animated GIF of every scene, encoded offline with gifenc. */

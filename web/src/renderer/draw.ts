@@ -49,7 +49,8 @@ export function drawScene(
   subtitlesEnabled = false,
   readAlong = false,
   brandingEntitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
-  captionStyle: CaptionStyle = "bold"
+  captionStyle: CaptionStyle = "bold",
+  cacheNodes = true
 ): void {
   const canvas = context.canvas
   const logicalCanvas = canvasSize ?? {
@@ -143,7 +144,7 @@ export function drawScene(
     context.save()
     context.globalAlpha = node.opacity
     const cached =
-      node.revealProgress >= 1 && node.rotation === 0 && tableHighlights.length === 0
+      cacheNodes && node.revealProgress >= 1 && node.rotation === 0 && tableHighlights.length === 0
         ? getCachedNode(
             canvas,
           renderNode,
