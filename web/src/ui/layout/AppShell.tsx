@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { Check, CircleHelp, Clipboard, FolderOpen, Maximize, Play, Save } from "lucide-react"
 import aiPrompt from "../../../../AI_prompt_kit.MD?raw"
-import { BRAND_ICON_CATALOG } from "@/defaults/brandIcons.generated.ts"
 import { useAppStore } from "@/app/store.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
-import { ICON_NAMES } from "@/dsl/grammar.ts"
 import { TwoPaneLayout } from "@/ui/layout/TwoPaneLayout.tsx"
 import { ExportMenu } from "@/ui/layout/ExportMenu.tsx"
 import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
@@ -42,11 +40,7 @@ export function AppShell() {
     setGuideStep(null)
   }
   const copyPrompt = async () => {
-    await navigator.clipboard.writeText(
-      aiPrompt
-        .replace("{{ICON_LIST}}", ICON_NAMES.join(", "))
-        .replace("{{BRAND_ICON_LIST}}", BRAND_ICON_CATALOG.map(({ title, slug }) => `${title} (/brand-icons/${slug}.svg)`).join("\n"))
-    )
+    await navigator.clipboard.writeText(aiPrompt)
   }
   const handleSave = () => {
     const script = useAppStore.getState().script
