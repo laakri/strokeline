@@ -3,6 +3,9 @@ import { createPortal } from "react-dom"
 import { Download, FileText, FileVideo, Film, ImageDown, Loader2, X } from "lucide-react"
 import { useAppStore } from "@/app/store.ts"
 import { blocksScriptRun } from "@/dsl/diagnostics.ts"
+import { formatScript } from "@/dsl/format.ts"
+import { repairSyntax } from "@/dsl/repair.ts"
+import { normalizeScriptSource } from "@/dsl/source.ts"
 import {
   exportGif,
   exportPng,
@@ -29,8 +32,6 @@ const MENU_OFFSET = 6
 
 export function ExportMenu() {
   const compiledIR = useAppStore((state) => state.compiledIR)
-  const activeSceneIndex = useAppStore((state) => state.activeSceneIndex)
-  const player = useAppStore((state) => state.player)
   const diagnostics = useAppStore((state) => state.diagnostics)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
@@ -57,7 +58,7 @@ export function ExportMenu() {
   } | null>(null)
 
   const errorCount = diagnostics.filter(blocksScriptRun).length
-  const { script, compiledSource, run } = useAppStore.getState()
+  const { script, compiledSource } = useAppStore.getState()
   const needsRecompile = compiledSource !== script
   const canExport = !!compiledIR && !needsRecompile && errorCount === 0
   const itemDisabledReason = !compiledIR
@@ -125,7 +126,13 @@ export function ExportMenu() {
 
   const runExport = async (kind: ExportKind) => {
     if (!canExport) return
-    await run()
+    const currentState = useAppStore.getState()
+    const editorSource = normalizeScriptSource(
+      currentState.editorSourceReader?.() ?? currentState.script
+    ).source
+    const runnableSource = formatScript(repairSyntax(editorSource).script)
+    if (runnableSource !== currentState.compiledSource && !currentState.run())
+      return
     const state = useAppStore.getState()
     if (!state.compiledIR) return
     const controller = new AbortController()
@@ -166,10 +173,16 @@ export function ExportMenu() {
         })
         trackProductEvent({ name: "export_completed", properties: { format: "gif", seamless_loop: seamlessLoop } })
       } else {
-        await exportPng(state.compiledIR, activeSceneIndex, player.elapsed, undefined, {
-          signal: controller.signal,
-          onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
-        })
+        await exportPng(
+          state.compiledIR,
+          state.activeSceneIndex,
+          state.player.elapsed,
+          undefined,
+          {
+            signal: controller.signal,
+            onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
+          }
+        )
         trackProductEvent({ name: "export_completed", properties: { format: "png" } })
       }
     } catch (error) {
