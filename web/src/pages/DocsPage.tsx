@@ -1180,6 +1180,11 @@ export function DocsPage() {
               <p>
                 Optional properties are <code>POSITION</code>, <code>SIZE</code>,{" "}
                 <code>COLOR</code>, <code>FILL</code>, <code>HEADERCOLOR</code>,{" "}
+                <code>ALTERNATECOLOR</code>, repeatable <code>ROWCOLOR row color</code>,{" "}
+                and repeatable <code>CELLCOLOR row column color</code>. Set{" "}
+                <code>FILL transparent</code> to let the canvas show through the
+                body, use <code>HEADERCOLOR transparent</code> for an open header,
+                and use <code>OPACITY</code> to fade the whole table.{" "}
                 <code>ALIGN left|center|right</code>, <code>DIVIDER n</code>, <code>STROKE</code>,{" "}
                 <code>PEN</code>, <code>OPACITY</code>, <code>DRAW</code>, and{" "}
                 <code>REVEAL</code>.
@@ -1196,6 +1201,9 @@ export function DocsPage() {
                   '    ROW "Pro" "12" "MP4"',
                   '    ROW "Team" "30" "MP4 + WebM"',
                   "    HEADERCOLOR #2E86AB",
+                  "    ALTERNATECOLOR #F1F6FA",
+                  "    ROWCOLOR 3 #E2F3EC",
+                  "    CELLCOLOR 2 3 #FFF1D6",
                   "    DIVIDER 2",
                   "    HIGHLIGHT ROW 2",
                   "    DRAW 1.5s",
@@ -1204,6 +1212,28 @@ export function DocsPage() {
                   "END SCENE",
                 ].join("\n")}
               />
+              <CodeBlock
+                title="Transparent table"
+                code={[
+                  "TABLE glass",
+                  "  FILL transparent",
+                  "  HEADERCOLOR #183B56",
+                  "  ALTERNATECOLOR #EAF2F8",
+                  '  COLUMNS "Layer" "Purpose"',
+                  '  ROW "Surface" "Soft tint"',
+                  '  ROW "Content" "Canvas visible through"',
+                  "  OPACITY 0.9",
+                  "END",
+                ].join("\n")}
+              />
+              <p>
+                ROWCOLOR numbers body rows starting at 1; CELLCOLOR uses a
+                body-row number followed by a 1-based column number. These
+                overrides can be repeated and take precedence over
+                ALTERNATECOLOR. Combine a transparent fill with{" "}
+                <code>OPACITY</code> when the entire table should softly blend
+                with the canvas.
+              </p>
               <p>
                 HIGHLIGHT ROW n selects a body row; COLUMN n includes its
                 header; CELL r c selects a body cell. Animate the same targets

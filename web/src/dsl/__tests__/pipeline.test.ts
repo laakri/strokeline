@@ -21,6 +21,49 @@ const source = (folder: string, file: string) =>
   readFileSync(join(fixtureRoot, folder, file), "utf8")
 
 describe("DSL pipeline", () => {
+  it("compiles layered and transparent table backgrounds", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  TABLE plans
+    COLUMNS "Plan" "Price"
+    ROW "Free" "0"
+    ROW "Pro" "12"
+    FILL transparent
+    HEADERCOLOR #183B56
+    ALTERNATECOLOR #F1F6FA
+    ROWCOLOR 1 #E2F3EC
+    CELLCOLOR 2 2 #FFF1D6
+    OPACITY 0.85
+  END
+END SCENE`)
+    expect(result.diagnostics).toEqual([])
+    const tableOp = result.document?.scenes[0]?.ops.find((op) => op.kind === "create")
+    expect(tableOp?.kind).toBe("create")
+    if (tableOp?.kind !== "create") return
+    expect(tableOp.node.style).toMatchObject({ fill: "transparent" })
+    expect(tableOp.node.opacity).toBe(0.85)
+    expect(tableOp.node.data).toMatchObject({
+      alternateColor: "#F1F6FA",
+      rowColors: { 1: "#E2F3EC" },
+      cellColors: { "2,2": "#FFF1D6" },
+    })
+  })
+
+  it("rejects table background overrides outside the body cells", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  TABLE plans
+    COLUMNS "Plan" "Price"
+    ROW "Free" "0"
+    ROWCOLOR 2 #E2F3EC
+    CELLCOLOR 1 3 #FFF1D6
+  END
+END SCENE`)
+    expect(result.diagnostics.filter((item) => item.code === "E_BAD_RANGE")).toHaveLength(2)
+  })
+
   it("supports explicit MORPH only between compatible geometric shapes", () => {
     const result = runScript(`VERSION 1.0
 CANVAS 800 600

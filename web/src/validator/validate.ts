@@ -570,7 +570,11 @@ function validateSceneWarnings(
       const rowLocations = op.node.data?._rowLocations as Array<{ line: number; col: number }> | undefined
       const locations = op.node.data?._sourcePropertyLocations as Record<string, { line: number; col: number }> | undefined
       const headerColor = String(op.node.data?.headerColor ?? (op.node.style.color.toLowerCase() === "#ffffff" || op.node.style.color.toLowerCase() === "#f5f5f5" ? "#334E68" : "#DCECF1"))
-      const fill = op.node.style.fill ?? document.background
+      const tableFill = op.node.style.fill ?? "#FFFFFF"
+      const fill = tableFill.trim().toLowerCase() === "transparent" ? document.background : tableFill
+      const alternateColor = String(op.node.data?.alternateColor ?? "")
+      const rowColors = op.node.data?.rowColors as Record<number, string> | undefined
+      const cellColors = op.node.data?.cellColors as Record<string, string> | undefined
       const end = erasures.get(op.node.id) ?? Number.POSITIVE_INFINITY
       const cellRows = [columns, ...rows]
       const tableX = op.node.position.x - tableLayout.width / 2
@@ -615,8 +619,20 @@ function validateSceneWarnings(
           diagnostics.push(warning("W_TEXT_OFF_SAFE", `Table cell "${cellId}" extends outside the safe area.`, source.line, source.col, "Move or resize the table inside x=120..1800 and y=100..980."))
         if (!layout.fits)
           diagnostics.push(warning("W_TEXT_TOO_SMALL", `Table cell "${cellId}" is clipped at the minimum 18px text size.`, source.line, source.col, "Increase SIZE or shorten the cell text."))
-        const foreground = rowIndex === 0 ? bestTableForeground(headerColor) : op.node.style.color
-        const contrast = contrastRatio(foreground, rowIndex === 0 ? headerColor : fill)
+        const rowColor = rowColors?.[rowIndex] ??
+          (rowIndex > 0 && rowIndex % 2 === 0 ? alternateColor : "")
+        const cellColor = rowIndex > 0 ? cellColors?.[`${rowIndex},${columnIndex + 1}`] : undefined
+        const cellFill = rowIndex === 0
+          ? headerColor
+          : cellColor || rowColor || fill
+        const transparentCell = cellFill.trim().toLowerCase() === "transparent"
+        const effectiveFill = transparentCell
+          ? rowIndex > 0 && cellColor && rowColor ? rowColor : fill
+          : cellFill
+        const foreground = rowIndex === 0 && !transparentCell
+          ? bestTableForeground(effectiveFill)
+          : op.node.style.color
+        const contrast = contrastRatio(foreground, effectiveFill)
         if (contrast !== undefined && contrast < 4.5)
           diagnostics.push(warning("W_LOW_CONTRAST", `Table cell "${cellId}" has a contrast ratio of ${contrast.toFixed(2)}:1.`, source.line, source.col, "Choose cell and background colors with a WCAG contrast ratio of at least 4.5:1."))
       }))

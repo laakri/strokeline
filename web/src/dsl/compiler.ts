@@ -1574,6 +1574,27 @@ function nodeFromTable(
     diagnostics.push(error("E_MISSING_REQUIRED_PROP", `TABLE "${statement.id}" needs COLUMNS with at least one header cell.`, statement.token.line, statement.token.col))
   const rowProps = props.filter((prop) => prop.key === "ROW")
   const rows = rowProps.map((prop) => prop.values.map(String))
+  const alternateColor = propString(props, "ALTERNATECOLOR")
+  const rowColors: Record<number, string> = {}
+  const cellColors: Record<string, string> = {}
+  for (const prop of props.filter((property) => property.key === "ROWCOLOR")) {
+    const row = Number(prop.values[0])
+    const color = prop.values[1] === undefined ? undefined : String(prop.values[1])
+    if (prop.values.length !== 2 || !Number.isInteger(row) || row < 1 || row > rows.length || !color) {
+      diagnostics.push(error("E_BAD_RANGE", `ROWCOLOR for TABLE "${statement.id}" must be followed by a body row from 1 to ${rows.length} and a color.`, prop.token.line, prop.token.col))
+    } else rowColors[row] = color
+  }
+  for (const prop of props.filter((property) => property.key === "CELLCOLOR")) {
+    const row = Number(prop.values[0])
+    const column = Number(prop.values[1])
+    const color = prop.values[2] === undefined ? undefined : String(prop.values[2])
+    if (prop.values.length !== 3 ||
+      !Number.isInteger(row) || row < 1 || row > rows.length ||
+      !Number.isInteger(column) || column < 1 || column > columns.length ||
+      !color) {
+      diagnostics.push(error("E_BAD_RANGE", `CELLCOLOR for TABLE "${statement.id}" must be followed by a body row, column, and color within the table.`, prop.token.line, prop.token.col))
+    } else cellColors[`${row},${column}`] = color
+  }
   const divider = propNumber(props, "DIVIDER")
   if (props.some((prop) => prop.key === "DIVIDER") &&
     (divider === undefined || !Number.isInteger(divider) || divider < 1 || divider > rows.length)) {
@@ -1647,6 +1668,9 @@ function nodeFromTable(
       columns,
       rows,
       headerColor: propString(props, "HEADERCOLOR"),
+      alternateColor,
+      rowColors,
+      cellColors,
       divider,
       align: (alignValue === "left" || alignValue === "right" ? alignValue : "center") as TextAlign,
       highlights,

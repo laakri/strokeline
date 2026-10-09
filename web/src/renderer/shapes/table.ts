@@ -8,6 +8,9 @@ type TableData = {
   columns?: string[]
   rows?: string[][]
   headerColor?: string
+  alternateColor?: string
+  rowColors?: Record<number, string>
+  cellColors?: Record<string, string>
   align?: CanvasTextAlign
   divider?: number
   highlights?: TableHighlightTarget[]
@@ -40,6 +43,7 @@ export function drawTable(render: RenderContext, node: SceneNode): void {
   const totalRows = rows.length + 1
   const rowHeight = layout.rowHeight
   const header = data.headerColor ?? defaultHeader(node.style.color)
+  const baseFill = node.style.fill ?? "#FFFFFF"
   const staticHighlights = data.highlights ?? []
   const animatedHighlights = data._animatedTableHighlights ?? []
   ctx.save()
@@ -48,10 +52,13 @@ export function drawTable(render: RenderContext, node: SceneNode): void {
   roundedRect(ctx, box.x, box.y, box.width, box.height, radius)
   ctx.save()
   ctx.clip()
-  ctx.shadowColor = "rgba(20, 35, 55, 0.16)"
-  ctx.shadowBlur = 16 / render.cameraScale
-  ctx.shadowOffsetY = 5 / render.cameraScale
-  ctx.fillStyle = node.style.fill ?? "#FFFFFF"
+  const transparentBase = isTransparent(baseFill)
+  if (!transparentBase) {
+    ctx.shadowColor = "rgba(20, 35, 55, 0.16)"
+    ctx.shadowBlur = 16 / render.cameraScale
+    ctx.shadowOffsetY = 5 / render.cameraScale
+  }
+  ctx.fillStyle = baseFill
   ctx.fill()
   ctx.restore()
   roundedRect(ctx, box.x, box.y, box.width, box.height, radius)
@@ -63,16 +70,23 @@ export function drawTable(render: RenderContext, node: SceneNode): void {
     const y = box.y + visualRow * rowHeight
     const rowCells = visualRow === 0 ? columns : rows[visualRow - 1] ?? []
     if (visualRow > 0) {
-      ctx.fillStyle = node.style.fill ?? "#FFFFFF"
-      ctx.globalAlpha = rowProgress
-      ctx.fillRect(box.x, y, box.width * rowProgress, rowHeight)
-      ctx.globalAlpha = 1
+      const bodyRow = visualRow
+      const rowColor = data.rowColors?.[bodyRow] ??
+        (bodyRow % 2 === 0 ? data.alternateColor : undefined)
+      if (rowColor) {
+        ctx.fillStyle = rowColor
+        ctx.save()
+        ctx.globalAlpha *= rowProgress
+        ctx.fillRect(box.x, y, box.width * rowProgress, rowHeight)
+        ctx.restore()
+      }
     }
     if (visualRow === 0) {
       ctx.fillStyle = header
-      ctx.globalAlpha = rowProgress
+      ctx.save()
+      ctx.globalAlpha *= rowProgress
       ctx.fillRect(box.x, y, box.width * rowProgress, rowHeight)
-      ctx.globalAlpha = 1
+      ctx.restore()
     }
     const targets = [
       ...staticHighlights.map((target) => ({ target, color: "#FFD966", progress: 1 })),
@@ -80,14 +94,25 @@ export function drawTable(render: RenderContext, node: SceneNode): void {
     ]
     let cellX = box.x
     layout.columnWidths.forEach((columnWidth, column) => {
+      if (visualRow > 0) {
+        const cellColor = data.cellColors?.[`${visualRow},${column + 1}`]
+        if (cellColor) {
+          ctx.fillStyle = cellColor
+          ctx.save()
+          ctx.globalAlpha *= rowProgress
+          ctx.fillRect(cellX, y, columnWidth * rowProgress, rowHeight)
+          ctx.restore()
+        }
+      }
       const isHighlighted = targets.some(({ target, progress: targetProgress }) =>
         targetProgress > 0 && targetMatchesCell(target, visualRow, column + 1)
       )
       if (isHighlighted) {
         ctx.fillStyle = "#FFD966"
-        ctx.globalAlpha = 0.3 * Math.max(...targets.filter(({ target }) => targetMatchesCell(target, visualRow, column + 1)).map((target) => target.progress), 0)
+        ctx.save()
+        ctx.globalAlpha *= 0.3 * Math.max(...targets.filter(({ target }) => targetMatchesCell(target, visualRow, column + 1)).map((target) => target.progress), 0)
         ctx.fillRect(cellX, y, columnWidth * rowProgress, rowHeight)
-        ctx.globalAlpha = 1
+        ctx.restore()
       }
       ctx.strokeStyle = "rgba(43, 61, 79, 0.16)"
       ctx.beginPath(); ctx.moveTo(cellX, y); ctx.lineTo(cellX, y + rowHeight * rowProgress); ctx.stroke()
@@ -102,7 +127,9 @@ export function drawTable(render: RenderContext, node: SceneNode): void {
         const family = node.style.fontFamily ?? fontFamilyFor()
         ctx.font = `${visualRow === 0 ? "600 " : "400 "}${cellLayout?.fontSize ?? 18}px "${family}", "Cambria Math", "STIX Two Math", "Times New Roman", serif`
         ctx.textAlign = data.align ?? "center"
-        ctx.fillStyle = visualRow === 0 ? readableOn(header) : node.style.color
+        ctx.fillStyle = visualRow === 0
+          ? isTransparent(header) ? node.style.color : readableOn(header)
+          : node.style.color
         const padding = TABLE_CELL_PADDING
         const textX = data.align === "left"
           ? cellX + padding
@@ -157,6 +184,10 @@ function readableOn(color: string): string {
   }
   const dark = [24, 33, 43].map((channel) => channel / 255).reduce((sum, channel, index) => sum + [0.2126, 0.7152, 0.0722][index]! * (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4), 0)
   return ratio(1) >= ratio(dark) ? "#FFFFFF" : "#18212B"
+}
+
+function isTransparent(color: string): boolean {
+  return color.trim().toLowerCase() === "transparent"
 }
 
 function clamp(value: number): number { return Math.max(0, Math.min(1, value)) }

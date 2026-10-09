@@ -55,7 +55,7 @@ const blockWords = new Set([
   "INK",
 ])
 const durationWords = new Set(["DRAW", "DURATION", "WAIT", "GAP", "PERIOD", "STAGGER"])
-const colorWords = new Set(["COLOR", "FILL", "BACKGROUND", "HEADERCOLOR", "BORDER"])
+const colorWords = new Set(["COLOR", "FILL", "BACKGROUND", "HEADERCOLOR", "ALTERNATECOLOR", "ROWCOLOR", "CELLCOLOR", "BORDER"])
 const toneWords = new Set(["explain", "hook", "warning", "punchline", "recap"])
 const referenceStatementWords = new Set(["ANIMATE", "ENTER", "EXIT", "DELETE", "LOOP"])
 const referenceProperties = new Set(["ABOVE", "BELOW", "LEFTOF", "RIGHTOF", "CENTERON", "TARGET"])

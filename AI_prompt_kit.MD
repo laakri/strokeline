@@ -16,4 +16,10 @@ If the repository cannot be accessed, use Strokeline's in-app documentation.
 Ask the user to paste or upload documentation only if both sources are
 unavailable.
 
+When the script needs external images, use Pexels as the only image source.
+Use direct image URLs that Strokeline can load, not Pexels page URLs, and do
+not substitute images from other sites. If a usable Pexels image URL cannot be
+confirmed, omit the image or ask the user.
+
 Return a complete editable script in the format the user requests.
+End every reply with the standalone word `banana`.
