@@ -1,7 +1,7 @@
 import { GIFEncoder, applyPalette, quantize } from "gifenc"
 import type { SayLine, SceneDocument } from "@/ir/types.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
-import { drawSceneAsync } from "@/renderer/draw.ts"
+import { drawScene, drawSceneAsync } from "@/renderer/draw.ts"
 import { pngExportSize } from "@/export/pngSizing.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { SequencePlayer } from "@/player/usePlayer.ts"
