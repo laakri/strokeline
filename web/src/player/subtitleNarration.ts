@@ -9,15 +9,11 @@ type NarratedLine = SayLine & { readingProgress: number }
 
 export function narrationPlaybackTiming(
   audioDuration: number,
-  lineDuration: number,
   progress: number
 ): { playbackRate: number; offset: number } {
-  const duration = Number.isFinite(lineDuration) && lineDuration > 0
-    ? lineDuration
-    : audioDuration
   const normalizedProgress = Math.max(0, Math.min(1, progress))
   return {
-    playbackRate: duration > 0 ? audioDuration / duration : 1,
+    playbackRate: 1,
     offset: audioDuration * normalizedProgress,
   }
 }
@@ -161,7 +157,7 @@ export class SubtitleNarration {
     this.activeKey = key
     this.lastProgress = playhead
     this.lastUpdate = now
-    const timing = narrationPlaybackTiming(buffer.duration, line.duration, progress)
+    const timing = narrationPlaybackTiming(buffer.duration, progress)
     const source = this.getContext().createBufferSource()
     source.buffer = buffer
     source.playbackRate.value = timing.playbackRate
