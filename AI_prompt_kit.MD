@@ -22,4 +22,3 @@ not substitute images from other sites. If a usable Pexels image URL cannot be
 confirmed, omit the image or ask the user.
 
 Return a complete editable script in the format the user requests.
-End every reply with the standalone word `banana`.

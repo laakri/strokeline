@@ -1,9 +1,19 @@
 import { createCanvas } from "@napi-rs/canvas"
 import { describe, expect, it } from "vitest"
-import { drawSubtitleLayer } from "@/renderer/subtitles.ts"
+import {
+  drawSubtitleLayer,
+  reelsCaptionFontSize,
+} from "@/renderer/subtitles.ts"
+import { watermarkLayout } from "@/renderer/watermark.ts"
 
 describe("Reels captions", () => {
-  it("centers captions in the lower third at 75 percent height", () => {
+  it("uses smaller responsive captions for vertical canvases", () => {
+    expect(reelsCaptionFontSize(1080)).toBe(54)
+    expect(reelsCaptionFontSize(540)).toBe(27)
+    expect(reelsCaptionFontSize(320)).toBe(26)
+  })
+
+  it("places reel captions above the bottom watermark area", () => {
     const canvas = createCanvas(540, 960)
     const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
     drawSubtitleLayer(
@@ -29,7 +39,36 @@ describe("Reels captions", () => {
       }
     }
 
-    expect((minY + maxY) / 2).toBeCloseTo(canvas.height * 0.75, -1)
+    expect((minY + maxY) / 2).toBeCloseTo(canvas.height * 0.87, -1)
+  })
+
+  it("keeps long captions above the watermark without jumping upward", () => {
+    const canvas = createCanvas(1080, 1350)
+    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+    drawSubtitleLayer(
+      context,
+      {
+        text: "Anthropic says Opus performs at Fable's level on most work, for less than half the price.",
+        start: 0,
+        duration: 9,
+        opacity: 1,
+        readingProgress: 0.5,
+      },
+      { width: 1080, height: 1350 }
+    )
+
+    const image = context.getImageData(0, 0, canvas.width, canvas.height)
+    let maxY = -1
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        if (image.data[(y * canvas.width + x) * 4 + 3] > 0)
+          maxY = Math.max(maxY, y)
+      }
+    }
+
+    const watermark = watermarkLayout(context, { width: 1080, height: 1350 })
+    expect(maxY).toBeLessThan(watermark.y - 10)
+    expect(maxY).toBeGreaterThan(1350 * 0.8)
   })
 
   it("renders distinct word-highlight caption styles in the lower third", () => {

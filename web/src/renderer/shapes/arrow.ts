@@ -57,7 +57,7 @@ export function drawArrow(renderContext: RenderContext, node: SceneNode): void {
   if (progress < 1 || visiblePath.length < 2) return
   if (isStyledHead(head)) drawArrowHead(renderContext, node, head, path[path.length - 2]!, path[path.length - 1]!)
   if (head === "end" || head === "both") drawArrowHead(renderContext, node, "end", path[path.length - 2]!, path[path.length - 1]!)
-  if (head === "both") drawArrowHead(renderContext, node, path[1]!, path[0]!)
+  if (head === "both") drawArrowHead(renderContext, node, "end", path[1]!, path[0]!)
 
   const sourceLabel = String(node.data?.sourceLabel ?? "")
   const targetLabel = String(node.data?.targetLabel ?? "")

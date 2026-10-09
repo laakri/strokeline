@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest"
+import { createCanvas } from "@napi-rs/canvas"
 import type { SceneNode } from "@/ir/types.ts"
 import { features } from "@/defaults/features.ts"
 import { computeFitTransform } from "@/renderer/camera.ts"
+import { createRenderContext } from "@/renderer/handdrawn.ts"
 import { pointOnBoundary } from "@/renderer/geometry.ts"
-import { endpointLabelPoint } from "@/renderer/shapes/arrow.ts"
+import { drawArrow, endpointLabelPoint } from "@/renderer/shapes/arrow.ts"
 import { cameraScaledStrokeWidth, strokeOptions } from "@/renderer/handdrawn.ts"
 import { circleBoundingBox } from "@/renderer/shapes/circle.ts"
 import { lineBoundingBox, lineEndpoints } from "@/renderer/shapes/line.ts"
@@ -27,6 +29,34 @@ const base = (type: SceneNode["type"]): SceneNode => ({
 })
 
 describe("renderer geometry", () => {
+  it("draws both arrowheads without aborting frame rendering", () => {
+    const source = {
+      ...base("rectangle"),
+      id: "source",
+      position: { x: 100, y: 100 },
+      size: { width: 80, height: 50 },
+    }
+    const target = {
+      ...base("rectangle"),
+      id: "target",
+      position: { x: 400, y: 100 },
+      size: { width: 100, height: 50 },
+    }
+    const arrow = {
+      ...base("arrow"),
+      id: "both-arrowheads",
+      data: { fromId: source.id, toId: target.id, head: "both" },
+    }
+    const canvas = createCanvas(500, 200)
+    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+    const renderContext = createRenderContext(
+      context,
+      new Map([[source.id, source], [target.id, target], [arrow.id, arrow]])
+    )
+
+    expect(() => drawArrow(renderContext, arrow)).not.toThrow()
+  })
+
   it("uses smooth sampled geometry for elbow and curved arrows", () => {
     const source = { ...base("rectangle"), id: "source", position: { x: 100, y: 100 }, size: { width: 80, height: 50 } }
     const target = { ...base("rectangle"), id: "target", position: { x: 600, y: 400 }, size: { width: 100, height: 70 } }

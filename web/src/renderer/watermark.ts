@@ -4,14 +4,10 @@ import {
   type BrandingEntitlements,
 } from "@/branding/entitlements.ts"
 
-export function drawWatermark(
+export function watermarkLayout(
   context: CanvasRenderingContext2D,
-  entitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
-  logicalCanvas = { width: context.canvas.width, height: context.canvas.height },
-  devicePixelRatio = context.canvas.width / logicalCanvas.width
-): void {
-  if (!shouldShowWatermark(entitlements)) return
-
+  logicalCanvas: { width: number; height: number }
+) {
   const isVertical = logicalCanvas.height > logicalCanvas.width
   const fontSize = isVertical
     ? Math.max(20, Math.min(28, logicalCanvas.width * 0.026))
@@ -22,6 +18,33 @@ export function drawWatermark(
   const margin = Math.max(12, fontSize * 0.85)
 
   context.save()
+  context.font = `600 ${fontSize}px Inter, Arial, sans-serif`
+  const labelWidth = context.measureText("Made with Strokeline").width
+  context.restore()
+
+  const width = paddingX * 2 + iconSize + fontSize * 0.55 + labelWidth
+  return {
+    x: logicalCanvas.width - width - margin,
+    y: logicalCanvas.height - badgeHeight - margin,
+    width,
+    height: badgeHeight,
+    fontSize,
+    iconSize,
+    paddingX,
+  }
+}
+
+export function drawWatermark(
+  context: CanvasRenderingContext2D,
+  entitlements: BrandingEntitlements = FREE_BRANDING_ENTITLEMENTS,
+  logicalCanvas = { width: context.canvas.width, height: context.canvas.height },
+  devicePixelRatio = context.canvas.width / logicalCanvas.width
+): void {
+  if (!shouldShowWatermark(entitlements)) return
+
+  const layout = watermarkLayout(context, logicalCanvas)
+  const { x, y, width: badgeWidth, height: badgeHeight, fontSize, iconSize, paddingX } = layout
+  context.save()
   context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
   context.globalAlpha = 1
   context.font = `600 ${fontSize}px Inter, Arial, sans-serif`
@@ -29,10 +52,6 @@ export function drawWatermark(
   context.textBaseline = "middle"
 
   const label = "Made with Strokeline"
-  const labelWidth = context.measureText(label).width
-  const badgeWidth = paddingX * 2 + iconSize + fontSize * 0.55 + labelWidth
-  const x = logicalCanvas.width - badgeWidth - margin
-  const y = logicalCanvas.height - badgeHeight - margin
   const radius = badgeHeight / 2
 
   context.beginPath()

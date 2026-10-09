@@ -2,11 +2,14 @@ import type { SayLine } from "@/ir/types.ts"
 import { fontFamilyFor } from "@/lib/textMetrics.ts"
 import { plainSubtitleText, wrapSubtitleText } from "@/subtitles/subtitles.ts"
 import { captionActiveWord, type CaptionStyle } from "@/reels/reels.ts"
+import { watermarkLayout } from "@/renderer/watermark.ts"
 
 const subtitleWidth = 1680
 const subtitleCenterX = 960
 const subtitleCenterY = 1010
 const subtitleFontSize = 36
+export const reelsCaptionFontSize = (canvasWidth: number) =>
+  Math.min(54, Math.max(26, canvasWidth * 0.05))
 
 export function visibleSubtitleLines(
   text: string,
@@ -130,9 +133,9 @@ function drawReelsCaption(
     canvasSize.width - 2 * 120
   )
   const family = direction === "rtl" ? "Amiri" : fontFamilyFor("neat")
-  let fontSize = Math.min(92, canvasSize.width * 0.09)
+  let fontSize = reelsCaptionFontSize(canvasSize.width)
   let lines: string[][] = []
-  while (fontSize >= 40) {
+  while (fontSize >= 26) {
     context.font = `800 ${fontSize}px "${family}"`
     lines = wrapWords(words, maxWidth, (word) => context.measureText(word).width)
     if (lines.length <= 3) break
@@ -148,7 +151,12 @@ function drawReelsCaption(
   const contentHeight = lines.length * lineHeight
   const paddingX = style === "minimal" ? 0 : fontSize * 0.3
   const paddingY = style === "minimal" ? 0 : fontSize * 0.18
-  const centerY = canvasSize.height * 0.75
+  const watermark = watermarkLayout(context, canvasSize)
+  const watermarkGap = Math.max(12, fontSize * 0.25)
+  const centerY = Math.min(
+    canvasSize.height * 0.87,
+    watermark.y - watermarkGap - paddingY - contentHeight / 2
+  )
   const visibleActiveWord = activeWord - visibleStart
 
   context.save()
