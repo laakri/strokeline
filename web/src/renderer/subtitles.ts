@@ -141,7 +141,7 @@ function drawReelsCaption(
     line.reduce((sum, word, index) =>
       sum + context.measureText(word).width + (index ? context.measureText(" ").width : 0), 0)
   )
-  const longest = Math.max(...widths)
+  const longest = Math.min(maxWidth, Math.max(...widths))
   const contentHeight = lines.length * lineHeight
   const paddingX = style === "minimal" ? 0 : fontSize * 0.3
   const paddingY = style === "minimal" ? 0 : fontSize * 0.18

@@ -71,6 +71,36 @@ describe("Reels captions", () => {
     expect(maxY).toBeGreaterThan(1350 * 0.8)
   })
 
+  it("keeps a long unbroken word's caption background within the canvas", () => {
+    const canvas = createCanvas(540, 960)
+    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+    drawSubtitleLayer(
+      context,
+      {
+        text: "W".repeat(200),
+        start: 0,
+        duration: 3,
+        opacity: 1,
+        readingProgress: 0,
+      },
+      { width: 540, height: 960 }
+    )
+
+    const image = context.getImageData(0, 0, canvas.width, canvas.height)
+    let minX = canvas.width
+    let maxX = -1
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        if (image.data[(y * canvas.width + x) * 4 + 3] === 0) continue
+        minX = Math.min(minX, x)
+        maxX = Math.max(maxX, x)
+      }
+    }
+
+    expect(minX).toBeGreaterThan(0)
+    expect(maxX).toBeLessThan(canvas.width - 1)
+  })
+
   it("shows static subtitle text without a moving word highlight", () => {
     const render = (readingProgress: number) => {
       const canvas = createCanvas(540, 960)
