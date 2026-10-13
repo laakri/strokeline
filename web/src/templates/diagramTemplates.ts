@@ -21,6 +21,7 @@ export type DiagramPreviewKind =
   | "scrum"
   | "sailboat"
   | "flowchart"
+  | "agentic-rag"
   | "erd"
   | "reels"
 
@@ -1989,6 +1990,179 @@ SCENE 1 "ER Diagram - Online Store"
     DURATION 1s
 
   # ---- close scene 1 ----
+END SCENE
+`,
+  },
+  {
+    id: "agentic-rag-mcp",
+    title: "Agentic RAG + MCP",
+    category: "Process",
+    description:
+      "Show how an AI agent grounds answers in retrieved knowledge and calls external tools through MCP.",
+    preview: "agentic-rag",
+    icon: Network,
+    script: `VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FFFFFF
+BOARD plain
+STYLE clean
+FONT neat
+STROKE 3
+
+SCENE 1 "Agentic RAG + MCP"
+  CREATE title AS TEXT
+    TEXT "Agentic RAG + MCP"
+    POSITION 960 110
+    SIZE 54
+    COLOR #1F2A44
+    DRAW 0.4s
+  END
+
+  PARALLEL
+    CREATE question AS RECTANGLE
+      POSITION 170 500
+      WIDTH 240
+      HEIGHT 110
+      CORNERS 18
+      COLOR #1F5F82
+      FILL #DCEBF7
+      STROKE 3
+      TEXT "User question"
+      DRAW 0.7s
+    END
+    CREATE agent AS RECTANGLE
+      POSITION 540 500
+      WIDTH 280
+      HEIGHT 130
+      CORNERS 24
+      COLOR #6B2C91
+      FILL #EFE3F7
+      STROKE 4
+      TEXT "AI agent"
+      DRAW 0.8s
+    END
+    CREATE answer AS RECTANGLE
+      POSITION 1010 500
+      WIDTH 300
+      HEIGHT 110
+      CORNERS 18
+      COLOR #0F6B5C
+      FILL #CDEBDD
+      STROKE 3
+      TEXT "Grounded answer"
+      DRAW 0.7s
+    END
+    CREATE retrieval AS RECTANGLE
+      POSITION 960 280
+      WIDTH 280
+      HEIGHT 110
+      CORNERS 18
+      COLOR #1F5F82
+      FILL #EAF4FA
+      STROKE 3
+      TEXT "RAG retrieval"
+      DRAW 0.7s
+    END
+    CREATE knowledge AS RECTANGLE
+      POSITION 1500 280
+      WIDTH 300
+      HEIGHT 110
+      CORNERS 18
+      COLOR #1F5F82
+      FILL #EAF4FA
+      STROKE 3
+      TEXT "Knowledge index"
+      DRAW 0.7s
+    END
+    CREATE mcp AS RECTANGLE
+      POSITION 960 760
+      WIDTH 280
+      HEIGHT 110
+      CORNERS 18
+      COLOR #B8431F
+      FILL #FFE3D6
+      STROKE 3
+      TEXT "MCP server"
+      DRAW 0.7s
+    END
+    CREATE tools AS RECTANGLE
+      POSITION 1500 760
+      WIDTH 300
+      HEIGHT 110
+      CORNERS 18
+      COLOR #B8431F
+      FILL #FFF1E8
+      STROKE 3
+      TEXT "Tools and APIs"
+      DRAW 0.7s
+    END
+  END
+
+  PARALLEL
+    ARROW question -> agent
+      ROUTE straight
+      HEAD end
+      COLOR #1F2A44
+      STROKE 3
+      DRAW 0.6s
+    ARROW agent -> answer
+      ROUTE straight
+      HEAD end
+      LABEL "plans and responds"
+      COLOR #1F2A44
+      STROKE 3
+      DRAW 0.6s
+    ARROW agent -> retrieval
+      ROUTE elbow
+      HEAD end
+      LABEL "retrieve"
+      COLOR #1F5F82
+      STROKE 3
+      DRAW 0.6s
+    ARROW retrieval -> knowledge
+      ROUTE straight
+      HEAD end
+      LABEL "semantic search"
+      COLOR #1F5F82
+      STROKE 3
+      DRAW 0.6s
+    ARROW knowledge -> answer
+      ROUTE elbow
+      HEAD end
+      LABEL "relevant context"
+      COLOR #0F6B5C
+      STROKE 3
+      DRAW 0.6s
+    ARROW agent -> mcp
+      ROUTE elbow
+      HEAD end
+      LABEL "tool request"
+      COLOR #B8431F
+      STROKE 3
+      DRAW 0.6s
+    ARROW mcp -> tools
+      ROUTE straight
+      HEAD end
+      LABEL "MCP"
+      COLOR #B8431F
+      STROKE 3
+      DRAW 0.6s
+    ARROW tools -> answer
+      ROUTE elbow
+      HEAD end
+      LABEL "tool results"
+      COLOR #B8431F
+      STROKE 3
+      DRAW 0.6s
+  END
+
+  ANIMATE agent HIGHLIGHT
+    COLOR #E9D8F4
+    DURATION 0.8s
+
+  ANIMATE mcp HIGHLIGHT
+    COLOR #FFE0D3
+    DURATION 0.8s
 END SCENE
 `,
   },

@@ -307,6 +307,87 @@ function DiagramThumbnail({ kind }: { kind: DiagramPreviewKind }) {
           />
         </>
       )}
+      {kind === "agentic-rag" && (
+        <>
+          <rect
+            x="8"
+            y="64"
+            width="62"
+            height="32"
+            rx="6"
+            fill={blueFill}
+            stroke={blue}
+            strokeWidth="2"
+          />
+          <rect
+            x="108"
+            y="58"
+            width="88"
+            height="44"
+            rx="9"
+            fill="color-mix(in oklab, #8B5CF6 10%, var(--card))"
+            stroke="#8B5CF6"
+            strokeWidth="2"
+          />
+          <rect
+            x="250"
+            y="64"
+            width="62"
+            height="32"
+            rx="6"
+            fill={tealFill}
+            stroke={teal}
+            strokeWidth="2"
+          />
+          <rect
+            x="100"
+            y="12"
+            width="76"
+            height="28"
+            rx="5"
+            fill={blueFill}
+            stroke={blue}
+            strokeWidth="2"
+          />
+          <rect
+            x="218"
+            y="12"
+            width="84"
+            height="28"
+            rx="5"
+            fill={blueFill}
+            stroke={blue}
+            strokeWidth="2"
+          />
+          <rect
+            x="100"
+            y="120"
+            width="76"
+            height="28"
+            rx="5"
+            fill={amberFill}
+            stroke={amber}
+            strokeWidth="2"
+          />
+          <rect
+            x="218"
+            y="120"
+            width="84"
+            height="28"
+            rx="5"
+            fill={amberFill}
+            stroke={amber}
+            strokeWidth="2"
+          />
+          <path
+            d="M70 80h38m88 0h54M152 58V40m24-14h42M152 102v18m24 14h42"
+            stroke={ink}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </>
+      )}
       {kind === "erd" && (
         <>
           {[18, 119, 220].map((x, i) => (

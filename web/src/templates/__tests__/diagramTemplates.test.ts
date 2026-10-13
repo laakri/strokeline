@@ -242,6 +242,35 @@ describe("diagram starters", () => {
     expect(highlights.map((op) => op.targetId)).toEqual(["tOrder", "tItem"])
   })
 
+  it("provides a valid Agentic RAG + MCP starter", () => {
+    const template = DIAGRAM_TEMPLATES.find(
+      (item) => item.id === "agentic-rag-mcp"
+    )
+    expect(template).toBeDefined()
+    expect(template!.category).toBe("Process")
+    expect(template!.preview).toBe("agentic-rag")
+
+    const result = runScript(template!.script)
+    expect(result.document, JSON.stringify(result.diagnostics)).not.toBeNull()
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
+    expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
+    expect(template!.script).toContain('SCENE 1 "Agentic RAG + MCP"')
+    expect(template!.script).toContain('TEXT "Knowledge index"')
+    expect(template!.script).toContain('TEXT "MCP server"')
+    expect(template!.script).toContain('LABEL "semantic search"')
+    expect(template!.script).toContain('LABEL "tool results"')
+
+    const scene = result.document!.scenes[0]!
+    const arrows = scene.ops.filter(
+      (op) => op.kind === "create" && op.node.type === "arrow"
+    )
+    const highlights = scene.ops.filter(
+      (op) => op.kind === "animate" && op.anim.verb === "highlight"
+    )
+    expect(arrows).toHaveLength(8)
+    expect(highlights.map((op) => op.targetId)).toEqual(["agent", "mcp"])
+  })
+
   it("provides five valid vertical Reels starters", () => {
     const reelsTemplates = DIAGRAM_TEMPLATES.filter(
       (template) => template.category === "Reels"
