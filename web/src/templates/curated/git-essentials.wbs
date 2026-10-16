@@ -1,0 +1,1982 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F5F5F0
+STYLE clean
+FONT neat
+STROKE 4
+SUBTITLES off
+
+SCENE 1 "Hook"
+  PARALLEL STAGGER 0.05s
+    CREATE s1_sb_bar AS RECTANGLE
+      POSITION 130 540
+      WIDTH 260
+      HEIGHT 1080
+      CORNERS 0
+      FILL #0A0A0A
+      COLOR #0A0A0A
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s1_sb_num AS TEXT
+      POSITION 130 160
+      SIZE 160
+      COLOR #FFFFFF
+      TEXT "01"
+      DRAW 0.3s
+    END
+    CREATE s1_sb_of AS TEXT
+      POSITION 130 290
+      SIZE 30
+      COLOR #FFD60A
+      TEXT "OF 05"
+      DRAW 0.3s
+    END
+    CREATE s1_sb_dot1 AS CIRCLE
+      POSITION 130 400
+      RADIUS 18
+      FILL #FFD60A
+      COLOR #FFD60A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s1_sb_dot2 AS CIRCLE
+      POSITION 130 470
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s1_sb_dot3 AS CIRCLE
+      POSITION 130 540
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s1_sb_dot4 AS CIRCLE
+      POSITION 130 610
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s1_sb_dot5 AS CIRCLE
+      POSITION 130 680
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s1_sb_git AS TEXT
+      POSITION 130 775
+      SIZE 110
+      COLOR #FFD60A
+      TEXT "GIT"
+      DRAW 0.3s
+    END
+    CREATE s1_sb_basics AS TEXT
+      POSITION 130 890
+      SIZE 46
+      COLOR #FFFFFF
+      TEXT "BASICS"
+      DRAW 0.3s
+    END
+    CREATE s1_sb_les AS TEXT
+      POSITION 130 950
+      SIZE 30
+      COLOR #BDBDB5
+      TEXT "LESSON 2"
+      DRAW 0.3s
+    END
+    CREATE s1_title AS TEXT
+      POSITION 1080 90
+      SIZE 60
+      COLOR #0A0A0A
+      TEXT "VERSION CONTROL FOR BEGINNERS"
+      DRAW 0.3s
+    END
+    CREATE s1_rule AS LINE
+      FROM 320 150
+      TO 1840 150
+      COLOR #FF3B30
+      STROKE 8
+      DRAW 0.3s
+    END
+    CREATE s1_foot_bar AS RECTANGLE
+      POSITION 1080 1000
+      WIDTH 1520
+      HEIGHT 80
+      CORNERS 14
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_foot AS TEXT
+      POSITION 1080 1000
+      SIZE 38
+      COLOR #0A0A0A
+      TEXT "Save your work, try ideas, undo mistakes"
+      DRAW 0.3s
+    END
+    CREATE s1_git AS TEXT
+      POSITION 610 315
+      SIZE 280
+      COLOR #0A0A0A
+      TEXT "Git"
+      DRAW 0.7s
+    END
+    CREATE s1_sub AS TEXT
+      POSITION 610 525
+      SIZE 46
+      COLOR #1F4FFF
+      TEXT "Save. Branch. Undo."
+      DRAW 0.3s
+    END
+    CREATE s1_def AS RECTANGLE
+      POSITION 1360 340
+      WIDTH 960
+      HEIGHT 300
+      CORNERS 26
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_deflabel AS TEXT
+      POSITION 1360 235
+      SIZE 28
+      COLOR #0A0A0A
+      TEXT "WHAT IS GIT?"
+      DRAW 0.3s
+    END
+    CREATE s1_deftext AS TEXT
+      POSITION 1360 360
+      SIZE 38
+      MAXWIDTH 860
+      COLOR #0A0A0A
+      TEXT "Git is a time machine for your code. It saves snapshots so you can undo mistakes and work together."
+      DRAW 0.3s
+    END
+    CREATE s1_card1 AS RECTANGLE
+      POSITION 565 770
+      WIDTH 490
+      HEIGHT 340
+      CORNERS 26
+      FILL #1F4FFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_n1 AS TEXT
+      POSITION 565 675
+      SIZE 90
+      COLOR #FFFFFF
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s1_h1 AS TEXT
+      POSITION 565 765
+      SIZE 46
+      COLOR #FFFFFF
+      TEXT "Snapshot"
+      DRAW 0.3s
+    END
+    CREATE s1_c1 AS TEXT
+      POSITION 565 840
+      SIZE 30
+      MAXWIDTH 430
+      COLOR #FFFFFF
+      TEXT "Save your project at any moment"
+      DRAW 0.3s
+    END
+    CREATE s1_card2 AS RECTANGLE
+      POSITION 1080 770
+      WIDTH 490
+      HEIGHT 340
+      CORNERS 26
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_n2 AS TEXT
+      POSITION 1080 675
+      SIZE 90
+      COLOR #0A0A0A
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s1_h2 AS TEXT
+      POSITION 1080 765
+      SIZE 46
+      COLOR #0A0A0A
+      TEXT "Branch"
+      DRAW 0.3s
+    END
+    CREATE s1_c2 AS TEXT
+      POSITION 1080 840
+      SIZE 30
+      MAXWIDTH 430
+      COLOR #0A0A0A
+      TEXT "Try ideas without breaking the main code"
+      DRAW 0.3s
+    END
+    CREATE s1_card3 AS RECTANGLE
+      POSITION 1595 770
+      WIDTH 490
+      HEIGHT 340
+      CORNERS 26
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_n3 AS TEXT
+      POSITION 1595 675
+      SIZE 90
+      COLOR #0A0A0A
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s1_h3 AS TEXT
+      POSITION 1595 765
+      SIZE 46
+      COLOR #0A0A0A
+      TEXT "Merge"
+      DRAW 0.3s
+    END
+    CREATE s1_c3 AS TEXT
+      POSITION 1595 840
+      SIZE 30
+      MAXWIDTH 430
+      COLOR #0A0A0A
+      TEXT "Combine work from many people"
+      DRAW 0.3s
+    END
+  END
+  SAY "Every developer relies on this safety net."
+    DURATION 2.6s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the stakes: version control is a daily professional tool."
+  SAY "Three ideas explain most of it."
+    DURATION 2.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Previews the structure before the details start."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 2 "The areas"
+  PARALLEL STAGGER 0.04s
+    CREATE s2_sb_bar AS RECTANGLE
+      POSITION 130 540
+      WIDTH 260
+      HEIGHT 1080
+      CORNERS 0
+      FILL #0A0A0A
+      COLOR #0A0A0A
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s2_sb_num AS TEXT
+      POSITION 130 160
+      SIZE 160
+      COLOR #FFFFFF
+      TEXT "02"
+      DRAW 0.3s
+    END
+    CREATE s2_sb_of AS TEXT
+      POSITION 130 290
+      SIZE 30
+      COLOR #FFD60A
+      TEXT "OF 05"
+      DRAW 0.3s
+    END
+    CREATE s2_sb_dot1 AS CIRCLE
+      POSITION 130 400
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s2_sb_dot2 AS CIRCLE
+      POSITION 130 470
+      RADIUS 18
+      FILL #FFD60A
+      COLOR #FFD60A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s2_sb_dot3 AS CIRCLE
+      POSITION 130 540
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s2_sb_dot4 AS CIRCLE
+      POSITION 130 610
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s2_sb_dot5 AS CIRCLE
+      POSITION 130 680
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s2_sb_git AS TEXT
+      POSITION 130 775
+      SIZE 110
+      COLOR #FFD60A
+      TEXT "GIT"
+      DRAW 0.3s
+    END
+    CREATE s2_sb_basics AS TEXT
+      POSITION 130 890
+      SIZE 46
+      COLOR #FFFFFF
+      TEXT "BASICS"
+      DRAW 0.3s
+    END
+    CREATE s2_sb_les AS TEXT
+      POSITION 130 950
+      SIZE 30
+      COLOR #BDBDB5
+      TEXT "LESSON 2"
+      DRAW 0.3s
+    END
+    CREATE s2_title AS TEXT
+      POSITION 1080 90
+      SIZE 60
+      COLOR #0A0A0A
+      TEXT "Three Areas, Two Hops"
+      DRAW 0.3s
+    END
+    CREATE s2_rule AS LINE
+      FROM 320 150
+      TO 1840 150
+      COLOR #FF3B30
+      STROKE 8
+      DRAW 0.3s
+    END
+    CREATE s2_foot_bar AS RECTANGLE
+      POSITION 1080 1000
+      WIDTH 1520
+      HEIGHT 80
+      CORNERS 14
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_foot AS TEXT
+      POSITION 1080 1000
+      SIZE 38
+      COLOR #0A0A0A
+      TEXT "Add, commit, push: the loop you repeat every day"
+      DRAW 0.3s
+    END
+    CREATE s2_box1 AS RECTANGLE
+      POSITION 510 320
+      WIDTH 380
+      HEIGHT 260
+      CORNERS 26
+      FILL #1F4FFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_bn1 AS TEXT
+      POSITION 510 260
+      SIZE 46
+      MAXWIDTH 340
+      COLOR #FFFFFF
+      TEXT "Working folder"
+      DRAW 0.3s
+    END
+    CREATE s2_bd1 AS TEXT
+      POSITION 510 355
+      SIZE 30
+      MAXWIDTH 330
+      COLOR #FFFFFF
+      TEXT "Where you edit your files"
+      DRAW 0.3s
+    END
+    CREATE s2_box2 AS RECTANGLE
+      POSITION 1080 320
+      WIDTH 380
+      HEIGHT 260
+      CORNERS 26
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_bn2 AS TEXT
+      POSITION 1080 260
+      SIZE 46
+      MAXWIDTH 340
+      COLOR #0A0A0A
+      TEXT "Staging area"
+      DRAW 0.3s
+    END
+    CREATE s2_bd2 AS TEXT
+      POSITION 1080 355
+      SIZE 30
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "A waiting room for chosen changes"
+      DRAW 0.3s
+    END
+    CREATE s2_box3 AS RECTANGLE
+      POSITION 1650 320
+      WIDTH 380
+      HEIGHT 260
+      CORNERS 26
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_bn3 AS TEXT
+      POSITION 1650 260
+      SIZE 46
+      MAXWIDTH 340
+      COLOR #0A0A0A
+      TEXT "Repository"
+      DRAW 0.3s
+    END
+    CREATE s2_bd3 AS TEXT
+      POSITION 1650 355
+      SIZE 30
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "The saved history of snapshots"
+      DRAW 0.3s
+    END
+    CREATE s2_label AS TEXT
+      POSITION 1080 500
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "THE FIRST FOUR COMMANDS"
+      DRAW 0.3s
+    END
+    CREATE s2_cc1 AS RECTANGLE
+      POSITION 503 720
+      WIDTH 365
+      HEIGHT 340
+      CORNERS 24
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_ct1 AS RECTANGLE
+      POSITION 503 590
+      WIDTH 365
+      HEIGHT 70
+      CORNERS 18
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_cmd1 AS TEXT
+      POSITION 503 590
+      SIZE 40
+      COLOR #0A0A0A
+      TEXT "git init"
+      DRAW 0.3s
+    END
+    CREATE s2_cm1 AS TEXT
+      POSITION 503 700
+      SIZE 32
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Start tracking a folder"
+      DRAW 0.3s
+    END
+    CREATE s2_cw1 AS TEXT
+      POSITION 494.2 775.1
+      SIZE 28
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Run once per project"
+      DRAW 0.3s
+    END
+    CREATE s2_cn1 AS CIRCLE
+      POSITION 503 845
+      RADIUS 28
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s2_cc2 AS RECTANGLE
+      POSITION 888 720
+      WIDTH 365
+      HEIGHT 340
+      CORNERS 24
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_ct2 AS RECTANGLE
+      POSITION 888 590
+      WIDTH 365
+      HEIGHT 70
+      CORNERS 18
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_cmd2 AS TEXT
+      POSITION 888 590
+      SIZE 40
+      COLOR #0A0A0A
+      TEXT "git add ."
+      DRAW 0.3s
+    END
+    CREATE s2_cm2 AS TEXT
+      POSITION 888 700
+      SIZE 32
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Stage every change"
+      DRAW 0.3s
+    END
+    CREATE s2_cw2 AS TEXT
+      POSITION 892.4 782.4
+      SIZE 28
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Run before each commit"
+      DRAW 0.3s
+    END
+    CREATE s2_cn2 AS CIRCLE
+      POSITION 888 845
+      RADIUS 28
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s2_cc3 AS RECTANGLE
+      POSITION 1273 720
+      WIDTH 365
+      HEIGHT 340
+      CORNERS 24
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_ct3 AS RECTANGLE
+      POSITION 1273 590
+      WIDTH 365
+      HEIGHT 70
+      CORNERS 18
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_cmd3 AS TEXT
+      POSITION 1273 590
+      SIZE 40
+      COLOR #0A0A0A
+      TEXT "git commit"
+      DRAW 0.3s
+    END
+    CREATE s2_cm3 AS TEXT
+      POSITION 1273 700
+      SIZE 32
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Save a snapshot with a note"
+      DRAW 0.3s
+    END
+    CREATE s2_cw3 AS TEXT
+      POSITION 1280.3 782.4
+      SIZE 28
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Write short, clear notes"
+      DRAW 0.3s
+    END
+    CREATE s2_cn3 AS CIRCLE
+      POSITION 1273 845
+      RADIUS 28
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s2_cc4 AS RECTANGLE
+      POSITION 1658 720
+      WIDTH 365
+      HEIGHT 340
+      CORNERS 24
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_ct4 AS RECTANGLE
+      POSITION 1658 590
+      WIDTH 365
+      HEIGHT 70
+      CORNERS 18
+      FILL #1F4FFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_cmd4 AS TEXT
+      POSITION 1658 590
+      SIZE 40
+      COLOR #FFFFFF
+      TEXT "git push"
+      DRAW 0.3s
+    END
+    CREATE s2_cm4 AS TEXT
+      POSITION 1658 700
+      SIZE 32
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Send commits to GitHub"
+      DRAW 0.3s
+    END
+    CREATE s2_cw4 AS TEXT
+      POSITION 1660.9 778
+      SIZE 28
+      MAXWIDTH 330
+      COLOR #0A0A0A
+      TEXT "Share work with your team"
+      DRAW 0.3s
+    END
+    CREATE s2_cn4 AS CIRCLE
+      POSITION 1658 845
+      RADIUS 28
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "4"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.15s
+    ARROW s2_box1 -> s2_box2
+      ROUTE straight
+      HEAD end
+      LABEL "git add"
+      COLOR #0A0A0A
+      STROKE 5
+      DRAW 0.4s
+    ARROW s2_box2 -> s2_box3
+      ROUTE straight
+      HEAD end
+      LABEL "git commit"
+      COLOR #0A0A0A
+      STROKE 5
+      DRAW 0.4s
+  END
+  SAY "Files move through two stops before they are saved."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Staging lets you choose exactly which changes go into a snapshot."
+  SAY "Four commands cover the daily loop."
+    DURATION 2.4s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Narrows the learner's focus to the minimum useful set."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 3 "Branches"
+  PARALLEL STAGGER 0.04s
+    CREATE s3_sb_bar AS RECTANGLE
+      POSITION 130 540
+      WIDTH 260
+      HEIGHT 1080
+      CORNERS 0
+      FILL #0A0A0A
+      COLOR #0A0A0A
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s3_sb_num AS TEXT
+      POSITION 130 160
+      SIZE 160
+      COLOR #FFFFFF
+      TEXT "03"
+      DRAW 0.3s
+    END
+    CREATE s3_sb_of AS TEXT
+      POSITION 130 290
+      SIZE 30
+      COLOR #FFD60A
+      TEXT "OF 05"
+      DRAW 0.3s
+    END
+    CREATE s3_sb_dot1 AS CIRCLE
+      POSITION 130 400
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s3_sb_dot2 AS CIRCLE
+      POSITION 130 470
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s3_sb_dot3 AS CIRCLE
+      POSITION 130 540
+      RADIUS 18
+      FILL #FFD60A
+      COLOR #FFD60A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s3_sb_dot4 AS CIRCLE
+      POSITION 130 610
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s3_sb_dot5 AS CIRCLE
+      POSITION 130 680
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s3_sb_git AS TEXT
+      POSITION 130 775
+      SIZE 110
+      COLOR #FFD60A
+      TEXT "GIT"
+      DRAW 0.3s
+    END
+    CREATE s3_sb_basics AS TEXT
+      POSITION 130 890
+      SIZE 46
+      COLOR #FFFFFF
+      TEXT "BASICS"
+      DRAW 0.3s
+    END
+    CREATE s3_sb_les AS TEXT
+      POSITION 130 950
+      SIZE 30
+      COLOR #BDBDB5
+      TEXT "LESSON 2"
+      DRAW 0.3s
+    END
+    CREATE s3_title AS TEXT
+      POSITION 1080 90
+      SIZE 60
+      COLOR #0A0A0A
+      TEXT "Branches and Merges"
+      DRAW 0.3s
+    END
+    CREATE s3_rule AS LINE
+      FROM 320 150
+      TO 1840 150
+      COLOR #FF3B30
+      STROKE 8
+      DRAW 0.3s
+    END
+    CREATE s3_foot_bar AS RECTANGLE
+      POSITION 1080 1000
+      WIDTH 1520
+      HEIGHT 80
+      CORNERS 14
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_foot AS TEXT
+      POSITION 1080 1000
+      SIZE 38
+      COLOR #0A0A0A
+      TEXT "A branch is a safe copy: experiment, then merge"
+      DRAW 0.3s
+    END
+    CREATE s3_mline1 AS LINE
+      FROM 560 330
+      TO 840 330
+      COLOR #0A0A0A
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_mline2 AS LINE
+      FROM 840 330
+      TO 1120 330
+      COLOR #0A0A0A
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_mline3 AS LINE
+      FROM 1120 330
+      TO 1400 330
+      COLOR #0A0A0A
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_mline4 AS LINE
+      FROM 1400 330
+      TO 1680 330
+      COLOR #0A0A0A
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_fork AS LINE
+      FROM 840 330
+      TO 1000 560
+      COLOR #1F4FFF
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_fline AS LINE
+      FROM 1000 560
+      TO 1240 560
+      COLOR #1F4FFF
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_join AS LINE
+      FROM 1240 560
+      TO 1400 330
+      COLOR #1F4FFF
+      STROKE 6
+      DRAW 0.3s
+    END
+    CREATE s3_lm AS RECTANGLE
+      POSITION 390 330
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "main"
+      DRAW 0.35s
+    END
+    CREATE s3_lf AS RECTANGLE
+      POSITION 390 560
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "feature"
+      DRAW 0.35s
+    END
+    CREATE s3_m1 AS CIRCLE
+      POSITION 560 330
+      RADIUS 46
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s3_mm1 AS TEXT
+      POSITION 560 250
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Init"
+      DRAW 0.3s
+    END
+    CREATE s3_m2 AS CIRCLE
+      POSITION 840 330
+      RADIUS 46
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s3_mm2 AS TEXT
+      POSITION 840 250
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Add nav"
+      DRAW 0.3s
+    END
+    CREATE s3_m3 AS CIRCLE
+      POSITION 1120 330
+      RADIUS 46
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s3_mm3 AS TEXT
+      POSITION 1120 250
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Fix bug"
+      DRAW 0.3s
+    END
+    CREATE s3_m4 AS CIRCLE
+      POSITION 1400 330
+      RADIUS 46
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "4"
+      DRAW 0.3s
+    END
+    CREATE s3_mm4 AS TEXT
+      POSITION 1400 250
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Merge"
+      DRAW 0.3s
+    END
+    CREATE s3_m5 AS CIRCLE
+      POSITION 1680 330
+      RADIUS 46
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "5"
+      DRAW 0.3s
+    END
+    CREATE s3_mm5 AS TEXT
+      POSITION 1680 250
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Deploy"
+      DRAW 0.3s
+    END
+    CREATE s3_f1 AS CIRCLE
+      POSITION 1000 560
+      RADIUS 46
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s3_fm1 AS TEXT
+      POSITION 1000 640
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Dark mode"
+      DRAW 0.3s
+    END
+    CREATE s3_f2 AS CIRCLE
+      POSITION 1240 560
+      RADIUS 46
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s3_fm2 AS TEXT
+      POSITION 1240 640
+      SIZE 30
+      COLOR #0A0A0A
+      TEXT "Fix colors"
+      DRAW 0.3s
+    END
+    CREATE s3_note AS RECTANGLE
+      POSITION 1080 455
+      WIDTH 1000
+      HEIGHT 60
+      CORNERS 16
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_notetext AS TEXT
+      POSITION 1080 455
+      SIZE 32
+      COLOR #0A0A0A
+      TEXT "Main stays stable while the feature branch grows"
+      DRAW 0.3s
+    END
+    CREATE s3_card1 AS RECTANGLE
+      POSITION 565 810
+      WIDTH 490
+      HEIGHT 250
+      CORNERS 24
+      FILL #1F4FFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_ch1 AS TEXT
+      POSITION 565 735
+      SIZE 48
+      COLOR #FFFFFF
+      TEXT "Branch"
+      DRAW 0.3s
+    END
+    CREATE s3_cc1 AS TEXT
+      POSITION 565 805
+      SIZE 36
+      COLOR #FFFFFF
+      TEXT "git branch feature"
+      DRAW 0.3s
+    END
+    CREATE s3_cd1 AS TEXT
+      POSITION 565 880
+      SIZE 30
+      MAXWIDTH 430
+      COLOR #FFFFFF
+      TEXT "Copy the code to experiment safely"
+      DRAW 0.3s
+    END
+    CREATE s3_card2 AS RECTANGLE
+      POSITION 1080 810
+      WIDTH 490
+      HEIGHT 250
+      CORNERS 24
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_ch2 AS TEXT
+      POSITION 1080 735
+      SIZE 48
+      COLOR #0A0A0A
+      TEXT "Switch"
+      DRAW 0.3s
+    END
+    CREATE s3_cc2 AS TEXT
+      POSITION 1080 805
+      SIZE 36
+      COLOR #0A0A0A
+      TEXT "git switch feature"
+      DRAW 0.3s
+    END
+    CREATE s3_cd2 AS TEXT
+      POSITION 1080 880
+      SIZE 30
+      MAXWIDTH 430
+      COLOR #0A0A0A
+      TEXT "Move between versions of your work"
+      DRAW 0.3s
+    END
+    CREATE s3_card3 AS RECTANGLE
+      POSITION 1595 810
+      WIDTH 490
+      HEIGHT 250
+      CORNERS 24
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_ch3 AS TEXT
+      POSITION 1595 735
+      SIZE 48
+      COLOR #0A0A0A
+      TEXT "Merge"
+      DRAW 0.3s
+    END
+    CREATE s3_cc3 AS TEXT
+      POSITION 1595 805
+      SIZE 36
+      COLOR #0A0A0A
+      TEXT "git merge feature"
+      DRAW 0.3s
+    END
+    CREATE s3_cd3 AS TEXT
+      POSITION 1595 880
+      SIZE 30
+      MAXWIDTH 430
+      COLOR #0A0A0A
+      TEXT "Bring the finished work back into main"
+      DRAW 0.3s
+    END
+  END
+  SAY "A branch is just a movable pointer."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Branches are cheap because git stores pointers, not full copies."
+  SAY "Merging stitches both histories together."
+    DURATION 2.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Shows the red merge commit joining the two lines of work."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 4 "Undo"
+  PARALLEL STAGGER 0.04s
+    CREATE s4_sb_bar AS RECTANGLE
+      POSITION 130 540
+      WIDTH 260
+      HEIGHT 1080
+      CORNERS 0
+      FILL #0A0A0A
+      COLOR #0A0A0A
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s4_sb_num AS TEXT
+      POSITION 130 160
+      SIZE 160
+      COLOR #FFFFFF
+      TEXT "04"
+      DRAW 0.3s
+    END
+    CREATE s4_sb_of AS TEXT
+      POSITION 130 290
+      SIZE 30
+      COLOR #FFD60A
+      TEXT "OF 05"
+      DRAW 0.3s
+    END
+    CREATE s4_sb_dot1 AS CIRCLE
+      POSITION 130 400
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_sb_dot2 AS CIRCLE
+      POSITION 130 470
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_sb_dot3 AS CIRCLE
+      POSITION 130 540
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_sb_dot4 AS CIRCLE
+      POSITION 130 610
+      RADIUS 18
+      FILL #FFD60A
+      COLOR #FFD60A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_sb_dot5 AS CIRCLE
+      POSITION 130 680
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_sb_git AS TEXT
+      POSITION 130 775
+      SIZE 110
+      COLOR #FFD60A
+      TEXT "GIT"
+      DRAW 0.3s
+    END
+    CREATE s4_sb_basics AS TEXT
+      POSITION 130 890
+      SIZE 46
+      COLOR #FFFFFF
+      TEXT "BASICS"
+      DRAW 0.3s
+    END
+    CREATE s4_sb_les AS TEXT
+      POSITION 130 950
+      SIZE 30
+      COLOR #BDBDB5
+      TEXT "LESSON 2"
+      DRAW 0.3s
+    END
+    CREATE s4_title AS TEXT
+      POSITION 1080 90
+      SIZE 60
+      COLOR #0A0A0A
+      TEXT "Undo Almost Anything"
+      DRAW 0.3s
+    END
+    CREATE s4_rule AS LINE
+      FROM 320 150
+      TO 1840 150
+      COLOR #FF3B30
+      STROKE 8
+      DRAW 0.3s
+    END
+    CREATE s4_foot_bar AS RECTANGLE
+      POSITION 1080 1000
+      WIDTH 1520
+      HEIGHT 80
+      CORNERS 14
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_foot AS TEXT
+      POSITION 1080 1000
+      SIZE 38
+      COLOR #0A0A0A
+      TEXT "Git keeps history, so mistakes are cheap"
+      DRAW 0.3s
+    END
+    CREATE s4_term AS RECTANGLE
+      POSITION 720 560
+      WIDTH 780
+      HEIGHT 740
+      CORNERS 24
+      FILL #0A0A0A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_dot1 AS CIRCLE
+      POSITION 370 225
+      RADIUS 12
+      FILL #FF3B30
+      COLOR #FF3B30
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_dot2 AS CIRCLE
+      POSITION 410 225
+      RADIUS 12
+      FILL #FFD60A
+      COLOR #FFD60A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_dot3 AS CIRCLE
+      POSITION 450 225
+      RADIUS 12
+      FILL #00C48C
+      COLOR #00C48C
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s4_termtitle AS TEXT
+      POSITION 720 225
+      SIZE 28
+      COLOR #BDBDB5
+      TEXT "terminal"
+      DRAW 0.3s
+    END
+    CREATE s4_tl1 AS TEXT
+      POSITION 720 300
+      SIZE 32
+      COLOR #FFD60A
+      TEXT "$ git log --oneline"
+      DRAW 0.3s
+    END
+    CREATE s4_tl2 AS TEXT
+      POSITION 720 354
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "a1f3c Add login page"
+      DRAW 0.3s
+    END
+    CREATE s4_tl3 AS TEXT
+      POSITION 720 408
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "9be21 Fix navbar bug"
+      DRAW 0.3s
+    END
+    CREATE s4_tl4 AS TEXT
+      POSITION 720 462
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "4cd77 Add dark mode"
+      DRAW 0.3s
+    END
+    CREATE s4_tl5 AS TEXT
+      POSITION 720 516
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "e0aa1 First commit"
+      DRAW 0.3s
+    END
+    CREATE s4_tl6 AS TEXT
+      POSITION 720 570
+      SIZE 32
+      COLOR #FFD60A
+      TEXT "$ git status"
+      DRAW 0.3s
+    END
+    CREATE s4_tl7 AS TEXT
+      POSITION 720 624
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "On branch main"
+      DRAW 0.3s
+    END
+    CREATE s4_tl8 AS TEXT
+      POSITION 720 678
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "nothing to commit"
+      DRAW 0.3s
+    END
+    CREATE s4_tl9 AS TEXT
+      POSITION 720 732
+      SIZE 32
+      COLOR #FFD60A
+      TEXT "$ git restore app.js"
+      DRAW 0.3s
+    END
+    CREATE s4_tl10 AS TEXT
+      POSITION 720 786
+      SIZE 32
+      COLOR #FFFFFF
+      TEXT "Updated 1 path"
+      DRAW 0.3s
+    END
+    CREATE s4_tl11 AS TEXT
+      POSITION 720 840
+      SIZE 32
+      COLOR #00C48C
+      TEXT "Back to the last snapshot"
+      DRAW 0.3s
+    END
+    CREATE s4_uc1 AS RECTANGLE
+      POSITION 1495 275
+      WIDTH 690
+      HEIGHT 170
+      CORNERS 24
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_un1 AS CIRCLE
+      POSITION 1235 275
+      RADIUS 40
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s4_uh1 AS TEXT
+      POSITION 1580 227
+      SIZE 36
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "Changed your mind?"
+      DRAW 0.3s
+    END
+    CREATE s4_ucm1 AS TEXT
+      POSITION 1580 273
+      SIZE 34
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "git restore app.js"
+      DRAW 0.3s
+    END
+    CREATE s4_ud1 AS TEXT
+      POSITION 1580 321
+      SIZE 28
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "Discard edits in one file"
+      DRAW 0.3s
+    END
+    CREATE s4_uc2 AS RECTANGLE
+      POSITION 1495 465
+      WIDTH 690
+      HEIGHT 170
+      CORNERS 24
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_un2 AS CIRCLE
+      POSITION 1235 465
+      RADIUS 40
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s4_uh2 AS TEXT
+      POSITION 1580 417
+      SIZE 36
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "Wrong message?"
+      DRAW 0.3s
+    END
+    CREATE s4_ucm2 AS TEXT
+      POSITION 1580 463
+      SIZE 34
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "git commit --amend"
+      DRAW 0.3s
+    END
+    CREATE s4_ud2 AS TEXT
+      POSITION 1580 511
+      SIZE 28
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "Rewrite the last snapshot"
+      DRAW 0.3s
+    END
+    CREATE s4_uc3 AS RECTANGLE
+      POSITION 1495 655
+      WIDTH 690
+      HEIGHT 170
+      CORNERS 24
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_un3 AS CIRCLE
+      POSITION 1235 655
+      RADIUS 40
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s4_uh3 AS TEXT
+      POSITION 1580 607
+      SIZE 36
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "Need an old version?"
+      DRAW 0.3s
+    END
+    CREATE s4_ucm3 AS TEXT
+      POSITION 1580 653
+      SIZE 34
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "git checkout a1f3c"
+      DRAW 0.3s
+    END
+    CREATE s4_ud3 AS TEXT
+      POSITION 1580 701
+      SIZE 28
+      MAXWIDTH 520
+      COLOR #0A0A0A
+      TEXT "Visit any past snapshot"
+      DRAW 0.3s
+    END
+    CREATE s4_uc4 AS RECTANGLE
+      POSITION 1495 845
+      WIDTH 690
+      HEIGHT 170
+      CORNERS 24
+      FILL #1F4FFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_un4 AS CIRCLE
+      POSITION 1235 845
+      RADIUS 40
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "4"
+      DRAW 0.3s
+    END
+    CREATE s4_uh4 AS TEXT
+      POSITION 1580 797
+      SIZE 36
+      MAXWIDTH 520
+      COLOR #FFFFFF
+      TEXT "Broke everything?"
+      DRAW 0.3s
+    END
+    CREATE s4_ucm4 AS TEXT
+      POSITION 1580 843
+      SIZE 34
+      MAXWIDTH 520
+      COLOR #FFFFFF
+      TEXT "git revert HEAD"
+      DRAW 0.3s
+    END
+    CREATE s4_ud4 AS TEXT
+      POSITION 1580 891
+      SIZE 28
+      MAXWIDTH 520
+      COLOR #FFFFFF
+      TEXT "Undo a commit, keep history"
+      DRAW 0.3s
+    END
+  END
+  SAY "Git keeps history, so mistakes are cheap."
+    DURATION 2.6s
+    TONE punchline
+    WHO "Narrator"
+    LANG en
+    DETAIL "Reframes errors as recoverable, which lowers beginner anxiety."
+  SAY "Pick the command that matches the mistake."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Each card pairs one common problem with its fix."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 5 "Recap and quiz"
+  PARALLEL STAGGER 0.05s
+    CREATE s5_sb_bar AS RECTANGLE
+      POSITION 130 540
+      WIDTH 260
+      HEIGHT 1080
+      CORNERS 0
+      FILL #0A0A0A
+      COLOR #0A0A0A
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s5_sb_num AS TEXT
+      POSITION 130 160
+      SIZE 160
+      COLOR #FFFFFF
+      TEXT "05"
+      DRAW 0.3s
+    END
+    CREATE s5_sb_of AS TEXT
+      POSITION 130 290
+      SIZE 30
+      COLOR #FFD60A
+      TEXT "OF 05"
+      DRAW 0.3s
+    END
+    CREATE s5_sb_dot1 AS CIRCLE
+      POSITION 130 400
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s5_sb_dot2 AS CIRCLE
+      POSITION 130 470
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s5_sb_dot3 AS CIRCLE
+      POSITION 130 540
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s5_sb_dot4 AS CIRCLE
+      POSITION 130 610
+      RADIUS 18
+      FILL #4A4A4A
+      COLOR #4A4A4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s5_sb_dot5 AS CIRCLE
+      POSITION 130 680
+      RADIUS 18
+      FILL #FFD60A
+      COLOR #FFD60A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE s5_sb_git AS TEXT
+      POSITION 130 775
+      SIZE 110
+      COLOR #FFD60A
+      TEXT "GIT"
+      DRAW 0.3s
+    END
+    CREATE s5_sb_basics AS TEXT
+      POSITION 130 890
+      SIZE 46
+      COLOR #FFFFFF
+      TEXT "BASICS"
+      DRAW 0.3s
+    END
+    CREATE s5_sb_les AS TEXT
+      POSITION 130 950
+      SIZE 30
+      COLOR #BDBDB5
+      TEXT "LESSON 2"
+      DRAW 0.3s
+    END
+    CREATE s5_title AS TEXT
+      POSITION 1080 90
+      SIZE 60
+      COLOR #0A0A0A
+      TEXT "Recap and Quick Check"
+      DRAW 0.3s
+    END
+    CREATE s5_rule AS LINE
+      FROM 320 150
+      TO 1840 150
+      COLOR #FF3B30
+      STROKE 8
+      DRAW 0.3s
+    END
+    CREATE s5_foot_bar AS RECTANGLE
+      POSITION 1080 1000
+      WIDTH 1520
+      HEIGHT 80
+      CORNERS 14
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_foot AS TEXT
+      POSITION 1080 1000
+      SIZE 38
+      COLOR #0A0A0A
+      TEXT "Next up: pull requests and teamwork"
+      DRAW 0.3s
+    END
+    CREATE s5_rc1 AS RECTANGLE
+      POSITION 660 265
+      WIDTH 680
+      HEIGHT 130
+      CORNERS 22
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_rn1 AS CIRCLE
+      POSITION 410 265
+      RADIUS 38
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s5_rcm1 AS TEXT
+      POSITION 740 240
+      SIZE 44
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "git init"
+      DRAW 0.3s
+    END
+    CREATE s5_rd1 AS TEXT
+      POSITION 740 295
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "Start tracking"
+      DRAW 0.3s
+    END
+    CREATE s5_rc2 AS RECTANGLE
+      POSITION 660 410
+      WIDTH 680
+      HEIGHT 130
+      CORNERS 22
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_rn2 AS CIRCLE
+      POSITION 410 410
+      RADIUS 38
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s5_rcm2 AS TEXT
+      POSITION 740 385
+      SIZE 44
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "git add"
+      DRAW 0.3s
+    END
+    CREATE s5_rd2 AS TEXT
+      POSITION 740 440
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "Stage changes"
+      DRAW 0.3s
+    END
+    CREATE s5_rc3 AS RECTANGLE
+      POSITION 660 555
+      WIDTH 680
+      HEIGHT 130
+      CORNERS 22
+      FILL #FF3B30
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_rn3 AS CIRCLE
+      POSITION 410 555
+      RADIUS 38
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s5_rcm3 AS TEXT
+      POSITION 740 530
+      SIZE 44
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "git commit"
+      DRAW 0.3s
+    END
+    CREATE s5_rd3 AS TEXT
+      POSITION 740 585
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "Save a snapshot"
+      DRAW 0.3s
+    END
+    CREATE s5_rc4 AS RECTANGLE
+      POSITION 660 700
+      WIDTH 680
+      HEIGHT 130
+      CORNERS 22
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_rn4 AS CIRCLE
+      POSITION 410 700
+      RADIUS 38
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "4"
+      DRAW 0.3s
+    END
+    CREATE s5_rcm4 AS TEXT
+      POSITION 740 675
+      SIZE 44
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "git push"
+      DRAW 0.3s
+    END
+    CREATE s5_rd4 AS TEXT
+      POSITION 740 730
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "Share online"
+      DRAW 0.3s
+    END
+    CREATE s5_rc5 AS RECTANGLE
+      POSITION 660 845
+      WIDTH 680
+      HEIGHT 130
+      CORNERS 22
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_rn5 AS CIRCLE
+      POSITION 410 845
+      RADIUS 38
+      FILL #FFFFFF
+      COLOR #0A0A0A
+      STROKE 4
+      TEXT "5"
+      DRAW 0.3s
+    END
+    CREATE s5_rcm5 AS TEXT
+      POSITION 740 820
+      SIZE 44
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "git branch"
+      DRAW 0.3s
+    END
+    CREATE s5_rd5 AS TEXT
+      POSITION 740 875
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #0A0A0A
+      TEXT "Try ideas safely"
+      DRAW 0.3s
+    END
+    CREATE s5_qc1 AS RECTANGLE
+      POSITION 1440 310
+      WIDTH 800
+      HEIGHT 220
+      CORNERS 24
+      FILL #1F4FFF
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_q1 AS TEXT
+      POSITION 1440 255
+      SIZE 36
+      MAXWIDTH 720
+      COLOR #FFFFFF
+      TEXT "Which command saves a snapshot?"
+      DRAW 0.3s
+    END
+    CREATE s5_h1 AS TEXT
+      POSITION 1440 305
+      SIZE 28
+      MAXWIDTH 720
+      COLOR #FFFFFF
+      TEXT "Hint: it needs a message with -m"
+      DRAW 0.3s
+    END
+    CREATE s5_qc2 AS RECTANGLE
+      POSITION 1440 550
+      WIDTH 800
+      HEIGHT 220
+      CORNERS 24
+      FILL #FFD60A
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_q2 AS TEXT
+      POSITION 1440 495
+      SIZE 36
+      MAXWIDTH 720
+      COLOR #0A0A0A
+      TEXT "Where do you test ideas safely?"
+      DRAW 0.3s
+    END
+    CREATE s5_h2 AS TEXT
+      POSITION 1440 545
+      SIZE 28
+      MAXWIDTH 720
+      COLOR #0A0A0A
+      TEXT "Hint: it splits off from main"
+      DRAW 0.3s
+    END
+    CREATE s5_qc3 AS RECTANGLE
+      POSITION 1440 790
+      WIDTH 800
+      HEIGHT 220
+      CORNERS 24
+      FILL #00C48C
+      COLOR #0A0A0A
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_q3 AS TEXT
+      POSITION 1440 735
+      SIZE 36
+      MAXWIDTH 720
+      COLOR #0A0A0A
+      TEXT "Which command shares work online?"
+      DRAW 0.3s
+    END
+    CREATE s5_h3 AS TEXT
+      POSITION 1440 785
+      SIZE 28
+      MAXWIDTH 720
+      COLOR #0A0A0A
+      TEXT "Hint: think GitHub"
+      DRAW 0.3s
+    END
+  END
+  SAY "Quick check: answer before each reveal."
+    DURATION 2.4s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts active recall, which beats passive watching."
+  PARALLEL STAGGER 0.2s
+    CREATE s5_a1 AS TEXT
+      POSITION 1440 372
+      SIZE 52
+      COLOR #FFFFFF
+      TEXT "git commit"
+      DRAW 0.4s
+    END
+    CREATE s5_a2 AS TEXT
+      POSITION 1440 612
+      SIZE 52
+      COLOR #0A0A0A
+      TEXT "A branch"
+      DRAW 0.4s
+    END
+    CREATE s5_a3 AS TEXT
+      POSITION 1440 852
+      SIZE 52
+      COLOR #0A0A0A
+      TEXT "git push"
+      DRAW 0.4s
+    END
+  END
+  SAY "Practice this loop on a tiny project today."
+    DURATION 2.8s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Turns the lesson into one concrete next action."
+END SCENE

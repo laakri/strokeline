@@ -31,6 +31,7 @@ import photosynthesisRecall from "@/templates/curated/photosynthesis-quick-recal
 import lightningMicro from "@/templates/curated/lightning-60-second-micro-lesson.wbs?raw"
 import memoryLab from "@/templates/curated/memory-lab.wbs?raw"
 import webDevBasics from "@/templates/curated/web-dev-basics.wbs?raw"
+import gitEssentials from "@/templates/curated/git-essentials.wbs?raw"
 
 type CuratedTemplate = Omit<DiagramTemplate, "preview"> & {
   preview: "rendered"
@@ -275,5 +276,15 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     preview: "rendered",
     icon: Cpu,
     script: webDevBasics,
+  },
+  {
+    id: "git-essentials",
+    title: "Git Essentials: Version Control",
+    category: "Technology",
+    description:
+      "A five-scene visual introduction to Git's working areas, staging, commits, branches, merging, and undoing changes.",
+    preview: "rendered",
+    icon: GitCompareArrows,
+    script: gitEssentials,
   },
 ]

@@ -10,8 +10,8 @@ import {
 
 describe("curated template library", () => {
   it("keeps every supplied WBS project once alongside the original starters", () => {
-    expect(CURATED_TEMPLATES).toHaveLength(17)
-    expect(TEMPLATE_LIBRARY).toHaveLength(30)
+    expect(CURATED_TEMPLATES).toHaveLength(18)
+    expect(TEMPLATE_LIBRARY).toHaveLength(31)
     expect(new Set(TEMPLATE_LIBRARY.map((template) => template.id)).size).toBe(
       TEMPLATE_LIBRARY.length
     )
@@ -77,6 +77,24 @@ describe("curated template library", () => {
       preview: "rendered",
     })
     const result = runScript(webDevBasics.script)
+    expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
+    expect(result.document?.scenes).toHaveLength(5)
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
+  })
+
+  it("adds Git Essentials as a five-scene landscape technology template", () => {
+    const gitEssentials = TEMPLATE_LIBRARY.find(
+      (template) => template.id === "git-essentials"
+    )
+    if (!gitEssentials)
+      throw new Error("Git Essentials template is not registered.")
+
+    expect(gitEssentials).toMatchObject({
+      title: "Git Essentials: Version Control",
+      category: "Technology",
+      preview: "rendered",
+    })
+    const result = runScript(gitEssentials.script)
     expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
     expect(result.document?.scenes).toHaveLength(5)
     expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
