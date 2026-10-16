@@ -1,0 +1,1789 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #1E3A2B
+STYLE clean
+FONT neat
+STROKE 4
+SUBTITLES off
+
+SCENE 1 "Hook"
+  PARALLEL STAGGER 0.04s
+    CREATE s1_title AS TEXT
+      POSITION 960 85
+      SIZE 64
+      COLOR #F4F1E8
+      TEXT "BIOLOGY IN 45 SECONDS"
+      DRAW 0.3s
+    END
+    CREATE s1_rule AS LINE
+      FROM 560 138
+      TO 1360 138
+      COLOR #FFE27A
+      STROKE 6
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 10
+      DRAW 0.3s
+    END
+    CREATE s1_num AS CIRCLE
+      POSITION 100 85
+      RADIUS 46
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 17
+      TEXT "1/5"
+      DRAW 0.3s
+    END
+    CREATE s1_tag AS CIRCLE
+      POSITION 1820 85
+      RADIUS 46
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 24
+      TEXT "BIO"
+      DRAW 0.3s
+    END
+    CREATE s1_foot_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1800
+      HEIGHT 90
+      CORNERS 20
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 31
+      DRAW 0.35s
+    END
+    CREATE s1_foot AS TEXT
+      POSITION 960 1030
+      SIZE 38
+      COLOR #FFE27A
+      TEXT "Plants turn light, air and water into food"
+      DRAW 0.3s
+    END
+    CREATE s1_kick AS RECTANGLE
+      POSITION 960 215
+      WIDTH 340
+      HEIGHT 56
+      CORNERS 14
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 38
+      TEXT "BIOLOGY BASICS"
+      DRAW 0.35s
+    END
+    CREATE s1_hero AS TEXT
+      POSITION 960 335
+      SIZE 150
+      COLOR #F4F1E8
+      TEXT "Photosynthesis"
+      DRAW 0.8s
+    END
+    CREATE s1_sub AS TEXT
+      POSITION 960 465
+      SIZE 50
+      COLOR #FF9EB5
+      TEXT "How plants turn sunlight into food"
+      DRAW 0.3s
+    END
+    CREATE s1_eq AS RECTANGLE
+      POSITION 960 600
+      WIDTH 1760
+      HEIGHT 190
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 45
+      DRAW 0.35s
+    END
+    CREATE s1_eqlabel AS TEXT
+      POSITION 960 535
+      SIZE 28
+      COLOR #FFE27A
+      TEXT "THE FORMULA"
+      DRAW 0.3s
+    END
+    CREATE s1_e1 AS RECTANGLE
+      POSITION 200 615
+      WIDTH 200
+      HEIGHT 100
+      CORNERS 18
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 52
+      TEXT "6 CO2"
+      DRAW 0.35s
+    END
+    CREATE s1_e2 AS RECTANGLE
+      POSITION 530 615
+      WIDTH 200
+      HEIGHT 100
+      CORNERS 18
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 59
+      TEXT "6 H2O"
+      DRAW 0.35s
+    END
+    CREATE s1_e3 AS RECTANGLE
+      POSITION 860 615
+      WIDTH 200
+      HEIGHT 100
+      CORNERS 18
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 66
+      TEXT "Sunlight"
+      DRAW 0.35s
+    END
+    CREATE s1_e4 AS RECTANGLE
+      POSITION 1280 615
+      WIDTH 200
+      HEIGHT 100
+      CORNERS 18
+      FILL #A8E6A1
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 73
+      TEXT "Glucose"
+      DRAW 0.35s
+    END
+    CREATE s1_e5 AS RECTANGLE
+      POSITION 1620 615
+      WIDTH 200
+      HEIGHT 100
+      CORNERS 18
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 80
+      TEXT "6 O2"
+      DRAW 0.35s
+    END
+    CREATE s1_p1 AS TEXT
+      POSITION 365 615
+      SIZE 70
+      COLOR #F4F1E8
+      TEXT "+"
+      DRAW 0.3s
+    END
+    CREATE s1_p2 AS TEXT
+      POSITION 695 615
+      SIZE 70
+      COLOR #F4F1E8
+      TEXT "+"
+      DRAW 0.3s
+    END
+    CREATE s1_p3 AS TEXT
+      POSITION 1450 615
+      SIZE 70
+      COLOR #F4F1E8
+      TEXT "+"
+      DRAW 0.3s
+    END
+    CREATE s1_f1 AS RECTANGLE
+      POSITION 365 830
+      WIDTH 570
+      HEIGHT 240
+      CORNERS 24
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 87
+      DRAW 0.35s
+    END
+    CREATE s1_fh1 AS TEXT
+      POSITION 365 755
+      SIZE 48
+      COLOR #16281E
+      TEXT "Where?"
+      DRAW 0.3s
+    END
+    CREATE s1_fc1 AS TEXT
+      POSITION 365 840
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #16281E
+      TEXT "In chloroplasts inside leaf cells"
+      DRAW 0.3s
+    END
+    CREATE s1_ft1 AS TEXT
+      POSITION 365 912
+      SIZE 26
+      COLOR #16281E
+      TEXT "ORGANELLE"
+      DRAW 0.3s
+    END
+    CREATE s1_f2 AS RECTANGLE
+      POSITION 960 830
+      WIDTH 570
+      HEIGHT 240
+      CORNERS 24
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 94
+      DRAW 0.35s
+    END
+    CREATE s1_fh2 AS TEXT
+      POSITION 960 755
+      SIZE 48
+      COLOR #16281E
+      TEXT "What for?"
+      DRAW 0.3s
+    END
+    CREATE s1_fc2 AS TEXT
+      POSITION 960 840
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #16281E
+      TEXT "Makes the sugar that fuels the plant"
+      DRAW 0.3s
+    END
+    CREATE s1_ft2 AS TEXT
+      POSITION 960 912
+      SIZE 26
+      COLOR #16281E
+      TEXT "GLUCOSE"
+      DRAW 0.3s
+    END
+    CREATE s1_f3 AS RECTANGLE
+      POSITION 1555 830
+      WIDTH 570
+      HEIGHT 240
+      CORNERS 24
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 101
+      DRAW 0.35s
+    END
+    CREATE s1_fh3 AS TEXT
+      POSITION 1555 755
+      SIZE 48
+      COLOR #16281E
+      TEXT "Bonus"
+      DRAW 0.3s
+    END
+    CREATE s1_fc3 AS TEXT
+      POSITION 1555 840
+      SIZE 32
+      MAXWIDTH 500
+      COLOR #16281E
+      TEXT "Releases the oxygen we breathe"
+      DRAW 0.3s
+    END
+    CREATE s1_ft3 AS TEXT
+      POSITION 1555 912
+      SIZE 26
+      COLOR #16281E
+      TEXT "O2"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.05s
+    ARROW s1_e3 -> s1_e4
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+  END
+  SAY "Almost all life on Earth runs on this reaction."
+    DURATION 2.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the stakes before any chemistry appears."
+  SAY "One equation sums it up."
+    DURATION 2.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Points the learner at the formula panel."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 2 "Big picture"
+  PARALLEL STAGGER 0.04s
+    CREATE s2_title AS TEXT
+      POSITION 960 85
+      SIZE 64
+      COLOR #F4F1E8
+      TEXT "The Big Picture"
+      DRAW 0.3s
+    END
+    CREATE s2_rule AS LINE
+      FROM 560 138
+      TO 1360 138
+      COLOR #FFE27A
+      STROKE 6
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 108
+      DRAW 0.3s
+    END
+    CREATE s2_num AS CIRCLE
+      POSITION 100 85
+      RADIUS 46
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 115
+      TEXT "2/5"
+      DRAW 0.3s
+    END
+    CREATE s2_tag AS CIRCLE
+      POSITION 1820 85
+      RADIUS 46
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 122
+      TEXT "BIO"
+      DRAW 0.3s
+    END
+    CREATE s2_foot_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1800
+      HEIGHT 90
+      CORNERS 20
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 129
+      DRAW 0.35s
+    END
+    CREATE s2_foot AS TEXT
+      POSITION 960 1030
+      SIZE 38
+      COLOR #FFE27A
+      TEXT "The leaf is a tiny solar-powered factory"
+      DRAW 0.3s
+    END
+    CREATE s2_banner AS RECTANGLE
+      POSITION 960 235
+      WIDTH 1760
+      HEIGHT 110
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 136
+      DRAW 0.35s
+    END
+    CREATE s2_bt AS TEXT
+      POSITION 960 235
+      SIZE 44
+      COLOR #F4F1E8
+      TEXT "Sunlight energy gets locked inside sugar molecules"
+      DRAW 0.3s
+    END
+    CREATE s2_leaf AS ELLIPSE
+      POSITION 960 530
+      WIDTH 700
+      HEIGHT 400
+      FILL #7BC67E
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 143
+      DRAW 0.35s
+    END
+    CREATE s2_cp1 AS CIRCLE
+      POSITION 780 440
+      RADIUS 20
+      FILL #2F8F46
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 150
+      DRAW 0.3s
+    END
+    CREATE s2_cp2 AS CIRCLE
+      POSITION 1150 430
+      RADIUS 20
+      FILL #2F8F46
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 157
+      DRAW 0.3s
+    END
+    CREATE s2_cp3 AS CIRCLE
+      POSITION 790 625
+      RADIUS 20
+      FILL #2F8F46
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 164
+      DRAW 0.3s
+    END
+    CREATE s2_cp4 AS CIRCLE
+      POSITION 1130 630
+      RADIUS 20
+      FILL #2F8F46
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 171
+      DRAW 0.3s
+    END
+    CREATE s2_lt AS TEXT
+      POSITION 960 500
+      SIZE 54
+      COLOR #16281E
+      TEXT "LEAF FACTORY"
+      DRAW 0.3s
+    END
+    CREATE s2_ls AS TEXT
+      POSITION 960 570
+      SIZE 32
+      COLOR #16281E
+      TEXT "chloroplasts at work"
+      DRAW 0.3s
+    END
+    CREATE s2_in1 AS RECTANGLE
+      POSITION 250 400
+      WIDTH 350
+      HEIGHT 100
+      CORNERS 18
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 178
+      TEXT "1 · Sunlight"
+      DRAW 0.35s
+    END
+    CREATE s2_in2 AS RECTANGLE
+      POSITION 250 540
+      WIDTH 350
+      HEIGHT 100
+      CORNERS 18
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 185
+      TEXT "2 · CO2 from air"
+      DRAW 0.35s
+    END
+    CREATE s2_in3 AS RECTANGLE
+      POSITION 250 680
+      WIDTH 350
+      HEIGHT 100
+      CORNERS 18
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 192
+      TEXT "3 · Water from roots"
+      DRAW 0.35s
+    END
+    CREATE s2_out1 AS RECTANGLE
+      POSITION 1670 470
+      WIDTH 350
+      HEIGHT 100
+      CORNERS 18
+      FILL #A8E6A1
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 199
+      TEXT "Glucose (sugar)"
+      DRAW 0.35s
+    END
+    CREATE s2_out2 AS RECTANGLE
+      POSITION 1670 610
+      WIDTH 350
+      HEIGHT 100
+      CORNERS 18
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 206
+      TEXT "Oxygen (O2)"
+      DRAW 0.35s
+    END
+    CREATE s2_ic1 AS RECTANGLE
+      POSITION 365 860
+      WIDTH 570
+      HEIGHT 190
+      CORNERS 24
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 213
+      DRAW 0.35s
+    END
+    CREATE s2_ih1 AS TEXT
+      POSITION 365 810
+      SIZE 44
+      COLOR #16281E
+      TEXT "Stomata"
+      DRAW 0.3s
+    END
+    CREATE s2_id1 AS TEXT
+      POSITION 365 885
+      SIZE 30
+      MAXWIDTH 500
+      COLOR #16281E
+      TEXT "Tiny pores that let CO2 in and O2 out"
+      DRAW 0.3s
+    END
+    CREATE s2_ic2 AS RECTANGLE
+      POSITION 960 860
+      WIDTH 570
+      HEIGHT 190
+      CORNERS 24
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 220
+      DRAW 0.35s
+    END
+    CREATE s2_ih2 AS TEXT
+      POSITION 960 810
+      SIZE 44
+      COLOR #16281E
+      TEXT "Chlorophyll"
+      DRAW 0.3s
+    END
+    CREATE s2_id2 AS TEXT
+      POSITION 960 885
+      SIZE 30
+      MAXWIDTH 500
+      COLOR #16281E
+      TEXT "The green pigment that captures light"
+      DRAW 0.3s
+    END
+    CREATE s2_ic3 AS RECTANGLE
+      POSITION 1555 860
+      WIDTH 570
+      HEIGHT 190
+      CORNERS 24
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 227
+      DRAW 0.35s
+    END
+    CREATE s2_ih3 AS TEXT
+      POSITION 1555 810
+      SIZE 44
+      COLOR #16281E
+      TEXT "Roots"
+      DRAW 0.3s
+    END
+    CREATE s2_id3 AS TEXT
+      POSITION 1555 885
+      SIZE 30
+      MAXWIDTH 500
+      COLOR #16281E
+      TEXT "Pull water up through the stem"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.12s
+    ARROW s2_in1 -> s2_leaf
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+    ARROW s2_in2 -> s2_leaf
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+    ARROW s2_in3 -> s2_leaf
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+    ARROW s2_leaf -> s2_out1
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+    ARROW s2_leaf -> s2_out2
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+  END
+  SAY "The leaf works like a solar-powered factory."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Uses a factory analogy for inputs, processing and outputs."
+  SAY "Stomata open and close to manage water loss."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds the trade-off plants face when they open their pores."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 3 "Inside the leaf"
+  PARALLEL STAGGER 0.04s
+    CREATE s3_title AS TEXT
+      POSITION 960 85
+      SIZE 64
+      COLOR #F4F1E8
+      TEXT "Inside the Leaf"
+      DRAW 0.3s
+    END
+    CREATE s3_rule AS LINE
+      FROM 560 138
+      TO 1360 138
+      COLOR #FFE27A
+      STROKE 6
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 234
+      DRAW 0.3s
+    END
+    CREATE s3_num AS CIRCLE
+      POSITION 100 85
+      RADIUS 46
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 241
+      TEXT "3/5"
+      DRAW 0.3s
+    END
+    CREATE s3_tag AS CIRCLE
+      POSITION 1820 85
+      RADIUS 46
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 248
+      TEXT "BIO"
+      DRAW 0.3s
+    END
+    CREATE s3_foot_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1800
+      HEIGHT 90
+      CORNERS 20
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 255
+      DRAW 0.35s
+    END
+    CREATE s3_foot AS TEXT
+      POSITION 960 1030
+      SIZE 38
+      COLOR #FFE27A
+      TEXT "Light reactions make energy; the Calvin cycle makes sugar"
+      DRAW 0.3s
+    END
+    CREATE s3_a_panel AS RECTANGLE
+      POSITION 480 570
+      WIDTH 820
+      HEIGHT 780
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #FFE27A
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 262
+      DRAW 0.35s
+    END
+    CREATE s3_a_head AS TEXT
+      POSITION 480 240
+      SIZE 44
+      COLOR #FFE27A
+      TEXT "1 · LIGHT REACTIONS"
+      DRAW 0.3s
+    END
+    CREATE s3_a_sub AS TEXT
+      POSITION 480 292
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "In the thylakoid membranes"
+      DRAW 0.3s
+    END
+    CREATE s3_a_r1 AS RECTANGLE
+      POSITION 480 395
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 269
+      DRAW 0.35s
+    END
+    CREATE s3_a_n1 AS CIRCLE
+      POSITION 180 395
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 276
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s3_a_t1 AS TEXT
+      POSITION 520 395
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "Chlorophyll absorbs sunlight"
+      DRAW 0.3s
+    END
+    CREATE s3_a_r2 AS RECTANGLE
+      POSITION 480 515
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 283
+      DRAW 0.35s
+    END
+    CREATE s3_a_n2 AS CIRCLE
+      POSITION 180 515
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 290
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s3_a_t2 AS TEXT
+      POSITION 520 515
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "Water splits into O2 and H+"
+      DRAW 0.3s
+    END
+    CREATE s3_a_r3 AS RECTANGLE
+      POSITION 480 635
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 297
+      DRAW 0.35s
+    END
+    CREATE s3_a_n3 AS CIRCLE
+      POSITION 180 635
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 304
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s3_a_t3 AS TEXT
+      POSITION 520 635
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "Oxygen leaves through stomata"
+      DRAW 0.3s
+    END
+    CREATE s3_a_r4 AS RECTANGLE
+      POSITION 480 755
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 311
+      DRAW 0.35s
+    END
+    CREATE s3_a_n4 AS CIRCLE
+      POSITION 180 755
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 318
+      TEXT "4"
+      DRAW 0.3s
+    END
+    CREATE s3_a_t4 AS TEXT
+      POSITION 520 755
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "ATP and NADPH store the energy"
+      DRAW 0.3s
+    END
+    CREATE s3_a_res AS RECTANGLE
+      POSITION 480 885
+      WIDTH 740
+      HEIGHT 110
+      CORNERS 22
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 325
+      DRAW 0.35s
+    END
+    CREATE s3_a_rt AS TEXT
+      POSITION 480 885
+      SIZE 36
+      MAXWIDTH 680
+      COLOR #16281E
+      TEXT "Output: O2 and energy carriers"
+      DRAW 0.3s
+    END
+    CREATE s3_b_panel AS RECTANGLE
+      POSITION 1440 570
+      WIDTH 820
+      HEIGHT 780
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #8FD3FF
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 332
+      DRAW 0.35s
+    END
+    CREATE s3_b_head AS TEXT
+      POSITION 1440 240
+      SIZE 44
+      COLOR #8FD3FF
+      TEXT "2 · CALVIN CYCLE"
+      DRAW 0.3s
+    END
+    CREATE s3_b_sub AS TEXT
+      POSITION 1440 292
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "In the fluid called stroma"
+      DRAW 0.3s
+    END
+    CREATE s3_b_r1 AS RECTANGLE
+      POSITION 1440 395
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 339
+      DRAW 0.35s
+    END
+    CREATE s3_b_n1 AS CIRCLE
+      POSITION 1140 395
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 346
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s3_b_t1 AS TEXT
+      POSITION 1480 395
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "CO2 enters the cycle"
+      DRAW 0.3s
+    END
+    CREATE s3_b_r2 AS RECTANGLE
+      POSITION 1440 515
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 353
+      DRAW 0.35s
+    END
+    CREATE s3_b_n2 AS CIRCLE
+      POSITION 1140 515
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 360
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s3_b_t2 AS TEXT
+      POSITION 1480 515
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "Enzymes attach it to carbon chains"
+      DRAW 0.3s
+    END
+    CREATE s3_b_r3 AS RECTANGLE
+      POSITION 1440 635
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 367
+      DRAW 0.35s
+    END
+    CREATE s3_b_n3 AS CIRCLE
+      POSITION 1140 635
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 374
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s3_b_t3 AS TEXT
+      POSITION 1480 635
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "Stored energy powers the building"
+      DRAW 0.3s
+    END
+    CREATE s3_b_r4 AS RECTANGLE
+      POSITION 1440 755
+      WIDTH 740
+      HEIGHT 100
+      CORNERS 20
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 381
+      DRAW 0.35s
+    END
+    CREATE s3_b_n4 AS CIRCLE
+      POSITION 1140 755
+      RADIUS 34
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 388
+      TEXT "4"
+      DRAW 0.3s
+    END
+    CREATE s3_b_t4 AS TEXT
+      POSITION 1480 755
+      SIZE 32
+      MAXWIDTH 560
+      COLOR #16281E
+      TEXT "Sugar leaves and the cycle restarts"
+      DRAW 0.3s
+    END
+    CREATE s3_b_res AS RECTANGLE
+      POSITION 1440 885
+      WIDTH 740
+      HEIGHT 110
+      CORNERS 22
+      FILL #F4F1E8
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 395
+      DRAW 0.35s
+    END
+    CREATE s3_b_rt AS TEXT
+      POSITION 1440 885
+      SIZE 36
+      MAXWIDTH 680
+      COLOR #16281E
+      TEXT "Output: glucose, the plant sugar"
+      DRAW 0.3s
+    END
+    CREATE s3_energy AS TEXT
+      POSITION 960 520
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "energy"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.05s
+    ARROW s3_a_panel -> s3_b_panel
+      ROUTE straight
+      HEAD end
+      COLOR #F4F1E8
+      STROKE 5
+      DRAW 0.4s
+  END
+  SAY "Stage one captures energy; stage two spends it."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Frames the two stages as earning and spending."
+  SAY "Together they form one continuous loop."
+    DURATION 2.4s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Reminds learners the stages depend on each other."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 4 "Factors"
+  PARALLEL STAGGER 0.04s
+    CREATE s4_title AS TEXT
+      POSITION 960 85
+      SIZE 64
+      COLOR #F4F1E8
+      TEXT "What Speeds It Up"
+      DRAW 0.3s
+    END
+    CREATE s4_rule AS LINE
+      FROM 560 138
+      TO 1360 138
+      COLOR #FFE27A
+      STROKE 6
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 402
+      DRAW 0.3s
+    END
+    CREATE s4_num AS CIRCLE
+      POSITION 100 85
+      RADIUS 46
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 409
+      TEXT "4/5"
+      DRAW 0.3s
+    END
+    CREATE s4_tag AS CIRCLE
+      POSITION 1820 85
+      RADIUS 46
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 416
+      TEXT "BIO"
+      DRAW 0.3s
+    END
+    CREATE s4_foot_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1800
+      HEIGHT 90
+      CORNERS 20
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 423
+      DRAW 0.35s
+    END
+    CREATE s4_foot AS TEXT
+      POSITION 960 1030
+      SIZE 38
+      COLOR #FFE27A
+      TEXT "More light helps, until something else limits the rate"
+      DRAW 0.3s
+    END
+    CREATE s4_chart AS RECTANGLE
+      POSITION 515 570
+      WIDTH 890
+      HEIGHT 780
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 430
+      DRAW 0.35s
+    END
+    CREATE s4_ct AS TEXT
+      POSITION 515 225
+      SIZE 38
+      COLOR #F4F1E8
+      TEXT "Photosynthesis rate vs light"
+      DRAW 0.3s
+    END
+    CREATE s4_note AS TEXT
+      POSITION 515 300
+      SIZE 30
+      MAXWIDTH 780
+      COLOR #FF9EB5
+      TEXT "The curve flattens when another factor becomes the limit"
+      DRAW 0.3s
+    END
+    CREATE s4_axis AS LINE
+      FROM 110 832
+      TO 930 832
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 437
+      DRAW 0.3s
+    END
+    CREATE s4_b1 AS RECTANGLE
+      POSITION 170 825
+      WIDTH 90
+      HEIGHT 8
+      CORNERS 10
+      FILL #FFE27A
+      COLOR #FFE27A
+      STROKE 3
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 444
+      DRAW 0.35s
+    END
+    CREATE s4_v1 AS TEXT
+      POSITION 170 792
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "0%"
+      DRAW 0.3s
+    END
+    CREATE s4_l1 AS TEXT
+      POSITION 170 872
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "Dark"
+      DRAW 0.3s
+    END
+    CREATE s4_b2 AS RECTANGLE
+      POSITION 305 785
+      WIDTH 90
+      HEIGHT 88
+      CORNERS 10
+      FILL #FFE27A
+      COLOR #FFE27A
+      STROKE 3
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 451
+      DRAW 0.35s
+    END
+    CREATE s4_v2 AS TEXT
+      POSITION 305 712
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "20%"
+      DRAW 0.3s
+    END
+    CREATE s4_l2 AS TEXT
+      POSITION 305 872
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "Dim"
+      DRAW 0.3s
+    END
+    CREATE s4_b3 AS RECTANGLE
+      POSITION 440 730
+      WIDTH 90
+      HEIGHT 198
+      CORNERS 10
+      FILL #FFE27A
+      COLOR #FFE27A
+      STROKE 3
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 458
+      DRAW 0.35s
+    END
+    CREATE s4_v3 AS TEXT
+      POSITION 440 602
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "45%"
+      DRAW 0.3s
+    END
+    CREATE s4_l3 AS TEXT
+      POSITION 440 872
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "Low"
+      DRAW 0.3s
+    END
+    CREATE s4_b4 AS RECTANGLE
+      POSITION 575 664
+      WIDTH 90
+      HEIGHT 330
+      CORNERS 10
+      FILL #FFE27A
+      COLOR #FFE27A
+      STROKE 3
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 465
+      DRAW 0.35s
+    END
+    CREATE s4_v4 AS TEXT
+      POSITION 575 470
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "75%"
+      DRAW 0.3s
+    END
+    CREATE s4_l4 AS TEXT
+      POSITION 575 872
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "Mid"
+      DRAW 0.3s
+    END
+    CREATE s4_b5 AS RECTANGLE
+      POSITION 710 620
+      WIDTH 90
+      HEIGHT 418
+      CORNERS 10
+      FILL #FFE27A
+      COLOR #FFE27A
+      STROKE 3
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 472
+      DRAW 0.35s
+    END
+    CREATE s4_v5 AS TEXT
+      POSITION 710 382
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "95%"
+      DRAW 0.3s
+    END
+    CREATE s4_l5 AS TEXT
+      POSITION 710 872
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "High"
+      DRAW 0.3s
+    END
+    CREATE s4_b6 AS RECTANGLE
+      POSITION 845 609
+      WIDTH 90
+      HEIGHT 440
+      CORNERS 10
+      FILL #FFE27A
+      COLOR #FFE27A
+      STROKE 3
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 479
+      DRAW 0.35s
+    END
+    CREATE s4_v6 AS TEXT
+      POSITION 845 360
+      SIZE 30
+      COLOR #F4F1E8
+      TEXT "100%"
+      DRAW 0.3s
+    END
+    CREATE s4_l6 AS TEXT
+      POSITION 845 872
+      SIZE 28
+      COLOR #F4F1E8
+      TEXT "Max"
+      DRAW 0.3s
+    END
+    CREATE s4_axt AS TEXT
+      POSITION 515 925
+      SIZE 28
+      COLOR #A8E6A1
+      TEXT "Light intensity"
+      DRAW 0.3s
+    END
+    CREATE s4_fc1 AS RECTANGLE
+      POSITION 1425 268
+      WIDTH 850
+      HEIGHT 175
+      CORNERS 24
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 486
+      DRAW 0.35s
+    END
+    CREATE s4_fh1 AS TEXT
+      POSITION 1425 233
+      SIZE 46
+      COLOR #16281E
+      TEXT "Light"
+      DRAW 0.3s
+    END
+    CREATE s4_fd1 AS TEXT
+      POSITION 1425 303
+      SIZE 30
+      MAXWIDTH 780
+      COLOR #16281E
+      TEXT "More light, faster rate, up to a limit"
+      DRAW 0.3s
+    END
+    CREATE s4_fc2 AS RECTANGLE
+      POSITION 1425 468
+      WIDTH 850
+      HEIGHT 175
+      CORNERS 24
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 493
+      DRAW 0.35s
+    END
+    CREATE s4_fh2 AS TEXT
+      POSITION 1425 433
+      SIZE 46
+      COLOR #16281E
+      TEXT "Carbon dioxide"
+      DRAW 0.3s
+    END
+    CREATE s4_fd2 AS TEXT
+      POSITION 1425 503
+      SIZE 30
+      MAXWIDTH 780
+      COLOR #16281E
+      TEXT "More CO2 feeds the Calvin cycle"
+      DRAW 0.3s
+    END
+    CREATE s4_fc3 AS RECTANGLE
+      POSITION 1425 668
+      WIDTH 850
+      HEIGHT 175
+      CORNERS 24
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 500
+      DRAW 0.35s
+    END
+    CREATE s4_fh3 AS TEXT
+      POSITION 1425 633
+      SIZE 46
+      COLOR #16281E
+      TEXT "Water"
+      DRAW 0.3s
+    END
+    CREATE s4_fd3 AS TEXT
+      POSITION 1425 703
+      SIZE 30
+      MAXWIDTH 780
+      COLOR #16281E
+      TEXT "Dry soil closes stomata and slows everything"
+      DRAW 0.3s
+    END
+    CREATE s4_fc4 AS RECTANGLE
+      POSITION 1425 868
+      WIDTH 850
+      HEIGHT 175
+      CORNERS 24
+      FILL #FFB070
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 507
+      DRAW 0.35s
+    END
+    CREATE s4_fh4 AS TEXT
+      POSITION 1425 833
+      SIZE 46
+      COLOR #16281E
+      TEXT "Temperature"
+      DRAW 0.3s
+    END
+    CREATE s4_fd4 AS TEXT
+      POSITION 1425 903
+      SIZE 30
+      MAXWIDTH 780
+      COLOR #16281E
+      TEXT "Enzymes work best warm, not hot"
+      DRAW 0.3s
+    END
+  END
+  SAY "Plateaus show another factor is the bottleneck."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Teaches how to read a flattening curve."
+  SAY "Scientists call that the limiting factor."
+    DURATION 2.4s
+    TONE punchline
+    WHO "Narrator"
+    LANG en
+    DETAIL "Introduces the vocabulary after the intuition."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 5 "Recap and quiz"
+  PARALLEL STAGGER 0.05s
+    CREATE s5_title AS TEXT
+      POSITION 960 85
+      SIZE 64
+      COLOR #F4F1E8
+      TEXT "Recap and Quick Check"
+      DRAW 0.3s
+    END
+    CREATE s5_rule AS LINE
+      FROM 560 138
+      TO 1360 138
+      COLOR #FFE27A
+      STROKE 6
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 514
+      DRAW 0.3s
+    END
+    CREATE s5_num AS CIRCLE
+      POSITION 100 85
+      RADIUS 46
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 521
+      TEXT "5/5"
+      DRAW 0.3s
+    END
+    CREATE s5_tag AS CIRCLE
+      POSITION 1820 85
+      RADIUS 46
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 528
+      TEXT "BIO"
+      DRAW 0.3s
+    END
+    CREATE s5_foot_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1800
+      HEIGHT 90
+      CORNERS 20
+      FILL #2A4D3A
+      COLOR #F4F1E8
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 535
+      DRAW 0.35s
+    END
+    CREATE s5_foot AS TEXT
+      POSITION 960 1030
+      SIZE 38
+      COLOR #FFE27A
+      TEXT "Next up: cellular respiration"
+      DRAW 0.3s
+    END
+    CREATE s5_qc1 AS RECTANGLE
+      POSITION 480 300
+      WIDTH 820
+      HEIGHT 250
+      CORNERS 26
+      FILL #8FD3FF
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 542
+      DRAW 0.35s
+    END
+    CREATE s5_q1 AS TEXT
+      POSITION 480 235
+      SIZE 36
+      MAXWIDTH 740
+      COLOR #16281E
+      TEXT "Which gas do plants take in?"
+      DRAW 0.3s
+    END
+    CREATE s5_h1 AS TEXT
+      POSITION 480 290
+      SIZE 28
+      MAXWIDTH 740
+      COLOR #16281E
+      TEXT "Hint: it is in the air we exhale"
+      DRAW 0.3s
+    END
+    CREATE s5_qc2 AS RECTANGLE
+      POSITION 480 570
+      WIDTH 820
+      HEIGHT 250
+      CORNERS 26
+      FILL #FFE27A
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 549
+      DRAW 0.35s
+    END
+    CREATE s5_q2 AS TEXT
+      POSITION 480 505
+      SIZE 36
+      MAXWIDTH 740
+      COLOR #16281E
+      TEXT "Where does photosynthesis happen?"
+      DRAW 0.3s
+    END
+    CREATE s5_h2 AS TEXT
+      POSITION 480 560
+      SIZE 28
+      MAXWIDTH 740
+      COLOR #16281E
+      TEXT "Hint: tiny green organelles"
+      DRAW 0.3s
+    END
+    CREATE s5_qc3 AS RECTANGLE
+      POSITION 480 840
+      WIDTH 820
+      HEIGHT 250
+      CORNERS 26
+      FILL #FF9EB5
+      COLOR #16281E
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 556
+      DRAW 0.35s
+    END
+    CREATE s5_q3 AS TEXT
+      POSITION 480 775
+      SIZE 36
+      MAXWIDTH 740
+      COLOR #16281E
+      TEXT "What is the sugar product called?"
+      DRAW 0.3s
+    END
+    CREATE s5_h3 AS TEXT
+      POSITION 480 830
+      SIZE 28
+      MAXWIDTH 740
+      COLOR #16281E
+      TEXT "Hint: it starts with G"
+      DRAW 0.3s
+    END
+    CREATE s5_rem AS RECTANGLE
+      POSITION 1440 360
+      WIDTH 820
+      HEIGHT 340
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #FFE27A
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 563
+      DRAW 0.35s
+    END
+    CREATE s5_remh AS TEXT
+      POSITION 1440 250
+      SIZE 44
+      COLOR #FFE27A
+      TEXT "REMEMBER"
+      DRAW 0.3s
+    END
+    CREATE s5_remt AS TEXT
+      POSITION 1440 380
+      SIZE 52
+      MAXWIDTH 720
+      COLOR #F4F1E8
+      TEXT "Light, water and CO2 in. Sugar and oxygen out."
+      DRAW 0.3s
+    END
+    CREATE s5_try AS RECTANGLE
+      POSITION 1440 745
+      WIDTH 820
+      HEIGHT 340
+      CORNERS 26
+      FILL #2A4D3A
+      COLOR #FF9EB5
+      STROKE 4
+      ROUGH on
+      ROUGHNESS 1
+      ROUGHSEED 570
+      DRAW 0.35s
+    END
+    CREATE s5_tryh AS TEXT
+      POSITION 1440 635
+      SIZE 44
+      COLOR #FF9EB5
+      TEXT "TRY IT AT HOME"
+      DRAW 0.3s
+    END
+    CREATE s5_tryt AS TEXT
+      POSITION 1440 765
+      SIZE 36
+      MAXWIDTH 720
+      COLOR #F4F1E8
+      TEXT "Put one plant in a sunny window and another in a closet for a week. Compare the leaves."
+      DRAW 0.3s
+    END
+  END
+  SAY "Quick check: answer before each reveal."
+    DURATION 2.4s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts active recall, which beats passive watching."
+  PARALLEL STAGGER 0.2s
+    CREATE s5_a1 AS TEXT
+      POSITION 480 370
+      SIZE 52
+      COLOR #16281E
+      TEXT "Carbon dioxide"
+      DRAW 0.4s
+    END
+    CREATE s5_a2 AS TEXT
+      POSITION 480 640
+      SIZE 52
+      COLOR #16281E
+      TEXT "Chloroplasts"
+      DRAW 0.4s
+    END
+    CREATE s5_a3 AS TEXT
+      POSITION 480 910
+      SIZE 52
+      COLOR #16281E
+      TEXT "Glucose"
+      DRAW 0.4s
+    END
+  END
+  SAY "Try the window experiment this week."
+    DURATION 2.4s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Gives learners a concrete next action."
+END SCENE

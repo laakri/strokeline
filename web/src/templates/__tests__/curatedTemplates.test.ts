@@ -10,8 +10,8 @@ import {
 
 describe("curated template library", () => {
   it("keeps every supplied WBS project once alongside the original starters", () => {
-    expect(CURATED_TEMPLATES).toHaveLength(18)
-    expect(TEMPLATE_LIBRARY).toHaveLength(31)
+    expect(CURATED_TEMPLATES).toHaveLength(19)
+    expect(TEMPLATE_LIBRARY).toHaveLength(32)
     expect(new Set(TEMPLATE_LIBRARY.map((template) => template.id)).size).toBe(
       TEMPLATE_LIBRARY.length
     )
@@ -95,6 +95,24 @@ describe("curated template library", () => {
       preview: "rendered",
     })
     const result = runScript(gitEssentials.script)
+    expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
+    expect(result.document?.scenes).toHaveLength(5)
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
+  })
+
+  it("adds Photosynthesis: Inside the Leaf as a five-scene landscape science template", () => {
+    const photosynthesis = TEMPLATE_LIBRARY.find(
+      (template) => template.id === "photosynthesis-deep-dive"
+    )
+    if (!photosynthesis)
+      throw new Error("Photosynthesis: Inside the Leaf is not registered.")
+
+    expect(photosynthesis).toMatchObject({
+      title: "Photosynthesis: Inside the Leaf",
+      category: "Science",
+      preview: "rendered",
+    })
+    const result = runScript(photosynthesis.script)
     expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
     expect(result.document?.scenes).toHaveLength(5)
     expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])

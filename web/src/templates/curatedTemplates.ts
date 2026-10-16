@@ -32,6 +32,7 @@ import lightningMicro from "@/templates/curated/lightning-60-second-micro-lesson
 import memoryLab from "@/templates/curated/memory-lab.wbs?raw"
 import webDevBasics from "@/templates/curated/web-dev-basics.wbs?raw"
 import gitEssentials from "@/templates/curated/git-essentials.wbs?raw"
+import photosynthesisDeepDive from "@/templates/curated/photosynthesis-deep-dive.wbs?raw"
 
 type CuratedTemplate = Omit<DiagramTemplate, "preview"> & {
   preview: "rendered"
@@ -286,5 +287,15 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     preview: "rendered",
     icon: GitCompareArrows,
     script: gitEssentials,
+  },
+  {
+    id: "photosynthesis-deep-dive",
+    title: "Photosynthesis: Inside the Leaf",
+    category: "Science",
+    description:
+      "A five-scene biology lesson exploring the photosynthesis equation, leaf structure, light and dark reactions, and limiting factors.",
+    preview: "rendered",
+    icon: Sprout,
+    script: photosynthesisDeepDive,
   },
 ]
