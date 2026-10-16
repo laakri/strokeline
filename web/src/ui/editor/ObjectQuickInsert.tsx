@@ -1,113 +1,10 @@
 import { useMemo, useState } from "react"
 import { Search, X } from "lucide-react"
-import { BRAND_ICON_CATALOG } from "@/defaults/brandIcons.generated.ts"
-import { ICON_NAMES } from "@/dsl/grammar.ts"
-
-interface InsertOption {
-  label: string
-  category: string
-  keywords: string
-  imageUrl?: string
-  snippet: (source: string, point?: InsertPoint) => string
-}
-
-interface InsertPoint {
-  x: number
-  y: number
-}
-
-export interface ObjectInsertContext {
-  clientX: number
-  clientY: number
-  position: InsertPoint
-  sceneIndex: number
-  time: number
-  playbackTime: number
-  wasPlaying: boolean
-}
-
-function coordinates(point?: InsertPoint): InsertPoint {
-  return {
-    x: Math.round(point?.x ?? 960),
-    y: Math.round(point?.y ?? 540),
-  }
-}
-
-function nextId(source: string, prefix: string): string {
-  const used = new Set(source.match(/[A-Za-z_][A-Za-z0-9_]*/g) ?? [])
-  let suffix = 1
-  while (used.has(prefix + "_" + suffix)) suffix += 1
-  return prefix + "_" + suffix
-}
-
-const objectOptions: InsertOption[] = [
-  {
-    label: "Arrow",
-    category: "Arrow",
-    keywords: "ink direction connector",
-    snippet: (_source, point) => {
-      const at = coordinates(point)
-      return "INK ARROW FROM " + (at.x - 180) + " " + at.y + " TO " + (at.x + 180) + " " + at.y + "\n" +
-        "  COLOR #2E86AB\n  WIDTH 6\n  DRAW 1s\nEND"
-    },
-  },
-  ...(["BARCHART", "LINECHART", "PIECHART"] as const).map((chartType) => ({
-    label: chartType === "BARCHART" ? "Bar chart" : chartType === "LINECHART" ? "Line chart" : "Pie chart",
-    category: "Chart",
-    keywords: "data graph",
-    snippet: (source: string, point?: InsertPoint) => {
-      const at = coordinates(point)
-      return chartType + " " + nextId(source, "chart") + "\n" +
-        "  POSITION " + at.x + " " + at.y + "\n  SIZE 900 500\n" +
-        "  DATA \"Alpha\" 42\n  DATA \"Beta\" 68\n  DATA \"Gamma\" 35\nEND"
-    },
-  })),
-  {
-    label: "Table",
-    category: "Table",
-    keywords: "comparison rows columns",
-    snippet: (source: string, point?: InsertPoint) => {
-      const at = coordinates(point)
-      return "TABLE " + nextId(source, "table") + "\n" +
-        "  POSITION " + at.x + " " + at.y + "\n  SIZE 1000 420\n" +
-        "  COLUMNS \"Option\" \"Value\"\n  ROW \"Alpha\" \"42\"\n  ROW \"Beta\" \"68\"\nEND"
-    },
-  },
-  {
-    label: "Callout",
-    category: "Callout",
-    keywords: "note bubble label",
-    snippet: (source: string, point?: InsertPoint) => {
-      const at = coordinates(point)
-      return "USE callout AS " + nextId(source, "callout") +
-        " AT " + at.x + " " + at.y + " WITH TEXT \"Key point\""
-    },
-  },
-  ...ICON_NAMES.map((iconName) => ({
-    label: iconName,
-    category: "Icon",
-    keywords: "lucide symbol " + iconName,
-    snippet: (source: string, point?: InsertPoint) => {
-      const at = coordinates(point)
-      return "CREATE " + nextId(source, "icon") + " AS ICON\n" +
-        "  NAME \"" + iconName + "\"\n  POSITION " + at.x + " " + at.y + "\n  SIZE 104\n" +
-        "  COLOR #2E86AB\n  DRAW 0.8s\nEND"
-    },
-  })),
-  ...BRAND_ICON_CATALOG.map(({ slug, title, category, keywords }) => ({
-    label: title,
-    category: "Brand · " + category,
-    keywords: "brand logo " + slug + " " + title + " " + category + " " + keywords,
-    imageUrl: "/brand-icons/" + slug + ".svg",
-    snippet: (source: string, point?: InsertPoint) => {
-      const at = coordinates(point)
-      return "CREATE " + nextId(source, "brand") + " AS IMAGE\n" +
-        "  URL \"/brand-icons/" + slug + ".svg\"\n" +
-        "  POSITION " + at.x + " " + at.y + "\n  WIDTH 180\n  HEIGHT 140\n" +
-        "  FIT contain\n  DRAW 0.8s\nEND"
-    },
-  })),
-]
+import {
+  objectInsertOptionsForQuery,
+  type ObjectInsertContext,
+  type InsertOption,
+} from "@/ui/editor/objectInsertOptions.ts"
 
 export function ObjectQuickInsert({
   onInsert,
@@ -123,27 +20,32 @@ export function ObjectQuickInsert({
   const [query, setQuery] = useState("")
   const [notice, setNotice] = useState("")
   const closeMenu = () => onClose?.()
-  const menuPosition = context && typeof window !== "undefined"
-    ? {
-        left: Math.max(8, Math.min(context.clientX, window.innerWidth - Math.min(360, window.innerWidth - 16))),
-        top: Math.max(8, Math.min(context.clientY, window.innerHeight - Math.min(480, window.innerHeight - 16))),
-      }
-    : undefined
-  const options = useMemo(() => {
-    const normalized = query.trim().toLowerCase()
-    const filtered = normalized
-      ? objectOptions.filter((option) =>
-          (option.label + " " + option.category + " " + option.keywords).toLowerCase().includes(normalized)
-        )
-      : objectOptions.filter((option) =>
-          (option.category !== "Icon" && !option.category.startsWith("Brand · ")) ||
-          (option.category === "Icon" && ICON_NAMES.indexOf(option.label as typeof ICON_NAMES[number]) < 6)
-        )
-    return filtered.slice(0, 80)
-  }, [query])
+  const menuPosition =
+    context && typeof window !== "undefined"
+      ? {
+          left: Math.max(
+            8,
+            Math.min(
+              context.clientX,
+              window.innerWidth - Math.min(360, window.innerWidth - 16)
+            )
+          ),
+          top: Math.max(
+            8,
+            Math.min(
+              context.clientY,
+              window.innerHeight - Math.min(480, window.innerHeight - 16)
+            )
+          ),
+        }
+      : undefined
+  const options = useMemo(() => objectInsertOptionsForQuery(query), [query])
 
   const choose = (option: InsertOption) => {
-    if (!context || !onInsert(option.snippet(getSource(), context.position), context)) {
+    if (
+      !context ||
+      !onInsert(option.snippet(getSource(), context.position), context)
+    ) {
       setNotice("Add a SCENE first, then insert an object.")
       return
     }
@@ -178,7 +80,7 @@ export function ObjectQuickInsert({
                   if (event.key === "Escape") closeMenu()
                   if (event.key === "Enter" && options[0]) choose(options[0])
                 }}
-                placeholder="Search objects, icons, and brand logos…"
+                placeholder="Search shapes, diagram parts, icons…"
                 aria-label="Search objects"
                 className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
@@ -186,7 +88,7 @@ export function ObjectQuickInsert({
                 type="button"
                 onClick={closeMenu}
                 aria-label="Close insert menu"
-                className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                className="rounded-md p-1.5 text-muted-foreground hover:bg-accent"
               >
                 <X className="size-4" />
               </button>
@@ -201,7 +103,12 @@ export function ObjectQuickInsert({
                 >
                   <span className="flex min-w-0 items-center gap-2.5 truncate text-sm font-medium">
                     {option.imageUrl && (
-                      <img src={option.imageUrl} alt="" aria-hidden="true" className="size-6 shrink-0 object-contain" />
+                      <img
+                        src={option.imageUrl}
+                        alt=""
+                        aria-hidden="true"
+                        className="size-6 shrink-0 object-contain"
+                      />
                     )}
                     <span className="truncate">{option.label}</span>
                   </span>
@@ -211,13 +118,19 @@ export function ObjectQuickInsert({
                 </button>
               ))}
               {options.length === 0 && (
-                <p className="px-3 py-8 text-center text-sm text-muted-foreground">No matching objects.</p>
+                <p className="px-3 py-8 text-center text-sm text-muted-foreground">
+                  No matching objects.
+                </p>
               )}
             </div>
             <div className="border-t border-border/70 px-3 py-2 text-[11px] text-muted-foreground">
-              {notice || (query
-                ? options.length + " matching objects · Enter inserts the first"
-                : "Click an item to add it at " + context.time.toFixed(2) + "s in this scene")}
+              {notice ||
+                (query
+                  ? options.length +
+                    " matching objects · Enter inserts the first"
+                  : "Choose a building block to add at " +
+                    context.time.toFixed(2) +
+                    "s in this scene")}
             </div>
           </section>
         </div>
