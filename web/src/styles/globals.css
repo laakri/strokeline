@@ -147,6 +147,10 @@
     height: auto;
     overflow: auto;
   }
+  html.public-scroll-mode, html.public-scroll-mode body, html.public-scroll-mode #root {
+    height: auto;
+    overflow: auto;
+  }
   * {
     @apply border-border outline-ring/50;
     }

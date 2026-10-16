@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { useNavigate } from "react-router-dom"
 import {
@@ -66,6 +66,11 @@ export function TemplateGalleryPage() {
   const loadScript = useAppStore((state) => state.loadScript)
   const navigate = useNavigate()
 
+  useLayoutEffect(() => {
+    document.documentElement.classList.add("public-scroll-mode")
+    return () => document.documentElement.classList.remove("public-scroll-mode")
+  }, [])
+
   const visibleTemplates = useMemo(() => {
     const query = search.trim().toLocaleLowerCase()
     return TEMPLATE_LIBRARY.filter((template) => {
@@ -107,52 +112,58 @@ export function TemplateGalleryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-svh overflow-x-clip bg-background text-foreground">
       <PublicHeader activePage="templates" />
       <section className="relative isolate overflow-hidden border-b bg-muted/20">
         <div
           aria-hidden="true"
-          className="bg-[radial-gradient(ellipse_at_top, color-mix(in_oklab,var(--primary)_13%,transparent),transparent_62%)] pointer-events-none absolute inset-0 -z-10"
+          className="pointer-events-none absolute inset-0 -z-0 [mask-image:linear-gradient(to_bottom,black,transparent_75%)] opacity-60"
+          style={{
+            backgroundImage:
+              "radial-gradient(var(--border) 1.2px, transparent 1.2px)",
+            backgroundSize: "22px 22px",
+          }}
         />
-        <div className="mx-auto max-w-6xl px-4 pt-16 pb-12 sm:px-6 sm:pt-24 sm:pb-16">
-          <p className="text-sm font-semibold tracking-wide text-primary">
-            STROKELINE TEMPLATE LIBRARY
+        <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-10 sm:px-6 sm:pt-16 sm:pb-14">
+          <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-primary uppercase">
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-primary"
+            />
+            Template library
           </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight sm:text-6xl">
-            Start with a story worth drawing.
+          <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] font-semibold tracking-[-0.04em] text-balance sm:text-5xl lg:text-6xl">
+            A better place to start creating.
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            Explore editable whiteboard lessons, diagrams, explainers, and
-            storyboards. Preview every scene, then open it in Studio or download
-            the WBS source.
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+            Explore polished, editable starting points. Preview the scenes, then
+            make the template yours in Studio.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-            <span className="rounded-full border bg-background/80 px-3 py-1.5">
-              {TEMPLATE_LIBRARY.length} ready-to-edit templates
+          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+            <span className="font-medium text-foreground">
+              {TEMPLATE_LIBRARY.length} templates
             </span>
-            <span className="rounded-full border bg-background/80 px-3 py-1.5">
-              Original scenes rendered live
-            </span>
+            <span>Every scene is rendered from its source</span>
+            <span>Ready to edit</span>
           </div>
         </div>
       </section>
 
       <section
         aria-label="Browse templates"
-        className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12"
+        className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10"
       >
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div>
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Find your starting point
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                Explore templates
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Browse the original Strokeline starters and community-ready
-                projects.
+                Pick a category or search for something specific.
               </p>
             </div>
-            <label className="flex h-11 w-full items-center gap-2 rounded-xl border bg-card px-3 text-muted-foreground shadow-sm lg:max-w-sm">
+            <label className="flex h-11 w-full items-center gap-2 rounded-lg border bg-card px-3 text-muted-foreground transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20 lg:max-w-sm">
               <Search aria-hidden="true" className="size-4 shrink-0" />
               <span className="sr-only">Search templates</span>
               <input
@@ -192,7 +203,7 @@ export function TemplateGalleryPage() {
                   type="button"
                   aria-pressed={category === item}
                   onClick={() => setCategory(item)}
-                  className={`shrink-0 rounded-full border px-3.5 py-2 text-sm transition-colors ${
+                  className={`shrink-0 rounded-lg border px-3.5 py-2 text-sm transition-colors ${
                     category === item
                       ? "border-primary bg-primary text-primary-foreground"
                       : "bg-card text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -211,20 +222,20 @@ export function TemplateGalleryPage() {
           </p>
 
           {visibleTemplates.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {visibleTemplates.map((template) => {
                 const Icon = template.icon
                 const sceneCount = getSceneTitles(template.script).length
                 return (
                   <article
                     key={template.id}
-                    className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-[transform,border-color,box-shadow] hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+                    className="group flex min-w-0 flex-col overflow-hidden rounded-xl border bg-card transition-[border-color,box-shadow] hover:border-foreground/20 hover:shadow-md"
                   >
                     <button
                       type="button"
                       onClick={() => openTemplate(template)}
                       aria-label={`Preview ${template.title}`}
-                      className="relative block w-full overflow-hidden bg-muted/50 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring"
+                      className="relative block w-full overflow-hidden bg-muted/40 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring"
                     >
                       <TemplatePreviewCanvas
                         script={template.script}
@@ -232,16 +243,16 @@ export function TemplateGalleryPage() {
                         lazy
                         className="aspect-[16/10] w-full"
                       />
-                      <span className="absolute top-3 left-3 rounded-full border bg-background/90 px-2.5 py-1 text-[11px] font-medium shadow-sm backdrop-blur">
+                      <span className="absolute top-3 left-3 rounded-md border bg-background/90 px-2.5 py-1 text-[11px] font-medium shadow-sm backdrop-blur">
                         {template.category}
                       </span>
                       <span className="absolute right-3 bottom-3 grid size-8 place-items-center rounded-full border bg-background/90 text-foreground opacity-0 shadow-sm transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                         <ArrowUpRight className="size-4" />
                       </span>
                     </button>
-                    <div className="flex flex-1 flex-col p-5">
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex items-start gap-3">
-                        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-muted text-foreground">
                           <Icon aria-hidden="true" className="size-4" />
                         </span>
                         <div className="min-w-0">
@@ -254,13 +265,13 @@ export function TemplateGalleryPage() {
                           </p>
                         </div>
                       </div>
-                      <p className="mt-4 flex-1 text-sm leading-6 text-muted-foreground">
+                      <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">
                         {template.description}
                       </p>
                       <button
                         type="button"
                         onClick={() => openTemplate(template)}
-                        className="mt-5 flex items-center justify-between border-t pt-4 text-sm font-medium transition-colors hover:text-primary"
+                        className="mt-4 flex items-center justify-between border-t pt-3.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                       >
                         Preview template
                         <ArrowRight
