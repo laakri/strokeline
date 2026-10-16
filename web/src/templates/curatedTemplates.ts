@@ -29,6 +29,7 @@ import discounts from "@/templates/curated/successive-discounts.wbs?raw"
 import sqlEssentials from "@/templates/curated/sql-essentials.wbs?raw"
 import photosynthesisRecall from "@/templates/curated/photosynthesis-quick-recall-map.wbs?raw"
 import lightningMicro from "@/templates/curated/lightning-60-second-micro-lesson.wbs?raw"
+import memoryLab from "@/templates/curated/memory-lab.wbs?raw"
 
 type CuratedTemplate = Omit<DiagramTemplate, "preview"> & {
   preview: "rendered"
@@ -253,5 +254,15 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     preview: "rendered",
     icon: Lightbulb,
     script: photosynthesisRecall,
+  },
+  {
+    id: "memory-lab",
+    title: "Memory Lab: Beat the Forgetting Curve",
+    category: "Education",
+    description:
+      "An eight-scene learning-science explainer on forgetting, spaced repetition, active recall, and building a review plan.",
+    preview: "rendered",
+    icon: BrainCircuit,
+    script: memoryLab,
   },
 ]

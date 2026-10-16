@@ -10,8 +10,8 @@ import {
 
 describe("curated template library", () => {
   it("keeps every supplied WBS project once alongside the original starters", () => {
-    expect(CURATED_TEMPLATES).toHaveLength(15)
-    expect(TEMPLATE_LIBRARY).toHaveLength(28)
+    expect(CURATED_TEMPLATES).toHaveLength(16)
+    expect(TEMPLATE_LIBRARY).toHaveLength(29)
     expect(new Set(TEMPLATE_LIBRARY.map((template) => template.id)).size).toBe(
       TEMPLATE_LIBRARY.length
     )
@@ -45,6 +45,23 @@ describe("curated template library", () => {
       )
       expect(result.document?.scenes.length, template.id).toBeGreaterThan(0)
     }
+  })
+
+  it("adds Memory Lab as an eight-scene landscape education template", () => {
+    const memoryLab = TEMPLATE_LIBRARY.find(
+      (template) => template.id === "memory-lab"
+    )
+    if (!memoryLab) throw new Error("Memory Lab template is not registered.")
+
+    expect(memoryLab).toMatchObject({
+      title: "Memory Lab: Beat the Forgetting Curve",
+      category: "Education",
+      preview: "rendered",
+    })
+    const result = runScript(memoryLab.script)
+    expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
+    expect(result.document?.scenes).toHaveLength(8)
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
   })
 
   it("gives each Reel a distinct palette and subtitle-safe vertical layout", () => {

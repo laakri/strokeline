@@ -1,0 +1,2006 @@
+// ==================================================================
+// MEMORY LAB - an educational explainer template (landscape 1920x1080)
+// Topic: why we forget, and the two habits that beat the forgetting
+//        curve (spaced repetition + active recall).
+// Structure: Hook > Evidence > Technique 1 > Technique 2 > Method >
+//            Plan > Recap > Learner challenge   (8 scenes, ~2 min)
+//
+// HOW TO REUSE THIS TEMPLATE
+//  1. Keep the SLOTS: series tag (top-left), headline + gold underline,
+//     one main visual, one footnote with the source, progress bar (bottom).
+//  2. Swap the words inside TEXT "..." and SAY "..." for your own lesson.
+//  3. Swap ICON names (any Lucide name the app knows, e.g. "rocket").
+//  4. Palette lives in 6 colors: stage #0E1726, card #16233A, ink #F4F1EA,
+//     muted #9FB2CE, gold #FFC857 (emphasis), teal #3DDBD9 (good),
+//     coral #FF6B6B (problem). Find/replace to re-theme.
+//  5. Update the "NN / 08" counter in each tag and the progress bar if you
+//     add or remove scenes.
+//  6. Keep every SAY about 2.6 words per second and avoid repeating the
+//     on-screen words, so narration adds a reason, not an echo.
+// ==================================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #0E1726
+BOARD plain
+STYLE clean
+FONT neat
+STROKE 3
+
+SCENE 1 "The leak"
+  CREATE tag1 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  01 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg1_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg1_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head1 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "You forget faster than you think"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head1
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Learn something at lunch, and by tomorrow most of it has quietly slipped away. But the leak follows a pattern you can exploit."
+    DURATION 9.7s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+  CREATE big1 AS TEXT
+    POSITION 600 495
+    SIZE 250
+    ALIGN center
+    COLOR #FFC857
+    TEXT "66%"
+    DRAW 0.9s
+  END
+  CREATE cap1 AS TEXT
+    POSITION 600 745
+    SIZE 40
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "of a new memory fades within one day"
+    DRAW 0.6s
+  END
+  CREATE dot0 AS CIRCLE
+    POSITION 1160 400
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot1 AS CIRCLE
+    POSITION 1280 400
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot2 AS CIRCLE
+    POSITION 1400 400
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot3 AS CIRCLE
+    POSITION 1520 400
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot4 AS CIRCLE
+    POSITION 1640 400
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot5 AS CIRCLE
+    POSITION 1160 520
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot6 AS CIRCLE
+    POSITION 1280 520
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot7 AS CIRCLE
+    POSITION 1400 520
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot8 AS CIRCLE
+    POSITION 1520 520
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot9 AS CIRCLE
+    POSITION 1640 520
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot10 AS CIRCLE
+    POSITION 1160 640
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot11 AS CIRCLE
+    POSITION 1280 640
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot12 AS CIRCLE
+    POSITION 1400 640
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot13 AS CIRCLE
+    POSITION 1520 640
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot14 AS CIRCLE
+    POSITION 1640 640
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot15 AS CIRCLE
+    POSITION 1160 760
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot16 AS CIRCLE
+    POSITION 1280 760
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot17 AS CIRCLE
+    POSITION 1400 760
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot18 AS CIRCLE
+    POSITION 1520 760
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE dot19 AS CIRCLE
+    POSITION 1640 760
+    RADIUS 38
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 0.25s
+  END
+  CREATE leg1 AS TEXT
+    POSITION 1400 860
+    SIZE 30
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Each dot is 5% of the memory"
+    DRAW 0.5s
+  END
+  CREATE src1 AS TEXT
+    POSITION 960 945
+    SIZE 28
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Ebbinghaus, 1885 · nonsense syllables · meaningful material fades more slowly"
+    DRAW 0.6s
+  END
+  WAIT 0.6s
+  PARALLEL STAGGER 0.12s
+    ANIMATE dot0 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot2 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot3 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot5 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot6 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot8 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot9 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot10 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot12 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot13 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot15 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot17 OPACITY TO 0.12 DURATION 0.6s
+    ANIMATE dot18 OPACITY TO 0.12 DURATION 0.6s
+  END
+  WAIT 0.5s
+  ANIMATE big1 SCALE TO 1.08 DURATION 0.4s EASE easeOutBack
+  ANIMATE big1 SCALE TO 1 DURATION 0.3s
+  TRANSITION fade DURATION 0.5s
+END SCENE
+
+SCENE 2 "The curve"
+  CREATE tag2 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  02 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg2_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg2_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head2 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Forgetting is front-loaded"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head2
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Memory loss is not steady. It plunges in the first hour, then levels out. So the timing of a refresh matters more than the hours you put in."
+    DURATION 11.9s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+  CREATE yax AS LINE
+    FROM 360 290
+    TO 360 800
+    COLOR #9FB2CE
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE xax AS LINE
+    FROM 360 800
+    TO 1440 800
+    COLOR #9FB2CE
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE half AS LINE
+    FROM 360 550
+    TO 1440 550
+    COLOR #2A3B57
+    STROKE 2
+    LINESTYLE dashed
+    DRAW 0.4s
+  END
+  CREATE y100 AS TEXT
+    POSITION 280 300
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "100%"
+    DRAW 0.3s
+  END
+  CREATE y50 AS TEXT
+    POSITION 290 550
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "50%"
+    DRAW 0.3s
+  END
+  CREATE xl0 AS TEXT
+    POSITION 480 850
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "20 min"
+    DRAW 0.3s
+  END
+  CREATE xl1 AS TEXT
+    POSITION 620 850
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "1 hr"
+    DRAW 0.3s
+  END
+  CREATE xl3 AS TEXT
+    POSITION 900 850
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "1 day"
+    DRAW 0.3s
+  END
+  CREATE xl5 AS TEXT
+    POSITION 1180 850
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "6 days"
+    DRAW 0.3s
+  END
+  CREATE xl6 AS TEXT
+    POSITION 1320 850
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "31 days"
+    DRAW 0.3s
+  END
+  INK curve
+    POINTS 390 300, 397 317, 405 341, 415 369, 426 400, 439 432, 452 462, 466 488, 480 509, 495 525, 511 537, 529 547, 547 554, 565 561, 584 567, 602 573, 620 579, 638 586, 655 592, 672 598, 690 604, 708 609, 725 613, 742 617, 760 621, 778 624, 795 625, 812 626, 830 627, 848 628, 865 628, 882 629, 900 632, 918 634, 935 638, 952 642, 970 646, 988 650, 1005 654, 1022 658, 1040 661, 1058 663, 1075 665, 1092 666, 1110 668, 1128 669, 1145 670, 1162 671, 1180 673, 1198 675, 1218 678, 1239 681, 1259 684, 1278 688, 1295 690, 1309 693, 1320 694
+    COLOR #FF6B6B
+    WIDTH 7
+    FREEHAND on
+    INKSIZE 10
+    THINNING 0.15
+    SMOOTHING 0.8
+    STREAMLINE 0.5
+    PENFOLLOW on
+    DRAW 2.6s
+  END
+  PARALLEL STAGGER 0.1s
+  CREATE pt0 AS CIRCLE
+    POSITION 480 509
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  CREATE pt1 AS CIRCLE
+    POSITION 620 579
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  CREATE pt2 AS CIRCLE
+    POSITION 760 621
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  CREATE pt3 AS CIRCLE
+    POSITION 900 631.5
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  CREATE pt4 AS CIRCLE
+    POSITION 1040 661
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  CREATE pt5 AS CIRCLE
+    POSITION 1180 673
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  CREATE pt6 AS CIRCLE
+    POSITION 1320 694.5
+    RADIUS 11
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    STROKE 2
+    DRAW 0.25s
+  END
+  END
+  CREATE card2 AS RECTANGLE
+    POSITION 1660 520
+    WIDTH 320
+    HEIGHT 300
+    CORNERS 24
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE card2t AS TEXT
+    POSITION 1660 520
+    SIZE 34
+    MAXWIDTH 270
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "More than half is gone within the first hour"
+    DRAW 0.7s
+  END
+  INK CIRCLE pt1
+    COLOR #FFC857
+    WIDTH 5
+    DRAW 0.6s
+  END
+  CREATE src2 AS TEXT
+    POSITION 960 945
+    SIZE 28
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Ebbinghaus, 1885 · percent of relearning effort saved after each delay"
+    DRAW 0.5s
+  END
+  CAMERA ZOOM TARGET pt1 SCALE 1.3 DURATION 0.8s EASE easeInOut
+  WAIT 0.8s
+  CAMERA RESET DURATION 0.6s
+  TRANSITION wipe DURATION 0.5s
+END SCENE
+
+SCENE 3 "Spacing"
+  CREATE tag3 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  03 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg3_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg3_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head3 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Each review flattens the curve"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head3
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Here is the trick: revisit an idea right as it starts to fade. The clock resets, and the next slide is slower than the last."
+    DURATION 10.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+  CREATE yax3 AS LINE
+    FROM 360 325
+    TO 360 800
+    COLOR #9FB2CE
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE xax3 AS LINE
+    FROM 360 800
+    TO 1440 800
+    COLOR #9FB2CE
+    STROKE 3
+    DRAW 0.4s
+  END
+  INK baseline
+    POINTS 390 335, 399 402, 408 457, 425 540, 442 596, 460 634, 495 678, 530 699, 600 713, 670 715, 810 716, 950 716, 1090 716, 1265 716, 1440 716
+    COLOR #7A8CA8
+    WIDTH 6
+    FREEHAND on
+    INKSIZE 8
+    THINNING 0.15
+    SMOOTHING 0.8
+    STREAMLINE 0.5
+    PENFOLLOW on
+    DRAW 1.8s
+  END
+  CREATE lblbase AS TEXT
+    POSITION 1290 765
+    SIZE 30
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "No review"
+    DRAW 0.4s
+  END
+  INK spaced
+    POINTS 390 335, 396 381, 402 421, 408 457, 413 488, 419 515, 425 540, 425 335, 437 381, 448 421, 460 457, 472 488, 483 515, 495 540, 495 335, 507 359, 518 381, 530 402, 542 421, 553 440, 565 457, 577 473, 588 488, 600 502, 612 515, 623 528, 635 540, 635 335, 647 347, 658 359, 670 370, 682 381, 693 391, 705 402, 717 412, 728 421, 740 431, 752 440, 763 448, 775 457, 787 465, 798 473, 810 481, 822 488, 833 495, 845 502, 857 509, 868 515, 880 522, 880 335, 892 341, 903 347, 915 353, 927 359, 938 364, 950 370, 962 375, 973 381, 985 386, 997 391, 1008 397, 1020 402, 1032 407, 1043 412, 1055 416, 1067 421, 1078 426, 1090 431, 1102 435, 1113 440, 1125 444, 1137 448, 1148 453, 1160 457, 1172 461, 1183 465, 1195 469, 1207 473, 1218 477, 1230 481, 1242 484, 1253 488, 1265 492, 1277 495, 1288 499, 1300 502, 1312 506, 1323 509, 1335 512, 1347 515, 1358 519, 1370 522, 1382 525, 1393 528, 1405 531, 1417 534, 1428 537, 1440 540
+    COLOR #3DDBD9
+    WIDTH 8
+    DRAW 3.6s
+  END
+  CREATE lblspaced AS TEXT
+    POSITION 1240 575
+    SIZE 32
+    ALIGN center
+    COLOR #3DDBD9
+    TEXT "With spaced reviews"
+    DRAW 0.5s
+  END
+  PARALLEL STAGGER 0.4s
+  CREATE rv0 AS CIRCLE
+    POSITION 425 335
+    RADIUS 14
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE rvl0 AS TEXT
+    POSITION 425 850
+    SIZE 28
+    ALIGN center
+    COLOR #FFC857
+    TEXT "1"
+    DRAW 0.3s
+  END
+  CREATE rv1 AS CIRCLE
+    POSITION 495 335
+    RADIUS 14
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE rvl1 AS TEXT
+    POSITION 495 850
+    SIZE 28
+    ALIGN center
+    COLOR #FFC857
+    TEXT "3"
+    DRAW 0.3s
+  END
+  CREATE rv2 AS CIRCLE
+    POSITION 635 335
+    RADIUS 14
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE rvl2 AS TEXT
+    POSITION 635 850
+    SIZE 28
+    ALIGN center
+    COLOR #FFC857
+    TEXT "7"
+    DRAW 0.3s
+  END
+  CREATE rv3 AS CIRCLE
+    POSITION 880 335
+    RADIUS 14
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE rvl3 AS TEXT
+    POSITION 880 850
+    SIZE 28
+    ALIGN center
+    COLOR #FFC857
+    TEXT "14"
+    DRAW 0.3s
+  END
+  END
+  CREATE axt3 AS TEXT
+    POSITION 910 905
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "days since you first learned it"
+    DRAW 0.4s
+  END
+  CREATE src3 AS TEXT
+    POSITION 960 950
+    SIZE 28
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Schematic model. Real curves vary with material, sleep and attention."
+    DRAW 0.5s
+  END
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 4 "Recall"
+  CREATE tag4 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  04 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg4_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg4_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head4 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Which session wins after one week?"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head4
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Pick one before the reveal. Most people bet on the left."
+    DURATION 4.9s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+  CREATE cardL AS RECTANGLE
+    POSITION 600 620
+    WIDTH 500
+    HEIGHT 600
+    CORNERS 28
+    FILL #16233A
+    COLOR #2A3B57
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE cardR AS RECTANGLE
+    POSITION 1320 620
+    WIDTH 500
+    HEIGHT 600
+    CORNERS 28
+    FILL #16233A
+    COLOR #2A3B57
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE icoL AS ICON
+    NAME "book-open"
+    POSITION 600 400
+    SIZE 150
+    COLOR #FF6B6B
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE icoR AS ICON
+    NAME "brain"
+    POSITION 1320 400
+    SIZE 150
+    COLOR #3DDBD9
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE tL AS TEXT
+    POSITION 600 488
+    SIZE 38
+    MAXWIDTH 460
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Re-read the notes"
+    DRAW 0.5s
+  END
+  CREATE sL AS TEXT
+    POSITION 600 538
+    SIZE 30
+    MAXWIDTH 460
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "about 14 passes"
+    DRAW 0.4s
+  END
+  CREATE tR AS TEXT
+    POSITION 1320 488
+    SIZE 38
+    MAXWIDTH 460
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Read, then quiz yourself"
+    DRAW 0.5s
+  END
+  CREATE sR AS TEXT
+    POSITION 1320 538
+    SIZE 30
+    MAXWIDTH 460
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "about 3 passes + 3 recall tests"
+    DRAW 0.4s
+  END
+  WAIT 2.5s
+  CREATE barL AS RECTANGLE
+    POSITION 600 815
+    WIDTH 170
+    HEIGHT 160.0
+    CORNERS 12
+    FILL #FF6B6B
+    COLOR #FF6B6B
+    DRAW 1s
+  END
+  CREATE barR AS RECTANGLE
+    POSITION 1320 773
+    WIDTH 170
+    HEIGHT 244.0
+    CORNERS 12
+    FILL #3DDBD9
+    COLOR #3DDBD9
+    DRAW 1.4s
+  END
+  CREATE vL AS TEXT
+    POSITION 600 695
+    SIZE 56
+    ALIGN center
+    COLOR #FF6B6B
+    TEXT "40%"
+    DRAW 0.4s
+  END
+  CREATE vR AS TEXT
+    POSITION 1320 611
+    SIZE 56
+    ALIGN center
+    COLOR #3DDBD9
+    TEXT "61%"
+    DRAW 0.4s
+  END
+  SAY "Rereading builds familiarity. Retrieving forces your brain to rebuild the memory, and rebuilding is what makes it stick."
+    DURATION 7.8s
+    TONE punchline
+    WHO "Narrator"
+    LANG en
+  ANIMATE cardR COLOR TO #FFC857 DURATION 0.5s
+  CREATE diff4 AS TEXT
+    POSITION 960 600
+    SIZE 46
+    MAXWIDTH 160
+    ALIGN center
+    COLOR #FFC857
+    TEXT "+21\npoints"
+    DRAW 0.5s
+  END
+  ANIMATE cardR SCALE TO 1.03 DURATION 0.5s EASE easeOutBack
+  CREATE src4 AS TEXT
+    POSITION 960 960
+    SIZE 28
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Roediger & Karpicke, 2006 · recall of science passages one week later"
+    DRAW 0.5s
+  END
+  TRANSITION fade DURATION 0.5s
+END SCENE
+
+SCENE 5 "The loop"
+  CREATE tag5 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  05 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg5_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg5_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head5 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "The four-move recall loop"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head5
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Four moves, on repeat. Study briefly, then pull it from memory without peeking, find what slipped, and book the next round."
+    DURATION 9.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+  CREATE n1 AS CIRCLE
+    POSITION 360 520
+    RADIUS 95
+    FILL #16233A
+    COLOR #B8A9FF
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE n1i AS ICON
+    NAME "book-open"
+    POSITION 360 520
+    SIZE 175
+    COLOR #B8A9FF
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE n1t AS TEXT
+    POSITION 360 680
+    SIZE 44
+    ALIGN center
+    COLOR #B8A9FF
+    TEXT "Learn"
+    DRAW 0.4s
+  END
+  CREATE n1d AS TEXT
+    POSITION 360 782
+    SIZE 30
+    MAXWIDTH 330
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "25 focused minutes, then close the book"
+    DRAW 0.5s
+  END
+  CREATE n2 AS CIRCLE
+    POSITION 760 520
+    RADIUS 95
+    FILL #16233A
+    COLOR #3DDBD9
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE n2i AS ICON
+    NAME "pencil-line"
+    POSITION 760 520
+    SIZE 175
+    COLOR #3DDBD9
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE n2t AS TEXT
+    POSITION 760 680
+    SIZE 44
+    ALIGN center
+    COLOR #3DDBD9
+    TEXT "Recall"
+    DRAW 0.4s
+  END
+  CREATE n2d AS TEXT
+    POSITION 760 782
+    SIZE 30
+    MAXWIDTH 330
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Write what you remember on a blank page"
+    DRAW 0.5s
+  END
+  CREATE n3 AS CIRCLE
+    POSITION 1160 520
+    RADIUS 95
+    FILL #16233A
+    COLOR #FF6B6B
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE n3i AS ICON
+    NAME "circle-check"
+    POSITION 1160 520
+    SIZE 175
+    COLOR #FF6B6B
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE n3t AS TEXT
+    POSITION 1160 680
+    SIZE 44
+    ALIGN center
+    COLOR #FF6B6B
+    TEXT "Check"
+    DRAW 0.4s
+  END
+  CREATE n3d AS TEXT
+    POSITION 1160 782
+    SIZE 30
+    MAXWIDTH 330
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Compare with your notes and mark the gaps"
+    DRAW 0.5s
+  END
+  CREATE n4 AS CIRCLE
+    POSITION 1560 520
+    RADIUS 95
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE n4i AS ICON
+    NAME "calendar-check"
+    POSITION 1560 520
+    SIZE 175
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE n4t AS TEXT
+    POSITION 1560 680
+    SIZE 44
+    ALIGN center
+    COLOR #FFC857
+    TEXT "Space"
+    DRAW 0.4s
+  END
+  CREATE n4d AS TEXT
+    POSITION 1560 782
+    SIZE 30
+    MAXWIDTH 330
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Schedule the next round a little later"
+    DRAW 0.5s
+  END
+  ARROW n1 -> n2
+    ROUTE straight
+    HEAD end
+    COLOR #9FB2CE
+    STROKE 4
+    DRAW 0.5s
+  ARROW n2 -> n3
+    ROUTE straight
+    HEAD end
+    COLOR #9FB2CE
+    STROKE 4
+    DRAW 0.5s
+  ARROW n3 -> n4
+    ROUTE straight
+    HEAD end
+    COLOR #9FB2CE
+    STROKE 4
+    DRAW 0.5s
+  ARROW n4 -> n2
+    ROUTE elbow
+    VIA 1560 345 760 345
+    LINESTYLE dashed
+    HEAD end
+    COLOR #FFC857
+    STROKE 4
+    DRAW 1.2s
+  CREATE rule5 AS RECTANGLE
+    POSITION 960 905
+    WIDTH 1380
+    HEIGHT 92
+    CORNERS 24
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE rule5t AS TEXT
+    POSITION 960 905
+    SIZE 32
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #FFC857
+    TEXT "Rule of thumb: recall felt easy? Wait longer. Failed? Shorten the gap."
+    DRAW 0.8s
+  END
+  LOOP n4i pulse AMPLITUDE 6 PERIOD 1.4s
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 6 "The plan"
+  CREATE tag6 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  06 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg6_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg6_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head6 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Two weeks, about 75 minutes"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head6
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Light practice, with gaps that keep widening, as the dots below show. Each memory needs less rescuing, so sessions stay short."
+    DURATION 9.2s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+  TABLE plan
+    POSITION 960 560
+    SIZE 1400 420
+    COLUMNS "When" "What to do"
+    ROW "Day 0" "Learn it, then recall it on a blank page · 25 min"
+    ROW "Day 1" "Quiz yourself before opening your notes · 10 min"
+    ROW "Day 3" "Recall again and restudy only the gaps · 10 min"
+    ROW "Day 7 + 14" "Mix in older topics, then explain aloud · 15 min each"
+    HEADERCOLOR #FFC857
+    COLOR #F4F1EA
+    FILL #16233A
+    STROKE 3
+    DRAW 1.2s
+  END
+  CREATE tl6 AS LINE
+    FROM 360 885
+    TO 1560 885
+    COLOR #2A3B57
+    STROKE 4
+    DRAW 0.6s
+  END
+  PARALLEL STAGGER 0.3s
+  CREATE tld0 AS CIRCLE
+    POSITION 360 885
+    RADIUS 27.75
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.4s
+  END
+  CREATE tld1 AS CIRCLE
+    POSITION 445.714 885
+    RADIUS 19.5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.4s
+  END
+  CREATE tld2 AS CIRCLE
+    POSITION 617.143 885
+    RADIUS 19.5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.4s
+  END
+  CREATE tld3 AS CIRCLE
+    POSITION 960 885
+    RADIUS 22.25
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.4s
+  END
+  CREATE tld4 AS CIRCLE
+    POSITION 1560 885
+    RADIUS 22.25
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 2
+    DRAW 0.4s
+  END
+  END
+  ANIMATE plan HIGHLIGHT ROW 1 DURATION 1.2s
+  ANIMATE plan HIGHLIGHT ROW 2 DURATION 1.2s
+  ANIMATE plan HIGHLIGHT ROW 3 DURATION 1.2s
+  ANIMATE plan HIGHLIGHT ROW 4 DURATION 1.2s
+  TRANSITION wipe DURATION 0.5s
+END SCENE
+
+SCENE 7 "Recap"
+  CREATE tag7 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  07 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg7_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg7_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #2A3B57
+    COLOR #2A3B57
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE head7 AS TEXT
+    POSITION 960 215
+    SIZE 62
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Three ideas to keep"
+    DRAW 0.7s
+  END
+  INK UNDERLINE head7
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.5s
+  END
+  SAY "Expect the fade, revisit on a rising schedule, and make your brain work for the answer. That is the whole system."
+    DURATION 9.1s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+  CREATE c1 AS RECTANGLE
+    POSITION 420 560
+    WIDTH 480
+    HEIGHT 500
+    CORNERS 28
+    FILL #16233A
+    COLOR #FF6B6B
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE c1i AS ICON
+    NAME "trending-down"
+    POSITION 420 430
+    SIZE 215
+    COLOR #FF6B6B
+    STROKE 4
+    DRAW 0.7s
+  END
+  CREATE c1t AS TEXT
+    POSITION 420 590
+    SIZE 40
+    MAXWIDTH 420
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Forgetting is fast"
+    DRAW 0.5s
+  END
+  CREATE c1d AS TEXT
+    POSITION 420 675
+    SIZE 30
+    MAXWIDTH 400
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Most of the loss happens in the first hour."
+    DRAW 0.5s
+  END
+  CREATE c2 AS RECTANGLE
+    POSITION 960 560
+    WIDTH 480
+    HEIGHT 500
+    CORNERS 28
+    FILL #16233A
+    COLOR #3DDBD9
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE c2i AS ICON
+    NAME "calendar-check"
+    POSITION 960 430
+    SIZE 215
+    COLOR #3DDBD9
+    STROKE 4
+    DRAW 0.7s
+  END
+  CREATE c2t AS TEXT
+    POSITION 960 590
+    SIZE 40
+    MAXWIDTH 420
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Space your reviews"
+    DRAW 0.5s
+  END
+  CREATE c2d AS TEXT
+    POSITION 960 675
+    SIZE 30
+    MAXWIDTH 400
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Each one slows the next drop."
+    DRAW 0.5s
+  END
+  CREATE c3 AS RECTANGLE
+    POSITION 1500 560
+    WIDTH 480
+    HEIGHT 500
+    CORNERS 28
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.5s
+  END
+  CREATE c3i AS ICON
+    NAME "brain"
+    POSITION 1500 430
+    SIZE 215
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.7s
+  END
+  CREATE c3t AS TEXT
+    POSITION 1500 590
+    SIZE 40
+    MAXWIDTH 420
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Test, don't re-read"
+    DRAW 0.5s
+  END
+  CREATE c3d AS TEXT
+    POSITION 1500 675
+    SIZE 30
+    MAXWIDTH 400
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Effort to retrieve is what builds memory."
+    DRAW 0.5s
+  END
+  CREATE close7 AS TEXT
+    POSITION 960 900
+    SIZE 46
+    MAXWIDTH 1400
+    ALIGN center
+    COLOR #FFC857
+    TEXT "Forget on schedule. Remember for good."
+    DRAW 0.8s
+  END
+  TRANSITION fade DURATION 0.5s
+END SCENE
+
+SCENE 8 "Your turn"
+  CREATE tag8 AS TEXT
+    POSITION 340 128
+    SIZE 28
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "MEMORY LAB  ·  08 / 08"
+    DRAW 0.4s
+  END
+  CREATE seg8_0 AS RECTANGLE
+    POSITION 561 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_1 AS RECTANGLE
+    POSITION 675 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_2 AS RECTANGLE
+    POSITION 789 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_3 AS RECTANGLE
+    POSITION 903 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_4 AS RECTANGLE
+    POSITION 1017 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_5 AS RECTANGLE
+    POSITION 1131 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_6 AS RECTANGLE
+    POSITION 1245 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  CREATE seg8_7 AS RECTANGLE
+    POSITION 1359 1036
+    WIDTH 100
+    HEIGHT 10
+    CORNERS 5
+    FILL #FFC857
+    COLOR #FFC857
+    STROKE 1
+    DRAW 0.05s
+  END
+  SAY "Go on, give it thirty seconds. If it feels a little uncomfortable, that is the memory being built."
+    DURATION 7.9s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+  CREATE brain8 AS ICON
+    NAME "brain"
+    POSITION 960 290
+    SIZE 340
+    COLOR #3DDBD9
+    STROKE 3
+    DRAW 1s
+  END
+  LOOP brain8 pulse AMPLITUDE 8 PERIOD 1.6s
+  CREATE head8 AS TEXT
+    POSITION 960 525
+    SIZE 76
+    MAXWIDTH 1400
+    ALIGN center
+    COLOR #F4F1EA
+    TEXT "Pause. Look away. Recall three ideas from this lesson."
+    DRAW 1s
+  END
+  INK UNDERLINE head8
+    COLOR #FFC857
+    WIDTH 6
+    DRAW 0.6s
+  END
+  PARALLEL STAGGER 0.25s
+  CREATE slot0 AS CIRCLE
+    POSITION 800 775
+    RADIUS 50
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.4s
+  END
+  CREATE slot1 AS CIRCLE
+    POSITION 960 775
+    RADIUS 50
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.4s
+  END
+  CREATE slot2 AS CIRCLE
+    POSITION 1120 775
+    RADIUS 50
+    FILL #16233A
+    COLOR #FFC857
+    STROKE 4
+    DRAW 0.4s
+  END
+  END
+  CREATE slotn0 AS TEXT
+    POSITION 800 775
+    SIZE 44
+    ALIGN center
+    COLOR #FFC857
+    TEXT "1"
+    DRAW 0.3s
+  END
+  CREATE slotn1 AS TEXT
+    POSITION 960 775
+    SIZE 44
+    ALIGN center
+    COLOR #FFC857
+    TEXT "2"
+    DRAW 0.3s
+  END
+  CREATE slotn2 AS TEXT
+    POSITION 1120 775
+    SIZE 44
+    ALIGN center
+    COLOR #FFC857
+    TEXT "3"
+    DRAW 0.3s
+  END
+  CREATE sub8 AS TEXT
+    POSITION 960 895
+    SIZE 36
+    MAXWIDTH 1200
+    ALIGN center
+    COLOR #9FB2CE
+    TEXT "Then check your notes and book tomorrow's review."
+    DRAW 0.6s
+  END
+  WAIT 1.5s
+END SCENE
