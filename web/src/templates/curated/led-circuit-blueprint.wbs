@@ -1,0 +1,964 @@
+// ============================================================
+// STYLE 4: Blueprint Lab  (template + demo topic)
+// Topic: Why every LED needs a resistor (9 V supply, 2 V LED, 20 mA)
+// Look: deep-blue drafting board, thin cyan/white lines, yellow callouts,
+//   dimension lines with end ticks, title block, registration marks,
+//   and an APPROVED stamp at the end.
+// Palette by meaning:
+//   white #FFFFFF = main text    cyan #7FE3FF = parts and linework
+//   yellow #FFD86B = callouts    mint #7CF2A8 = pass / approved
+//   orange #FF9E6B = danger
+// Reuse: keep the header + title block (scene 1), swap parts and numbers.
+// ============================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #0B2A5B
+BOARD blueprint
+STYLE clean
+FONT neat
+STROKE 3
+SUBTITLES off
+
+SCENE 1 "Title sheet"
+  CREATE sheetFrame AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1700
+    HEIGHT 900
+    COLOR #7FE3FF
+    STROKE 3
+    CORNERS 2
+    DRAW 1.2s
+  END
+  CREATE regH1 AS LINE
+    FROM 165 170
+    TO 215 170
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE regV1 AS LINE
+    FROM 190 145
+    TO 190 195
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE regH2 AS LINE
+    FROM 1705 170
+    TO 1755 170
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE regV2 AS LINE
+    FROM 1730 145
+    TO 1730 195
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE regH3 AS LINE
+    FROM 165 910
+    TO 215 910
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE regV3 AS LINE
+    FROM 190 885
+    TO 190 935
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE labTag AS TEXT
+    POSITION 960 270
+    SIZE 40
+    COLOR #7FE3FF
+    TEXT "BLUEPRINT LAB"
+    DRAW 0.6s
+  END
+  CREATE sheetTitle AS TEXT
+    POSITION 960 400
+    SIZE 120
+    COLOR #FFFFFF
+    TEXT "LED CIRCUIT"
+    DRAW 0.9s
+  END
+  CREATE titleDimL AS LINE
+    FROM 560 490
+    TO 1360 490
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.5s
+  END
+  CREATE titleDimA AS LINE
+    FROM 560 470
+    TO 560 510
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE titleDimB AS LINE
+    FROM 1360 470
+    TO 1360 510
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE sheetSub AS TEXT
+    POSITION 960 580
+    SIZE 56
+    COLOR #BFD9FF
+    TEXT "Why every LED needs a resistor"
+    DRAW 0.8s
+  END
+  CREATE titleBlock AS RECTANGLE
+    POSITION 1450 860
+    WIDTH 520
+    HEIGHT 150
+    COLOR #7FE3FF
+    STROKE 3
+    CORNERS 2
+    DRAW 0.6s
+  END
+  CREATE blockDivider AS LINE
+    FROM 1190 860
+    TO 1710 860
+    COLOR #7FE3FF
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE blockSheet AS TEXT
+    POSITION 1450 825
+    SIZE 30
+    COLOR #BFD9FF
+    TEXT "SHEET 01 / 06"
+    DRAW 0.4s
+  END
+  CREATE blockScale AS TEXT
+    POSITION 1450 895
+    SIZE 30
+    COLOR #BFD9FF
+    TEXT "SCALE 1:1   REV A"
+    DRAW 0.4s
+  END
+  SAY "Every gadget starts as a drawing, so let's engineer a tiny lamp."
+    DURATION 3.4s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Frames the lesson as an engineering job."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+SCENE 2 "Parts list"
+  CREATE partsTitle AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #FFFFFF
+    TEXT "Bill of Materials"
+    DRAW 0.7s
+  END
+  CREATE batPlus AS LINE
+    FROM 260 460
+    TO 400 460
+    COLOR #FFFFFF
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE batMinus AS LINE
+    FROM 290 520
+    TO 370 520
+    COLOR #FFFFFF
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE resPart AS RECTANGLE
+    POSITION 750 490
+    WIDTH 260
+    HEIGHT 100
+    COLOR #7FE3FF
+    STROKE 4
+    CORNERS 6
+    DRAW 0.6s
+  END
+  CREATE ledPart AS DIAMOND
+    POSITION 1170 490
+    WIDTH 150
+    HEIGHT 150
+    COLOR #7FE3FF
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE wirePart AS LINE
+    FROM 1480 490
+    TO 1700 490
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE leader1 AS LINE
+    FROM 330 340
+    TO 330 415
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE callout1 AS CIRCLE
+    POSITION 330 300
+    RADIUS 40
+    FILL #0B2A5B
+    COLOR #FFD86B
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE callNum1 AS TEXT
+    POSITION 330 300
+    SIZE 44
+    COLOR #FFD86B
+    TEXT "1"
+    DRAW 0.3s
+  END
+  CREATE leader2 AS LINE
+    FROM 750 340
+    TO 750 415
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE callout2 AS CIRCLE
+    POSITION 750 300
+    RADIUS 40
+    FILL #0B2A5B
+    COLOR #FFD86B
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE callNum2 AS TEXT
+    POSITION 750 300
+    SIZE 44
+    COLOR #FFD86B
+    TEXT "2"
+    DRAW 0.3s
+  END
+  CREATE leader3 AS LINE
+    FROM 1170 340
+    TO 1170 415
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE callout3 AS CIRCLE
+    POSITION 1170 300
+    RADIUS 40
+    FILL #0B2A5B
+    COLOR #FFD86B
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE callNum3 AS TEXT
+    POSITION 1170 300
+    SIZE 44
+    COLOR #FFD86B
+    TEXT "3"
+    DRAW 0.3s
+  END
+  CREATE leader4 AS LINE
+    FROM 1590 340
+    TO 1590 415
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE callout4 AS CIRCLE
+    POSITION 1590 300
+    RADIUS 40
+    FILL #0B2A5B
+    COLOR #FFD86B
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE callNum4 AS TEXT
+    POSITION 1590 300
+    SIZE 44
+    COLOR #FFD86B
+    TEXT "4"
+    DRAW 0.3s
+  END
+  CREATE partName1 AS TEXT
+    POSITION 330 650
+    SIZE 38
+    MAXWIDTH 340
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "9 V battery"
+    DRAW 0.5s
+  END
+  CREATE partName2 AS TEXT
+    POSITION 750 650
+    SIZE 38
+    MAXWIDTH 340
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "390 ohm resistor"
+    DRAW 0.5s
+  END
+  CREATE partName3 AS TEXT
+    POSITION 1170 650
+    SIZE 38
+    MAXWIDTH 340
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Red LED"
+    DRAW 0.5s
+  END
+  CREATE partName4 AS TEXT
+    POSITION 1590 650
+    SIZE 38
+    MAXWIDTH 340
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Copper wire"
+    DRAW 0.5s
+  END
+  SAY "Four parts in total, but only one of them is a bodyguard."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets up a guessing beat before the reveal."
+  CREATE guardRing AS ELLIPSE
+    POSITION 750 490
+    WIDTH 340
+    HEIGHT 190
+    COLOR #FFD86B
+    STROKE 4
+    DRAW 0.8s
+  END
+  CREATE guardNote AS TEXT
+    POSITION 960 850
+    SIZE 44
+    MAXWIDTH 1400
+    ALIGN center
+    COLOR #FFD86B
+    TEXT "Watch what part 2 does to the current."
+    DRAW 0.8s
+  END
+  SAY "Guess first, then follow the electrons around the loop."
+    DURATION 3.2s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Invites prediction."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+SCENE 3 "The loop"
+  CREATE loopTitle AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #FFFFFF
+    TEXT "One Closed Loop"
+    DRAW 0.7s
+  END
+  CREATE wTopA AS LINE
+    FROM 460 330
+    TO 850 330
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.5s
+  END
+  CREATE wTopB AS LINE
+    FROM 1070 330
+    TO 1460 330
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.5s
+  END
+  CREATE wRightA AS LINE
+    FROM 1460 330
+    TO 1460 485
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE wRightB AS LINE
+    FROM 1460 625
+    TO 1460 780
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE wBottom AS LINE
+    FROM 1460 780
+    TO 460 780
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.7s
+  END
+  CREATE wLeftA AS LINE
+    FROM 460 780
+    TO 460 590
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE wLeftB AS LINE
+    FROM 460 520
+    TO 460 330
+    COLOR #7FE3FF
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE batP AS LINE
+    FROM 400 520
+    TO 520 520
+    COLOR #FFFFFF
+    STROKE 7
+    DRAW 0.3s
+  END
+  CREATE batN AS LINE
+    FROM 430 590
+    TO 490 590
+    COLOR #FFFFFF
+    STROKE 7
+    DRAW 0.3s
+  END
+  CREATE resBox AS RECTANGLE
+    POSITION 960 330
+    WIDTH 220
+    HEIGHT 90
+    FILL #0B2A5B
+    COLOR #FFFFFF
+    STROKE 4
+    CORNERS 6
+    DRAW 0.5s
+  END
+  CREATE ledBody AS DIAMOND
+    POSITION 1460 555
+    WIDTH 130
+    HEIGHT 130
+    FILL #0B2A5B
+    COLOR #FFFFFF
+    STROKE 4
+    DRAW 0.6s
+  END
+  CREATE batLabel AS TEXT
+    POSITION 270 555
+    SIZE 36
+    MAXWIDTH 260
+    ALIGN center
+    COLOR #BFD9FF
+    TEXT "9 V battery"
+    DRAW 0.5s
+  END
+  CREATE resLabel AS TEXT
+    POSITION 960 240
+    SIZE 40
+    MAXWIDTH 420
+    ALIGN center
+    COLOR #BFD9FF
+    TEXT "390 ohm resistor"
+    DRAW 0.5s
+  END
+  CREATE ledLabel AS TEXT
+    POSITION 1690 600
+    SIZE 40
+    COLOR #BFD9FF
+    TEXT "LED"
+    DRAW 0.4s
+  END
+  CREATE flowA1 AS CIRCLE
+    POSITION 620 330
+    RADIUS 9
+    FILL #FFD86B
+    COLOR #FFD86B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE flowA2 AS CIRCLE
+    POSITION 790 330
+    RADIUS 9
+    FILL #FFD86B
+    COLOR #FFD86B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE flowB1 AS CIRCLE
+    POSITION 1200 780
+    RADIUS 9
+    FILL #FFD86B
+    COLOR #FFD86B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE flowB2 AS CIRCLE
+    POSITION 760 780
+    RADIUS 9
+    FILL #FFD86B
+    COLOR #FFD86B
+    STROKE 2
+    DRAW 0.2s
+  END
+  ARROW flowA1 -> flowA2
+    COLOR #FFD86B
+    STROKE 8
+    DRAW 0.6s
+  ARROW flowB1 -> flowB2
+    COLOR #FFD86B
+    STROKE 8
+    DRAW 0.6s
+  SAY "Current leaves the battery's long plate and must come all the way back."
+    DURATION 3.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Conventional current direction."
+  ANIMATE ledBody COLOR TO #FFD86B
+    DURATION 0.6s
+  ANIMATE ledBody SCALE TO 1.25
+    DURATION 0.3s
+    EASE easeOutBack
+  ANIMATE ledBody SCALE TO 1
+    DURATION 0.3s
+  CREATE ray1 AS LINE
+    FROM 1535 500
+    TO 1600 445
+    COLOR #FFD86B
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE ray2 AS LINE
+    FROM 1550 545
+    TO 1625 545
+    COLOR #FFD86B
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE loopDimL AS LINE
+    FROM 460 880
+    TO 1460 880
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.5s
+  END
+  CREATE loopDimA AS LINE
+    FROM 460 860
+    TO 460 900
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE loopDimB AS LINE
+    FROM 1460 860
+    TO 1460 900
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE loopNote AS TEXT
+    POSITION 960 950
+    SIZE 36
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Break the path anywhere and the lamp goes dark."
+    DRAW 0.8s
+  END
+  SAY "Close the path and the lamp lights; break it and nothing flows."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Reinforces the closed-circuit idea without repeating the label."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+SCENE 4 "Voltage budget"
+  CREATE budgetTitle AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #FFFFFF
+    TEXT "The Voltage Budget"
+    DRAW 0.7s
+  END
+  CREATE supplyDimL AS LINE
+    FROM 360 290
+    TO 1560 290
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.5s
+  END
+  CREATE supplyDimA AS LINE
+    FROM 360 268
+    TO 360 312
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE supplyDimB AS LINE
+    FROM 1560 268
+    TO 1560 312
+    COLOR #BFD9FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE supplyLabel AS TEXT
+    POSITION 960 225
+    SIZE 40
+    COLOR #BFD9FF
+    TEXT "9 V supply to spend"
+    DRAW 0.6s
+  END
+  CREATE resSeg AS RECTANGLE
+    POSITION 827 400
+    WIDTH 933
+    HEIGHT 120
+    FILL #1A5BA8
+    COLOR #7FE3FF
+    STROKE 3
+    CORNERS 2
+    DRAW 0.8s
+  END
+  CREATE ledSeg AS RECTANGLE
+    POSITION 1427 400
+    WIDTH 267
+    HEIGHT 120
+    FILL #7A5B00
+    COLOR #FFD86B
+    STROKE 3
+    CORNERS 2
+    DRAW 0.6s
+  END
+  CREATE resSegText AS TEXT
+    POSITION 827 400
+    SIZE 42
+    MAXWIDTH 800
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Resistor takes 7 V"
+    DRAW 0.6s
+  END
+  CREATE ledSegText AS TEXT
+    POSITION 1427 400
+    SIZE 40
+    MAXWIDTH 240
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "LED 2 V"
+    DRAW 0.5s
+  END
+  SAY "Seven volts have to vanish somewhere, and the resistor volunteers."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Why the resistor needs to absorb the leftover voltage."
+  CREATE calcA AS TEXT
+    POSITION 960 560
+    SIZE 56
+    COLOR #FFFFFF
+    TEXT "R = V / I"
+    DRAW 0.6s
+  END
+  CREATE calcB AS TEXT
+    POSITION 960 660
+    SIZE 52
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #7FE3FF
+    TEXT "R = 7 V / 0.020 A = 350 ohm"
+    DRAW 0.9s
+  END
+  CREATE calcC AS TEXT
+    POSITION 960 770
+    SIZE 46
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #FFD86B
+    TEXT "Round UP to a standard part: 390 ohm"
+    DRAW 0.9s
+  END
+  CREATE calcD AS TEXT
+    POSITION 960 870
+    SIZE 38
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #7CF2A8
+    TEXT "7 V / 390 ohm = about 18 mA"
+    DRAW 0.8s
+  END
+  SAY "Rounding up keeps current beneath the limit instead of above it."
+    DURATION 3.6s
+    TONE warning
+    WHO "Narrator"
+    LANG en
+    DETAIL "Why rounding down would be risky."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+SCENE 5 "Stress test"
+  CREATE stressTitle AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #FFFFFF
+    TEXT "Stress Test"
+    DRAW 0.7s
+  END
+  CREATE bar1 AS RECTANGLE
+    POSITION 1050 440
+    WIDTH 1300
+    HEIGHT 100
+    FILL #8E2B2B
+    COLOR #FF9E6B
+    STROKE 3
+    CORNERS 2
+    DRAW 1s
+  END
+  CREATE bar2 AS RECTANGLE
+    POSITION 714 640
+    WIDTH 627
+    HEIGHT 100
+    FILL #1A5BA8
+    COLOR #7FE3FF
+    STROKE 3
+    CORNERS 2
+    DRAW 0.8s
+  END
+  CREATE limitLine AS LINE
+    FROM 1100 300
+    TO 1100 760
+    COLOR #FFD86B
+    STROKE 4
+    LINESTYLE dashed
+    DRAW 0.6s
+  END
+  CREATE limitLabel AS TEXT
+    POSITION 1100 255
+    SIZE 40
+    MAXWIDTH 500
+    ALIGN center
+    COLOR #FFD86B
+    TEXT "LED limit: 20 mA"
+    DRAW 0.6s
+  END
+  CREATE row1 AS TEXT
+    POSITION 540 365
+    SIZE 40
+    COLOR #FF9E6B
+    TEXT "No resistor"
+    DRAW 0.4s
+  END
+  CREATE row2 AS TEXT
+    POSITION 600 565
+    SIZE 40
+    MAXWIDTH 400
+    ALIGN center
+    COLOR #BFD9FF
+    TEXT "390 ohm resistor"
+    DRAW 0.4s
+  END
+  CREATE bar1Text AS TEXT
+    POSITION 1450 440
+    SIZE 42
+    MAXWIDTH 360
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "off the chart"
+    DRAW 0.5s
+  END
+  CREATE bar2Text AS TEXT
+    POSITION 714 640
+    SIZE 42
+    MAXWIDTH 420
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "about 18 mA"
+    DRAW 0.5s
+  END
+  CREATE spark1 AS LINE
+    FROM 1720 440
+    TO 1785 440
+    COLOR #FF9E6B
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE spark2 AS LINE
+    FROM 1715 410
+    TO 1765 368
+    COLOR #FF9E6B
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE spark3 AS LINE
+    FROM 1715 470
+    TO 1765 512
+    COLOR #FF9E6B
+    STROKE 4
+    DRAW 0.2s
+  END
+  SAY "Without a limiter, nothing stops current from climbing until the LED dies."
+    DURATION 3.8s
+    TONE warning
+    WHO "Narrator"
+    LANG en
+    DETAIL "Failure mode without a series resistor."
+  CREATE verdict AS TEXT
+    POSITION 960 860
+    SIZE 50
+    MAXWIDTH 1400
+    ALIGN center
+    COLOR #7CF2A8
+    TEXT "Resistor on duty: the LED lives."
+    DRAW 0.9s
+  END
+  SAY "With the resistor in place, current stays politely under the line."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Contrasts the safe case."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+SCENE 6 "Design review"
+  CREATE reviewTitle AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #FFFFFF
+    TEXT "Design Review"
+    DRAW 0.7s
+  END
+  CREATE tickRing1 AS CIRCLE
+    POSITION 350 350
+    RADIUS 28
+    COLOR #7CF2A8
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE tickA1 AS LINE
+    FROM 338 350
+    TO 348 361
+    COLOR #7CF2A8
+    STROKE 5
+    DRAW 0.2s
+  END
+  CREATE tickB1 AS LINE
+    FROM 348 361
+    TO 366 338
+    COLOR #7CF2A8
+    STROKE 5
+    DRAW 0.2s
+  END
+  CREATE item1 AS TEXT
+    POSITION 760 350
+    SIZE 48
+    MAXWIDTH 720
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Loop is closed"
+    DRAW 0.6s
+  END
+  CREATE tickRing2 AS CIRCLE
+    POSITION 350 470
+    RADIUS 28
+    COLOR #7CF2A8
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE tickA2 AS LINE
+    FROM 338 470
+    TO 348 481
+    COLOR #7CF2A8
+    STROKE 5
+    DRAW 0.2s
+  END
+  CREATE tickB2 AS LINE
+    FROM 348 481
+    TO 366 458
+    COLOR #7CF2A8
+    STROKE 5
+    DRAW 0.2s
+  END
+  CREATE item2 AS TEXT
+    POSITION 760 470
+    SIZE 48
+    MAXWIDTH 720
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Voltage budget balanced"
+    DRAW 0.6s
+  END
+  CREATE tickRing3 AS CIRCLE
+    POSITION 350 590
+    RADIUS 28
+    COLOR #7CF2A8
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE tickA3 AS LINE
+    FROM 338 590
+    TO 348 601
+    COLOR #7CF2A8
+    STROKE 5
+    DRAW 0.2s
+  END
+  CREATE tickB3 AS LINE
+    FROM 348 601
+    TO 366 578
+    COLOR #7CF2A8
+    STROKE 5
+    DRAW 0.2s
+  END
+  CREATE item3 AS TEXT
+    POSITION 760 590
+    SIZE 48
+    MAXWIDTH 720
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Current under the limit"
+    DRAW 0.6s
+  END
+  SAY "Three checks passed, so the drawing can go to the workshop."
+    DURATION 3.4s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Closes the review before the stamp lands."
+  CREATE ruleText AS TEXT
+    POSITION 600 800
+    SIZE 40
+    MAXWIDTH 700
+    ALIGN center
+    COLOR #BFD9FF
+    TEXT "Rule: R = (supply - LED drop) / current"
+    DRAW 0.9s
+  END
+  CREATE stampBox AS RECTANGLE
+    POSITION 1400 800
+    WIDTH 560
+    HEIGHT 160
+    COLOR #7CF2A8
+    STROKE 8
+    CORNERS 12
+    DRAW 0.6s
+  END
+  CREATE stampText AS TEXT
+    POSITION 1400 800
+    SIZE 76
+    COLOR #7CF2A8
+    TEXT "APPROVED"
+    DRAW 0.4s
+  END
+  ANIMATE stampBox ROTATE TO -8
+    DURATION 0.3s
+  ANIMATE stampText ROTATE TO -8
+    DURATION 0.3s
+  SAY "Spend leftover volts on a resistor, and round the value up."
+    DURATION 3.4s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Compact recipe the viewer can reuse."
+END SCENE

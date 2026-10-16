@@ -1,0 +1,610 @@
+// Strokeline Education Style 10: Vertical Micro-Lesson (1080x1920)
+// Purpose: Copy-ready template for TikTok, Reels and YouTube Shorts. One fact per scene.
+// Demo topic: Photosynthesis (same topic as the Chalkboard and Mind Map styles).
+// Look: near-black background, lime accent, pink hook underline, progress bar on top,
+//   hook line at the top, one big visual in the middle, takeaway card below, brand pill at the foot.
+// Scenes: 1 hook, 2 fact 1, 3 fact 2, 4 remember + call to action.
+//
+// HOW TO REUSE
+//  1. Change the hook text (big white line), the badge, and the takeaway card text in each scene.
+//  2. Visual zone is y=620..1040. Swap the icons (NAME ...) and circle colors for your topic.
+//  3. SUBTITLES is on: the band y=1300..1580 is kept empty on purpose. Do not place content there.
+//  4. Keep hooks to about 20 characters so they stay on 1-2 lines at SIZE 110.
+//  5. Keep each scene under 12 text objects (validator limit W_TOO_CROWDED).
+//  6. Safe icons: leaf, zap, droplet, wind, apple, star, lightbulb, flask-conical, eraser.
+//
+// Validator status: run with the Strokeline app validator before publishing.
+VERSION 1.0
+CANVAS 1080 1920
+BACKGROUND #101820
+STYLE clean
+FONT neat
+STROKE 4
+SUBTITLES on
+
+SCENE 1 "Hook"
+  SAY "Here is the weirdest part of a leaf's day job, in under half a minute."
+    DURATION 4s
+    TONE hook
+  CREATE pg1 AS RECTANGLE
+    POSITION 270 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #B6FF3B
+    COLOR #B6FF3B
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg2 AS RECTANGLE
+    POSITION 450 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg3 AS RECTANGLE
+    POSITION 630 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg4 AS RECTANGLE
+    POSITION 810 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE badge AS RECTANGLE
+    POSITION 540 230
+    WIDTH 520
+    HEIGHT 80
+    CORNERS 40
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 4
+    TEXT "60-SECOND LESSON"
+    SIZE 40
+    DRAW 0.3s
+  END
+  CREATE hook AS TEXT
+    POSITION 540 460
+    SIZE 110
+    TEXT "Plants eat air"
+    COLOR #FFFFFF
+    MAXWIDTH 940
+    ALIGN center
+    DRAW 0.7s
+  END
+  INK UNDERLINE hook
+    COLOR #FF4D8D
+    WIDTH 12
+    DRAW 0.5s
+  END
+  CREATE hub AS CIRCLE
+    POSITION 540 820
+    RADIUS 200
+    FILL #16402A
+    COLOR #B6FF3B
+    STROKE 6
+    SHADOW 18
+    DRAW 0.7s
+  END
+  CREATE hub_i AS ICON
+    POSITION 540 820
+    SIZE 260
+    NAME leaf
+    COLOR #B6FF3B
+    STROKE 5
+    DRAW 0.5s
+  END
+  CREATE o1 AS CIRCLE
+    POSITION 190 700
+    RADIUS 80
+    FILL #1B2A3D
+    COLOR #5CC8FF
+    STROKE 4
+    SHADOW 18
+    DRAW 0.3s
+  END
+  CREATE o1_i AS ICON
+    POSITION 190 700
+    SIZE 100
+    NAME wind
+    COLOR #5CC8FF
+    STROKE 5
+    DRAW 0.3s
+  END
+  CREATE o2 AS CIRCLE
+    POSITION 890 940
+    RADIUS 80
+    FILL #1B2A3D
+    COLOR #5CC8FF
+    STROKE 4
+    SHADOW 18
+    DRAW 0.3s
+  END
+  CREATE o2_i AS ICON
+    POSITION 890 940
+    SIZE 100
+    NAME droplet
+    COLOR #5CC8FF
+    STROKE 5
+    DRAW 0.3s
+  END
+  CREATE take AS RECTANGLE
+    POSITION 540 1160
+    WIDTH 900
+    HEIGHT 200
+    CORNERS 32
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 5
+    SHADOW 16
+    TEXT "Mostly air and sunlight."
+    SIZE 50
+    DRAW 0.6s
+  END
+  CREATE brand AS RECTANGLE
+    POSITION 540 1790
+    WIDTH 520
+    HEIGHT 90
+    CORNERS 45
+    FILL #B6FF3B
+    COLOR #101820
+    STROKE 3
+    TEXT "STROKELINE MICRO-LESSON"
+    SIZE 32
+    DRAW 0.4s
+  END
+  WAIT 0.8s
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 2 "Fact one"
+  SAY "Pigment in the leaf grabs sunshine like a tiny solar panel."
+    DURATION 4s
+    TONE explain
+  CREATE pg1 AS RECTANGLE
+    POSITION 270 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg2 AS RECTANGLE
+    POSITION 450 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #B6FF3B
+    COLOR #B6FF3B
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg3 AS RECTANGLE
+    POSITION 630 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg4 AS RECTANGLE
+    POSITION 810 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE badge AS RECTANGLE
+    POSITION 540 230
+    WIDTH 520
+    HEIGHT 80
+    CORNERS 40
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 4
+    TEXT "FACT 1"
+    SIZE 40
+    DRAW 0.3s
+  END
+  CREATE hook AS TEXT
+    POSITION 540 460
+    SIZE 110
+    TEXT "Light is the fuel"
+    COLOR #FFFFFF
+    MAXWIDTH 940
+    ALIGN center
+    DRAW 0.7s
+  END
+  INK UNDERLINE hook
+    COLOR #FF4D8D
+    WIDTH 12
+    DRAW 0.5s
+  END
+  CREATE sun AS CIRCLE
+    POSITION 290 800
+    RADIUS 140
+    FILL #1B2A3D
+    COLOR #FFC857
+    STROKE 6
+    SHADOW 18
+    DRAW 0.5s
+  END
+  CREATE sun_i AS ICON
+    POSITION 290 800
+    SIZE 170
+    NAME zap
+    COLOR #FFC857
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE lf AS CIRCLE
+    POSITION 790 800
+    RADIUS 140
+    FILL #16402A
+    COLOR #B6FF3B
+    STROKE 6
+    SHADOW 18
+    DRAW 0.5s
+  END
+  CREATE lf_i AS ICON
+    POSITION 790 800
+    SIZE 170
+    NAME leaf
+    COLOR #B6FF3B
+    STROKE 5
+    DRAW 0.4s
+  END
+  ARROW sun -> lf
+    ROUTE straight
+    HEAD end
+    COLOR #FF4D8D
+    STROKE 8
+    DRAW 0.4s
+  CREATE take AS RECTANGLE
+    POSITION 540 1160
+    WIDTH 900
+    HEIGHT 200
+    CORNERS 32
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 5
+    SHADOW 16
+    TEXT "Chlorophyll catches light energy."
+    SIZE 50
+    DRAW 0.6s
+  END
+  CREATE brand AS RECTANGLE
+    POSITION 540 1790
+    WIDTH 520
+    HEIGHT 90
+    CORNERS 45
+    FILL #B6FF3B
+    COLOR #101820
+    STROKE 3
+    TEXT "STROKELINE MICRO-LESSON"
+    SIZE 32
+    DRAW 0.4s
+  END
+  WAIT 0.8s
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 3 "Fact two"
+  SAY "Inside the leaf those ingredients get rearranged into fuel for the whole plant."
+    DURATION 4s
+    TONE explain
+  CREATE pg1 AS RECTANGLE
+    POSITION 270 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg2 AS RECTANGLE
+    POSITION 450 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg3 AS RECTANGLE
+    POSITION 630 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #B6FF3B
+    COLOR #B6FF3B
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg4 AS RECTANGLE
+    POSITION 810 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE badge AS RECTANGLE
+    POSITION 540 230
+    WIDTH 520
+    HEIGHT 80
+    CORNERS 40
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 4
+    TEXT "FACT 2"
+    SIZE 40
+    DRAW 0.3s
+  END
+  CREATE hook AS TEXT
+    POSITION 540 460
+    SIZE 110
+    TEXT "The recipe"
+    COLOR #FFFFFF
+    MAXWIDTH 940
+    ALIGN center
+    DRAW 0.7s
+  END
+  INK UNDERLINE hook
+    COLOR #FF4D8D
+    WIDTH 12
+    DRAW 0.5s
+  END
+  CREATE a AS CIRCLE
+    POSITION 190 800
+    RADIUS 100
+    FILL #1B2A3D
+    COLOR #5CC8FF
+    STROKE 5
+    SHADOW 18
+    DRAW 0.4s
+  END
+  CREATE a_i AS ICON
+    POSITION 190 800
+    SIZE 120
+    NAME wind
+    COLOR #5CC8FF
+    STROKE 5
+    DRAW 0.3s
+  END
+  CREATE plus AS TEXT
+    POSITION 365 800
+    SIZE 110
+    TEXT "+"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+  CREATE b AS CIRCLE
+    POSITION 540 800
+    RADIUS 100
+    FILL #1B2A3D
+    COLOR #5CC8FF
+    STROKE 5
+    SHADOW 18
+    DRAW 0.4s
+  END
+  CREATE b_i AS ICON
+    POSITION 540 800
+    SIZE 120
+    NAME droplet
+    COLOR #5CC8FF
+    STROKE 5
+    DRAW 0.3s
+  END
+  CREATE eq AS TEXT
+    POSITION 715 800
+    SIZE 110
+    TEXT "="
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+  CREATE c AS CIRCLE
+    POSITION 890 800
+    RADIUS 100
+    FILL #3A1C2C
+    COLOR #FF4D8D
+    STROKE 5
+    SHADOW 18
+    DRAW 0.4s
+  END
+  CREATE c_i AS ICON
+    POSITION 890 800
+    SIZE 120
+    NAME apple
+    COLOR #FF4D8D
+    STROKE 5
+    DRAW 0.3s
+  END
+  CREATE take AS RECTANGLE
+    POSITION 540 1160
+    WIDTH 900
+    HEIGHT 200
+    CORNERS 32
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 5
+    SHADOW 16
+    TEXT "CO2 plus water becomes sugar and oxygen."
+    SIZE 50
+    DRAW 0.6s
+  END
+  CREATE brand AS RECTANGLE
+    POSITION 540 1790
+    WIDTH 520
+    HEIGHT 90
+    CORNERS 45
+    FILL #B6FF3B
+    COLOR #101820
+    STROKE 3
+    TEXT "STROKELINE MICRO-LESSON"
+    SIZE 32
+    DRAW 0.4s
+  END
+  WAIT 0.8s
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 4 "Remember"
+  SAY "Hold on to that and you can explain it to a friend tonight."
+    DURATION 4s
+    TONE recap
+  CREATE pg1 AS RECTANGLE
+    POSITION 270 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg2 AS RECTANGLE
+    POSITION 450 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg3 AS RECTANGLE
+    POSITION 630 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #2B3A4F
+    COLOR #2B3A4F
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE pg4 AS RECTANGLE
+    POSITION 810 100
+    WIDTH 150
+    HEIGHT 14
+    CORNERS 7
+    FILL #B6FF3B
+    COLOR #B6FF3B
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE badge AS RECTANGLE
+    POSITION 540 230
+    WIDTH 520
+    HEIGHT 80
+    CORNERS 40
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 4
+    TEXT "REMEMBER"
+    SIZE 40
+    DRAW 0.3s
+  END
+  CREATE hook AS TEXT
+    POSITION 540 460
+    SIZE 100
+    TEXT "Sunlight in, sugar out"
+    COLOR #FFFFFF
+    MAXWIDTH 940
+    ALIGN center
+    DRAW 0.7s
+  END
+  INK UNDERLINE hook
+    COLOR #FF4D8D
+    WIDTH 12
+    DRAW 0.5s
+  END
+  CREATE p1 AS RECTANGLE
+    POSITION 540 730
+    WIDTH 620
+    HEIGHT 110
+    CORNERS 55
+    FILL #1B2A3D
+    COLOR #FFC857
+    STROKE 5
+    TEXT "Light"
+    SIZE 56
+    DRAW 0.4s
+  END
+  CREATE p2 AS RECTANGLE
+    POSITION 540 870
+    WIDTH 620
+    HEIGHT 110
+    CORNERS 55
+    FILL #1B2A3D
+    COLOR #5CC8FF
+    STROKE 5
+    TEXT "Air"
+    SIZE 56
+    DRAW 0.4s
+  END
+  CREATE p3 AS RECTANGLE
+    POSITION 540 1010
+    WIDTH 620
+    HEIGHT 110
+    CORNERS 55
+    FILL #1B2A3D
+    COLOR #FF4D8D
+    STROKE 5
+    TEXT "Water"
+    SIZE 56
+    DRAW 0.4s
+  END
+  CREATE take AS RECTANGLE
+    POSITION 540 1160
+    WIDTH 900
+    HEIGHT 200
+    CORNERS 32
+    FILL #1B2A3D
+    COLOR #B6FF3B
+    STROKE 5
+    SHADOW 16
+    TEXT "Follow for the next lesson."
+    SIZE 50
+    DRAW 0.6s
+  END
+  CREATE brand AS RECTANGLE
+    POSITION 540 1790
+    WIDTH 520
+    HEIGHT 90
+    CORNERS 45
+    FILL #B6FF3B
+    COLOR #101820
+    STROKE 3
+    TEXT "STROKELINE MICRO-LESSON"
+    SIZE 32
+    DRAW 0.4s
+  END
+  WAIT 1s
+END SCENE

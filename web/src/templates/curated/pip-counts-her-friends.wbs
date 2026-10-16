@@ -1,0 +1,2592 @@
+// ============================================================
+// STYLE 5: Storybook Kids  (template + demo topic)
+// Topic: "Pip Counts Her Friends" - counting 1 to 5 (ages 5-9)
+// Look: one pastel page per scene (rounded page with plum outline),
+//   soft translucent dots, VERY large friendly text, ONE short
+//   sentence per scene, characters built only from circles/ellipses.
+// Recipe per page: sentence on top | big number badge on the left |
+//   creatures in the middle with bouncing count tags | Pip peeks in.
+// Palette: text plum #3B2F4A, number coral #C2334D, pastel pages.
+// Reuse: change the sentence, number and creature builder per scene.
+// ============================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FFF8E7
+BOARD plain
+STYLE handdrawn
+FONT handwritten
+STROKE 5
+SUBTITLES off
+
+SCENE 1 "Title page"
+  CREATE page1 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #D9F0FF
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE grass1 AS RECTANGLE
+    POSITION 960 990
+    WIDTH 1840
+    HEIGHT 100
+    FILL #B8E6A0
+    COLOR #B8E6A0
+    STROKE 1
+    CORNERS 40
+    DRAW 0.5s
+  END
+  CREATE pond1 AS ELLIPSE
+    POSITION 960 870
+    WIDTH 1300
+    HEIGHT 260
+    FILL #9ADCF5
+    COLOR #3B2F4A
+    STROKE 4
+    DRAW 0.7s
+  END
+  CREATE sun1 AS CIRCLE
+    POSITION 1690 420
+    RADIUS 85
+    FILL #FFE066
+    COLOR #F2B705
+    STROKE 5
+    DRAW 0.6s
+  END
+  CREATE ray1_1 AS LINE
+    FROM 1588 420
+    TO 1565 420
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_2 AS LINE
+    FROM 1792 420
+    TO 1815 420
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_3 AS LINE
+    FROM 1690 318
+    TO 1690 295
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_4 AS LINE
+    FROM 1690 522
+    TO 1690 545
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_5 AS LINE
+    FROM 1616 346
+    TO 1600 330
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_6 AS LINE
+    FROM 1764 346
+    TO 1780 330
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_7 AS LINE
+    FROM 1616 494
+    TO 1600 510
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE ray1_8 AS LINE
+    FROM 1764 494
+    TO 1780 510
+    COLOR #F2B705
+    STROKE 6
+    DRAW 0.15s
+  END
+  PARALLEL
+    CREATE cloud1A AS ELLIPSE
+      POSITION 260 450
+      WIDTH 200
+      HEIGHT 90
+      FILL #FFFFFF
+      COLOR #BFD9FF
+      STROKE 3
+      DRAW 0.3s
+    END
+    CREATE cloud1B AS ELLIPSE
+      POSITION 200 420
+      WIDTH 110
+      HEIGHT 90
+      FILL #FFFFFF
+      COLOR #BFD9FF
+      STROKE 3
+      DRAW 0.3s
+    END
+    CREATE cloud1C AS ELLIPSE
+      POSITION 300 410
+      WIDTH 130
+      HEIGHT 100
+      FILL #FFFFFF
+      COLOR #BFD9FF
+      STROKE 3
+      DRAW 0.3s
+    END
+  END
+  PARALLEL
+    CREATE cloud2A AS ELLIPSE
+      POSITION 1500 640
+      WIDTH 200
+      HEIGHT 90
+      FILL #FFFFFF
+      COLOR #BFD9FF
+      STROKE 3
+      DRAW 0.3s
+    END
+    CREATE cloud2B AS ELLIPSE
+      POSITION 1440 610
+      WIDTH 110
+      HEIGHT 90
+      FILL #FFFFFF
+      COLOR #BFD9FF
+      STROKE 3
+      DRAW 0.3s
+    END
+    CREATE cloud2C AS ELLIPSE
+      POSITION 1540 600
+      WIDTH 130
+      HEIGHT 100
+      FILL #FFFFFF
+      COLOR #BFD9FF
+      STROKE 3
+      DRAW 0.3s
+    END
+  END
+  CREATE title1 AS TEXT
+    POSITION 960 200
+    SIZE 104
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "Pip Counts Her Friends"
+    DRAW 1s
+  END
+  CREATE sub1 AS TEXT
+    POSITION 960 335
+    SIZE 64
+    COLOR #C2334D
+    TEXT "A counting story"
+    DRAW 0.7s
+  END
+  PARALLEL
+    CREATE pip1Tail AS ELLIPSE
+      POSITION 773 667
+      WIDTH 123
+      HEIGHT 97
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.4s
+    END
+    CREATE pip1Body AS ELLIPSE
+      POSITION 960 700
+      WIDTH 374
+      HEIGHT 286
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.4s
+    END
+    CREATE pip1Wing AS ELLIPSE
+      POSITION 927 718
+      WIDTH 198
+      HEIGHT 128
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.4s
+    END
+    CREATE pip1Head AS CIRCLE
+      POSITION 1092 524
+      RADIUS 110
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.4s
+    END
+    CREATE pip1Beak AS ELLIPSE
+      POSITION 1220 546
+      WIDTH 114
+      HEIGHT 62
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.4s
+    END
+    CREATE pip1Eye AS CIRCLE
+      POSITION 1123 498
+      RADIUS 18
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip1Cheek AS CIRCLE
+      POSITION 1154 564
+      RADIUS 20
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  SAY "Pip the duck loves numbers. Will you count with her today?"
+    DURATION 3.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Invites the child to take part."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 2 "One frog"
+  CREATE page2 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #DDF7E3
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE dotA2 AS CIRCLE
+    POSITION 190 880
+    RADIUS 90
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotB2 AS CIRCLE
+    POSITION 1740 930
+    RADIUS 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotC2 AS CIRCLE
+    POSITION 1700 330
+    RADIUS 50
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  PARALLEL
+    CREATE pip2Tail AS ELLIPSE
+      POSITION 262 868
+      WIDTH 45
+      HEIGHT 35
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip2Body AS ELLIPSE
+      POSITION 330 880
+      WIDTH 136
+      HEIGHT 104
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip2Wing AS ELLIPSE
+      POSITION 318 886
+      WIDTH 72
+      HEIGHT 46
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip2Head AS CIRCLE
+      POSITION 378 816
+      RADIUS 40
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip2Beak AS ELLIPSE
+      POSITION 424 824
+      WIDTH 42
+      HEIGHT 22
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip2Eye AS CIRCLE
+      POSITION 389 806
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip2Cheek AS CIRCLE
+      POSITION 400 830
+      RADIUS 7
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE badge2 AS CIRCLE
+    POSITION 300 560
+    RADIUS 170
+    FILL #FFFFFF
+    COLOR #C2334D
+    STROKE 8
+    DRAW 0.6s
+  END
+  CREATE sentence2 AS TEXT
+    POSITION 960 190
+    SIZE 92
+    MAXWIDTH 1600
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "One sleepy frog naps."
+    DRAW 1s
+  END
+  CREATE bigNum2 AS TEXT
+    POSITION 300 560
+    SIZE 260
+    COLOR #C2334D
+    TEXT "1"
+    DRAW 0.6s
+  END
+  SAY "Shh, someone is napping by the pond."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the scene before the count begins."
+  PARALLEL
+    CREATE c2x0Pad AS ELLIPSE
+      POSITION 1170 670
+      WIDTH 300
+      HEIGHT 80
+      FILL #4FB36B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c2x0Body AS ELLIPSE
+      POSITION 1170 600
+      WIDTH 200
+      HEIGHT 150
+      FILL #7ED957
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c2x0BumpL AS CIRCLE
+      POSITION 1120 520
+      RADIUS 32
+      FILL #7ED957
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c2x0BumpR AS CIRCLE
+      POSITION 1220 520
+      RADIUS 32
+      FILL #7ED957
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c2x0EyeL AS LINE
+      FROM 1102 520
+      TO 1138 520
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.3s
+    END
+    CREATE c2x0EyeR AS LINE
+      FROM 1202 520
+      TO 1238 520
+      COLOR #3B2F4A
+      STROKE 5
+      DRAW 0.3s
+    END
+    CREATE c2x0Mouth AS LINE
+      FROM 1135 612
+      TO 1205 612
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE c2x0BlushL AS CIRCLE
+      POSITION 1100 622
+      RADIUS 12
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c2x0BlushR AS CIRCLE
+      POSITION 1240 622
+      RADIUS 12
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t2x0Ring AS CIRCLE
+    POSITION 1170 417
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t2x0Num AS TEXT
+    POSITION 1170 417
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "1"
+    DRAW 0.2s
+  END
+  ANIMATE t2x0Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t2x0Num SCALE TO 1
+    DURATION 0.2s
+  SAY "Point your finger at him and count out loud."
+    DURATION 3.2s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts the child to count along physically."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 3 "Two fish"
+  CREATE page3 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #D4F3F0
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE dotA3 AS CIRCLE
+    POSITION 190 880
+    RADIUS 90
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotB3 AS CIRCLE
+    POSITION 1740 930
+    RADIUS 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotC3 AS CIRCLE
+    POSITION 1700 330
+    RADIUS 50
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  PARALLEL
+    CREATE pip3Tail AS ELLIPSE
+      POSITION 262 868
+      WIDTH 45
+      HEIGHT 35
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip3Body AS ELLIPSE
+      POSITION 330 880
+      WIDTH 136
+      HEIGHT 104
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip3Wing AS ELLIPSE
+      POSITION 318 886
+      WIDTH 72
+      HEIGHT 46
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip3Head AS CIRCLE
+      POSITION 378 816
+      RADIUS 40
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip3Beak AS ELLIPSE
+      POSITION 424 824
+      WIDTH 42
+      HEIGHT 22
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip3Eye AS CIRCLE
+      POSITION 389 806
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip3Cheek AS CIRCLE
+      POSITION 400 830
+      RADIUS 7
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE badge3 AS CIRCLE
+    POSITION 300 560
+    RADIUS 170
+    FILL #FFFFFF
+    COLOR #C2334D
+    STROKE 8
+    DRAW 0.6s
+  END
+  CREATE sentence3 AS TEXT
+    POSITION 960 190
+    SIZE 92
+    MAXWIDTH 1600
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "Two splashy fish swim."
+    DRAW 1s
+  END
+  CREATE bigNum3 AS TEXT
+    POSITION 300 560
+    SIZE 260
+    COLOR #C2334D
+    TEXT "2"
+    DRAW 0.6s
+  END
+  SAY "Splash splash! Something is wiggling under the water."
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the scene before the count begins."
+  PARALLEL
+    CREATE c3x0Tail AS DIAMOND
+      POSITION 1020 600
+      WIDTH 90
+      HEIGHT 100
+      FILL #FF9E6B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c3x0Body AS ELLIPSE
+      POSITION 900 600
+      WIDTH 210
+      HEIGHT 130
+      FILL #FF9E6B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c3x0Fin AS ELLIPSE
+      POSITION 905 612
+      WIDTH 80
+      HEIGHT 50
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      OPACITY 0.7
+      DRAW 0.4s
+    END
+    CREATE c3x0Eye AS CIRCLE
+      POSITION 840 588
+      RADIUS 18
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c3x0Pupil AS CIRCLE
+      POSITION 840 588
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c3x0BubA AS CIRCLE
+      POSITION 775 520
+      RADIUS 12
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c3x0BubB AS CIRCLE
+      POSITION 805 485
+      RADIUS 8
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+  END
+  CREATE t3x0Ring AS CIRCLE
+    POSITION 900 470
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t3x0Num AS TEXT
+    POSITION 900 470
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "1"
+    DRAW 0.2s
+  END
+  ANIMATE t3x0Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t3x0Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c3x1Tail AS DIAMOND
+      POSITION 1560 600
+      WIDTH 90
+      HEIGHT 100
+      FILL #FF7FA8
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c3x1Body AS ELLIPSE
+      POSITION 1440 600
+      WIDTH 210
+      HEIGHT 130
+      FILL #FF7FA8
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c3x1Fin AS ELLIPSE
+      POSITION 1445 612
+      WIDTH 80
+      HEIGHT 50
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      OPACITY 0.7
+      DRAW 0.4s
+    END
+    CREATE c3x1Eye AS CIRCLE
+      POSITION 1380 588
+      RADIUS 18
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c3x1Pupil AS CIRCLE
+      POSITION 1380 588
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c3x1BubA AS CIRCLE
+      POSITION 1315 520
+      RADIUS 12
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c3x1BubB AS CIRCLE
+      POSITION 1345 485
+      RADIUS 8
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+  END
+  CREATE t3x1Ring AS CIRCLE
+    POSITION 1440 470
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t3x1Num AS TEXT
+    POSITION 1440 470
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "2"
+    DRAW 0.2s
+  END
+  ANIMATE t3x1Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t3x1Num SCALE TO 1
+    DURATION 0.2s
+  SAY "Point to each one as you count them."
+    DURATION 2.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts the child to count along physically."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 4 "Three bees"
+  CREATE page4 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #FFF3C4
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE dotA4 AS CIRCLE
+    POSITION 190 880
+    RADIUS 90
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotB4 AS CIRCLE
+    POSITION 1740 930
+    RADIUS 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotC4 AS CIRCLE
+    POSITION 1700 330
+    RADIUS 50
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  PARALLEL
+    CREATE pip4Tail AS ELLIPSE
+      POSITION 262 868
+      WIDTH 45
+      HEIGHT 35
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip4Body AS ELLIPSE
+      POSITION 330 880
+      WIDTH 136
+      HEIGHT 104
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip4Wing AS ELLIPSE
+      POSITION 318 886
+      WIDTH 72
+      HEIGHT 46
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip4Head AS CIRCLE
+      POSITION 378 816
+      RADIUS 40
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip4Beak AS ELLIPSE
+      POSITION 424 824
+      WIDTH 42
+      HEIGHT 22
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip4Eye AS CIRCLE
+      POSITION 389 806
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip4Cheek AS CIRCLE
+      POSITION 400 830
+      RADIUS 7
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE badge4 AS CIRCLE
+    POSITION 300 560
+    RADIUS 170
+    FILL #FFFFFF
+    COLOR #C2334D
+    STROKE 8
+    DRAW 0.6s
+  END
+  CREATE sentence4 AS TEXT
+    POSITION 960 190
+    SIZE 92
+    MAXWIDTH 1600
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "Three busy bees buzz."
+    DRAW 1s
+  END
+  CREATE bigNum4 AS TEXT
+    POSITION 300 560
+    SIZE 260
+    COLOR #C2334D
+    TEXT "3"
+    DRAW 0.6s
+  END
+  SAY "Listen closely, can you hear a buzzing sound?"
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the scene before the count begins."
+  PARALLEL
+    CREATE c4x0WingL AS ELLIPSE
+      POSITION 730 515
+      WIDTH 70
+      HEIGHT 90
+      FILL #EAF4FF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x0WingR AS ELLIPSE
+      POSITION 790 515
+      WIDTH 70
+      HEIGHT 90
+      FILL #EAF4FF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x0Body AS ELLIPSE
+      POSITION 760 600
+      WIDTH 190
+      HEIGHT 135
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c4x0StripeA AS LINE
+      FROM 750 542
+      TO 750 658
+      COLOR #3B2F4A
+      STROKE 12
+      DRAW 0.3s
+    END
+    CREATE c4x0StripeB AS LINE
+      FROM 800 548
+      TO 800 652
+      COLOR #3B2F4A
+      STROKE 12
+      DRAW 0.3s
+    END
+    CREATE c4x0Eye AS CIRCLE
+      POSITION 705 590
+      RADIUS 14
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x0Pupil AS CIRCLE
+      POSITION 705 590
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c4x0Smile AS LINE
+      FROM 688 626
+      TO 715 632
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE c4x0AntA AS LINE
+      FROM 710 535
+      TO 680 495
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+  END
+  CREATE t4x0Ring AS CIRCLE
+    POSITION 760 400
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t4x0Num AS TEXT
+    POSITION 760 400
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "1"
+    DRAW 0.2s
+  END
+  ANIMATE t4x0Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t4x0Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c4x1WingL AS ELLIPSE
+      POSITION 1140 515
+      WIDTH 70
+      HEIGHT 90
+      FILL #EAF4FF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x1WingR AS ELLIPSE
+      POSITION 1200 515
+      WIDTH 70
+      HEIGHT 90
+      FILL #EAF4FF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x1Body AS ELLIPSE
+      POSITION 1170 600
+      WIDTH 190
+      HEIGHT 135
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c4x1StripeA AS LINE
+      FROM 1160 542
+      TO 1160 658
+      COLOR #3B2F4A
+      STROKE 12
+      DRAW 0.3s
+    END
+    CREATE c4x1StripeB AS LINE
+      FROM 1210 548
+      TO 1210 652
+      COLOR #3B2F4A
+      STROKE 12
+      DRAW 0.3s
+    END
+    CREATE c4x1Eye AS CIRCLE
+      POSITION 1115 590
+      RADIUS 14
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x1Pupil AS CIRCLE
+      POSITION 1115 590
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c4x1Smile AS LINE
+      FROM 1098 626
+      TO 1125 632
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE c4x1AntA AS LINE
+      FROM 1120 535
+      TO 1090 495
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+  END
+  CREATE t4x1Ring AS CIRCLE
+    POSITION 1170 400
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t4x1Num AS TEXT
+    POSITION 1170 400
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "2"
+    DRAW 0.2s
+  END
+  ANIMATE t4x1Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t4x1Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c4x2WingL AS ELLIPSE
+      POSITION 1550 515
+      WIDTH 70
+      HEIGHT 90
+      FILL #EAF4FF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x2WingR AS ELLIPSE
+      POSITION 1610 515
+      WIDTH 70
+      HEIGHT 90
+      FILL #EAF4FF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x2Body AS ELLIPSE
+      POSITION 1580 600
+      WIDTH 190
+      HEIGHT 135
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c4x2StripeA AS LINE
+      FROM 1570 542
+      TO 1570 658
+      COLOR #3B2F4A
+      STROKE 12
+      DRAW 0.3s
+    END
+    CREATE c4x2StripeB AS LINE
+      FROM 1620 548
+      TO 1620 652
+      COLOR #3B2F4A
+      STROKE 12
+      DRAW 0.3s
+    END
+    CREATE c4x2Eye AS CIRCLE
+      POSITION 1525 590
+      RADIUS 14
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 3
+      DRAW 0.4s
+    END
+    CREATE c4x2Pupil AS CIRCLE
+      POSITION 1525 590
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c4x2Smile AS LINE
+      FROM 1508 626
+      TO 1535 632
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+    CREATE c4x2AntA AS LINE
+      FROM 1530 535
+      TO 1500 495
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.3s
+    END
+  END
+  CREATE t4x2Ring AS CIRCLE
+    POSITION 1580 400
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t4x2Num AS TEXT
+    POSITION 1580 400
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "3"
+    DRAW 0.2s
+  END
+  ANIMATE t4x2Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t4x2Num SCALE TO 1
+    DURATION 0.2s
+  SAY "Tap each bee gently while you count."
+    DURATION 2.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts the child to count along physically."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 5 "Four bunnies"
+  CREATE page5 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #FFE0EA
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE dotA5 AS CIRCLE
+    POSITION 190 880
+    RADIUS 90
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotB5 AS CIRCLE
+    POSITION 1740 930
+    RADIUS 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotC5 AS CIRCLE
+    POSITION 1700 330
+    RADIUS 50
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  PARALLEL
+    CREATE pip5Tail AS ELLIPSE
+      POSITION 262 868
+      WIDTH 45
+      HEIGHT 35
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip5Body AS ELLIPSE
+      POSITION 330 880
+      WIDTH 136
+      HEIGHT 104
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip5Wing AS ELLIPSE
+      POSITION 318 886
+      WIDTH 72
+      HEIGHT 46
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip5Head AS CIRCLE
+      POSITION 378 816
+      RADIUS 40
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip5Beak AS ELLIPSE
+      POSITION 424 824
+      WIDTH 42
+      HEIGHT 22
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip5Eye AS CIRCLE
+      POSITION 389 806
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip5Cheek AS CIRCLE
+      POSITION 400 830
+      RADIUS 7
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE badge5 AS CIRCLE
+    POSITION 300 560
+    RADIUS 170
+    FILL #FFFFFF
+    COLOR #C2334D
+    STROKE 8
+    DRAW 0.6s
+  END
+  CREATE sentence5 AS TEXT
+    POSITION 960 190
+    SIZE 92
+    MAXWIDTH 1600
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "Four bunnies hop, hop, hop!"
+    DRAW 1s
+  END
+  CREATE bigNum5 AS TEXT
+    POSITION 300 560
+    SIZE 260
+    COLOR #C2334D
+    TEXT "4"
+    DRAW 0.6s
+  END
+  SAY "These fluffy friends love to jump around."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the scene before the count begins."
+  PARALLEL
+    CREATE c5x0EarL AS ELLIPSE
+      POSITION 668 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x0EarR AS ELLIPSE
+      POSITION 732 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x0InL AS ELLIPSE
+      POSITION 668 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x0InR AS ELLIPSE
+      POSITION 732 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x0Body AS ELLIPSE
+      POSITION 700 670
+      WIDTH 170
+      HEIGHT 140
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x0Head AS CIRCLE
+      POSITION 700 590
+      RADIUS 62
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x0EyeL AS CIRCLE
+      POSITION 678 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x0EyeR AS CIRCLE
+      POSITION 722 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x0Nose AS CIRCLE
+      POSITION 700 604
+      RADIUS 8
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t5x0Ring AS CIRCLE
+    POSITION 700 365
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t5x0Num AS TEXT
+    POSITION 700 365
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "1"
+    DRAW 0.2s
+  END
+  ANIMATE t5x0Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t5x0Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c5x1EarL AS ELLIPSE
+      POSITION 958 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x1EarR AS ELLIPSE
+      POSITION 1022 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x1InL AS ELLIPSE
+      POSITION 958 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x1InR AS ELLIPSE
+      POSITION 1022 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x1Body AS ELLIPSE
+      POSITION 990 670
+      WIDTH 170
+      HEIGHT 140
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x1Head AS CIRCLE
+      POSITION 990 590
+      RADIUS 62
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x1EyeL AS CIRCLE
+      POSITION 968 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x1EyeR AS CIRCLE
+      POSITION 1012 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x1Nose AS CIRCLE
+      POSITION 990 604
+      RADIUS 8
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t5x1Ring AS CIRCLE
+    POSITION 990 365
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t5x1Num AS TEXT
+    POSITION 990 365
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "2"
+    DRAW 0.2s
+  END
+  ANIMATE t5x1Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t5x1Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c5x2EarL AS ELLIPSE
+      POSITION 1248 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x2EarR AS ELLIPSE
+      POSITION 1312 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x2InL AS ELLIPSE
+      POSITION 1248 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x2InR AS ELLIPSE
+      POSITION 1312 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x2Body AS ELLIPSE
+      POSITION 1280 670
+      WIDTH 170
+      HEIGHT 140
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x2Head AS CIRCLE
+      POSITION 1280 590
+      RADIUS 62
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x2EyeL AS CIRCLE
+      POSITION 1258 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x2EyeR AS CIRCLE
+      POSITION 1302 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x2Nose AS CIRCLE
+      POSITION 1280 604
+      RADIUS 8
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t5x2Ring AS CIRCLE
+    POSITION 1280 365
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t5x2Num AS TEXT
+    POSITION 1280 365
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "3"
+    DRAW 0.2s
+  END
+  ANIMATE t5x2Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t5x2Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c5x3EarL AS ELLIPSE
+      POSITION 1538 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x3EarR AS ELLIPSE
+      POSITION 1602 480
+      WIDTH 42
+      HEIGHT 115
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x3InL AS ELLIPSE
+      POSITION 1538 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x3InR AS ELLIPSE
+      POSITION 1602 480
+      WIDTH 16
+      HEIGHT 76
+      FILL #FFB6C9
+      COLOR #FFB6C9
+      STROKE 1
+      DRAW 0.4s
+    END
+    CREATE c5x3Body AS ELLIPSE
+      POSITION 1570 670
+      WIDTH 170
+      HEIGHT 140
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x3Head AS CIRCLE
+      POSITION 1570 590
+      RADIUS 62
+      FILL #FFFFFF
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c5x3EyeL AS CIRCLE
+      POSITION 1548 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x3EyeR AS CIRCLE
+      POSITION 1592 582
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c5x3Nose AS CIRCLE
+      POSITION 1570 604
+      RADIUS 8
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t5x3Ring AS CIRCLE
+    POSITION 1570 365
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t5x3Num AS TEXT
+    POSITION 1570 365
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "4"
+    DRAW 0.2s
+  END
+  ANIMATE t5x3Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t5x3Num SCALE TO 1
+    DURATION 0.2s
+  SAY "Count the long ears one bunny at a time."
+    DURATION 3.2s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts the child to count along physically."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 6 "Five ducklings"
+  CREATE page6 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #FFE6D5
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE dotA6 AS CIRCLE
+    POSITION 190 880
+    RADIUS 90
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotB6 AS CIRCLE
+    POSITION 1740 930
+    RADIUS 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotC6 AS CIRCLE
+    POSITION 1700 330
+    RADIUS 50
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  PARALLEL
+    CREATE pip6Tail AS ELLIPSE
+      POSITION 262 868
+      WIDTH 45
+      HEIGHT 35
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip6Body AS ELLIPSE
+      POSITION 330 880
+      WIDTH 136
+      HEIGHT 104
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip6Wing AS ELLIPSE
+      POSITION 318 886
+      WIDTH 72
+      HEIGHT 46
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip6Head AS CIRCLE
+      POSITION 378 816
+      RADIUS 40
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip6Beak AS ELLIPSE
+      POSITION 424 824
+      WIDTH 42
+      HEIGHT 22
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip6Eye AS CIRCLE
+      POSITION 389 806
+      RADIUS 6
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip6Cheek AS CIRCLE
+      POSITION 400 830
+      RADIUS 7
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE badge6 AS CIRCLE
+    POSITION 300 560
+    RADIUS 170
+    FILL #FFFFFF
+    COLOR #C2334D
+    STROKE 8
+    DRAW 0.6s
+  END
+  CREATE sentence6 AS TEXT
+    POSITION 960 190
+    SIZE 92
+    MAXWIDTH 1600
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "Five ducklings say hooray!"
+    DRAW 1s
+  END
+  CREATE bigNum6 AS TEXT
+    POSITION 300 560
+    SIZE 260
+    COLOR #C2334D
+    TEXT "5"
+    DRAW 0.6s
+  END
+  SAY "Pip hears tiny quacks coming closer."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the scene before the count begins."
+  PARALLEL
+    CREATE c6x0Tail AS ELLIPSE
+      POSITION 565 605
+      WIDTH 56
+      HEIGHT 44
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x0Body AS ELLIPSE
+      POSITION 650 620
+      WIDTH 170
+      HEIGHT 130
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x0Wing AS ELLIPSE
+      POSITION 635 628
+      WIDTH 90
+      HEIGHT 58
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x0Head AS CIRCLE
+      POSITION 710 540
+      RADIUS 50
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x0Beak AS ELLIPSE
+      POSITION 768 550
+      WIDTH 52
+      HEIGHT 28
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x0Eye AS CIRCLE
+      POSITION 724 528
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c6x0Cheek AS CIRCLE
+      POSITION 738 558
+      RADIUS 9
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t6x0Ring AS CIRCLE
+    POSITION 680 435
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t6x0Num AS TEXT
+    POSITION 680 435
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "1"
+    DRAW 0.2s
+  END
+  ANIMATE t6x0Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t6x0Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c6x1Tail AS ELLIPSE
+      POSITION 795 605
+      WIDTH 56
+      HEIGHT 44
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x1Body AS ELLIPSE
+      POSITION 880 620
+      WIDTH 170
+      HEIGHT 130
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x1Wing AS ELLIPSE
+      POSITION 865 628
+      WIDTH 90
+      HEIGHT 58
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x1Head AS CIRCLE
+      POSITION 940 540
+      RADIUS 50
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x1Beak AS ELLIPSE
+      POSITION 998 550
+      WIDTH 52
+      HEIGHT 28
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x1Eye AS CIRCLE
+      POSITION 954 528
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c6x1Cheek AS CIRCLE
+      POSITION 968 558
+      RADIUS 9
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t6x1Ring AS CIRCLE
+    POSITION 910 435
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t6x1Num AS TEXT
+    POSITION 910 435
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "2"
+    DRAW 0.2s
+  END
+  ANIMATE t6x1Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t6x1Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c6x2Tail AS ELLIPSE
+      POSITION 1025 605
+      WIDTH 56
+      HEIGHT 44
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x2Body AS ELLIPSE
+      POSITION 1110 620
+      WIDTH 170
+      HEIGHT 130
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x2Wing AS ELLIPSE
+      POSITION 1095 628
+      WIDTH 90
+      HEIGHT 58
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x2Head AS CIRCLE
+      POSITION 1170 540
+      RADIUS 50
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x2Beak AS ELLIPSE
+      POSITION 1228 550
+      WIDTH 52
+      HEIGHT 28
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x2Eye AS CIRCLE
+      POSITION 1184 528
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c6x2Cheek AS CIRCLE
+      POSITION 1198 558
+      RADIUS 9
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t6x2Ring AS CIRCLE
+    POSITION 1140 435
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t6x2Num AS TEXT
+    POSITION 1140 435
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "3"
+    DRAW 0.2s
+  END
+  ANIMATE t6x2Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t6x2Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c6x3Tail AS ELLIPSE
+      POSITION 1255 605
+      WIDTH 56
+      HEIGHT 44
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x3Body AS ELLIPSE
+      POSITION 1340 620
+      WIDTH 170
+      HEIGHT 130
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x3Wing AS ELLIPSE
+      POSITION 1325 628
+      WIDTH 90
+      HEIGHT 58
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x3Head AS CIRCLE
+      POSITION 1400 540
+      RADIUS 50
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x3Beak AS ELLIPSE
+      POSITION 1458 550
+      WIDTH 52
+      HEIGHT 28
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x3Eye AS CIRCLE
+      POSITION 1414 528
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c6x3Cheek AS CIRCLE
+      POSITION 1428 558
+      RADIUS 9
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t6x3Ring AS CIRCLE
+    POSITION 1370 435
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t6x3Num AS TEXT
+    POSITION 1370 435
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "4"
+    DRAW 0.2s
+  END
+  ANIMATE t6x3Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t6x3Num SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE c6x4Tail AS ELLIPSE
+      POSITION 1485 605
+      WIDTH 56
+      HEIGHT 44
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x4Body AS ELLIPSE
+      POSITION 1570 620
+      WIDTH 170
+      HEIGHT 130
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x4Wing AS ELLIPSE
+      POSITION 1555 628
+      WIDTH 90
+      HEIGHT 58
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x4Head AS CIRCLE
+      POSITION 1630 540
+      RADIUS 50
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x4Beak AS ELLIPSE
+      POSITION 1688 550
+      WIDTH 52
+      HEIGHT 28
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE c6x4Eye AS CIRCLE
+      POSITION 1644 528
+      RADIUS 8
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE c6x4Cheek AS CIRCLE
+      POSITION 1658 558
+      RADIUS 9
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  CREATE t6x4Ring AS CIRCLE
+    POSITION 1600 435
+    RADIUS 38
+    FILL #C2334D
+    COLOR #C2334D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE t6x4Num AS TEXT
+    POSITION 1600 435
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "5"
+    DRAW 0.2s
+  END
+  ANIMATE t6x4Num SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE t6x4Num SCALE TO 1
+    DURATION 0.2s
+  SAY "Count them all the way to the biggest number yet."
+    DURATION 3.4s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts the child to count along physically."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 7 "Hooray"
+  CREATE page7 AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1880
+    HEIGHT 1040
+    FILL #EBE0FF
+    COLOR #3B2F4A
+    STROKE 6
+    CORNERS 60
+    DRAW 0.8s
+  END
+  CREATE dotA7 AS CIRCLE
+    POSITION 190 880
+    RADIUS 90
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotB7 AS CIRCLE
+    POSITION 1740 930
+    RADIUS 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE dotC7 AS CIRCLE
+    POSITION 1700 330
+    RADIUS 50
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    OPACITY 0.5
+    DRAW 0.3s
+  END
+  CREATE conf1 AS CIRCLE
+    POSITION 260 300
+    RADIUS 16
+    FILL #FF9DB5
+    COLOR #FF9DB5
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf2 AS CIRCLE
+    POSITION 420 820
+    RADIUS 16
+    FILL #8EDCF2
+    COLOR #8EDCF2
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf3 AS CIRCLE
+    POSITION 1500 260
+    RADIUS 16
+    FILL #FFD93B
+    COLOR #FFD93B
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf4 AS CIRCLE
+    POSITION 1660 780
+    RADIUS 16
+    FILL #B8E6A0
+    COLOR #B8E6A0
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf5 AS CIRCLE
+    POSITION 620 250
+    RADIUS 16
+    FILL #FFB347
+    COLOR #FFB347
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf6 AS CIRCLE
+    POSITION 1260 880
+    RADIUS 16
+    FILL #C9A8FF
+    COLOR #C9A8FF
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf7 AS CIRCLE
+    POSITION 900 880
+    RADIUS 16
+    FILL #FF9DB5
+    COLOR #FF9DB5
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf8 AS CIRCLE
+    POSITION 1120 260
+    RADIUS 16
+    FILL #8EDCF2
+    COLOR #8EDCF2
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf9 AS CIRCLE
+    POSITION 200 620
+    RADIUS 16
+    FILL #FFD93B
+    COLOR #FFD93B
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf10 AS CIRCLE
+    POSITION 1740 560
+    RADIUS 16
+    FILL #FF9DB5
+    COLOR #FF9DB5
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE title7 AS TEXT
+    POSITION 960 200
+    SIZE 120
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #3B2F4A
+    TEXT "Great counting!"
+    DRAW 1s
+  END
+  CREATE ball1 AS CIRCLE
+    POSITION 400 520
+    RADIUS 90
+    FILL #FFB6C9
+    COLOR #3B2F4A
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE ballNum1 AS TEXT
+    POSITION 400 520
+    SIZE 120
+    COLOR #3B2F4A
+    TEXT "1"
+    DRAW 0.3s
+  END
+  ANIMATE ballNum1 SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE ballNum1 SCALE TO 1
+    DURATION 0.2s
+  CREATE ball2 AS CIRCLE
+    POSITION 680 520
+    RADIUS 90
+    FILL #FFD93B
+    COLOR #3B2F4A
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE ballNum2 AS TEXT
+    POSITION 680 520
+    SIZE 120
+    COLOR #3B2F4A
+    TEXT "2"
+    DRAW 0.3s
+  END
+  ANIMATE ballNum2 SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE ballNum2 SCALE TO 1
+    DURATION 0.2s
+  CREATE ball3 AS CIRCLE
+    POSITION 960 520
+    RADIUS 90
+    FILL #B8E6A0
+    COLOR #3B2F4A
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE ballNum3 AS TEXT
+    POSITION 960 520
+    SIZE 120
+    COLOR #3B2F4A
+    TEXT "3"
+    DRAW 0.3s
+  END
+  ANIMATE ballNum3 SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE ballNum3 SCALE TO 1
+    DURATION 0.2s
+  CREATE ball4 AS CIRCLE
+    POSITION 1240 520
+    RADIUS 90
+    FILL #8EDCF2
+    COLOR #3B2F4A
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE ballNum4 AS TEXT
+    POSITION 1240 520
+    SIZE 120
+    COLOR #3B2F4A
+    TEXT "4"
+    DRAW 0.3s
+  END
+  ANIMATE ballNum4 SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE ballNum4 SCALE TO 1
+    DURATION 0.2s
+  CREATE ball5 AS CIRCLE
+    POSITION 1520 520
+    RADIUS 90
+    FILL #FFB347
+    COLOR #3B2F4A
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE ballNum5 AS TEXT
+    POSITION 1520 520
+    SIZE 120
+    COLOR #3B2F4A
+    TEXT "5"
+    DRAW 0.3s
+  END
+  ANIMATE ballNum5 SCALE TO 1.4
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE ballNum5 SCALE TO 1
+    DURATION 0.2s
+  PARALLEL
+    CREATE pip7Tail AS ELLIPSE
+      POSITION 884 846
+      WIDTH 50
+      HEIGHT 40
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip7Body AS ELLIPSE
+      POSITION 960 860
+      WIDTH 153
+      HEIGHT 117
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip7Wing AS ELLIPSE
+      POSITION 946 867
+      WIDTH 81
+      HEIGHT 52
+      FILL #FFC83B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip7Head AS CIRCLE
+      POSITION 1014 788
+      RADIUS 45
+      FILL #FFD93B
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip7Beak AS ELLIPSE
+      POSITION 1066 797
+      WIDTH 47
+      HEIGHT 25
+      FILL #FF9E3D
+      COLOR #3B2F4A
+      STROKE 4
+      DRAW 0.4s
+    END
+    CREATE pip7Eye AS CIRCLE
+      POSITION 1027 777
+      RADIUS 7
+      FILL #3B2F4A
+      COLOR #3B2F4A
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE pip7Cheek AS CIRCLE
+      POSITION 1039 804
+      RADIUS 8
+      FILL #FF9DB5
+      COLOR #FF9DB5
+      STROKE 1
+      DRAW 0.4s
+    END
+  END
+  SAY "Pip is so proud of you, you counted all the way up!"
+    DURATION 3.8s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Celebrates and closes the story warmly."
+END SCENE

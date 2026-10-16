@@ -1,0 +1,604 @@
+// ============================================================
+// STYLE 3: Whiteboard Marker Explainer  (template + demo topic)
+// Topic: How does a refrigerator work?
+// Look: white board, black marker outlines, three marker colors
+//   blue  #1F5FBF = cold / questions
+//   red   #C62828 = hot / emphasis (circled key word)
+//   green #1E7B34 = takeaways / answers
+// Layout rules used in every scene:
+//   title row y=160 | diagram row y=430-800 | takeaway row y=830-900
+// To reuse: keep the header, swap the words, keep colors by meaning.
+// ============================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FFFFFF
+BOARD whiteboard
+STYLE marker
+FONT marker
+STROKE 5
+SUBTITLES off
+
+// ---------- Scene 1: hook, circled key word ----------
+SCENE 1 "Hook"
+  CREATE hookLine1 AS TEXT
+    POSITION 620 260
+    SIZE 64
+    COLOR #1B1B1B
+    TEXT "How does a"
+    DRAW 0.7s
+  END
+  CREATE keyRing AS ELLIPSE
+    POSITION 620 430
+    WIDTH 840
+    HEIGHT 200
+    COLOR #C62828
+    STROKE 6
+    ROUGH on
+    ROUGHSEED 7
+    DRAW 0.9s
+  END
+  CREATE keyWord AS TEXT
+    POSITION 620 430
+    SIZE 110
+    COLOR #1B1B1B
+    TEXT "Refrigerator"
+    DRAW 0.9s
+  END
+  CREATE hookLine3 AS TEXT
+    POSITION 620 610
+    SIZE 64
+    COLOR #1B1B1B
+    TEXT "work?"
+    DRAW 0.6s
+  END
+  CREATE followHeat AS TEXT
+    POSITION 620 760
+    SIZE 48
+    COLOR #1F5FBF
+    TEXT "Follow the heat."
+    DRAW 0.7s
+  END
+  CREATE followLine AS LINE
+    FROM 430 805
+    TO 810 805
+    COLOR #1F5FBF
+    STROKE 5
+    DRAW 0.5s
+  END
+  SAY "Your fridge never makes cold air; it smuggles warmth out of your kitchen."
+    DURATION 3.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets up the surprising idea that cooling means moving heat."
+  CREATE fridgeBody AS RECTANGLE
+    POSITION 1480 560
+    WIDTH 340
+    HEIGHT 640
+    FILL #E8F1FF
+    COLOR #1B1B1B
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 3
+    DRAW 1s
+  END
+  CREATE fridgeSplit AS LINE
+    FROM 1310 450
+    TO 1650 450
+    COLOR #1B1B1B
+    STROKE 6
+    DRAW 0.4s
+  END
+  CREATE handleTop AS LINE
+    FROM 1352 300
+    TO 1352 390
+    COLOR #1B1B1B
+    STROKE 8
+    DRAW 0.3s
+  END
+  CREATE handleLow AS LINE
+    FROM 1352 500
+    TO 1352 650
+    COLOR #1B1B1B
+    STROKE 8
+    DRAW 0.3s
+  END
+  CREATE askMark AS TEXT
+    POSITION 1480 160
+    SIZE 96
+    COLOR #C62828
+    TEXT "?"
+    DRAW 0.5s
+  END
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+// ---------- Scene 2: the big idea ----------
+SCENE 2 "Big idea"
+  CREATE bigTitle AS TEXT
+    POSITION 960 160
+    SIZE 72
+    COLOR #1B1B1B
+    TEXT "The Big Idea"
+    DRAW 0.7s
+  END
+  CREATE insideBox AS RECTANGLE
+    POSITION 480 520
+    WIDTH 520
+    HEIGHT 340
+    FILL #E8F1FF
+    COLOR #1F5FBF
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 11
+    DRAW 0.9s
+  END
+  CREATE insideLabel AS TEXT
+    POSITION 480 520
+    SIZE 48
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #1F5FBF
+    TEXT "Inside the fridge"
+    DRAW 0.7s
+  END
+  CREATE roomBox AS RECTANGLE
+    POSITION 1440 520
+    WIDTH 520
+    HEIGHT 340
+    FILL #FDECEA
+    COLOR #C62828
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 13
+    DRAW 0.9s
+  END
+  CREATE roomLabel AS TEXT
+    POSITION 1440 520
+    SIZE 48
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #C62828
+    TEXT "The warm room"
+    DRAW 0.7s
+  END
+  ARROW insideBox -> roomBox
+    COLOR #C62828
+    STROKE 8
+    DRAW 0.9s
+  CREATE heatTag AS TEXT
+    POSITION 960 440
+    SIZE 52
+    COLOR #C62828
+    TEXT "heat"
+    DRAW 0.5s
+  END
+  SAY "Picture a taxi for warmth: pick-up here, drop-off there."
+    DURATION 3s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Analogy for the one-way trip heat takes."
+  CREATE ideaText AS TEXT
+    POSITION 960 830
+    SIZE 60
+    COLOR #1E7B34
+    TEXT "Cold isn't made. Heat is moved."
+    DRAW 1s
+  END
+  CREATE ideaLine AS LINE
+    FROM 600 885
+    TO 1320 885
+    COLOR #1E7B34
+    STROKE 6
+    DRAW 0.5s
+  END
+  SAY "Everything else in the machine just makes that trip happen."
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Bridges to the parts of the machine that follow."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+// ---------- Scene 3: the four-step loop ----------
+SCENE 3 "The loop"
+  CREATE loopTitle AS TEXT
+    POSITION 960 160
+    SIZE 72
+    COLOR #1B1B1B
+    TEXT "The 4-Step Loop"
+    DRAW 0.7s
+  END
+  CREATE compBox AS RECTANGLE
+    POSITION 540 430
+    WIDTH 520
+    HEIGHT 170
+    FILL #FDECEA
+    COLOR #C62828
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 21
+    DRAW 0.7s
+  END
+  CREATE compLabel AS TEXT
+    POSITION 540 430
+    SIZE 46
+    COLOR #C62828
+    TEXT "1. Compressor"
+    DRAW 0.6s
+  END
+  CREATE condBox AS RECTANGLE
+    POSITION 1380 430
+    WIDTH 520
+    HEIGHT 170
+    FILL #FDECEA
+    COLOR #C62828
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 22
+    DRAW 0.7s
+  END
+  CREATE condLabel AS TEXT
+    POSITION 1380 430
+    SIZE 46
+    COLOR #C62828
+    TEXT "2. Condenser"
+    DRAW 0.6s
+  END
+  ARROW compBox -> condBox
+    COLOR #C62828
+    STROKE 6
+    DRAW 0.7s
+  SAY "The red stops are where the gas runs hot."
+    DURATION 2.8s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Color coding: red is hot, blue is cold."
+  CREATE valveBox AS RECTANGLE
+    POSITION 1380 800
+    WIDTH 520
+    HEIGHT 170
+    FILL #E8F1FF
+    COLOR #1F5FBF
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 23
+    DRAW 0.7s
+  END
+  CREATE valveLabel AS TEXT
+    POSITION 1380 800
+    SIZE 46
+    COLOR #1F5FBF
+    TEXT "3. Valve"
+    DRAW 0.6s
+  END
+  CREATE evapBox AS RECTANGLE
+    POSITION 540 800
+    WIDTH 520
+    HEIGHT 170
+    FILL #E8F1FF
+    COLOR #1F5FBF
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 24
+    DRAW 0.7s
+  END
+  CREATE evapLabel AS TEXT
+    POSITION 540 800
+    SIZE 46
+    COLOR #1F5FBF
+    TEXT "4. Evaporator"
+    DRAW 0.6s
+  END
+  ARROW condBox -> valveBox
+    COLOR #C62828
+    STROKE 6
+    DRAW 0.7s
+  ARROW valveBox -> evapBox
+    COLOR #1F5FBF
+    STROKE 6
+    DRAW 0.7s
+  ARROW evapBox -> compBox
+    COLOR #1F5FBF
+    STROKE 6
+    DRAW 0.7s
+  CREATE centerNote AS TEXT
+    POSITION 960 615
+    SIZE 34
+    MAXWIDTH 260
+    ALIGN center
+    COLOR #1E7B34
+    TEXT "same gas, round and round"
+    DRAW 0.8s
+  END
+  SAY "One special gas circles forever, changing temperature at every stop."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "The refrigerant is never used up, only reused."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+// ---------- Scene 4: hot side (steps 1 and 2) ----------
+SCENE 4 "Hot side"
+  CREATE hotTitle AS TEXT
+    POSITION 960 160
+    SIZE 72
+    COLOR #C62828
+    TEXT "The Hot Side"
+    DRAW 0.7s
+  END
+  CREATE hotCompBox AS RECTANGLE
+    POSITION 500 470
+    WIDTH 600
+    HEIGHT 200
+    FILL #FDECEA
+    COLOR #C62828
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 31
+    DRAW 0.8s
+  END
+  CREATE hotCompLabel AS TEXT
+    POSITION 500 470
+    SIZE 52
+    COLOR #C62828
+    TEXT "Compressor"
+    DRAW 0.6s
+  END
+  CREATE hotCondBox AS RECTANGLE
+    POSITION 1420 470
+    WIDTH 600
+    HEIGHT 200
+    FILL #FDECEA
+    COLOR #C62828
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 32
+    DRAW 0.8s
+  END
+  CREATE hotCondLabel AS TEXT
+    POSITION 1420 470
+    SIZE 52
+    COLOR #C62828
+    TEXT "Condenser"
+    DRAW 0.6s
+  END
+  ARROW hotCompBox -> hotCondBox
+    COLOR #C62828
+    STROKE 8
+    DRAW 0.8s
+  CREATE hotCompNote AS TEXT
+    POSITION 500 690
+    SIZE 36
+    MAXWIDTH 560
+    ALIGN center
+    COLOR #1B1B1B
+    TEXT "Squeezes the gas, making it hot and high-pressure"
+    DRAW 0.9s
+  END
+  SAY "Same reason a bicycle pump gets warm when you use it."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Everyday analogy for compression heating."
+  CREATE hotCondNote AS TEXT
+    POSITION 1420 690
+    SIZE 36
+    MAXWIDTH 560
+    ALIGN center
+    COLOR #1B1B1B
+    TEXT "Hot coils on the back shed that warmth into the room"
+    DRAW 0.9s
+  END
+  CREATE hotBar AS RECTANGLE
+    POSITION 960 880
+    WIDTH 1300
+    HEIGHT 110
+    FILL #E6F4EA
+    COLOR #1E7B34
+    STROKE 5
+    CORNERS 20
+    ROUGH on
+    ROUGHSEED 33
+    DRAW 0.7s
+  END
+  CREATE hotBarText AS TEXT
+    POSITION 960 880
+    SIZE 44
+    COLOR #1E7B34
+    TEXT "This is where the heat leaves!"
+    DRAW 0.7s
+  END
+  SAY "Once the gas is hotter than the room, warmth flows out naturally."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Heat always flows from hotter to colder."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+// ---------- Scene 5: cold side (steps 3 and 4) ----------
+SCENE 5 "Cold side"
+  CREATE coldTitle AS TEXT
+    POSITION 960 160
+    SIZE 72
+    COLOR #1F5FBF
+    TEXT "The Cold Side"
+    DRAW 0.7s
+  END
+  CREATE coldValveBox AS RECTANGLE
+    POSITION 500 470
+    WIDTH 600
+    HEIGHT 200
+    FILL #E8F1FF
+    COLOR #1F5FBF
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 41
+    DRAW 0.8s
+  END
+  CREATE coldValveLabel AS TEXT
+    POSITION 500 470
+    SIZE 52
+    COLOR #1F5FBF
+    TEXT "Expansion valve"
+    DRAW 0.6s
+  END
+  CREATE coldEvapBox AS RECTANGLE
+    POSITION 1420 470
+    WIDTH 600
+    HEIGHT 200
+    FILL #E8F1FF
+    COLOR #1F5FBF
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 42
+    DRAW 0.8s
+  END
+  CREATE coldEvapLabel AS TEXT
+    POSITION 1420 470
+    SIZE 52
+    COLOR #1F5FBF
+    TEXT "Evaporator"
+    DRAW 0.6s
+  END
+  ARROW coldValveBox -> coldEvapBox
+    COLOR #1F5FBF
+    STROKE 8
+    DRAW 0.8s
+  CREATE coldValveNote AS TEXT
+    POSITION 500 690
+    SIZE 36
+    MAXWIDTH 560
+    ALIGN center
+    COLOR #1B1B1B
+    TEXT "A tiny opening lets the gas expand and turn icy"
+    DRAW 0.9s
+  END
+  SAY "Sudden pressure loss cools gas, just like an aerosol can feels cold."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Everyday analogy for expansion cooling."
+  CREATE coldEvapNote AS TEXT
+    POSITION 1420 690
+    SIZE 36
+    MAXWIDTH 560
+    ALIGN center
+    COLOR #1B1B1B
+    TEXT "Icy coils inside soak up warmth from your food"
+    DRAW 0.9s
+  END
+  CREATE coldBar AS RECTANGLE
+    POSITION 960 880
+    WIDTH 1300
+    HEIGHT 110
+    FILL #E6F4EA
+    COLOR #1E7B34
+    STROKE 5
+    CORNERS 20
+    ROUGH on
+    ROUGHSEED 43
+    DRAW 0.7s
+  END
+  CREATE coldBarText AS TEXT
+    POSITION 960 880
+    SIZE 44
+    COLOR #1E7B34
+    TEXT "This is where the heat gets picked up!"
+    DRAW 0.7s
+  END
+  SAY "Anything warmer than the coils gives up its warmth to them."
+    DURATION 3.5s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Why the food inside gets colder."
+  TRANSITION wipe DURATION 0.6s
+END SCENE
+
+// ---------- Scene 6: quick check and takeaway ----------
+SCENE 6 "Quick check"
+  CREATE checkTitle AS TEXT
+    POSITION 960 160
+    SIZE 72
+    COLOR #1B1B1B
+    TEXT "Quick Check"
+    DRAW 0.7s
+  END
+  CREATE checkQuestion AS TEXT
+    POSITION 960 340
+    SIZE 52
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #1F5FBF
+    TEXT "Where does the heat from your milk end up?"
+    DRAW 1s
+  END
+  SAY "Pause for a moment and guess before the answer appears."
+    DURATION 3s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Think beat so the viewer commits to a guess."
+  CREATE answerBox AS RECTANGLE
+    POSITION 960 600
+    WIDTH 1400
+    HEIGHT 200
+    FILL #E6F4EA
+    COLOR #1E7B34
+    STROKE 6
+    CORNERS 24
+    ROUGH on
+    ROUGHSEED 51
+    DRAW 0.9s
+  END
+  CREATE answerText AS TEXT
+    POSITION 960 600
+    SIZE 48
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #1E7B34
+    TEXT "The room, through the hot coils at the back"
+    DRAW 0.9s
+  END
+  CREATE takeText AS TEXT
+    POSITION 960 830
+    SIZE 60
+    COLOR #1B1B1B
+    TEXT "Cold is just heat that left."
+    DRAW 1s
+  END
+  CREATE takeLine AS LINE
+    FROM 580 890
+    TO 1340 890
+    COLOR #C62828
+    STROKE 7
+    DRAW 0.5s
+  END
+  SAY "Name that trick and you can explain freezers and air conditioners too."
+    DURATION 3.6s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Generalizes the lesson beyond the fridge."
+END SCENE

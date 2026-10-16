@@ -1,0 +1,305 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FBFAF5
+FONT neat
+STROKE 3
+
+SCENE 1 "TCP vs UDP"
+  CREATE title AS TEXT
+    POSITION 960 95
+    SIZE 64
+    TEXT "TCP vs UDP"
+    COLOR #1F3A5F
+    DRAW 0.8s
+  END
+  CREATE divider AS LINE
+    FROM 960 330
+    TO 960 780
+    COLOR #C9D3DC
+    STROKE 3
+    LINESTYLE dashed
+    DRAW 0.6s
+  END
+
+  SAY "Both protocols carry data across a network, but they make opposite promises. Let's put them side by side and compare row by row."
+    DURATION 7s
+    TONE hook
+    WHO "Narrator"
+    DETAIL "Frames the comparison before any detail appears."
+
+  CREATE headA AS RECTANGLE
+    POSITION 480 255
+    WIDTH 640
+    HEIGHT 100
+    CORNERS 16
+    FILL #2F6FB2
+    COLOR #2F6FB2
+    DRAW 0.5s
+  END
+  CREATE headAt AS TEXT
+    POSITION 480 255
+    SIZE 48
+    TEXT "TCP"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+  CREATE headB AS RECTANGLE
+    POSITION 1440 255
+    WIDTH 640
+    HEIGHT 100
+    CORNERS 16
+    FILL #C2570C
+    COLOR #C2570C
+    DRAW 0.5s
+  END
+  CREATE headBt AS TEXT
+    POSITION 1440 255
+    SIZE 48
+    TEXT "UDP"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+  CREATE vsbadge AS CIRCLE
+    POSITION 960 255
+    RADIUS 50
+    FILL #1F3A5F
+    COLOR #1F3A5F
+    DRAW 0.4s
+  END
+  CREATE vstext AS TEXT
+    POSITION 960 255
+    SIZE 40
+    TEXT "VS"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+
+  SAY "Think of a phone call versus dropping a postcard in the mailbox."
+    DURATION 5s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Adds the everyday analogy for row 1."
+
+  CREATE lab1 AS TEXT
+    POSITION 960 380
+    SIZE 30
+    TEXT "Setup"
+    COLOR #56606D
+    BACKGROUND #FBFAF5
+    PADDING 8
+    DRAW 0.3s
+  END
+  CREATE cardA1 AS RECTANGLE
+    POSITION 480 380
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    DRAW 0.4s
+  END
+  CREATE textA1 AS TEXT
+    POSITION 480 380
+    SIZE 38
+    TEXT "Handshake before data"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  CREATE cardB1 AS RECTANGLE
+    POSITION 1440 380
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #FBD9C4
+    COLOR #C2570C
+    DRAW 0.4s
+  END
+  CREATE textB1 AS TEXT
+    POSITION 1440 380
+    SIZE 38
+    TEXT "No handshake, just send"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  WAIT 0.4s
+
+  SAY "One protocol keeps asking until everything arrives, the other never looks back."
+    DURATION 5s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Adds the everyday analogy for row 2."
+
+  CREATE lab2 AS TEXT
+    POSITION 960 490
+    SIZE 30
+    TEXT "Delivery"
+    COLOR #56606D
+    BACKGROUND #FBFAF5
+    PADDING 8
+    DRAW 0.3s
+  END
+  CREATE cardA2 AS RECTANGLE
+    POSITION 480 490
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    DRAW 0.4s
+  END
+  CREATE textA2 AS TEXT
+    POSITION 480 490
+    SIZE 38
+    TEXT "Lost packets are resent"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  CREATE cardB2 AS RECTANGLE
+    POSITION 1440 490
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #FBD9C4
+    COLOR #C2570C
+    DRAW 0.4s
+  END
+  CREATE textB2 AS TEXT
+    POSITION 1440 490
+    SIZE 38
+    TEXT "Lost packets are skipped"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  WAIT 0.4s
+
+  SAY "The extra checking is exactly what costs TCP its speed."
+    DURATION 5s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Adds the everyday analogy for row 3."
+
+  CREATE lab3 AS TEXT
+    POSITION 960 600
+    SIZE 30
+    TEXT "Speed"
+    COLOR #56606D
+    BACKGROUND #FBFAF5
+    PADDING 8
+    DRAW 0.3s
+  END
+  CREATE cardA3 AS RECTANGLE
+    POSITION 480 600
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    DRAW 0.4s
+  END
+  CREATE textA3 AS TEXT
+    POSITION 480 600
+    SIZE 38
+    TEXT "Slower, more careful"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  CREATE cardB3 AS RECTANGLE
+    POSITION 1440 600
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #FBD9C4
+    COLOR #C2570C
+    DRAW 0.4s
+  END
+  CREATE textB3 AS TEXT
+    POSITION 1440 600
+    SIZE 38
+    TEXT "Faster, less overhead"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  WAIT 0.4s
+
+  SAY "Pick by asking whether a missing piece hurts more than a delay."
+    DURATION 5s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Adds the everyday analogy for row 4."
+
+  CREATE lab4 AS TEXT
+    POSITION 960 710
+    SIZE 30
+    TEXT "Used for"
+    COLOR #56606D
+    BACKGROUND #FBFAF5
+    PADDING 8
+    DRAW 0.3s
+  END
+  CREATE cardA4 AS RECTANGLE
+    POSITION 480 710
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    DRAW 0.4s
+  END
+  CREATE textA4 AS TEXT
+    POSITION 480 710
+    SIZE 38
+    TEXT "Web pages, email, files"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  CREATE cardB4 AS RECTANGLE
+    POSITION 1440 710
+    WIDTH 640
+    HEIGHT 90
+    CORNERS 14
+    FILL #FBD9C4
+    COLOR #C2570C
+    DRAW 0.4s
+  END
+  CREATE textB4 AS TEXT
+    POSITION 1440 710
+    SIZE 38
+    TEXT "Video calls, games"
+    COLOR #1F3A5F
+    DRAW 0.6s
+  END
+  WAIT 0.4s
+
+  SAY "So neither one wins outright. The right choice depends on whether your data can survive a gap."
+    DURATION 6s
+    TONE punchline
+    WHO "Narrator"
+    DETAIL "Turns the table into a decision rule."
+
+  CREATE verdictbar AS RECTANGLE
+    POSITION 960 930
+    WIDTH 1500
+    HEIGHT 120
+    CORNERS 20
+    FILL #FFE45C
+    COLOR #1F3A5F
+    STROKE 4
+    DRAW 0.7s
+  END
+  CREATE verdicttag AS TEXT
+    POSITION 300 930
+    SIZE 30
+    TEXT "VERDICT"
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE verdicttext AS TEXT
+    POSITION 1010 930
+    SIZE 46
+    TEXT "TCP for accuracy, UDP for speed"
+    COLOR #1F3A5F
+    DRAW 1.2s
+  END
+
+  WAIT 1s
+END SCENE

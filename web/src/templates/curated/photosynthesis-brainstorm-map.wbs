@@ -1,0 +1,1034 @@
+// Strokeline Education Style 9: Mind Map Brainstorm
+// Purpose: Copy-ready template. One hub idea, four colored branches, short answer leaves.
+// Demo topic: Photosynthesis (same topic as the Chalkboard style, so the styles compare side by side).
+// Look: warm desk background, white paper sheet with soft shadow, yellow hub with a leaf icon,
+//   one color per branch (deep branch pill + pale leaf pills), an icon on every node,
+//   sticky-note tips, and a recap with Key Takeaway / Memory Trick / Common Mistake cards.
+// Scenes: 1 title, 2 branches, 3 full map, 4 recap.
+//
+// HOW TO REUSE
+//  1. Replace "Photosynthesis" (scenes 1, 2, 3) with your topic.
+//  2. Rename the 4 branch pills (keep them to one short word, about 8 characters max).
+//  3. Edit leaf text (about 15 characters max at SIZE 42) and swap leaf icons (NAME ...).
+//  4. Scene 3 shows exactly 12 text objects, the validator limit (W_TOO_CROWDED).
+//     To add a leaf, remove another one, or split the map across two scenes.
+//  5. Each branch uses 3 colors: deep fill (white text), pale tint (leaf), dark text (leaf).
+//  6. Some Lucide icons (sun, candy, sparkles, triangle-alert) draw messily in the hand-drawn
+//     style. Safe picks: leaf, star, droplet, zap, refresh-cw, apple, wind, map-pin, eraser.
+//
+// Validator status: run with the Strokeline app validator (web/scripts/validate.mjs).
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FBE9C6
+STYLE handdrawn
+FONT handwritten
+STROKE 4
+
+SCENE 1 "One big idea"
+  SAY "Before cramming facts, drop one anchor on the page and let everything else grow from it."
+    DURATION 5s
+    TONE hook
+  CREATE paper AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1840
+    HEIGHT 1000
+    CORNERS 40
+    FILL #FFFDF8
+    COLOR #E0CFA8
+    STROKE 3
+    SHADOW 28
+    DRAW 0.4s
+  END
+  CREATE tag AS RECTANGLE
+    POSITION 300 150
+    WIDTH 380
+    HEIGHT 80
+    CORNERS 40
+    FILL #B23A1E
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 10
+    TEXT "MIND MAP"
+    SIZE 44
+    DRAW 0.4s
+  END
+  CREATE tag_icon AS ICON
+    POSITION 168 150
+    SIZE 66
+    NAME lightbulb
+    COLOR #FFFFFF
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE big_hub AS CIRCLE
+    POSITION 960 520
+    RADIUS 270
+    FILL #FFD54A
+    COLOR #1F2933
+    STROKE 7
+    SHADOW 30
+    DRAW 0.8s
+  END
+  CREATE big_icon AS ICON
+    POSITION 960 420
+    SIZE 210
+    NAME leaf
+    COLOR #1E7A3C
+    STROKE 5
+    DRAW 0.5s
+  END
+  CREATE big_title AS TEXT
+    POSITION 960 595
+    SIZE 78
+    TEXT "Photosynthesis"
+    COLOR #1F2933
+    DRAW 0.8s
+  END
+  CREATE s_in AS CIRCLE
+    POSITION 685 245
+    RADIUS 75
+    FILL #B23A1E
+    COLOR #B23A1E
+    STROKE 4
+    SHADOW 14
+    DRAW 0.3s
+  END
+  CREATE si_in AS ICON
+    POSITION 685 245
+    SIZE 130
+    NAME droplet
+    COLOR #FFFFFF
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE s_st AS CIRCLE
+    POSITION 1235 245
+    RADIUS 75
+    FILL #1F5FBF
+    COLOR #1F5FBF
+    STROKE 4
+    SHADOW 14
+    DRAW 0.3s
+  END
+  CREATE si_st AS ICON
+    POSITION 1235 245
+    SIZE 130
+    NAME zap
+    COLOR #FFFFFF
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE s_wh AS CIRCLE
+    POSITION 685 795
+    RADIUS 75
+    FILL #1E7A3C
+    COLOR #1E7A3C
+    STROKE 4
+    SHADOW 14
+    DRAW 0.3s
+  END
+  CREATE si_wh AS ICON
+    POSITION 685 795
+    SIZE 130
+    NAME map-pin
+    COLOR #FFFFFF
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE s_out AS CIRCLE
+    POSITION 1235 795
+    RADIUS 75
+    FILL #7A3DB8
+    COLOR #7A3DB8
+    STROKE 4
+    SHADOW 14
+    DRAW 0.3s
+  END
+  CREATE si_out AS ICON
+    POSITION 1235 795
+    SIZE 130
+    NAME wind
+    COLOR #FFFFFF
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_idea_ring AS CIRCLE
+    POSITION 250 540
+    RADIUS 105
+    FILL #FFF1B8
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_idea AS ICON
+    POSITION 250 540
+    SIZE 190
+    NAME lightbulb
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_star_ring AS CIRCLE
+    POSITION 1670 540
+    RADIUS 105
+    FILL #FFF1B8
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_star AS ICON
+    POSITION 1670 540
+    SIZE 190
+    NAME star
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE sub AS TEXT
+    POSITION 960 930
+    SIZE 60
+    TEXT "One idea. Four branches. Easy recall."
+    COLOR #1F2933
+    DRAW 0.8s
+  END
+  INK UNDERLINE sub
+    COLOR #FFB703
+    WIDTH 12
+    DRAW 0.6s
+  END
+  WAIT 1s
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 2 "Four branches"
+  SAY "Sorting a topic into labeled groups gives your memory hooks, and color adds a second one."
+    DURATION 5s
+    TONE explain
+  CREATE paper AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1840
+    HEIGHT 1000
+    CORNERS 40
+    FILL #FFFDF8
+    COLOR #E0CFA8
+    STROKE 3
+    SHADOW 28
+    DRAW 0.4s
+  END
+  CREATE hub AS CIRCLE
+    POSITION 960 540
+    RADIUS 200
+    FILL #FFD54A
+    COLOR #1F2933
+    STROKE 6
+    SHADOW 24
+    DRAW 0.4s
+  END
+  CREATE hub_icon AS ICON
+    POSITION 960 476
+    SIZE 190
+    NAME leaf
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.4s
+  END
+  CREATE hub_text AS TEXT
+    POSITION 960 600
+    SIZE 64
+    TEXT "Photosynthesis"
+    COLOR #1F2933
+    DRAW 0.5s
+  END
+  CREATE b_in AS RECTANGLE
+    POSITION 720 225
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #B23A1E
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Inputs"
+    SIZE 52
+    DRAW 0.4s
+  END
+  CREATE bi_in AS CIRCLE
+    POSITION 585 225
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_in AS ICON
+    POSITION 585 225
+    SIZE 84
+    NAME log-in
+    COLOR #B23A1E
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_in
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 10
+    DRAW 0.4s
+  CREATE b_wh AS RECTANGLE
+    POSITION 720 855
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #1E7A3C
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Where"
+    SIZE 52
+    DRAW 0.4s
+  END
+  CREATE bi_wh AS CIRCLE
+    POSITION 585 855
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_wh AS ICON
+    POSITION 585 855
+    SIZE 84
+    NAME map-pin
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_wh
+    ROUTE curve
+    HEAD none
+    COLOR #1E7A3C
+    STROKE 10
+    DRAW 0.4s
+  CREATE b_st AS RECTANGLE
+    POSITION 1200 225
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #1F5FBF
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Steps"
+    SIZE 52
+    DRAW 0.4s
+  END
+  CREATE bi_st AS CIRCLE
+    POSITION 1065 225
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_st AS ICON
+    POSITION 1065 225
+    SIZE 84
+    NAME workflow
+    COLOR #1F5FBF
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_st
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 10
+    DRAW 0.4s
+  CREATE b_out AS RECTANGLE
+    POSITION 1200 855
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #7A3DB8
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Outputs"
+    SIZE 52
+    DRAW 0.4s
+  END
+  CREATE bi_out AS CIRCLE
+    POSITION 1065 855
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_out AS ICON
+    POSITION 1065 855
+    SIZE 84
+    NAME log-out
+    COLOR #7A3DB8
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_out
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 10
+    DRAW 0.4s
+  CREATE n1_card AS RECTANGLE
+    POSITION 250 560
+    WIDTH 380
+    HEIGHT 290
+    CORNERS 24
+    FILL #FFF1B8
+    COLOR #B08900
+    STROKE 4
+    SHADOW 14
+    DRAW 0.4s
+  END
+  CREATE n1_icon AS ICON
+    POSITION 250 470
+    SIZE 100
+    NAME pencil
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE n1 AS TEXT
+    POSITION 250 605
+    SIZE 46
+    TEXT "Tip: one topic per branch"
+    MAXWIDTH 250
+    ALIGN center
+    COLOR #3D2F00
+    DRAW 0.5s
+  END
+  CREATE n2_card AS RECTANGLE
+    POSITION 1670 560
+    WIDTH 380
+    HEIGHT 290
+    CORNERS 24
+    FILL #FFF1B8
+    COLOR #B08900
+    STROKE 4
+    SHADOW 14
+    DRAW 0.4s
+  END
+  CREATE n2_icon AS ICON
+    POSITION 1670 470
+    SIZE 100
+    NAME flag
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE n2 AS TEXT
+    POSITION 1670 605
+    SIZE 46
+    TEXT "Tip: one color per branch"
+    MAXWIDTH 250
+    ALIGN center
+    COLOR #3D2F00
+    DRAW 0.5s
+  END
+  WAIT 1s
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 3 "The full map"
+  SAY "Notice how tiny the answers are, which is why one glance is enough on revision day."
+    DURATION 5s
+    TONE explain
+  CREATE paper AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1840
+    HEIGHT 1000
+    CORNERS 40
+    FILL #FFFDF8
+    COLOR #E0CFA8
+    STROKE 3
+    SHADOW 28
+    DRAW 0.4s
+  END
+  CREATE hub AS CIRCLE
+    POSITION 960 540
+    RADIUS 200
+    FILL #FFD54A
+    COLOR #1F2933
+    STROKE 6
+    SHADOW 24
+    DRAW 0.4s
+  END
+  CREATE hub_icon AS ICON
+    POSITION 960 476
+    SIZE 190
+    NAME leaf
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.4s
+  END
+  CREATE hub_text AS TEXT
+    POSITION 960 600
+    SIZE 64
+    TEXT "Photosynthesis"
+    COLOR #1F2933
+    DRAW 0.5s
+  END
+  CREATE b_in AS RECTANGLE
+    POSITION 720 225
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #B23A1E
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Inputs"
+    SIZE 52
+    DRAW 0.35s
+  END
+  CREATE bi_in AS CIRCLE
+    POSITION 585 225
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_in AS ICON
+    POSITION 585 225
+    SIZE 84
+    NAME log-in
+    COLOR #B23A1E
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_in
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 10
+    DRAW 0.3s
+  CREATE l_in1 AS RECTANGLE
+    POSITION 250 135
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #FFE3D6
+    COLOR #9A2F14
+    STROKE 4
+    SHADOW 8
+    TEXT "Sunlight"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_in1 AS ICON
+    POSITION 92 135
+    SIZE 92
+    NAME star
+    COLOR #B23A1E
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_in -> l_in1
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 6
+    DRAW 0.25s
+  CREATE l_in2 AS RECTANGLE
+    POSITION 250 315
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #FFE3D6
+    COLOR #9A2F14
+    STROKE 4
+    SHADOW 8
+    TEXT "Water + CO2"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_in2 AS ICON
+    POSITION 92 315
+    SIZE 92
+    NAME droplet
+    COLOR #B23A1E
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_in -> l_in2
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 6
+    DRAW 0.25s
+  CREATE b_wh AS RECTANGLE
+    POSITION 720 855
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #1E7A3C
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Where"
+    SIZE 52
+    DRAW 0.35s
+  END
+  CREATE bi_wh AS CIRCLE
+    POSITION 585 855
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_wh AS ICON
+    POSITION 585 855
+    SIZE 84
+    NAME map-pin
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_wh
+    ROUTE curve
+    HEAD none
+    COLOR #1E7A3C
+    STROKE 10
+    DRAW 0.3s
+  CREATE l_wh1 AS RECTANGLE
+    POSITION 250 855
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #DDF4E4
+    COLOR #17602F
+    STROKE 4
+    SHADOW 8
+    TEXT "In chloroplasts"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_wh1 AS ICON
+    POSITION 92 855
+    SIZE 92
+    NAME leaf
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_wh -> l_wh1
+    ROUTE curve
+    HEAD none
+    COLOR #1E7A3C
+    STROKE 6
+    DRAW 0.25s
+  CREATE b_st AS RECTANGLE
+    POSITION 1200 225
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #1F5FBF
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Steps"
+    SIZE 52
+    DRAW 0.35s
+  END
+  CREATE bi_st AS CIRCLE
+    POSITION 1065 225
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_st AS ICON
+    POSITION 1065 225
+    SIZE 84
+    NAME workflow
+    COLOR #1F5FBF
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_st
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 10
+    DRAW 0.3s
+  CREATE l_st1 AS RECTANGLE
+    POSITION 1670 135
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #DCEBFF
+    COLOR #174A96
+    STROKE 4
+    SHADOW 8
+    TEXT "Light reactions"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_st1 AS ICON
+    POSITION 1512 135
+    SIZE 92
+    NAME zap
+    COLOR #1F5FBF
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_st -> l_st1
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 6
+    DRAW 0.25s
+  CREATE l_st2 AS RECTANGLE
+    POSITION 1670 315
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #DCEBFF
+    COLOR #174A96
+    STROKE 4
+    SHADOW 8
+    TEXT "Calvin cycle"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_st2 AS ICON
+    POSITION 1512 315
+    SIZE 92
+    NAME refresh-cw
+    COLOR #1F5FBF
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_st -> l_st2
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 6
+    DRAW 0.25s
+  CREATE b_out AS RECTANGLE
+    POSITION 1200 855
+    WIDTH 380
+    HEIGHT 120
+    CORNERS 60
+    FILL #7A3DB8
+    COLOR #FFFFFF
+    STROKE 3
+    SHADOW 14
+    TEXT "Outputs"
+    SIZE 52
+    DRAW 0.35s
+  END
+  CREATE bi_out AS CIRCLE
+    POSITION 1065 855
+    RADIUS 40
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE bic_out AS ICON
+    POSITION 1065 855
+    SIZE 84
+    NAME log-out
+    COLOR #7A3DB8
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW hub -> b_out
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 10
+    DRAW 0.3s
+  CREATE l_out1 AS RECTANGLE
+    POSITION 1670 765
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #EBDDFB
+    COLOR #5E2A92
+    STROKE 4
+    SHADOW 8
+    TEXT "Glucose (sugar)"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_out1 AS ICON
+    POSITION 1512 765
+    SIZE 92
+    NAME apple
+    COLOR #7A3DB8
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_out -> l_out1
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 6
+    DRAW 0.25s
+  CREATE l_out2 AS RECTANGLE
+    POSITION 1670 945
+    WIDTH 380
+    HEIGHT 100
+    CORNERS 50
+    FILL #EBDDFB
+    COLOR #5E2A92
+    STROKE 4
+    SHADOW 8
+    TEXT "Oxygen gas"
+    SIZE 46
+    DRAW 0.3s
+  END
+  CREATE li_out2 AS ICON
+    POSITION 1512 945
+    SIZE 92
+    NAME wind
+    COLOR #7A3DB8
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW b_out -> l_out2
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 6
+    DRAW 0.25s
+  CREATE d_tree_ring AS CIRCLE
+    POSITION 250 555
+    RADIUS 105
+    FILL #DDF4E4
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_tree AS ICON
+    POSITION 250 555
+    SIZE 190
+    NAME trees
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_flask_ring AS CIRCLE
+    POSITION 1670 555
+    RADIUS 105
+    FILL #DCEBFF
+    COLOR #1F5FBF
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE d_flask AS ICON
+    POSITION 1670 555
+    SIZE 190
+    NAME flask-conical
+    COLOR #1F5FBF
+    STROKE 4
+    DRAW 0.3s
+  END
+  WAIT 1.5s
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 4 "Say it back"
+  SAY "Cover the page, then rebuild the whole answer by walking the branches in order."
+    DURATION 5s
+    TONE recap
+  CREATE paper AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1840
+    HEIGHT 1000
+    CORNERS 40
+    FILL #FFFDF8
+    COLOR #E0CFA8
+    STROKE 3
+    SHADOW 28
+    DRAW 0.4s
+  END
+  CREATE r_title AS TEXT
+    POSITION 960 150
+    SIZE 66
+    TEXT "The whole map in one line"
+    COLOR #1F2933
+    DRAW 0.7s
+  END
+  INK UNDERLINE r_title
+    COLOR #FFB703
+    WIDTH 12
+    DRAW 0.5s
+  END
+  CREATE r_left AS RECTANGLE
+    POSITION 500 370
+    WIDTH 640
+    HEIGHT 140
+    CORNERS 70
+    FILL #FFE3D6
+    COLOR #9A2F14
+    STROKE 5
+    SHADOW 12
+    TEXT "Light + Water + CO2"
+    SIZE 50
+    DRAW 0.6s
+  END
+  CREATE r_left_i AS ICON
+    POSITION 215 370
+    SIZE 100
+    NAME droplet
+    COLOR #B23A1E
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE r_right AS RECTANGLE
+    POSITION 1420 370
+    WIDTH 640
+    HEIGHT 140
+    CORNERS 70
+    FILL #EBDDFB
+    COLOR #5E2A92
+    STROKE 5
+    SHADOW 12
+    TEXT "Glucose + Oxygen"
+    SIZE 50
+    DRAW 0.6s
+  END
+  CREATE r_right_i AS ICON
+    POSITION 1705 370
+    SIZE 100
+    NAME apple
+    COLOR #7A3DB8
+    STROKE 4
+    DRAW 0.2s
+  END
+  ARROW r_left -> r_right
+    ROUTE straight
+    HEAD end
+    COLOR #1F2933
+    STROKE 9
+    DRAW 0.6s
+  CREATE r_note AS TEXT
+    POSITION 960 310
+    SIZE 40
+    TEXT "in the leaves"
+    COLOR #1E7A3C
+    DRAW 0.4s
+  END
+  CREATE c1 AS RECTANGLE
+    POSITION 360 760
+    WIDTH 520
+    HEIGHT 340
+    CORNERS 30
+    FILL #FFF1B8
+    COLOR #B08900
+    STROKE 5
+    SHADOW 14
+    DRAW 0.5s
+  END
+  CREATE c1_icon AS ICON
+    POSITION 165 650
+    SIZE 96
+    NAME star
+    COLOR #B08900
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE c1_h AS TEXT
+    POSITION 395 650
+    SIZE 50
+    TEXT "Key Takeaway"
+    COLOR #5C4500
+    DRAW 0.4s
+  END
+  CREATE c1_b AS TEXT
+    POSITION 360 805
+    SIZE 42
+    TEXT "Light energy is stored as sugar inside the plant."
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #1F2933
+    DRAW 0.5s
+  END
+  CREATE c2 AS RECTANGLE
+    POSITION 960 760
+    WIDTH 520
+    HEIGHT 340
+    CORNERS 30
+    FILL #D9F2DF
+    COLOR #1E7A3C
+    STROKE 5
+    SHADOW 14
+    DRAW 0.5s
+  END
+  CREATE c2_icon AS ICON
+    POSITION 765 650
+    SIZE 96
+    NAME lightbulb
+    COLOR #1E7A3C
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE c2_h AS TEXT
+    POSITION 995 650
+    SIZE 50
+    TEXT "Memory Trick"
+    COLOR #17602F
+    DRAW 0.4s
+  END
+  CREATE c2_b AS TEXT
+    POSITION 960 805
+    SIZE 42
+    TEXT "Inputs left, outputs right. Read it like a sentence."
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #1F2933
+    DRAW 0.5s
+  END
+  CREATE c3 AS RECTANGLE
+    POSITION 1560 760
+    WIDTH 520
+    HEIGHT 340
+    CORNERS 30
+    FILL #FFD9D6
+    COLOR #C0392B
+    STROKE 5
+    SHADOW 14
+    DRAW 0.5s
+  END
+  CREATE c3_icon AS ICON
+    POSITION 1365 650
+    SIZE 96
+    NAME eraser
+    COLOR #C0392B
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE c3_h AS TEXT
+    POSITION 1595 650
+    SIZE 50
+    TEXT "Common Mistake"
+    COLOR #8E2A20
+    DRAW 0.4s
+  END
+  CREATE c3_b AS TEXT
+    POSITION 1560 805
+    SIZE 42
+    TEXT "Plants do not eat soil. They build food from air and water."
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #1F2933
+    DRAW 0.5s
+  END
+  WAIT 1.5s
+END SCENE

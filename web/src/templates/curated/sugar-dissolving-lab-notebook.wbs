@@ -1,0 +1,1721 @@
+// ============================================================
+// STYLE 8: Science Lab Notebook  (template + demo topic)
+// Topic: Does water temperature change how fast sugar dissolves?
+// Look: graph paper, spiral holes, red margin line, handwritten
+//   headings with yellow highlighter, sticky notes, index tabs on the
+//   right edge (the wide tab = current section).
+// Fixed sections, one per scene: 1 Question | 2 Hypothesis |
+//   3 Method | 4 Results (hand-drawn bar chart) | 5 Conclusion.
+// NOTE: the numbers in Results are an illustrative sample run.
+//   Replace them with your own measured data before teaching with it.
+// Bar scale: 2 px per second, baseline y=800.
+// ============================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F4FAFF
+BOARD graph
+STYLE pencil
+FONT handwritten
+STROKE 4
+SUBTITLES off
+
+SCENE 1 "Cover"
+  CREATE hole1_0 AS CIRCLE
+    POSITION 70 120
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_1 AS CIRCLE
+    POSITION 70 215
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_2 AS CIRCLE
+    POSITION 70 310
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_3 AS CIRCLE
+    POSITION 70 405
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_4 AS CIRCLE
+    POSITION 70 500
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_5 AS CIRCLE
+    POSITION 70 595
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_6 AS CIRCLE
+    POSITION 70 690
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_7 AS CIRCLE
+    POSITION 70 785
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_8 AS CIRCLE
+    POSITION 70 880
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole1_9 AS CIRCLE
+    POSITION 70 975
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE margin1 AS LINE
+    FROM 170 60
+    TO 170 1020
+    COLOR #E57373
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE tab1_0 AS RECTANGLE
+    POSITION 1870 260
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFB3C7
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab1_1 AS RECTANGLE
+    POSITION 1870 370
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFE08A
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab1_2 AS RECTANGLE
+    POSITION 1870 480
+    WIDTH 60
+    HEIGHT 80
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab1_3 AS RECTANGLE
+    POSITION 1870 590
+    WIDTH 60
+    HEIGHT 80
+    FILL #9BD0F5
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab1_4 AS RECTANGLE
+    POSITION 1870 700
+    WIDTH 60
+    HEIGHT 80
+    FILL #D4B8FF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE labelShadow AS RECTANGLE
+    POSITION 970 320
+    WIDTH 1300
+    HEIGHT 260
+    FILL #C9D6E2
+    COLOR #C9D6E2
+    STROKE 2
+    CORNERS 12
+    DRAW 0.3s
+  END
+  CREATE labelCard AS RECTANGLE
+    POSITION 960 310
+    WIDTH 1300
+    HEIGHT 260
+    FILL #FFFDF0
+    COLOR #2B3A4A
+    STROKE 5
+    CORNERS 12
+    DRAW 0.7s
+  END
+  CREATE tapeL AS RECTANGLE
+    POSITION 330 185
+    WIDTH 150
+    HEIGHT 46
+    FILL #FFE08A
+    COLOR #E0B84C
+    STROKE 2
+    CORNERS 4
+    OPACITY 0.75
+    DRAW 0.3s
+  END
+  CREATE tapeR AS RECTANGLE
+    POSITION 1590 185
+    WIDTH 150
+    HEIGHT 46
+    FILL #FFE08A
+    COLOR #E0B84C
+    STROKE 2
+    CORNERS 4
+    OPACITY 0.75
+    DRAW 0.3s
+  END
+  ANIMATE tapeL ROTATE TO -28
+    DURATION 0.3s
+  ANIMATE tapeR ROTATE TO 28
+    DURATION 0.3s
+  CREATE coverTitle AS TEXT
+    POSITION 960 290
+    SIZE 88
+    MAXWIDTH 1200
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Sugar vs. Water Temperature"
+    DRAW 1s
+  END
+  CREATE coverSub AS TEXT
+    POSITION 960 400
+    SIZE 48
+    COLOR #2F6F9F
+    TEXT "Lab Notebook, Experiment 7"
+    DRAW 0.7s
+  END
+  CREATE beaker AS RECTANGLE
+    POSITION 960 700
+    WIDTH 220
+    HEIGHT 300
+    COLOR #2B3A4A
+    STROKE 5
+    CORNERS 14
+    DRAW 0.7s
+  END
+  CREATE water AS RECTANGLE
+    POSITION 960 760
+    WIDTH 212
+    HEIGHT 180
+    FILL #BFE3F5
+    COLOR #BFE3F5
+    STROKE 1
+    CORNERS 6
+    DRAW 0.6s
+  END
+  CREATE grad0 AS LINE
+    FROM 1000 650
+    TO 1070 650
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE grad1 AS LINE
+    FROM 1000 700
+    TO 1070 700
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE grad2 AS LINE
+    FROM 1000 750
+    TO 1070 750
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE bubA AS CIRCLE
+    POSITION 910 790
+    RADIUS 9
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE bubB AS CIRCLE
+    POSITION 1010 820
+    RADIUS 7
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE cube AS RECTANGLE
+    POSITION 960 610
+    WIDTH 52
+    HEIGHT 52
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 6
+    DRAW 0.3s
+  END
+  SAY "Every experiment starts with curiosity and a clean page."
+    DURATION 3.2s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Opens the notebook metaphor."
+  ANIMATE cube MOVE TO 960 790
+    DURATION 1.2s
+    EASE easeIn
+  ANIMATE cube SCALE TO 0.2
+    DURATION 1.2s
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 2 "Question"
+  CREATE hole2_0 AS CIRCLE
+    POSITION 70 120
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_1 AS CIRCLE
+    POSITION 70 215
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_2 AS CIRCLE
+    POSITION 70 310
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_3 AS CIRCLE
+    POSITION 70 405
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_4 AS CIRCLE
+    POSITION 70 500
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_5 AS CIRCLE
+    POSITION 70 595
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_6 AS CIRCLE
+    POSITION 70 690
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_7 AS CIRCLE
+    POSITION 70 785
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_8 AS CIRCLE
+    POSITION 70 880
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole2_9 AS CIRCLE
+    POSITION 70 975
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE margin2 AS LINE
+    FROM 170 60
+    TO 170 1020
+    COLOR #E57373
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE tab2_0 AS RECTANGLE
+    POSITION 1840 260
+    WIDTH 120
+    HEIGHT 80
+    FILL #FFB3C7
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 16
+    DRAW 0.3s
+  END
+  CREATE tab2_1 AS RECTANGLE
+    POSITION 1870 370
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFE08A
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab2_2 AS RECTANGLE
+    POSITION 1870 480
+    WIDTH 60
+    HEIGHT 80
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab2_3 AS RECTANGLE
+    POSITION 1870 590
+    WIDTH 60
+    HEIGHT 80
+    FILL #9BD0F5
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab2_4 AS RECTANGLE
+    POSITION 1870 700
+    WIDTH 60
+    HEIGHT 80
+    FILL #D4B8FF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE hl2 AS LINE
+    FROM 290 205
+    TO 750 205
+    COLOR #FFE066
+    STROKE 16
+    DRAW 0.4s
+  END
+  CREATE head2 AS TEXT
+    POSITION 520 160
+    SIZE 84
+    COLOR #2B3A4A
+    TEXT "1. Question"
+    DRAW 0.7s
+  END
+  CREATE qText AS TEXT
+    POSITION 1000 380
+    SIZE 70
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Does water temperature change how fast sugar dissolves?"
+    DRAW 1s
+  END
+  CREATE cup0 AS RECTANGLE
+    POSITION 520 720
+    WIDTH 170
+    HEIGHT 210
+    COLOR #2B3A4A
+    STROKE 5
+    CORNERS 14
+    DRAW 0.5s
+  END
+  CREATE cupWater0 AS RECTANGLE
+    POSITION 520 760
+    WIDTH 162
+    HEIGHT 130
+    FILL #8EC9F0
+    COLOR #8EC9F0
+    STROKE 1
+    CORNERS 6
+    DRAW 0.4s
+  END
+  CREATE cupCube0 AS RECTANGLE
+    POSITION 520 690
+    WIDTH 40
+    HEIGHT 40
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 5
+    DRAW 0.2s
+  END
+  CREATE cupLbl0 AS TEXT
+    POSITION 520 900
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "cold"
+    DRAW 0.4s
+  END
+  CREATE cup1 AS RECTANGLE
+    POSITION 960 720
+    WIDTH 170
+    HEIGHT 210
+    COLOR #2B3A4A
+    STROKE 5
+    CORNERS 14
+    DRAW 0.5s
+  END
+  CREATE cupWater1 AS RECTANGLE
+    POSITION 960 760
+    WIDTH 162
+    HEIGHT 130
+    FILL #CFE3EE
+    COLOR #CFE3EE
+    STROKE 1
+    CORNERS 6
+    DRAW 0.4s
+  END
+  CREATE cupCube1 AS RECTANGLE
+    POSITION 960 690
+    WIDTH 40
+    HEIGHT 40
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 5
+    DRAW 0.2s
+  END
+  CREATE cupLbl1 AS TEXT
+    POSITION 960 900
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "room"
+    DRAW 0.4s
+  END
+  CREATE cup2 AS RECTANGLE
+    POSITION 1400 720
+    WIDTH 170
+    HEIGHT 210
+    COLOR #2B3A4A
+    STROKE 5
+    CORNERS 14
+    DRAW 0.5s
+  END
+  CREATE cupWater2 AS RECTANGLE
+    POSITION 1400 760
+    WIDTH 162
+    HEIGHT 130
+    FILL #F5A27A
+    COLOR #F5A27A
+    STROKE 1
+    CORNERS 6
+    DRAW 0.4s
+  END
+  CREATE cupCube2 AS RECTANGLE
+    POSITION 1400 690
+    WIDTH 40
+    HEIGHT 40
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 5
+    DRAW 0.2s
+  END
+  CREATE cupLbl2 AS TEXT
+    POSITION 1400 900
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "hot"
+    DRAW 0.4s
+  END
+  SAY "A good question is something you can actually measure."
+    DURATION 3.0s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Sets the standard for a testable question."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 3 "Hypothesis"
+  CREATE hole3_0 AS CIRCLE
+    POSITION 70 120
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_1 AS CIRCLE
+    POSITION 70 215
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_2 AS CIRCLE
+    POSITION 70 310
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_3 AS CIRCLE
+    POSITION 70 405
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_4 AS CIRCLE
+    POSITION 70 500
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_5 AS CIRCLE
+    POSITION 70 595
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_6 AS CIRCLE
+    POSITION 70 690
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_7 AS CIRCLE
+    POSITION 70 785
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_8 AS CIRCLE
+    POSITION 70 880
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole3_9 AS CIRCLE
+    POSITION 70 975
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE margin3 AS LINE
+    FROM 170 60
+    TO 170 1020
+    COLOR #E57373
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE tab3_0 AS RECTANGLE
+    POSITION 1870 260
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFB3C7
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab3_1 AS RECTANGLE
+    POSITION 1840 370
+    WIDTH 120
+    HEIGHT 80
+    FILL #FFE08A
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 16
+    DRAW 0.3s
+  END
+  CREATE tab3_2 AS RECTANGLE
+    POSITION 1870 480
+    WIDTH 60
+    HEIGHT 80
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab3_3 AS RECTANGLE
+    POSITION 1870 590
+    WIDTH 60
+    HEIGHT 80
+    FILL #9BD0F5
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab3_4 AS RECTANGLE
+    POSITION 1870 700
+    WIDTH 60
+    HEIGHT 80
+    FILL #D4B8FF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE hl3 AS LINE
+    FROM 290 205
+    TO 750 205
+    COLOR #FFE066
+    STROKE 16
+    DRAW 0.4s
+  END
+  CREATE head3 AS TEXT
+    POSITION 520 160
+    SIZE 84
+    COLOR #2B3A4A
+    TEXT "2. Hypothesis"
+    DRAW 0.7s
+  END
+  CREATE noteShadow AS RECTANGLE
+    POSITION 710 530
+    WIDTH 900
+    HEIGHT 400
+    FILL #E0D58A
+    COLOR #E0D58A
+    STROKE 2
+    CORNERS 10
+    DRAW 0.3s
+  END
+  CREATE note AS RECTANGLE
+    POSITION 700 520
+    WIDTH 900
+    HEIGHT 400
+    FILL #FFF176
+    COLOR #E0B84C
+    STROKE 4
+    CORNERS 10
+    DRAW 0.6s
+  END
+  CREATE hypo1 AS TEXT
+    POSITION 700 440
+    SIZE 54
+    MAXWIDTH 780
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "If the water is hotter, then the sugar will dissolve faster."
+    DRAW 0.9s
+  END
+  CREATE hypo2 AS TEXT
+    POSITION 700 615
+    SIZE 40
+    MAXWIDTH 780
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Because warm particles move quicker and bump into the sugar more."
+    DRAW 0.9s
+  END
+  CREATE axY AS LINE
+    FROM 1380 330
+    TO 1380 730
+    COLOR #2B3A4A
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE axX AS LINE
+    FROM 1380 730
+    TO 1750 730
+    COLOR #2B3A4A
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE predict AS LINE
+    FROM 1420 380
+    TO 1720 690
+    COLOR #8B1A1A
+    STROKE 6
+    DRAW 0.8s
+  END
+  CREATE predA AS CIRCLE
+    POSITION 1420 380
+    RADIUS 10
+    FILL #8B1A1A
+    COLOR #8B1A1A
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE predB AS CIRCLE
+    POSITION 1720 690
+    RADIUS 10
+    FILL #8B1A1A
+    COLOR #8B1A1A
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE axYLbl AS TEXT
+    POSITION 1380 285
+    SIZE 32
+    COLOR #2B3A4A
+    TEXT "time"
+    DRAW 0.3s
+  END
+  CREATE axXLbl AS TEXT
+    POSITION 1565 785
+    SIZE 32
+    COLOR #2B3A4A
+    TEXT "temperature"
+    DRAW 0.4s
+  END
+  CREATE predLbl AS TEXT
+    POSITION 1565 865
+    SIZE 36
+    COLOR #8B1A1A
+    TEXT "my prediction"
+    DRAW 0.5s
+  END
+  SAY "A hypothesis is a prediction, plus your reason for it."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Clarifies what makes a hypothesis different from a guess."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 4 "Method"
+  CREATE hole4_0 AS CIRCLE
+    POSITION 70 120
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_1 AS CIRCLE
+    POSITION 70 215
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_2 AS CIRCLE
+    POSITION 70 310
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_3 AS CIRCLE
+    POSITION 70 405
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_4 AS CIRCLE
+    POSITION 70 500
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_5 AS CIRCLE
+    POSITION 70 595
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_6 AS CIRCLE
+    POSITION 70 690
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_7 AS CIRCLE
+    POSITION 70 785
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_8 AS CIRCLE
+    POSITION 70 880
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole4_9 AS CIRCLE
+    POSITION 70 975
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE margin4 AS LINE
+    FROM 170 60
+    TO 170 1020
+    COLOR #E57373
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE tab4_0 AS RECTANGLE
+    POSITION 1870 260
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFB3C7
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab4_1 AS RECTANGLE
+    POSITION 1870 370
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFE08A
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab4_2 AS RECTANGLE
+    POSITION 1840 480
+    WIDTH 120
+    HEIGHT 80
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 16
+    DRAW 0.3s
+  END
+  CREATE tab4_3 AS RECTANGLE
+    POSITION 1870 590
+    WIDTH 60
+    HEIGHT 80
+    FILL #9BD0F5
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab4_4 AS RECTANGLE
+    POSITION 1870 700
+    WIDTH 60
+    HEIGHT 80
+    FILL #D4B8FF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE hl4 AS LINE
+    FROM 290 205
+    TO 750 205
+    COLOR #FFE066
+    STROKE 16
+    DRAW 0.4s
+  END
+  CREATE head4 AS TEXT
+    POSITION 520 160
+    SIZE 84
+    COLOR #2B3A4A
+    TEXT "3. Method"
+    DRAW 0.7s
+  END
+  CREATE card1 AS RECTANGLE
+    POSITION 620 380
+    WIDTH 700
+    HEIGHT 200
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 20
+    DRAW 0.5s
+  END
+  CREATE badge1 AS CIRCLE
+    POSITION 330 380
+    RADIUS 36
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE num1 AS TEXT
+    POSITION 330 380
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "1"
+    DRAW 0.2s
+  END
+  CREATE step1 AS TEXT
+    POSITION 660 380
+    SIZE 38
+    MAXWIDTH 520
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Pour equal water into three cups"
+    DRAW 0.7s
+  END
+  CREATE card2 AS RECTANGLE
+    POSITION 1360 380
+    WIDTH 700
+    HEIGHT 200
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 20
+    DRAW 0.5s
+  END
+  CREATE badge2 AS CIRCLE
+    POSITION 1070 380
+    RADIUS 36
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE num2 AS TEXT
+    POSITION 1070 380
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "2"
+    DRAW 0.2s
+  END
+  CREATE step2 AS TEXT
+    POSITION 1400 380
+    SIZE 38
+    MAXWIDTH 520
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Make one cold, one room temp, one hot"
+    DRAW 0.7s
+  END
+  SAY "Fair tests change one thing and keep everything else equal."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "The core idea of a controlled experiment."
+  CREATE card3 AS RECTANGLE
+    POSITION 620 620
+    WIDTH 700
+    HEIGHT 200
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 20
+    DRAW 0.5s
+  END
+  CREATE badge3 AS CIRCLE
+    POSITION 330 620
+    RADIUS 36
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE num3 AS TEXT
+    POSITION 330 620
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "3"
+    DRAW 0.2s
+  END
+  CREATE step3 AS TEXT
+    POSITION 660 620
+    SIZE 38
+    MAXWIDTH 520
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Drop one sugar cube into each cup"
+    DRAW 0.7s
+  END
+  CREATE card4 AS RECTANGLE
+    POSITION 1360 620
+    WIDTH 700
+    HEIGHT 200
+    FILL #FFFFFF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 20
+    DRAW 0.5s
+  END
+  CREATE badge4 AS CIRCLE
+    POSITION 1070 620
+    RADIUS 36
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE num4 AS TEXT
+    POSITION 1070 620
+    SIZE 44
+    COLOR #2B3A4A
+    TEXT "4"
+    DRAW 0.2s
+  END
+  CREATE step4 AS TEXT
+    POSITION 1400 620
+    SIZE 38
+    MAXWIDTH 520
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Start a timer and watch each cube vanish"
+    DRAW 0.7s
+  END
+  CREATE varBar AS RECTANGLE
+    POSITION 960 850
+    WIDTH 1300
+    HEIGHT 110
+    FILL #E8F5E9
+    COLOR #3E8E5A
+    STROKE 4
+    CORNERS 20
+    DRAW 0.5s
+  END
+  CREATE varText AS TEXT
+    POSITION 960 850
+    SIZE 38
+    MAXWIDTH 1200
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Changed: temperature. Measured: time. Same: cup, water, sugar."
+    DRAW 0.9s
+  END
+  SAY "Writing the steps down lets anyone repeat your work."
+    DURATION 3.0s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Why methods matter for trust."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 5 "Results"
+  CREATE hole5_0 AS CIRCLE
+    POSITION 70 120
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_1 AS CIRCLE
+    POSITION 70 215
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_2 AS CIRCLE
+    POSITION 70 310
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_3 AS CIRCLE
+    POSITION 70 405
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_4 AS CIRCLE
+    POSITION 70 500
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_5 AS CIRCLE
+    POSITION 70 595
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_6 AS CIRCLE
+    POSITION 70 690
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_7 AS CIRCLE
+    POSITION 70 785
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_8 AS CIRCLE
+    POSITION 70 880
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole5_9 AS CIRCLE
+    POSITION 70 975
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE margin5 AS LINE
+    FROM 170 60
+    TO 170 1020
+    COLOR #E57373
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE tab5_0 AS RECTANGLE
+    POSITION 1870 260
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFB3C7
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab5_1 AS RECTANGLE
+    POSITION 1870 370
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFE08A
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab5_2 AS RECTANGLE
+    POSITION 1870 480
+    WIDTH 60
+    HEIGHT 80
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab5_3 AS RECTANGLE
+    POSITION 1840 590
+    WIDTH 120
+    HEIGHT 80
+    FILL #9BD0F5
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 16
+    DRAW 0.3s
+  END
+  CREATE tab5_4 AS RECTANGLE
+    POSITION 1870 700
+    WIDTH 60
+    HEIGHT 80
+    FILL #D4B8FF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE hl5 AS LINE
+    FROM 290 205
+    TO 750 205
+    COLOR #FFE066
+    STROKE 16
+    DRAW 0.4s
+  END
+  CREATE head5 AS TEXT
+    POSITION 520 160
+    SIZE 84
+    COLOR #2B3A4A
+    TEXT "4. Results"
+    DRAW 0.7s
+  END
+  CREATE grid1 AS LINE
+    FROM 300 560
+    TO 1100 560
+    COLOR #9BC4E2
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE grid2 AS LINE
+    FROM 300 320
+    TO 1100 320
+    COLOR #9BC4E2
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE yAxis AS LINE
+    FROM 300 300
+    TO 300 800
+    COLOR #2B3A4A
+    STROKE 6
+    DRAW 0.5s
+  END
+  CREATE xAxis AS LINE
+    FROM 300 800
+    TO 1100 800
+    COLOR #2B3A4A
+    STROKE 6
+    DRAW 0.6s
+  END
+  CREATE tick0 AS TEXT
+    POSITION 245 800
+    SIZE 32
+    COLOR #2B3A4A
+    TEXT "0"
+    DRAW 0.2s
+  END
+  CREATE tick240 AS TEXT
+    POSITION 230 320
+    SIZE 32
+    COLOR #2B3A4A
+    TEXT "240"
+    DRAW 0.2s
+  END
+  CREATE bar0 AS RECTANGLE
+    POSITION 480 560
+    WIDTH 170
+    HEIGHT 480
+    FILL #7FB8E6
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 6
+    DRAW 0.8s
+  END
+  CREATE val0 AS TEXT
+    POSITION 480 282
+    SIZE 40
+    COLOR #2B3A4A
+    TEXT "240 s"
+    DRAW 0.4s
+  END
+  CREATE cat0 AS TEXT
+    POSITION 480 855
+    SIZE 40
+    COLOR #2B3A4A
+    TEXT "Cold"
+    DRAW 0.3s
+  END
+  CREATE bar1 AS RECTANGLE
+    POSITION 730 680
+    WIDTH 170
+    HEIGHT 240
+    FILL #C9CCD1
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 6
+    DRAW 0.8s
+  END
+  CREATE val1 AS TEXT
+    POSITION 730 522
+    SIZE 40
+    COLOR #2B3A4A
+    TEXT "120 s"
+    DRAW 0.4s
+  END
+  CREATE cat1 AS TEXT
+    POSITION 730 855
+    SIZE 40
+    COLOR #2B3A4A
+    TEXT "Room"
+    DRAW 0.3s
+  END
+  CREATE bar2 AS RECTANGLE
+    POSITION 980 755
+    WIDTH 170
+    HEIGHT 90
+    FILL #F28B5B
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 6
+    DRAW 0.8s
+  END
+  CREATE val2 AS TEXT
+    POSITION 980 672
+    SIZE 40
+    COLOR #2B3A4A
+    TEXT "45 s"
+    DRAW 0.4s
+  END
+  CREATE cat2 AS TEXT
+    POSITION 980 855
+    SIZE 40
+    COLOR #2B3A4A
+    TEXT "Hot"
+    DRAW 0.3s
+  END
+  CREATE yTitle AS TEXT
+    POSITION 700 925
+    SIZE 34
+    MAXWIDTH 800
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "seconds until the cube vanished"
+    DRAW 0.6s
+  END
+  CREATE readShadow AS RECTANGLE
+    POSITION 1490 570
+    WIDTH 520
+    HEIGHT 300
+    FILL #E0D58A
+    COLOR #E0D58A
+    STROKE 2
+    CORNERS 10
+    DRAW 0.3s
+  END
+  CREATE readNote AS RECTANGLE
+    POSITION 1480 560
+    WIDTH 520
+    HEIGHT 300
+    FILL #FFF176
+    COLOR #E0B84C
+    STROKE 4
+    CORNERS 10
+    DRAW 0.5s
+  END
+  CREATE readText AS TEXT
+    POSITION 1480 560
+    SIZE 48
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Shorter bar = faster dissolving"
+    DRAW 0.8s
+  END
+  SAY "Look at the shape of the data before reading any numbers."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Teaches a data-literacy habit."
+  SAY "A tall bar here simply means a long wait."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Avoids the common mistake of reading tall as better."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 6 "Conclusion"
+  CREATE hole6_0 AS CIRCLE
+    POSITION 70 120
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_1 AS CIRCLE
+    POSITION 70 215
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_2 AS CIRCLE
+    POSITION 70 310
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_3 AS CIRCLE
+    POSITION 70 405
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_4 AS CIRCLE
+    POSITION 70 500
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_5 AS CIRCLE
+    POSITION 70 595
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_6 AS CIRCLE
+    POSITION 70 690
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_7 AS CIRCLE
+    POSITION 70 785
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_8 AS CIRCLE
+    POSITION 70 880
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE hole6_9 AS CIRCLE
+    POSITION 70 975
+    RADIUS 16
+    FILL #F4FAFF
+    COLOR #2B3A4A
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE margin6 AS LINE
+    FROM 170 60
+    TO 170 1020
+    COLOR #E57373
+    STROKE 3
+    DRAW 0.5s
+  END
+  CREATE tab6_0 AS RECTANGLE
+    POSITION 1870 260
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFB3C7
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab6_1 AS RECTANGLE
+    POSITION 1870 370
+    WIDTH 60
+    HEIGHT 80
+    FILL #FFE08A
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab6_2 AS RECTANGLE
+    POSITION 1870 480
+    WIDTH 60
+    HEIGHT 80
+    FILL #A8E6CF
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab6_3 AS RECTANGLE
+    POSITION 1870 590
+    WIDTH 60
+    HEIGHT 80
+    FILL #9BD0F5
+    COLOR #2B3A4A
+    STROKE 3
+    CORNERS 16
+    DRAW 0.2s
+  END
+  CREATE tab6_4 AS RECTANGLE
+    POSITION 1840 700
+    WIDTH 120
+    HEIGHT 80
+    FILL #D4B8FF
+    COLOR #2B3A4A
+    STROKE 4
+    CORNERS 16
+    DRAW 0.3s
+  END
+  CREATE hl6 AS LINE
+    FROM 290 205
+    TO 750 205
+    COLOR #FFE066
+    STROKE 16
+    DRAW 0.4s
+  END
+  CREATE head6 AS TEXT
+    POSITION 520 160
+    SIZE 84
+    COLOR #2B3A4A
+    TEXT "5. Conclusion"
+    DRAW 0.7s
+  END
+  CREATE okRing AS CIRCLE
+    POSITION 330 400
+    RADIUS 70
+    FILL #CFF2DA
+    COLOR #3E8E5A
+    STROKE 6
+    DRAW 0.5s
+  END
+  CREATE okA AS LINE
+    FROM 295 402
+    TO 320 430
+    COLOR #2E7D4F
+    STROKE 12
+    DRAW 0.2s
+  END
+  CREATE okB AS LINE
+    FROM 320 430
+    TO 375 365
+    COLOR #2E7D4F
+    STROKE 12
+    DRAW 0.2s
+  END
+  CREATE concl AS TEXT
+    POSITION 1060 400
+    SIZE 64
+    MAXWIDTH 1100
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Hotter water dissolved the sugar faster, so my hypothesis was supported."
+    DRAW 1s
+  END
+  CREATE cautionNote AS RECTANGLE
+    POSITION 700 720
+    WIDTH 700
+    HEIGHT 200
+    FILL #FFE0E0
+    COLOR #8B1A1A
+    STROKE 4
+    CORNERS 14
+    DRAW 0.5s
+  END
+  CREATE cautionText AS TEXT
+    POSITION 700 720
+    SIZE 40
+    MAXWIDTH 600
+    ALIGN center
+    COLOR #8B1A1A
+    TEXT "Caution: one trial each. Repeat three times and average."
+    DRAW 0.9s
+  END
+  CREATE nextShadow AS RECTANGLE
+    POSITION 1410 730
+    WIDTH 560
+    HEIGHT 200
+    FILL #E0D58A
+    COLOR #E0D58A
+    STROKE 2
+    CORNERS 10
+    DRAW 0.3s
+  END
+  CREATE nextNote AS RECTANGLE
+    POSITION 1400 720
+    WIDTH 560
+    HEIGHT 200
+    FILL #FFF176
+    COLOR #E0B84C
+    STROKE 4
+    CORNERS 10
+    DRAW 0.5s
+  END
+  CREATE nextText AS TEXT
+    POSITION 1400 720
+    SIZE 42
+    MAXWIDTH 480
+    ALIGN center
+    COLOR #2B3A4A
+    TEXT "Next question: does stirring help?"
+    DRAW 0.8s
+  END
+  SAY "Science says supported, not proven, and that honesty is a strength."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Models careful scientific language."
+  SAY "One trial is a hint; three trials start to look like evidence."
+    DURATION 3.6s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Explains why the caution note matters."
+END SCENE

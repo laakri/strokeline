@@ -1,0 +1,1922 @@
+// ============================================================
+// STYLE 6: Flashcard Quiz Show  (template + demo topic)
+// Topic: Capital Showdown - 5 capitals people get wrong
+// Look: dark purple stage, ONE bold colored card per question, hard
+//   offset shadow, big question -> countdown "think" beat -> answer
+//   reveal + fun fact. Score stars and a 5-segment progress bar
+//   run along the bottom of every scene.
+// Beat per question: question | SAY | 3-2-1 | answer pops | fact
+// Card colors: pink, orange, teal, yellow, blue (dark text on all).
+// Reuse: swap question/answer/fact strings, keep geometry.
+// ============================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #1B1340
+BOARD plain
+STYLE clean
+FONT neat
+STROKE 4
+SUBTITLES off
+
+SCENE 1 "Intro"
+  CREATE beamL AS ELLIPSE
+    POSITION 400 500
+    WIDTH 260
+    HEIGHT 900
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    OPACITY 0.12
+    DRAW 0.4s
+  END
+  CREATE beamR AS ELLIPSE
+    POSITION 1520 500
+    WIDTH 260
+    HEIGHT 900
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    OPACITY 0.12
+    DRAW 0.4s
+  END
+  CREATE introFrame AS RECTANGLE
+    POSITION 960 540
+    WIDTH 1500
+    HEIGHT 480
+    COLOR #FFE066
+    STROKE 6
+    CORNERS 30
+    DRAW 1s
+  END
+  CREATE bulbT0 AS CIRCLE
+    POSITION 260 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB0 AS CIRCLE
+    POSITION 260 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT1 AS CIRCLE
+    POSITION 360 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB1 AS CIRCLE
+    POSITION 360 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT2 AS CIRCLE
+    POSITION 460 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB2 AS CIRCLE
+    POSITION 460 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT3 AS CIRCLE
+    POSITION 560 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB3 AS CIRCLE
+    POSITION 560 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT4 AS CIRCLE
+    POSITION 660 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB4 AS CIRCLE
+    POSITION 660 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT5 AS CIRCLE
+    POSITION 760 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB5 AS CIRCLE
+    POSITION 760 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT6 AS CIRCLE
+    POSITION 860 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB6 AS CIRCLE
+    POSITION 860 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT7 AS CIRCLE
+    POSITION 960 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB7 AS CIRCLE
+    POSITION 960 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT8 AS CIRCLE
+    POSITION 1060 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB8 AS CIRCLE
+    POSITION 1060 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT9 AS CIRCLE
+    POSITION 1160 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB9 AS CIRCLE
+    POSITION 1160 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT10 AS CIRCLE
+    POSITION 1260 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB10 AS CIRCLE
+    POSITION 1260 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT11 AS CIRCLE
+    POSITION 1360 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB11 AS CIRCLE
+    POSITION 1360 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT12 AS CIRCLE
+    POSITION 1460 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB12 AS CIRCLE
+    POSITION 1460 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT13 AS CIRCLE
+    POSITION 1560 300
+    RADIUS 10
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB13 AS CIRCLE
+    POSITION 1560 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbT14 AS CIRCLE
+    POSITION 1660 300
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE bulbB14 AS CIRCLE
+    POSITION 1660 780
+    RADIUS 10
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE liveBadge AS RECTANGLE
+    POSITION 230 150
+    WIDTH 150
+    HEIGHT 60
+    FILL #C9183F
+    COLOR #C9183F
+    STROKE 2
+    CORNERS 30
+    DRAW 0.4s
+  END
+  CREATE liveText AS TEXT
+    POSITION 230 150
+    SIZE 36
+    COLOR #FFFFFF
+    TEXT "LIVE"
+    DRAW 0.3s
+  END
+  CREATE introTitle AS TEXT
+    POSITION 960 420
+    SIZE 120
+    COLOR #FFE066
+    TEXT "CAPITAL SHOWDOWN"
+    DRAW 1s
+  END
+  CREATE introSub AS TEXT
+    POSITION 960 560
+    SIZE 64
+    COLOR #FFFFFF
+    TEXT "5 tricky questions"
+    DRAW 0.7s
+  END
+  CREATE introTag AS TEXT
+    POSITION 960 670
+    SIZE 52
+    COLOR #FF7AA8
+    TEXT "Can you beat the buzzer?"
+    DRAW 0.7s
+  END
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Welcome, contestant! Lock in your guess before the countdown ends."
+    DURATION 3.8s
+    TONE hook
+    WHO "Host"
+    LANG en
+    DETAIL "Sets the game-show frame and the rules."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 2 "Question 1"
+  CREATE showName AS TEXT
+    POSITION 420 130
+    SIZE 40
+    COLOR #FFE066
+    TEXT "CAPITAL SHOWDOWN"
+    DRAW 0.4s
+  END
+  CREATE qCount AS TEXT
+    POSITION 1500 130
+    SIZE 40
+    COLOR #E9E2FF
+    TEXT "Question 1 of 5"
+    DRAW 0.4s
+  END
+  CREATE cardShadow AS RECTANGLE
+    POSITION 974 484
+    WIDTH 1500
+    HEIGHT 480
+    FILL #0B0720
+    COLOR #0B0720
+    STROKE 2
+    CORNERS 40
+    DRAW 0.3s
+  END
+  CREATE card AS RECTANGLE
+    POSITION 960 470
+    WIDTH 1500
+    HEIGHT 480
+    FILL #FF7AA8
+    COLOR #1B1340
+    STROKE 6
+    CORNERS 40
+    DRAW 0.6s
+  END
+  CREATE answerPanel AS RECTANGLE
+    POSITION 960 620
+    WIDTH 1100
+    HEIGHT 130
+    FILL #1B1340
+    COLOR #1B1340
+    STROKE 3
+    CORNERS 30
+    OPACITY 0
+    DRAW 0.1s
+  END
+  CREATE question AS TEXT
+    POSITION 960 330
+    SIZE 80
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #1B1340
+    TEXT "What is the capital of Australia?"
+    DRAW 0.9s
+  END
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Most people shout the biggest city."
+    DURATION 2.6s
+    TONE explain
+    WHO "Host"
+    LANG en
+    DETAIL "Plants a tempting wrong answer before the countdown."
+  CREATE cd3 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "3"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd3
+  CREATE cd2 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "2"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd2
+  CREATE cd1 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "1"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd1
+  ANIMATE answerPanel OPACITY TO 1
+    DURATION 0.2s
+  CREATE answer AS TEXT
+    POSITION 960 620
+    SIZE 96
+    COLOR #FFE066
+    TEXT "Canberra"
+    DRAW 0.5s
+  END
+  ANIMATE answer SCALE TO 1.2
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE answer SCALE TO 1
+    DURATION 0.2s
+  CREATE tickRing AS CIRCLE
+    POSITION 330 620
+    RADIUS 48
+    FILL #43D17A
+    COLOR #43D17A
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE tickA AS LINE
+    FROM 308 622
+    TO 324 640
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE tickB AS LINE
+    FROM 324 640
+    TO 355 600
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE starWin AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE segWin AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 2
+    CORNERS 9
+    DRAW 0.3s
+  END
+  CREATE fact AS TEXT
+    POSITION 960 785
+    SIZE 40
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #E9E2FF
+    TEXT "Not Sydney! Canberra was built as a peace deal between rivals."
+    DRAW 0.8s
+  END
+  SAY "Big and famous does not mean official."
+    DURATION 2.8s
+    TONE punchline
+    WHO "Host"
+    LANG en
+    DETAIL "Adds the lesson behind the answer."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 3 "Question 2"
+  CREATE showName AS TEXT
+    POSITION 420 130
+    SIZE 40
+    COLOR #FFE066
+    TEXT "CAPITAL SHOWDOWN"
+    DRAW 0.4s
+  END
+  CREATE qCount AS TEXT
+    POSITION 1500 130
+    SIZE 40
+    COLOR #E9E2FF
+    TEXT "Question 2 of 5"
+    DRAW 0.4s
+  END
+  CREATE cardShadow AS RECTANGLE
+    POSITION 974 484
+    WIDTH 1500
+    HEIGHT 480
+    FILL #0B0720
+    COLOR #0B0720
+    STROKE 2
+    CORNERS 40
+    DRAW 0.3s
+  END
+  CREATE card AS RECTANGLE
+    POSITION 960 470
+    WIDTH 1500
+    HEIGHT 480
+    FILL #FFA94D
+    COLOR #1B1340
+    STROKE 6
+    CORNERS 40
+    DRAW 0.6s
+  END
+  CREATE answerPanel AS RECTANGLE
+    POSITION 960 620
+    WIDTH 1100
+    HEIGHT 130
+    FILL #1B1340
+    COLOR #1B1340
+    STROKE 3
+    CORNERS 30
+    OPACITY 0
+    DRAW 0.1s
+  END
+  CREATE question AS TEXT
+    POSITION 960 330
+    SIZE 80
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #1B1340
+    TEXT "What is the capital of Brazil?"
+    DRAW 0.9s
+  END
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Postcard beaches can send you the wrong way."
+    DURATION 3.0s
+    TONE explain
+    WHO "Host"
+    LANG en
+    DETAIL "Plants a tempting wrong answer before the countdown."
+  CREATE cd3 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "3"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd3
+  CREATE cd2 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "2"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd2
+  CREATE cd1 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "1"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd1
+  ANIMATE answerPanel OPACITY TO 1
+    DURATION 0.2s
+  CREATE answer AS TEXT
+    POSITION 960 620
+    SIZE 96
+    COLOR #FFE066
+    TEXT "Brasilia"
+    DRAW 0.5s
+  END
+  ANIMATE answer SCALE TO 1.2
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE answer SCALE TO 1
+    DURATION 0.2s
+  CREATE tickRing AS CIRCLE
+    POSITION 330 620
+    RADIUS 48
+    FILL #43D17A
+    COLOR #43D17A
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE tickA AS LINE
+    FROM 308 622
+    TO 324 640
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE tickB AS LINE
+    FROM 324 640
+    TO 355 600
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE starWin AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE segWin AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFA94D
+    COLOR #FFA94D
+    STROKE 2
+    CORNERS 9
+    DRAW 0.3s
+  END
+  CREATE fact AS TEXT
+    POSITION 960 785
+    SIZE 40
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #E9E2FF
+    TEXT "Not Rio! Brasilia was built from scratch and opened in 1960."
+    DRAW 0.8s
+  END
+  SAY "Sometimes a whole city is planned on paper first."
+    DURATION 3.2s
+    TONE punchline
+    WHO "Host"
+    LANG en
+    DETAIL "Adds the lesson behind the answer."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 4 "Question 3"
+  CREATE showName AS TEXT
+    POSITION 420 130
+    SIZE 40
+    COLOR #FFE066
+    TEXT "CAPITAL SHOWDOWN"
+    DRAW 0.4s
+  END
+  CREATE qCount AS TEXT
+    POSITION 1500 130
+    SIZE 40
+    COLOR #E9E2FF
+    TEXT "Question 3 of 5"
+    DRAW 0.4s
+  END
+  CREATE cardShadow AS RECTANGLE
+    POSITION 974 484
+    WIDTH 1500
+    HEIGHT 480
+    FILL #0B0720
+    COLOR #0B0720
+    STROKE 2
+    CORNERS 40
+    DRAW 0.3s
+  END
+  CREATE card AS RECTANGLE
+    POSITION 960 470
+    WIDTH 1500
+    HEIGHT 480
+    FILL #4FD1C5
+    COLOR #1B1340
+    STROKE 6
+    CORNERS 40
+    DRAW 0.6s
+  END
+  CREATE answerPanel AS RECTANGLE
+    POSITION 960 620
+    WIDTH 1100
+    HEIGHT 130
+    FILL #1B1340
+    COLOR #1B1340
+    STROKE 3
+    CORNERS 30
+    OPACITY 0
+    DRAW 0.1s
+  END
+  CREATE question AS TEXT
+    POSITION 960 330
+    SIZE 80
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #1B1340
+    TEXT "What is the capital of Canada?"
+    DRAW 0.9s
+  END
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFA94D
+    COLOR #FFA94D
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Think about where politicians actually meet."
+    DURATION 3.0s
+    TONE explain
+    WHO "Host"
+    LANG en
+    DETAIL "Plants a tempting wrong answer before the countdown."
+  CREATE cd3 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "3"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd3
+  CREATE cd2 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "2"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd2
+  CREATE cd1 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "1"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd1
+  ANIMATE answerPanel OPACITY TO 1
+    DURATION 0.2s
+  CREATE answer AS TEXT
+    POSITION 960 620
+    SIZE 96
+    COLOR #FFE066
+    TEXT "Ottawa"
+    DRAW 0.5s
+  END
+  ANIMATE answer SCALE TO 1.2
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE answer SCALE TO 1
+    DURATION 0.2s
+  CREATE tickRing AS CIRCLE
+    POSITION 330 620
+    RADIUS 48
+    FILL #43D17A
+    COLOR #43D17A
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE tickA AS LINE
+    FROM 308 622
+    TO 324 640
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE tickB AS LINE
+    FROM 324 640
+    TO 355 600
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE starWin AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE segWin AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #4FD1C5
+    COLOR #4FD1C5
+    STROKE 2
+    CORNERS 9
+    DRAW 0.3s
+  END
+  CREATE fact AS TEXT
+    POSITION 960 785
+    SIZE 40
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #E9E2FF
+    TEXT "Not Toronto! Queen Victoria picked Ottawa back in 1857."
+    DRAW 0.8s
+  END
+  SAY "A royal decision settled a long argument."
+    DURATION 2.8s
+    TONE punchline
+    WHO "Host"
+    LANG en
+    DETAIL "Adds the lesson behind the answer."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 5 "Question 4"
+  CREATE showName AS TEXT
+    POSITION 420 130
+    SIZE 40
+    COLOR #FFE066
+    TEXT "CAPITAL SHOWDOWN"
+    DRAW 0.4s
+  END
+  CREATE qCount AS TEXT
+    POSITION 1500 130
+    SIZE 40
+    COLOR #E9E2FF
+    TEXT "Question 4 of 5"
+    DRAW 0.4s
+  END
+  CREATE cardShadow AS RECTANGLE
+    POSITION 974 484
+    WIDTH 1500
+    HEIGHT 480
+    FILL #0B0720
+    COLOR #0B0720
+    STROKE 2
+    CORNERS 40
+    DRAW 0.3s
+  END
+  CREATE card AS RECTANGLE
+    POSITION 960 470
+    WIDTH 1500
+    HEIGHT 480
+    FILL #FFD43B
+    COLOR #1B1340
+    STROKE 6
+    CORNERS 40
+    DRAW 0.6s
+  END
+  CREATE answerPanel AS RECTANGLE
+    POSITION 960 620
+    WIDTH 1100
+    HEIGHT 130
+    FILL #1B1340
+    COLOR #1B1340
+    STROKE 3
+    CORNERS 30
+    OPACITY 0
+    DRAW 0.1s
+  END
+  CREATE question AS TEXT
+    POSITION 960 330
+    SIZE 80
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #1B1340
+    TEXT "What is the capital of Turkey?"
+    DRAW 0.9s
+  END
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFA94D
+    COLOR #FFA94D
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #4FD1C5
+    COLOR #4FD1C5
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Your first instinct might be a famous strait-side city."
+    DURATION 3.4s
+    TONE explain
+    WHO "Host"
+    LANG en
+    DETAIL "Plants a tempting wrong answer before the countdown."
+  CREATE cd3 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "3"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd3
+  CREATE cd2 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "2"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd2
+  CREATE cd1 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "1"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd1
+  ANIMATE answerPanel OPACITY TO 1
+    DURATION 0.2s
+  CREATE answer AS TEXT
+    POSITION 960 620
+    SIZE 96
+    COLOR #FFE066
+    TEXT "Ankara"
+    DRAW 0.5s
+  END
+  ANIMATE answer SCALE TO 1.2
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE answer SCALE TO 1
+    DURATION 0.2s
+  CREATE tickRing AS CIRCLE
+    POSITION 330 620
+    RADIUS 48
+    FILL #43D17A
+    COLOR #43D17A
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE tickA AS LINE
+    FROM 308 622
+    TO 324 640
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE tickB AS LINE
+    FROM 324 640
+    TO 355 600
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE starWin AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE segWin AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFD43B
+    COLOR #FFD43B
+    STROKE 2
+    CORNERS 9
+    DRAW 0.3s
+  END
+  CREATE fact AS TEXT
+    POSITION 960 785
+    SIZE 40
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #E9E2FF
+    TEXT "Not Istanbul! Ankara became the capital in 1923."
+    DRAW 0.8s
+  END
+  SAY "A brand-new republic wanted a fresh start."
+    DURATION 2.8s
+    TONE punchline
+    WHO "Host"
+    LANG en
+    DETAIL "Adds the lesson behind the answer."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 6 "Question 5"
+  CREATE showName AS TEXT
+    POSITION 420 130
+    SIZE 40
+    COLOR #FFE066
+    TEXT "CAPITAL SHOWDOWN"
+    DRAW 0.4s
+  END
+  CREATE qCount AS TEXT
+    POSITION 1500 130
+    SIZE 40
+    COLOR #E9E2FF
+    TEXT "Question 5 of 5"
+    DRAW 0.4s
+  END
+  CREATE cardShadow AS RECTANGLE
+    POSITION 974 484
+    WIDTH 1500
+    HEIGHT 480
+    FILL #0B0720
+    COLOR #0B0720
+    STROKE 2
+    CORNERS 40
+    DRAW 0.3s
+  END
+  CREATE card AS RECTANGLE
+    POSITION 960 470
+    WIDTH 1500
+    HEIGHT 480
+    FILL #6CB6FF
+    COLOR #1B1340
+    STROKE 6
+    CORNERS 40
+    DRAW 0.6s
+  END
+  CREATE answerPanel AS RECTANGLE
+    POSITION 960 620
+    WIDTH 1100
+    HEIGHT 130
+    FILL #1B1340
+    COLOR #1B1340
+    STROKE 3
+    CORNERS 30
+    OPACITY 0
+    DRAW 0.1s
+  END
+  CREATE question AS TEXT
+    POSITION 960 330
+    SIZE 80
+    MAXWIDTH 1300
+    ALIGN center
+    COLOR #1B1340
+    TEXT "What is the capital of Switzerland?"
+    DRAW 0.9s
+  END
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFA94D
+    COLOR #FFA94D
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #4FD1C5
+    COLOR #4FD1C5
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFD43B
+    COLOR #FFD43B
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    COLOR #E9E2FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Banks and chocolate might distract you."
+    DURATION 2.6s
+    TONE explain
+    WHO "Host"
+    LANG en
+    DETAIL "Plants a tempting wrong answer before the countdown."
+  CREATE cd3 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "3"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd3
+  CREATE cd2 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "2"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd2
+  CREATE cd1 AS TEXT
+    POSITION 960 485
+    SIZE 100
+    COLOR #1B1340
+    TEXT "1"
+    DRAW 0.2s
+  END
+  WAIT 0.6s
+  DELETE cd1
+  ANIMATE answerPanel OPACITY TO 1
+    DURATION 0.2s
+  CREATE answer AS TEXT
+    POSITION 960 620
+    SIZE 96
+    COLOR #FFE066
+    TEXT "Bern"
+    DRAW 0.5s
+  END
+  ANIMATE answer SCALE TO 1.2
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE answer SCALE TO 1
+    DURATION 0.2s
+  CREATE tickRing AS CIRCLE
+    POSITION 330 620
+    RADIUS 48
+    FILL #43D17A
+    COLOR #43D17A
+    STROKE 2
+    DRAW 0.3s
+  END
+  CREATE tickA AS LINE
+    FROM 308 622
+    TO 324 640
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE tickB AS LINE
+    FROM 324 640
+    TO 355 600
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE starWin AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE segWin AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #6CB6FF
+    COLOR #6CB6FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.3s
+  END
+  CREATE fact AS TEXT
+    POSITION 960 785
+    SIZE 40
+    MAXWIDTH 1500
+    ALIGN center
+    COLOR #E9E2FF
+    TEXT "Not Zurich! Bern is officially just the federal city."
+    DRAW 0.8s
+  END
+  SAY "Even the law keeps it modest."
+    DURATION 2.4s
+    TONE punchline
+    WHO "Host"
+    LANG en
+    DETAIL "Adds the lesson behind the answer."
+  TRANSITION slide DURATION 0.5s
+END SCENE
+
+SCENE 7 "Final score"
+  CREATE conf1 AS CIRCLE
+    POSITION 240 300
+    RADIUS 14
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf2 AS CIRCLE
+    POSITION 380 620
+    RADIUS 14
+    FILL #4FD1C5
+    COLOR #4FD1C5
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf3 AS CIRCLE
+    POSITION 1560 330
+    RADIUS 14
+    FILL #FFD43B
+    COLOR #FFD43B
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf4 AS CIRCLE
+    POSITION 1700 650
+    RADIUS 14
+    FILL #6CB6FF
+    COLOR #6CB6FF
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf5 AS CIRCLE
+    POSITION 620 260
+    RADIUS 14
+    FILL #FFA94D
+    COLOR #FFA94D
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf6 AS CIRCLE
+    POSITION 1300 270
+    RADIUS 14
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf7 AS CIRCLE
+    POSITION 260 760
+    RADIUS 14
+    FILL #FFD43B
+    COLOR #FFD43B
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE conf8 AS CIRCLE
+    POSITION 1660 780
+    RADIUS 14
+    FILL #4FD1C5
+    COLOR #4FD1C5
+    STROKE 1
+    DRAW 0.15s
+  END
+  CREATE handleL AS ELLIPSE
+    POSITION 840 470
+    WIDTH 100
+    HEIGHT 140
+    COLOR #FFC83B
+    STROKE 12
+    DRAW 0.4s
+  END
+  CREATE handleR AS ELLIPSE
+    POSITION 1080 470
+    WIDTH 100
+    HEIGHT 140
+    COLOR #FFC83B
+    STROKE 12
+    DRAW 0.4s
+  END
+  CREATE cup AS RECTANGLE
+    POSITION 960 480
+    WIDTH 220
+    HEIGHT 240
+    FILL #FFC83B
+    COLOR #FFFFFF
+    STROKE 4
+    CORNERS 50
+    DRAW 0.6s
+  END
+  CREATE stem AS RECTANGLE
+    POSITION 960 640
+    WIDTH 50
+    HEIGHT 90
+    FILL #FFC83B
+    COLOR #FFFFFF
+    STROKE 4
+    CORNERS 6
+    DRAW 0.3s
+  END
+  CREATE base AS RECTANGLE
+    POSITION 960 715
+    WIDTH 260
+    HEIGHT 56
+    FILL #FFC83B
+    COLOR #FFFFFF
+    STROKE 4
+    CORNERS 14
+    DRAW 0.4s
+  END
+  CREATE cupStar AS DIAMOND
+    POSITION 960 480
+    WIDTH 100
+    HEIGHT 100
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    DRAW 0.4s
+  END
+  CREATE finalTitle AS TEXT
+    POSITION 960 175
+    SIZE 110
+    COLOR #FFE066
+    TEXT "Quiz Champion!"
+    DRAW 1s
+  END
+  CREATE finalScore AS TEXT
+    POSITION 960 815
+    SIZE 72
+    COLOR #FFFFFF
+    TEXT "5 / 5 correct"
+    DRAW 0.8s
+  END
+  ANIMATE finalScore SCALE TO 1.15
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE finalScore SCALE TO 1
+    DURATION 0.2s
+  CREATE scoreLabel AS TEXT
+    POSITION 230 900
+    SIZE 36
+    COLOR #E9E2FF
+    TEXT "SCORE"
+    DRAW 0.3s
+  END
+  CREATE star0 AS CIRCLE
+    POSITION 360 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star1 AS CIRCLE
+    POSITION 424 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star2 AS CIRCLE
+    POSITION 488 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star3 AS CIRCLE
+    POSITION 552 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE star4 AS CIRCLE
+    POSITION 616 900
+    RADIUS 24
+    FILL #FFE066
+    COLOR #FFE066
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE seg0 AS RECTANGLE
+    POSITION 336 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FF7AA8
+    COLOR #FF7AA8
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg1 AS RECTANGLE
+    POSITION 648 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFA94D
+    COLOR #FFA94D
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg2 AS RECTANGLE
+    POSITION 960 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #4FD1C5
+    COLOR #4FD1C5
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg3 AS RECTANGLE
+    POSITION 1272 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #FFD43B
+    COLOR #FFD43B
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  CREATE seg4 AS RECTANGLE
+    POSITION 1584 1010
+    WIDTH 300
+    HEIGHT 18
+    FILL #6CB6FF
+    COLOR #6CB6FF
+    STROKE 2
+    CORNERS 9
+    DRAW 0.15s
+  END
+  SAY "Capitals often surprise people who guess the biggest city instead."
+    DURATION 3.8s
+    TONE recap
+    WHO "Host"
+    LANG en
+    DETAIL "Names the pattern behind all five answers."
+END SCENE

@@ -1,0 +1,1038 @@
+// ============================================================
+// STYLE 7: Timeline Scroll  (template + demo topic)
+// Topic: Race to the Moon, 1957 to 1969 (six milestones)
+// Look: warm parchment page between two scroll rollers, a long
+//   horizontal axis, dated dots, little drawn icons above each date,
+//   short captions below. A marker rides the axis to each milestone.
+// A mini-map (six dots) at the bottom shows where you are in the run.
+// Last scene re-draws the axis to scale so gaps and clusters show.
+// Palette: ink brown #4A2E1A, rust #9C3D1B, muted #6B4A2B.
+// Reuse: keep axis y=520, icon y=300, date y=410, caption y=680.
+// Max 3 milestones per scene (keeps text count under 12).
+// ============================================================
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F2E2BE
+BOARD paper
+STYLE handdrawn
+FONT handwritten
+STROKE 4
+SUBTITLES off
+
+SCENE 1 "Title scroll"
+  CREATE rollL1 AS RECTANGLE
+    POSITION 70 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE rollR1 AS RECTANGLE
+    POSITION 1850 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE earth AS CIRCLE
+    POSITION 500 740
+    RADIUS 70
+    FILL #5B9AA0
+    COLOR #4A2E1A
+    STROKE 5
+    DRAW 0.6s
+  END
+  CREATE land1 AS ELLIPSE
+    POSITION 480 720
+    WIDTH 60
+    HEIGHT 36
+    FILL #7FAE6B
+    COLOR #7FAE6B
+    STROKE 1
+    DRAW 0.3s
+  END
+  CREATE land2 AS ELLIPSE
+    POSITION 525 765
+    WIDTH 44
+    HEIGHT 28
+    FILL #7FAE6B
+    COLOR #7FAE6B
+    STROKE 1
+    DRAW 0.3s
+  END
+  CREATE moon AS CIRCLE
+    POSITION 1420 700
+    RADIUS 100
+    FILL #E8DFC8
+    COLOR #4A2E1A
+    STROKE 5
+    DRAW 0.7s
+  END
+  CREATE cr1 AS CIRCLE
+    POSITION 1385 665
+    RADIUS 22
+    FILL #CFC3A4
+    COLOR #CFC3A4
+    STROKE 1
+    DRAW 0.2s
+  END
+  CREATE cr2 AS CIRCLE
+    POSITION 1450 735
+    RADIUS 28
+    FILL #CFC3A4
+    COLOR #CFC3A4
+    STROKE 1
+    DRAW 0.2s
+  END
+  CREATE cr3 AS CIRCLE
+    POSITION 1455 655
+    RADIUS 14
+    FILL #CFC3A4
+    COLOR #CFC3A4
+    STROKE 1
+    DRAW 0.2s
+  END
+  CREATE path AS LINE
+    FROM 600 735
+    TO 1310 705
+    COLOR #6B4A2B
+    STROKE 4
+    DRAW 0.8s
+  END
+  CREATE title1 AS TEXT
+    POSITION 960 290
+    SIZE 130
+    COLOR #4A2E1A
+    TEXT "Race to the Moon"
+    DRAW 1s
+  END
+  CREATE sub1 AS TEXT
+    POSITION 960 430
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "A timeline, 1957 to 1969"
+    DRAW 0.8s
+  END
+  CREATE earthLbl AS TEXT
+    POSITION 500 850
+    SIZE 36
+    COLOR #6B4A2B
+    TEXT "Earth"
+    DRAW 0.4s
+  END
+  CREATE moonLbl AS TEXT
+    POSITION 1420 850
+    SIZE 36
+    COLOR #6B4A2B
+    TEXT "Moon"
+    DRAW 0.4s
+  END
+  CREATE capsule AS DIAMOND
+    POSITION 620 732
+    WIDTH 56
+    HEIGHT 34
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.4s
+  END
+  ANIMATE capsule MOVE TO 1290 708
+    DURATION 2s
+    EASE easeInOut
+  SAY "Twelve years, six turning points: let's unroll the scroll."
+    DURATION 3.6s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Frames the lesson as a journey from Earth to the Moon."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 2 "The Race Begins"
+  CREATE rollL2 AS RECTANGLE
+    POSITION 70 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE rollR2 AS RECTANGLE
+    POSITION 1850 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE head2 AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #4A2E1A
+    TEXT "The Race Begins"
+    DRAW 0.8s
+  END
+  CREATE axis2 AS LINE
+    FROM 150 520
+    TO 1770 520
+    COLOR #4A2E1A
+    STROKE 8
+    DRAW 1.4s
+  END
+  CREATE mapLine2 AS LINE
+    FROM 560 880
+    TO 1360 880
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE mapDot2_0 AS CIRCLE
+    POSITION 560 880
+    RADIUS 11
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot2_1 AS CIRCLE
+    POSITION 720 880
+    RADIUS 11
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot2_2 AS CIRCLE
+    POSITION 880 880
+    RADIUS 11
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot2_3 AS CIRCLE
+    POSITION 1040 880
+    RADIUS 11
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot2_4 AS CIRCLE
+    POSITION 1200 880
+    RADIUS 11
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot2_5 AS CIRCLE
+    POSITION 1360 880
+    RADIUS 11
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapLbl2 AS TEXT
+    POSITION 960 935
+    SIZE 30
+    COLOR #6B4A2B
+    TEXT "the full run, 1957 to 1969"
+    DRAW 0.4s
+  END
+  CREATE marker2 AS CIRCLE
+    POSITION 150 520
+    RADIUS 13
+    FILL #E0B84C
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  ANIMATE marker2 MOVE TO 420 520
+    DURATION 0.8s
+    EASE easeInOut
+  CREATE dot2_0 AS CIRCLE
+    POSITION 420 520
+    RADIUS 22
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.25s
+  END
+  ANIMATE dot2_0 SCALE TO 1.3
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE dot2_0 SCALE TO 1
+    DURATION 0.2s
+  CREATE ic420 AS CIRCLE
+    POSITION 420 300
+    RADIUS 28
+    FILL #B8BCC4
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE ant420_0 AS LINE
+    FROM 440 294
+    TO 540 245
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE ant420_1 AS LINE
+    FROM 440 298
+    TO 545 280
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE ant420_2 AS LINE
+    FROM 440 302
+    TO 545 320
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE ant420_3 AS LINE
+    FROM 440 306
+    TO 540 355
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE date2_0 AS TEXT
+    POSITION 420 410
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "Oct 1957"
+    DRAW 0.5s
+  END
+  CREATE lead2_0 AS LINE
+    FROM 420 548
+    TO 420 600
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE cap2_0 AS TEXT
+    POSITION 420 690
+    SIZE 38
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #4A2E1A
+    TEXT "Sputnik 1 is the first satellite in orbit"
+    DRAW 0.8s
+  END
+  SAY "A shiny ball you could carry rattled whole governments."
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds a human detail the caption leaves out."
+  ANIMATE marker2 MOVE TO 960 520
+    DURATION 0.8s
+    EASE easeInOut
+  CREATE dot2_1 AS CIRCLE
+    POSITION 960 520
+    RADIUS 22
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.25s
+  END
+  ANIMATE dot2_1 SCALE TO 1.3
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE dot2_1 SCALE TO 1
+    DURATION 0.2s
+  CREATE ic960 AS CIRCLE
+    POSITION 960 300
+    RADIUS 40
+    FILL #C0592F
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE win960 AS CIRCLE
+    POSITION 968 294
+    RADIUS 13
+    FILL #F2E2BE
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE hatch960 AS LINE
+    FROM 920 312
+    TO 1000 312
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE date2_1 AS TEXT
+    POSITION 960 410
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "Apr 1961"
+    DRAW 0.5s
+  END
+  CREATE lead2_1 AS LINE
+    FROM 960 548
+    TO 960 600
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE cap2_1 AS TEXT
+    POSITION 960 690
+    SIZE 38
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #4A2E1A
+    TEXT "Yuri Gagarin is the first human in space"
+    DRAW 0.8s
+  END
+  SAY "His entire flight lasted under two hours."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds a human detail the caption leaves out."
+  ANIMATE marker2 MOVE TO 1500 520
+    DURATION 0.8s
+    EASE easeInOut
+  CREATE dot2_2 AS CIRCLE
+    POSITION 1500 520
+    RADIUS 22
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.25s
+  END
+  ANIMATE dot2_2 SCALE TO 1.3
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE dot2_2 SCALE TO 1
+    DURATION 0.2s
+  CREATE ic1500 AS CIRCLE
+    POSITION 1500 300
+    RADIUS 42
+    FILL #E8DFC8
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE cra1500 AS CIRCLE
+    POSITION 1486 310
+    RADIUS 9
+    FILL #CFC3A4
+    COLOR #CFC3A4
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE crb1500 AS CIRCLE
+    POSITION 1518 316
+    RADIUS 6
+    FILL #CFC3A4
+    COLOR #CFC3A4
+    STROKE 1
+    DRAW 0.1s
+  END
+  CREATE pole1500 AS LINE
+    FROM 1510 258
+    TO 1510 205
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.2s
+  END
+  CREATE flag1500 AS RECTANGLE
+    POSITION 1534 220
+    WIDTH 48
+    HEIGHT 28
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    CORNERS 2
+    DRAW 0.2s
+  END
+  CREATE date2_2 AS TEXT
+    POSITION 1500 410
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "May 1961"
+    DRAW 0.5s
+  END
+  CREATE lead2_2 AS LINE
+    FROM 1500 548
+    TO 1500 600
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE cap2_2 AS TEXT
+    POSITION 1500 690
+    SIZE 38
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #4A2E1A
+    TEXT "Kennedy asks Congress to reach the Moon within the decade"
+    DRAW 0.8s
+  END
+  SAY "Nobody yet knew exactly how to do it."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds a human detail the caption leaves out."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 3 "Closing In"
+  CREATE rollL3 AS RECTANGLE
+    POSITION 70 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE rollR3 AS RECTANGLE
+    POSITION 1850 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE head3 AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #4A2E1A
+    TEXT "Closing In"
+    DRAW 0.8s
+  END
+  CREATE axis3 AS LINE
+    FROM 150 520
+    TO 1770 520
+    COLOR #4A2E1A
+    STROKE 8
+    DRAW 1.4s
+  END
+  CREATE mapLine3 AS LINE
+    FROM 560 880
+    TO 1360 880
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE mapDot3_0 AS CIRCLE
+    POSITION 560 880
+    RADIUS 11
+    FILL #6B4A2B
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.15s
+  END
+  CREATE mapDot3_1 AS CIRCLE
+    POSITION 720 880
+    RADIUS 11
+    FILL #6B4A2B
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.15s
+  END
+  CREATE mapDot3_2 AS CIRCLE
+    POSITION 880 880
+    RADIUS 11
+    FILL #6B4A2B
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.15s
+  END
+  CREATE mapDot3_3 AS CIRCLE
+    POSITION 1040 880
+    RADIUS 11
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot3_4 AS CIRCLE
+    POSITION 1200 880
+    RADIUS 11
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapDot3_5 AS CIRCLE
+    POSITION 1360 880
+    RADIUS 11
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.15s
+  END
+  CREATE mapLbl3 AS TEXT
+    POSITION 960 935
+    SIZE 30
+    COLOR #6B4A2B
+    TEXT "the full run, 1957 to 1969"
+    DRAW 0.4s
+  END
+  CREATE marker3 AS CIRCLE
+    POSITION 150 520
+    RADIUS 13
+    FILL #E0B84C
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  ANIMATE marker3 MOVE TO 420 520
+    DURATION 0.8s
+    EASE easeInOut
+  CREATE dot3_0 AS CIRCLE
+    POSITION 420 520
+    RADIUS 22
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.25s
+  END
+  ANIMATE dot3_0 SCALE TO 1.3
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE dot3_0 SCALE TO 1
+    DURATION 0.2s
+  CREATE ic420 AS CIRCLE
+    POSITION 420 300
+    RADIUS 34
+    FILL #5B9AA0
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE orb420 AS ELLIPSE
+    POSITION 420 300
+    WIDTH 150
+    HEIGHT 56
+    COLOR #9C3D1B
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE sat420 AS CIRCLE
+    POSITION 495 300
+    RADIUS 8
+    FILL #9C3D1B
+    COLOR #9C3D1B
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE date3_0 AS TEXT
+    POSITION 420 410
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "Feb 1962"
+    DRAW 0.5s
+  END
+  CREATE lead3_0 AS LINE
+    FROM 420 548
+    TO 420 600
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE cap3_0 AS TEXT
+    POSITION 420 690
+    SIZE 38
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #4A2E1A
+    TEXT "John Glenn is the first American to orbit Earth"
+    DRAW 0.8s
+  END
+  SAY "He circled the planet three times in about five hours."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds a human detail the caption leaves out."
+  ANIMATE marker3 MOVE TO 960 520
+    DURATION 0.8s
+    EASE easeInOut
+  CREATE dot3_1 AS CIRCLE
+    POSITION 960 520
+    RADIUS 22
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.25s
+  END
+  ANIMATE dot3_1 SCALE TO 1.3
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE dot3_1 SCALE TO 1
+    DURATION 0.2s
+  CREATE ic960 AS CIRCLE
+    POSITION 960 300
+    RADIUS 34
+    FILL #E8DFC8
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.3s
+  END
+  CREATE orb960 AS ELLIPSE
+    POSITION 960 300
+    WIDTH 140
+    HEIGHT 50
+    COLOR #9C3D1B
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE cap960 AS DIAMOND
+    POSITION 890 300
+    WIDTH 22
+    HEIGHT 18
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE ear960 AS CIRCLE
+    POSITION 1022 248
+    RADIUS 12
+    FILL #5B9AA0
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE date3_1 AS TEXT
+    POSITION 960 410
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "Dec 1968"
+    DRAW 0.5s
+  END
+  CREATE lead3_1 AS LINE
+    FROM 960 548
+    TO 960 600
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE cap3_1 AS TEXT
+    POSITION 960 690
+    SIZE 38
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #4A2E1A
+    TEXT "The Apollo 8 crew orbits the Moon"
+    DRAW 0.8s
+  END
+  SAY "They watched Earth rise above the lunar horizon."
+    DURATION 3.0s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds a human detail the caption leaves out."
+  ANIMATE marker3 MOVE TO 1500 520
+    DURATION 0.8s
+    EASE easeInOut
+  CREATE dot3_2 AS CIRCLE
+    POSITION 1500 520
+    RADIUS 22
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.25s
+  END
+  ANIMATE dot3_2 SCALE TO 1.3
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE dot3_2 SCALE TO 1
+    DURATION 0.2s
+  CREATE ic1500 AS RECTANGLE
+    POSITION 1500 290
+    WIDTH 70
+    HEIGHT 46
+    FILL #E0B84C
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 6
+    DRAW 0.3s
+  END
+  CREATE win1500 AS CIRCLE
+    POSITION 1500 288
+    RADIUS 9
+    FILL #4A2E1A
+    COLOR #4A2E1A
+    STROKE 2
+    DRAW 0.1s
+  END
+  CREATE legA1500 AS LINE
+    FROM 1465 313
+    TO 1438 345
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.15s
+  END
+  CREATE legB1500 AS LINE
+    FROM 1535 313
+    TO 1562 345
+    COLOR #4A2E1A
+    STROKE 4
+    DRAW 0.15s
+  END
+  CREATE gnd1500 AS LINE
+    FROM 1400 345
+    TO 1600 345
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE date3_2 AS TEXT
+    POSITION 1500 410
+    SIZE 64
+    COLOR #9C3D1B
+    TEXT "Jul 1969"
+    DRAW 0.5s
+  END
+  CREATE lead3_2 AS LINE
+    FROM 1500 548
+    TO 1500 600
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE cap3_2 AS TEXT
+    POSITION 1500 690
+    SIZE 38
+    MAXWIDTH 440
+    ALIGN center
+    COLOR #4A2E1A
+    TEXT "Apollo 11 lands and Armstrong steps out"
+    DRAW 0.8s
+  END
+  SAY "Millions watched a grainy broadcast from another world."
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds a human detail the caption leaves out."
+  TRANSITION slide DURATION 0.6s
+END SCENE
+
+SCENE 4 "To scale"
+  CREATE rollL4 AS RECTANGLE
+    POSITION 70 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE rollR4 AS RECTANGLE
+    POSITION 1850 540
+    WIDTH 56
+    HEIGHT 940
+    FILL #D9B97A
+    COLOR #4A2E1A
+    STROKE 4
+    CORNERS 28
+    DRAW 0.6s
+  END
+  CREATE head4 AS TEXT
+    POSITION 960 150
+    SIZE 72
+    COLOR #4A2E1A
+    TEXT "All Twelve Years"
+    DRAW 0.8s
+  END
+  CREATE axis4 AS LINE
+    FROM 240 520
+    TO 1680 520
+    COLOR #4A2E1A
+    STROKE 8
+    DRAW 1.2s
+  END
+  CREATE d4_0_0 AS CIRCLE
+    POSITION 240 520
+    RADIUS 14
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE l4_0_0 AS LINE
+    FROM 240 498
+    TO 240 470
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE tag4_0 AS TEXT
+    POSITION 240 440
+    SIZE 32
+    COLOR #4A2E1A
+    TEXT "1957 Sputnik"
+    DRAW 0.5s
+  END
+  CREATE d4_1_0 AS CIRCLE
+    POSITION 700 520
+    RADIUS 14
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE l4_1_0 AS LINE
+    FROM 700 498
+    TO 700 470
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE d4_1_1 AS CIRCLE
+    POSITION 740 520
+    RADIUS 14
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE l4_1_1 AS LINE
+    FROM 740 498
+    TO 740 470
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE tag4_1 AS TEXT
+    POSITION 685 440
+    SIZE 32
+    COLOR #4A2E1A
+    TEXT "1961 Gagarin, JFK"
+    DRAW 0.5s
+  END
+  CREATE d4_2_0 AS CIRCLE
+    POSITION 840 520
+    RADIUS 14
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE l4_2_0 AS LINE
+    FROM 840 498
+    TO 840 410
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE tag4_2 AS TEXT
+    POSITION 840 380
+    SIZE 32
+    COLOR #4A2E1A
+    TEXT "1962 Glenn"
+    DRAW 0.5s
+  END
+  CREATE d4_3_0 AS CIRCLE
+    POSITION 1560 520
+    RADIUS 14
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE l4_3_0 AS LINE
+    FROM 1560 498
+    TO 1560 470
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE tag4_3 AS TEXT
+    POSITION 1560 440
+    SIZE 32
+    COLOR #4A2E1A
+    TEXT "1968 Apollo 8"
+    DRAW 0.5s
+  END
+  CREATE d4_4_0 AS CIRCLE
+    POSITION 1680 520
+    RADIUS 14
+    FILL #9C3D1B
+    COLOR #4A2E1A
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE l4_4_0 AS LINE
+    FROM 1680 498
+    TO 1680 410
+    COLOR #6B4A2B
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE tag4_4 AS TEXT
+    POSITION 1680 380
+    SIZE 32
+    COLOR #4A2E1A
+    TEXT "1969 Apollo 11"
+    DRAW 0.5s
+  END
+  CREATE spanL AS LINE
+    FROM 240 700
+    TO 1680 700
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.8s
+  END
+  CREATE spanA AS LINE
+    FROM 240 680
+    TO 240 720
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE spanB AS LINE
+    FROM 1680 680
+    TO 1680 720
+    COLOR #6B4A2B
+    STROKE 3
+    DRAW 0.2s
+  END
+  CREATE span4 AS TEXT
+    POSITION 960 790
+    SIZE 48
+    MAXWIDTH 1400
+    ALIGN center
+    COLOR #9C3D1B
+    TEXT "12 years from first beep to first footprints"
+    DRAW 1s
+  END
+  SAY "Notice how crowded 1961 looks next to the long wait after."
+    DURATION 3.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Points out the pacing pattern only a to-scale axis reveals."
+  SAY "That patience built the rockets that carried people there."
+    DURATION 3.4s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Closes with the cause behind the long gap."
+END SCENE

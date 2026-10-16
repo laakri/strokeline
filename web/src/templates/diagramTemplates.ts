@@ -12,8 +12,19 @@ import {
   UsersRound,
   Waypoints,
 } from "lucide-react"
+import { CURATED_TEMPLATES } from "@/templates/curatedTemplates.ts"
 
-export type DiagramTemplateCategory = "UML" | "Agile" | "Process" | "Reels"
+export { CURATED_TEMPLATES } from "@/templates/curatedTemplates.ts"
+
+export type DiagramTemplateCategory =
+  | "UML"
+  | "Agile"
+  | "Process"
+  | "Reels"
+  | "Education"
+  | "Science"
+  | "Stories"
+  | "Technology"
 export type DiagramPreviewKind =
   | "use-case"
   | "class"
@@ -24,6 +35,7 @@ export type DiagramPreviewKind =
   | "agentic-rag"
   | "erd"
   | "reels"
+  | "rendered"
 
 export interface DiagramTemplate {
   id: string
@@ -2371,4 +2383,9 @@ END SCENE
 END SCENE
 `,
   },
+]
+
+export const TEMPLATE_LIBRARY: DiagramTemplate[] = [
+  ...DIAGRAM_TEMPLATES,
+  ...CURATED_TEMPLATES,
 ]

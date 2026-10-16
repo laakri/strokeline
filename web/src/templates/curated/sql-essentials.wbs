@@ -1,0 +1,1540 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FBF7EA
+STYLE clean
+FONT neat
+STROKE 4
+
+SCENE 1 "SQL joins cheat sheet"
+
+  CREATE j_title AS TEXT
+    POSITION 300 76
+    SIZE 96
+    TEXT "SQL JOINS"
+    COLOR #1F1F1F
+    DRAW 0.6s
+  END
+
+  CREATE j_title_line AS LINE
+    FROM 60 142
+    TO 600 142
+    COLOR #C0392B
+    STROKE 8
+    DRAW 0.4s
+  END
+
+  CREATE j_intro AS TEXT
+    POSITION 960 205
+    SIZE 34
+    MAXWIDTH 1800
+    ALIGN left
+    TEXT "A JOIN combines rows from two tables on a shared key, and the join type decides which unmatched rows survive."
+    COLOR #2F4FA0
+    DRAW 0.6s
+  END
+
+  CREATE j_b1 AS CIRCLE
+    POSITION 84 300
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE j_b1t AS TEXT
+    POSITION 84 300
+    SIZE 32
+    TEXT "1"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE j_s1 AS TEXT
+    POSITION 351 300
+    SIZE 52
+    TEXT "How a join works"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE j_h1 AS LINE
+    FROM 130 334
+    TO 571 334
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  CREATE j_p1 AS RECTANGLE
+    POSITION 250 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #FFF3E0
+    COLOR #A85200
+    DRAW 0.3s
+  END
+
+  CREATE j_p1t AS TEXT
+    POSITION 250 420
+    SIZE 30
+    TEXT "customers: id, name"
+    COLOR #A85200
+    DRAW 0.2s
+  END
+
+  CREATE j_p2 AS RECTANGLE
+    POSITION 720 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #FFFFFF
+    COLOR #2F4FA0
+    DRAW 0.3s
+  END
+
+  CREATE j_p2t AS TEXT
+    POSITION 720 420
+    SIZE 30
+    TEXT "match on customer_id"
+    COLOR #2F4FA0
+    DRAW 0.2s
+  END
+
+  CREATE j_p3 AS RECTANGLE
+    POSITION 1190 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE j_p3t AS TEXT
+    POSITION 1190 420
+    SIZE 30
+    TEXT "orders: id, total"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE j_p4 AS RECTANGLE
+    POSITION 1660 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #EEF8F0
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE j_p4t AS TEXT
+    POSITION 1660 420
+    SIZE 30
+    TEXT "joined result rows"
+    COLOR #2E7D46
+    DRAW 0.2s
+  END
+
+  ARROW j_p1 -> j_p2
+    COLOR #C0392B
+    STROKE 5
+    DRAW 0.25s
+
+  ARROW j_p2 -> j_p3
+    COLOR #C0392B
+    STROKE 5
+    DRAW 0.25s
+
+  ARROW j_p3 -> j_p4
+    COLOR #C0392B
+    STROKE 5
+    DRAW 0.25s
+
+  SAY "Think of two guest lists being matched by ticket number, where the join type decides what happens to the unmatched guests."
+    DURATION 5s
+    TONE hook
+    DETAIL "Analogy for matching on a key and handling leftovers."
+
+  CREATE j_b2 AS CIRCLE
+    POSITION 84 520
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE j_b2t AS TEXT
+    POSITION 84 520
+    SIZE 32
+    TEXT "2"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE j_s2 AS TEXT
+    POSITION 337 520
+    SIZE 52
+    TEXT "Four join types"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE j_h2 AS LINE
+    FROM 130 554
+    TO 544 554
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  PARALLEL STAGGER 0.1s
+    CREATE j_c1 AS RECTANGLE
+      POSITION 275 695
+      WIDTH 430
+      HEIGHT 250
+      CORNERS 24
+      FILL #F4F7FD
+      COLOR #2F4FA0
+      DRAW 0.4s
+    END
+    CREATE j_c1n AS TEXT
+      POSITION 275 600
+      SIZE 36
+      TEXT "INNER JOIN"
+      COLOR #2F4FA0
+      DRAW 0.3s
+    END
+    CREATE j_c1a AS CIRCLE
+      POSITION 241 680
+      RADIUS 52
+      FILL #EDE8D5
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c1b AS CIRCLE
+      POSITION 309 680
+      RADIUS 52
+      FILL #EDE8D5
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c1l AS ELLIPSE
+      POSITION 275 680
+      WIDTH 34
+      HEIGHT 76
+      FILL #9DB4EB
+      COLOR #2F4FA0
+      DRAW 0.3s
+    END
+    CREATE j_c1at AS TEXT
+      POSITION 217 680
+      SIZE 30
+      TEXT "A"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c1bt AS TEXT
+      POSITION 333 680
+      SIZE 30
+      TEXT "B"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c1d AS TEXT
+      POSITION 275 777
+      SIZE 27
+      MAXWIDTH 390
+      TEXT "Only rows that match in both tables"
+      COLOR #1F1F1F
+      DRAW 0.4s
+    END
+  END
+
+  PARALLEL STAGGER 0.1s
+    CREATE j_c2 AS RECTANGLE
+      POSITION 731 695
+      WIDTH 430
+      HEIGHT 250
+      CORNERS 24
+      FILL #F1FAF3
+      COLOR #2E7D46
+      DRAW 0.4s
+    END
+    CREATE j_c2n AS TEXT
+      POSITION 731 600
+      SIZE 36
+      TEXT "LEFT JOIN"
+      COLOR #2E7D46
+      DRAW 0.3s
+    END
+    CREATE j_c2a AS CIRCLE
+      POSITION 697 680
+      RADIUS 52
+      FILL #9AD3AB
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c2b AS CIRCLE
+      POSITION 765 680
+      RADIUS 52
+      FILL #EDE8D5
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c2l AS ELLIPSE
+      POSITION 731 680
+      WIDTH 34
+      HEIGHT 76
+      FILL #9AD3AB
+      COLOR #2E7D46
+      DRAW 0.3s
+    END
+    CREATE j_c2at AS TEXT
+      POSITION 673 680
+      SIZE 30
+      TEXT "A"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c2bt AS TEXT
+      POSITION 789 680
+      SIZE 30
+      TEXT "B"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c2d AS TEXT
+      POSITION 731 777
+      SIZE 27
+      MAXWIDTH 390
+      TEXT "All left rows, NULL where no match"
+      COLOR #1F1F1F
+      DRAW 0.4s
+    END
+  END
+
+  PARALLEL STAGGER 0.1s
+    CREATE j_c3 AS RECTANGLE
+      POSITION 1187 695
+      WIDTH 430
+      HEIGHT 250
+      CORNERS 24
+      FILL #FFF3E0
+      COLOR #A85200
+      DRAW 0.4s
+    END
+    CREATE j_c3n AS TEXT
+      POSITION 1187 600
+      SIZE 36
+      TEXT "RIGHT JOIN"
+      COLOR #A85200
+      DRAW 0.3s
+    END
+    CREATE j_c3a AS CIRCLE
+      POSITION 1153 680
+      RADIUS 52
+      FILL #EDE8D5
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c3b AS CIRCLE
+      POSITION 1221 680
+      RADIUS 52
+      FILL #F1C08A
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c3l AS ELLIPSE
+      POSITION 1187 680
+      WIDTH 34
+      HEIGHT 76
+      FILL #F1C08A
+      COLOR #A85200
+      DRAW 0.3s
+    END
+    CREATE j_c3at AS TEXT
+      POSITION 1129 680
+      SIZE 30
+      TEXT "A"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c3bt AS TEXT
+      POSITION 1245 680
+      SIZE 30
+      TEXT "B"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c3d AS TEXT
+      POSITION 1187 777
+      SIZE 27
+      MAXWIDTH 390
+      TEXT "All right rows, NULL where no match"
+      COLOR #1F1F1F
+      DRAW 0.4s
+    END
+  END
+
+  PARALLEL STAGGER 0.1s
+    CREATE j_c4 AS RECTANGLE
+      POSITION 1643 695
+      WIDTH 430
+      HEIGHT 250
+      CORNERS 24
+      FILL #FFF1F0
+      COLOR #C0392B
+      DRAW 0.4s
+    END
+    CREATE j_c4n AS TEXT
+      POSITION 1643 600
+      SIZE 36
+      TEXT "FULL JOIN"
+      COLOR #C0392B
+      DRAW 0.3s
+    END
+    CREATE j_c4a AS CIRCLE
+      POSITION 1609 680
+      RADIUS 52
+      FILL #EE9A92
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c4b AS CIRCLE
+      POSITION 1677 680
+      RADIUS 52
+      FILL #EE9A92
+      COLOR #3B3B3B
+      DRAW 0.3s
+    END
+    CREATE j_c4l AS ELLIPSE
+      POSITION 1643 680
+      WIDTH 34
+      HEIGHT 76
+      FILL #EE9A92
+      COLOR #C0392B
+      DRAW 0.3s
+    END
+    CREATE j_c4at AS TEXT
+      POSITION 1585 680
+      SIZE 30
+      TEXT "A"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c4bt AS TEXT
+      POSITION 1701 680
+      SIZE 30
+      TEXT "B"
+      COLOR #1F1F1F
+      DRAW 0.2s
+    END
+    CREATE j_c4d AS TEXT
+      POSITION 1643 777
+      SIZE 27
+      MAXWIDTH 390
+      TEXT "Every row from both, matched or not"
+      COLOR #1F1F1F
+      DRAW 0.4s
+    END
+  END
+
+  SAY "Shaded areas show which rows survive, so the only real question is which side you refuse to lose."
+    DURATION 5s
+    TONE explain
+    DETAIL "Teaches reading the diagrams as what is kept."
+
+  CREATE j_key_box AS RECTANGLE
+    POSITION 350 927
+    WIDTH 580
+    HEIGHT 175
+    CORNERS 24
+    FILL #FFFBEA
+    COLOR #D9A21B
+    DRAW 0.4s
+  END
+
+  CREATE j_key_head AS TEXT
+    POSITION 350 870
+    SIZE 38
+    TEXT "Key Takeaway"
+    COLOR #8A5A00
+    DRAW 0.3s
+  END
+
+  CREATE j_key_body AS TEXT
+    POSITION 350 948
+    SIZE 28
+    MAXWIDTH 520
+    ALIGN left
+    TEXT "Always give a JOIN its ON condition; without one, every row pairs with every row."
+    COLOR #1F1F1F
+    DRAW 0.5s
+  END
+
+  CREATE j_tip_box AS RECTANGLE
+    POSITION 960 927
+    WIDTH 580
+    HEIGHT 175
+    CORNERS 24
+    FILL #F1FAF3
+    COLOR #2E7D46
+    DRAW 0.4s
+  END
+
+  CREATE j_tip_head AS TEXT
+    POSITION 960 870
+    SIZE 38
+    TEXT "Interview Tip"
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE j_tip_body AS TEXT
+    POSITION 960 948
+    SIZE 28
+    MAXWIDTH 520
+    ALIGN left
+    TEXT "Q: When pick LEFT over INNER? A: When rows without a match must still appear in the result."
+    COLOR #1F1F1F
+    DRAW 0.5s
+  END
+
+  CREATE j_mis_box AS RECTANGLE
+    POSITION 1570 927
+    WIDTH 580
+    HEIGHT 175
+    CORNERS 24
+    FILL #FFF1F0
+    COLOR #C0392B
+    DRAW 0.4s
+  END
+
+  CREATE j_mis_head AS TEXT
+    POSITION 1570 870
+    SIZE 38
+    TEXT "Common Mistakes"
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE j_mis_1 AS TEXT
+    POSITION 1525 925
+    SIZE 27
+    TEXT "X  No ON clause: rows multiply"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE j_mis_2 AS TEXT
+    POSITION 1525 975
+    SIZE 27
+    TEXT "X  WHERE on B breaks LEFT JOIN"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE j_footer AS RECTANGLE
+    POSITION 960 1050
+    WIDTH 420
+    HEIGHT 40
+    CORNERS 20
+    FILL #B94F15
+    COLOR #B94F15
+    DRAW 0.3s
+  END
+
+  CREATE j_footer_t AS TEXT
+    POSITION 960 1050
+    SIZE 26
+    TEXT "Ali Data Analytics"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+
+  SAY "Keep these three cards in mind and join questions in interviews stop feeling like guesswork."
+    DURATION 4s
+    TONE recap
+    DETAIL "Closing nudge toward interview practice."
+
+  TRANSITION fade DURATION 0.8s
+END SCENE
+
+SCENE 2 "Window functions cheat sheet"
+
+  CREATE w_title AS TEXT
+    POSITION 568.3 80.4
+    SIZE 96
+    TEXT "WINDOW FUNCTIONS"
+    COLOR #1F1F1F
+    DRAW 0.6s
+  END
+
+  CREATE w_title_line AS LINE
+    FROM 60 142
+    TO 900 142
+    COLOR #C0392B
+    STROKE 8
+    DRAW 0.4s
+  END
+
+  CREATE w_intro AS TEXT
+    POSITION 960 205
+    SIZE 34
+    MAXWIDTH 1800
+    ALIGN left
+    TEXT "A window function calculates across related rows but keeps every row, while GROUP BY collapses them into one per group."
+    COLOR #2F4FA0
+    DRAW 0.6s
+  END
+
+  CREATE w_b1 AS CIRCLE
+    POSITION 84 300
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE w_b1t AS TEXT
+    POSITION 84 300
+    SIZE 32
+    TEXT "1"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE w_s1 AS TEXT
+    POSITION 339.1 300
+    SIZE 52
+    TEXT "How OVER works"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE w_h1 AS LINE
+    FROM 130 334
+    TO 516 334
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  CREATE w_p1 AS RECTANGLE
+    POSITION 250 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #FFF3E0
+    COLOR #A85200
+    DRAW 0.3s
+  END
+
+  CREATE w_p1t AS TEXT
+    POSITION 250 420
+    SIZE 30
+    TEXT "all employee rows"
+    COLOR #A85200
+    DRAW 0.2s
+  END
+
+  CREATE w_p2 AS RECTANGLE
+    POSITION 720 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #FFFFFF
+    COLOR #2F4FA0
+    DRAW 0.3s
+  END
+
+  CREATE w_p2t AS TEXT
+    POSITION 720 420
+    SIZE 30
+    TEXT "PARTITION BY dept"
+    COLOR #2F4FA0
+    DRAW 0.2s
+  END
+
+  CREATE w_p3 AS RECTANGLE
+    POSITION 1190 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE w_p3t AS TEXT
+    POSITION 1190 420
+    SIZE 30
+    TEXT "ORDER BY salary"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE w_p4 AS RECTANGLE
+    POSITION 1660 420
+    WIDTH 380
+    HEIGHT 72
+    CORNERS 36
+    FILL #EEF8F0
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE w_p4t AS TEXT
+    POSITION 1660 420
+    SIZE 30
+    TEXT "rank on every row"
+    COLOR #2E7D46
+    DRAW 0.2s
+  END
+
+  ARROW w_p1 -> w_p2
+    COLOR #C0392B
+    STROKE 5
+    DRAW 0.25s
+
+  ARROW w_p2 -> w_p3
+    COLOR #C0392B
+    STROKE 5
+    DRAW 0.25s
+
+  ARROW w_p3 -> w_p4
+    COLOR #C0392B
+    STROKE 5
+    DRAW 0.25s
+
+  SAY "Imagine each department getting its own private leaderboard while nobody leaves the spreadsheet."
+    DURATION 4s
+    TONE hook
+    DETAIL "Analogy: separate leaderboards without removing rows."
+
+  CREATE w_b2 AS CIRCLE
+    POSITION 84 520
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE w_b2t AS TEXT
+    POSITION 84 520
+    SIZE 32
+    TEXT "2"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE w_s2 AS TEXT
+    POSITION 434 520
+    SIZE 52
+    TEXT "Rank inside each group"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE w_h2 AS LINE
+    FROM 130 554
+    TO 737 554
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  CREATE w_box AS RECTANGLE
+    POSITION 480 700
+    WIDTH 840
+    HEIGHT 250
+    CORNERS 24
+    FILL #F2EEDD
+    COLOR #3B3B3B
+    DRAW 0.5s
+  END
+
+  PARALLEL STAGGER 0.12s
+    CREATE w_l1 AS TEXT
+      POSITION 311 612
+      SIZE 32
+      TEXT "SELECT name, dept, salary,"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE w_l2 AS TEXT
+      POSITION 240 658
+      SIZE 32
+      TEXT "RANK() OVER ("
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE w_l3 AS TEXT
+      POSITION 314 704
+      SIZE 32
+      TEXT "PARTITION BY dept"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE w_l4 AS TEXT
+      POSITION 408 750
+      SIZE 32
+      TEXT "ORDER BY salary DESC) AS rnk"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE w_l5 AS TEXT
+      POSITION 218 796
+      SIZE 32
+      TEXT "FROM employees;"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+  END
+
+  CREATE w_b3 AS CIRCLE
+    POSITION 1004 520
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE w_b3t AS TEXT
+    POSITION 1004 520
+    SIZE 32
+    TEXT "3"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE w_s3 AS TEXT
+    POSITION 1257 520
+    SIZE 52
+    TEXT "Every row stays"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE w_h3 AS LINE
+    FROM 1050 554
+    TO 1464 554
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  CREATE w_t_body AS RECTANGLE
+    POSITION 1410 716
+    WIDTH 900
+    HEIGHT 156
+    CORNERS 4
+    FILL #FFFFFF
+    COLOR #333333
+    DRAW 0.5s
+  END
+
+  CREATE w_t_head AS RECTANGLE
+    POSITION 1410 612
+    WIDTH 900
+    HEIGHT 52
+    CORNERS 4
+    FILL #3E7D55
+    COLOR #3E7D55
+    DRAW 0.3s
+  END
+
+  CREATE w_t_r1 AS LINE
+    FROM 960 690
+    TO 1860 690
+    COLOR #999999
+    STROKE 2
+    DRAW 0.2s
+  END
+
+  CREATE w_t_r2 AS LINE
+    FROM 960 742
+    TO 1860 742
+    COLOR #999999
+    STROKE 2
+    DRAW 0.2s
+  END
+
+  CREATE w_t_v1 AS LINE
+    FROM 1200 586
+    TO 1200 794
+    COLOR #999999
+    STROKE 2
+    DRAW 0.2s
+  END
+
+  CREATE w_t_v2 AS LINE
+    FROM 1440 586
+    TO 1440 794
+    COLOR #999999
+    STROKE 2
+    DRAW 0.2s
+  END
+
+  CREATE w_t_v3 AS LINE
+    FROM 1660 586
+    TO 1660 794
+    COLOR #999999
+    STROKE 2
+    DRAW 0.2s
+  END
+
+  PARALLEL STAGGER 0.06s
+    CREATE w_th1 AS TEXT
+      POSITION 1016 612
+      SIZE 30
+      TEXT "name"
+      COLOR #FFFFFF
+      DRAW 0.3s
+    END
+    CREATE w_th2 AS TEXT
+      POSITION 1256 612
+      SIZE 30
+      TEXT "dept"
+      COLOR #FFFFFF
+      DRAW 0.3s
+    END
+    CREATE w_th3 AS TEXT
+      POSITION 1512 612
+      SIZE 30
+      TEXT "salary"
+      COLOR #FFFFFF
+      DRAW 0.3s
+    END
+    CREATE w_th4 AS TEXT
+      POSITION 1708 612
+      SIZE 30
+      TEXT "rnk"
+      COLOR #FFFFFF
+      DRAW 0.3s
+    END
+    CREATE w_ta1 AS TEXT
+      POSITION 1016 664
+      SIZE 30
+      TEXT "Maya"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_ta2 AS TEXT
+      POSITION 1264 664
+      SIZE 30
+      TEXT "Sales"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_ta3 AS TEXT
+      POSITION 1496 664
+      SIZE 30
+      TEXT "9000"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_ta4 AS TEXT
+      POSITION 1692 664
+      SIZE 30
+      TEXT "1"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tb1 AS TEXT
+      POSITION 1016 716
+      SIZE 30
+      TEXT "Omar"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tb2 AS TEXT
+      POSITION 1264 716
+      SIZE 30
+      TEXT "Sales"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tb3 AS TEXT
+      POSITION 1496 716
+      SIZE 30
+      TEXT "7500"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tb4 AS TEXT
+      POSITION 1692 716
+      SIZE 30
+      TEXT "2"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tc1 AS TEXT
+      POSITION 1016 768
+      SIZE 30
+      TEXT "Lina"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tc2 AS TEXT
+      POSITION 1256 768
+      SIZE 30
+      TEXT "Tech"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tc3 AS TEXT
+      POSITION 1496 768
+      SIZE 30
+      TEXT "8800"
+      COLOR #333333
+      DRAW 0.3s
+    END
+    CREATE w_tc4 AS TEXT
+      POSITION 1692 768
+      SIZE 30
+      TEXT "1"
+      COLOR #333333
+      DRAW 0.3s
+    END
+  END
+
+  CREATE w_note AS TEXT
+    POSITION 1325 818
+    SIZE 26
+    TEXT "The ranking starts again at 1 inside every department"
+    COLOR #6B6B6B
+    DRAW 0.4s
+  END
+
+  SAY "Notice Lina is first in her team even though her salary is lower than Maya's, because each department is ranked on its own."
+    DURATION 5s
+    TONE explain
+    DETAIL "Points out the effect of partitioning on the result."
+
+  CREATE w_key_box AS RECTANGLE
+    POSITION 350 927
+    WIDTH 580
+    HEIGHT 175
+    CORNERS 24
+    FILL #FFFBEA
+    COLOR #D9A21B
+    DRAW 0.4s
+  END
+
+  CREATE w_key_head AS TEXT
+    POSITION 350 870
+    SIZE 38
+    TEXT "Key Takeaway"
+    COLOR #8A5A00
+    DRAW 0.3s
+  END
+
+  CREATE w_key_body AS TEXT
+    POSITION 350 948
+    SIZE 28
+    MAXWIDTH 520
+    ALIGN left
+    TEXT "Window functions add a column of calculated values and never reduce the number of rows."
+    COLOR #1F1F1F
+    DRAW 0.5s
+  END
+
+  CREATE w_tip_box AS RECTANGLE
+    POSITION 960 927
+    WIDTH 580
+    HEIGHT 175
+    CORNERS 24
+    FILL #F1FAF3
+    COLOR #2E7D46
+    DRAW 0.4s
+  END
+
+  CREATE w_tip_head AS TEXT
+    POSITION 960 870
+    SIZE 38
+    TEXT "Interview Tip"
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE w_tip_body AS TEXT
+    POSITION 960 948
+    SIZE 28
+    MAXWIDTH 520
+    ALIGN left
+    TEXT "Q: ROW_NUMBER vs RANK? A: RANK gives ties the same number and skips ahead; ROW_NUMBER never repeats."
+    COLOR #1F1F1F
+    DRAW 0.5s
+  END
+
+  CREATE w_mis_box AS RECTANGLE
+    POSITION 1570 927
+    WIDTH 580
+    HEIGHT 175
+    CORNERS 24
+    FILL #FFF1F0
+    COLOR #C0392B
+    DRAW 0.4s
+  END
+
+  CREATE w_mis_head AS TEXT
+    POSITION 1570 870
+    SIZE 38
+    TEXT "Common Mistakes"
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE w_mis_1 AS TEXT
+    POSITION 1560 925
+    SIZE 27
+    TEXT "X  Using a window function in WHERE"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE w_mis_2 AS TEXT
+    POSITION 1496 975
+    SIZE 27
+    TEXT "X  Forgetting PARTITION BY"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE w_footer AS RECTANGLE
+    POSITION 960 1050
+    WIDTH 420
+    HEIGHT 40
+    CORNERS 20
+    FILL #B94F15
+    COLOR #B94F15
+    DRAW 0.3s
+  END
+
+  CREATE w_footer_t AS TEXT
+    POSITION 960 1050
+    SIZE 26
+    TEXT "Ali Data Analytics"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+
+  SAY "If you can explain the difference between collapsing rows and annotating them, you have the core of window functions."
+    DURATION 5s
+    TONE recap
+    DETAIL "Summarizes the main conceptual contrast."
+
+  TRANSITION fade DURATION 0.8s
+END SCENE
+
+SCENE 3 "SQL indexes cheat sheet"
+
+  CREATE x_title AS TEXT
+    POSITION 350 76
+    SIZE 96
+    TEXT "SQL INDEXES"
+    COLOR #1F1F1F
+    DRAW 0.6s
+  END
+
+  CREATE x_title_line AS LINE
+    FROM 60 142
+    TO 640 142
+    COLOR #C0392B
+    STROKE 8
+    DRAW 0.4s
+  END
+
+  CREATE x_intro AS TEXT
+    POSITION 861.9 207.9
+    SIZE 34
+    ALIGN left
+    TEXT "An index is a sorted shortcut the database follows to find rows without reading the whole table."
+    COLOR #2F4FA0
+    DRAW 0.6s
+  END
+
+  CREATE x_b1 AS CIRCLE
+    POSITION 84 300
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE x_b1t AS TEXT
+    POSITION 84 300
+    SIZE 32
+    TEXT "1"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE x_s1 AS TEXT
+    POSITION 406 300
+    SIZE 52
+    TEXT "Why indexes are fast"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE x_h1 AS LINE
+    FROM 130 334
+    TO 682 334
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  CREATE x_lab1 AS TEXT
+    POSITION 132 410
+    SIZE 34
+    TEXT "No index"
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE x_bar1 AS RECTANGLE
+    POSITION 1100 411.5
+    WIDTH 1400
+    HEIGHT 56
+    CORNERS 14
+    FILL #EE9A92
+    COLOR #C0392B
+    DRAW 0.8s
+  END
+
+  CREATE x_bar1t AS TEXT
+    POSITION 1100 410
+    SIZE 30
+    TEXT "scans every row: about 1,000,000 reads"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE x_lab2 AS TEXT
+    POSITION 150 485
+    SIZE 34
+    TEXT "With index"
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE x_bar2 AS RECTANGLE
+    POSITION 1101.5 481.8
+    WIDTH 1400
+    HEIGHT 56
+    CORNERS 14
+    FILL #9AD3AB
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE x_bar2t AS TEXT
+    POSITION 1057 485
+    SIZE 30
+    TEXT "follows the sorted index straight to the row: about 20 reads"
+    COLOR #2E7D46
+    DRAW 0.4s
+  END
+
+  SAY "The gap between those bars grows as the table grows, which is why indexes matter most on big tables."
+    DURATION 5s
+    TONE hook
+    DETAIL "Explains how the benefit scales with table size."
+
+  CREATE x_b2 AS CIRCLE
+    POSITION 84 580
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE x_b2t AS TEXT
+    POSITION 84 580
+    SIZE 32
+    TEXT "2"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE x_s2 AS TEXT
+    POSITION 337 580
+    SIZE 52
+    TEXT "Create an index"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE x_h2 AS LINE
+    FROM 130 614
+    TO 544 614
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  CREATE x_box AS RECTANGLE
+    POSITION 480 726
+    WIDTH 840
+    HEIGHT 190
+    CORNERS 24
+    FILL #F2EEDD
+    COLOR #3B3B3B
+    DRAW 0.5s
+  END
+
+  PARALLEL STAGGER 0.12s
+    CREATE x_l1 AS TEXT
+      POSITION 302 656
+      SIZE 32
+      TEXT "CREATE INDEX idx_customer"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE x_l2 AS TEXT
+      POSITION 334 700
+      SIZE 32
+      TEXT "ON orders (customer_id);"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE x_l3 AS TEXT
+      POSITION 260 744
+      SIZE 32
+      TEXT "SELECT * FROM orders"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+    CREATE x_l4 AS TEXT
+      POSITION 402 788
+      SIZE 32
+      TEXT "WHERE customer_id = 42;  -- seek"
+      COLOR #3B3B3B
+      DRAW 0.4s
+    END
+  END
+
+  CREATE x_b3 AS CIRCLE
+    POSITION 1004 580
+    RADIUS 26
+    FILL #FFFFFF
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE x_b3t AS TEXT
+    POSITION 1004 580
+    SIZE 32
+    TEXT "3"
+    COLOR #C0392B
+    DRAW 0.2s
+  END
+
+  CREATE x_s3 AS TEXT
+    POSITION 1285 580
+    SIZE 52
+    TEXT "Where to add them"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE x_h3 AS LINE
+    FROM 1050 614
+    TO 1519 614
+    COLOR #F2B84B
+    STROKE 8
+    DRAW 0.3s
+  END
+
+  PARALLEL STAGGER 0.15s
+    CREATE x_g1 AS RECTANGLE
+      POSITION 1410 668
+      WIDTH 900
+      HEIGHT 44
+      CORNERS 22
+      FILL #EEF8F0
+      COLOR #2E7D46
+      DRAW 0.3s
+    END
+    CREATE x_g1t AS TEXT
+      POSITION 1410 668
+      SIZE 28
+      TEXT "Good: columns used in WHERE"
+      COLOR #2E7D46
+      DRAW 0.2s
+    END
+    CREATE x_g2 AS RECTANGLE
+      POSITION 1410 722
+      WIDTH 900
+      HEIGHT 44
+      CORNERS 22
+      FILL #EEF8F0
+      COLOR #2E7D46
+      DRAW 0.3s
+    END
+    CREATE x_g2t AS TEXT
+      POSITION 1410 722
+      SIZE 28
+      TEXT "Good: join keys and foreign keys"
+      COLOR #2E7D46
+      DRAW 0.2s
+    END
+    CREATE x_g3 AS RECTANGLE
+      POSITION 1410 776
+      WIDTH 900
+      HEIGHT 44
+      CORNERS 22
+      FILL #EEF8F0
+      COLOR #2E7D46
+      DRAW 0.3s
+    END
+    CREATE x_g3t AS TEXT
+      POSITION 1410 776
+      SIZE 28
+      TEXT "Good: columns used in ORDER BY"
+      COLOR #2E7D46
+      DRAW 0.2s
+    END
+    CREATE x_g4 AS RECTANGLE
+      POSITION 1410 830
+      WIDTH 900
+      HEIGHT 44
+      CORNERS 22
+      FILL #FFF1F0
+      COLOR #C0392B
+      DRAW 0.3s
+    END
+    CREATE x_g4t AS TEXT
+      POSITION 1410 830
+      SIZE 28
+      TEXT "Careful: every index slows INSERT and UPDATE"
+      COLOR #C0392B
+      DRAW 0.2s
+    END
+  END
+
+  SAY "Treat each index like a tax on writes that must earn its keep by speeding up queries you actually run."
+    DURATION 5s
+    TONE warning
+    DETAIL "Frames the write-cost tradeoff."
+
+  CREATE x_key_box AS RECTANGLE
+    POSITION 350 955
+    WIDTH 580
+    HEIGHT 146
+    CORNERS 24
+    FILL #FFFBEA
+    COLOR #D9A21B
+    DRAW 0.4s
+  END
+
+  CREATE x_key_head AS TEXT
+    POSITION 350 912
+    SIZE 34
+    TEXT "Key Takeaway"
+    COLOR #8A5A00
+    DRAW 0.3s
+  END
+
+  CREATE x_key_body AS TEXT
+    POSITION 350 975
+    SIZE 26
+    MAXWIDTH 520
+    ALIGN left
+    TEXT "An index trades extra storage and slower writes for much faster reads."
+    COLOR #1F1F1F
+    DRAW 0.5s
+  END
+
+  CREATE x_tip_box AS RECTANGLE
+    POSITION 960 955
+    WIDTH 580
+    HEIGHT 146
+    CORNERS 24
+    FILL #F1FAF3
+    COLOR #2E7D46
+    DRAW 0.4s
+  END
+
+  CREATE x_tip_head AS TEXT
+    POSITION 960 912
+    SIZE 34
+    TEXT "Interview Tip"
+    COLOR #2E7D46
+    DRAW 0.3s
+  END
+
+  CREATE x_tip_body AS TEXT
+    POSITION 960 975
+    SIZE 26
+    MAXWIDTH 520
+    ALIGN left
+    TEXT "Q: Why is an index ignored? A: LOWER(email) on the column hides it."
+    COLOR #1F1F1F
+    DRAW 0.5s
+  END
+
+  CREATE x_mis_box AS RECTANGLE
+    POSITION 1570 955
+    WIDTH 580
+    HEIGHT 146
+    CORNERS 24
+    FILL #FFF1F0
+    COLOR #C0392B
+    DRAW 0.4s
+  END
+
+  CREATE x_mis_head AS TEXT
+    POSITION 1570 912
+    SIZE 34
+    TEXT "Common Mistakes"
+    COLOR #C0392B
+    DRAW 0.3s
+  END
+
+  CREATE x_mis_1 AS TEXT
+    POSITION 1524 958
+    SIZE 26
+    TEXT "X  Indexing every single column"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE x_mis_2 AS TEXT
+    POSITION 1558 1000
+    SIZE 26
+    TEXT "X  LIKE '%text' and expecting a seek"
+    COLOR #1F1F1F
+    DRAW 0.4s
+  END
+
+  CREATE x_footer AS RECTANGLE
+    POSITION 960 1054
+    WIDTH 420
+    HEIGHT 36
+    CORNERS 18
+    FILL #B94F15
+    COLOR #B94F15
+    DRAW 0.3s
+  END
+
+  CREATE x_footer_t AS TEXT
+    POSITION 960 1054
+    SIZE 24
+    TEXT "Ali Data Analytics"
+    COLOR #FFFFFF
+    DRAW 0.3s
+  END
+
+  SAY "Before adding an index, check the slow query's filter and join columns first, then measure the improvement."
+    DURATION 5s
+    TONE recap
+    DETAIL "Practical workflow advice to close the lesson."
+
+  TRANSITION fade DURATION 0.8s
+END SCENE

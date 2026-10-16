@@ -4,10 +4,11 @@ import { ArrowRight, LayoutTemplate, Sparkles, X } from "lucide-react"
 import { useAppStore } from "@/app/store.ts"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import {
-  DIAGRAM_TEMPLATES,
+  TEMPLATE_LIBRARY,
   type DiagramPreviewKind,
   type DiagramTemplateCategory,
 } from "@/templates/diagramTemplates.ts"
+import { TemplatePreviewCanvas } from "@/templates/TemplatePreviewCanvas.tsx"
 import { Button } from "@/ui/button"
 
 const categories: Array<"All" | DiagramTemplateCategory> = [
@@ -16,6 +17,10 @@ const categories: Array<"All" | DiagramTemplateCategory> = [
   "UML",
   "Agile",
   "Process",
+  "Education",
+  "Science",
+  "Stories",
+  "Technology",
 ]
 
 function DiagramThumbnail({ kind }: { kind: DiagramPreviewKind }) {
@@ -476,14 +481,14 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
   const loadScript = useAppStore((state) => state.loadScript)
   const visibleTemplates =
     category === "All"
-      ? DIAGRAM_TEMPLATES
-      : DIAGRAM_TEMPLATES.filter((template) => template.category === category)
+      ? TEMPLATE_LIBRARY
+      : TEMPLATE_LIBRARY.filter((template) => template.category === category)
   const categoryCounts = categories.map((item) => ({
     name: item,
     count:
       item === "All"
-        ? DIAGRAM_TEMPLATES.length
-        : DIAGRAM_TEMPLATES.filter((template) => template.category === item)
+        ? TEMPLATE_LIBRARY.length
+        : TEMPLATE_LIBRARY.filter((template) => template.category === item)
             .length,
   }))
 
@@ -649,7 +654,16 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
                           <div
                             className={`relative overflow-hidden border-b border-border/70 p-2 ${template.category === "Reels" ? "bg-slate-950" : "bg-muted/40"}`}
                           >
-                            <DiagramThumbnail kind={template.preview} />
+                            {template.preview === "rendered" ? (
+                              <TemplatePreviewCanvas
+                                script={template.script}
+                                label={`${template.title} preview`}
+                                lazy
+                                className="aspect-[2/1] w-full"
+                              />
+                            ) : (
+                              <DiagramThumbnail kind={template.preview} />
+                            )}
                             <span className="absolute top-4 left-4 rounded-full border border-border/70 bg-background/90 px-2 py-0.5 text-[10px] font-medium text-muted-foreground shadow-sm backdrop-blur">
                               {template.category}
                             </span>

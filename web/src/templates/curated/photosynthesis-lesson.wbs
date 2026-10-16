@@ -1,0 +1,758 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #1F3A34
+STYLE clean
+FONT neat
+STROKE 5
+
+SCENE 1 "Photosynthesis: introduction"
+
+  CREATE a_sun AS CIRCLE
+    POSITION 300 300
+    RADIUS 100
+    FILL #FFD966
+    COLOR #FFD966
+    DRAW 0.6s
+  END
+
+  CREATE a_r1 AS LINE
+    FROM 425 300
+    TO 475 300
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r2 AS LINE
+    FROM 388 388
+    TO 423 423
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r3 AS LINE
+    FROM 300 425
+    TO 300 475
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r4 AS LINE
+    FROM 212 388
+    TO 177 423
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r5 AS LINE
+    FROM 175 300
+    TO 125 300
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r6 AS LINE
+    FROM 212 212
+    TO 177 177
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r7 AS LINE
+    FROM 300 175
+    TO 300 125
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_r8 AS LINE
+    FROM 388 212
+    TO 423 177
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.2s
+  END
+
+  CREATE a_title AS TEXT
+    POSITION 1161 288.5
+    SIZE 150
+    TEXT "PHOTOSYNTHESIS"
+    COLOR #F4F1E8
+    DRAW 0.8s
+  END
+
+  CREATE a_title_line AS LINE
+    FROM 600 400
+    TO 1640 400
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.5s
+  END
+
+  CREATE a_sub AS TEXT
+    POSITION 1120 480
+    SIZE 60
+    TEXT "How plants turn sunlight into food"
+    COLOR #8FD3F4
+    DRAW 0.6s
+  END
+
+  SAY "Every meal you have ever eaten traces back to a leaf catching sunlight, which is why this one process feeds nearly all life on Earth."
+    DURATION 6s
+    TONE hook
+    DETAIL "Sets the stakes before the lesson goals appear."
+
+  CREATE a_goals AS TEXT
+    POSITION 960 600
+    SIZE 52
+    TEXT "In this lesson you will"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE a_c1 AS RECTANGLE
+    POSITION 330 780
+    WIDTH 480
+    HEIGHT 200
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #F4A6B8
+    DRAW 0.4s
+  END
+
+  CREATE a_c1h AS TEXT
+    POSITION 330 725
+    SIZE 46
+    TEXT "Inputs"
+    COLOR #F4A6B8
+    DRAW 0.3s
+  END
+
+  CREATE a_c1d AS TEXT
+    POSITION 330 815
+    SIZE 32
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "Name what a plant needs to make food"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE a_c2 AS RECTANGLE
+    POSITION 960 780
+    WIDTH 480
+    HEIGHT 200
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #8FD3F4
+    DRAW 0.4s
+  END
+
+  CREATE a_c2h AS TEXT
+    POSITION 960 725
+    SIZE 46
+    TEXT "Process"
+    COLOR #8FD3F4
+    DRAW 0.3s
+  END
+
+  CREATE a_c2d AS TEXT
+    POSITION 960 815
+    SIZE 32
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "See how a leaf turns light into sugar"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE a_c3 AS RECTANGLE
+    POSITION 1590 780
+    WIDTH 480
+    HEIGHT 200
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #A8E6A1
+    DRAW 0.4s
+  END
+
+  CREATE a_c3h AS TEXT
+    POSITION 1590 725
+    SIZE 46
+    TEXT "Outputs"
+    COLOR #A8E6A1
+    DRAW 0.3s
+  END
+
+  CREATE a_c3d AS TEXT
+    POSITION 1590 815
+    SIZE 32
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "Explain what the plant makes and releases"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE a_pill AS RECTANGLE
+    POSITION 960 928.7
+    WIDTH 460
+    HEIGHT 64
+    CORNERS 32
+    FILL #FFD966
+    COLOR #FFD966
+    DRAW 0.3s
+  END
+
+  CREATE a_pill_t AS TEXT
+    POSITION 960 932.9
+    SIZE 36
+    TEXT "Biology  -  Lesson 1"
+    COLOR #1F3A34
+    DRAW 0.3s
+  END
+
+  TRANSITION fade DURATION 0.8s
+END SCENE
+
+SCENE 2 "Inside a leaf"
+
+  CREATE b_title AS TEXT
+    POSITION 960 95
+    SIZE 84
+    TEXT "Inside a leaf"
+    COLOR #F4F1E8
+    DRAW 0.5s
+  END
+
+  CREATE b_title_line AS LINE
+    FROM 700 165
+    TO 1220 165
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.4s
+  END
+
+  CREATE b_hin AS TEXT
+    POSITION 300 195
+    SIZE 40
+    TEXT "INPUTS"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE b_hout AS TEXT
+    POSITION 1620 285
+    SIZE 40
+    TEXT "OUTPUTS"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE b_leaf AS ELLIPSE
+    POSITION 960 540
+    WIDTH 560
+    HEIGHT 400
+    FILL #2E7D46
+    COLOR #A8E6A1
+    DRAW 0.8s
+  END
+
+  CREATE b_rib AS LINE
+    FROM 760 540
+    TO 1160 540
+    COLOR #A8E6A1
+    STROKE 5
+    DRAW 0.4s
+  END
+
+  CREATE b_leaf_t AS TEXT
+    POSITION 960 465
+    SIZE 70
+    TEXT "Leaf"
+    COLOR #F4F1E8
+    DRAW 0.3s
+  END
+
+  CREATE b_leaf_d AS TEXT
+    POSITION 960 615
+    SIZE 34
+    MAXWIDTH 460
+    ALIGN center
+    TEXT "chlorophyll captures the light"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE b_n1 AS RECTANGLE
+    POSITION 300 300
+    WIDTH 420
+    HEIGHT 120
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #FFD966
+    DRAW 0.4s
+  END
+
+  CREATE b_n1t AS TEXT
+    POSITION 300 270
+    SIZE 40
+    TEXT "Sunlight"
+    COLOR #FFD966
+    DRAW 0.3s
+  END
+
+  CREATE b_n1d AS TEXT
+    POSITION 300 326
+    SIZE 26
+    TEXT "the energy source"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE b_n2 AS RECTANGLE
+    POSITION 300 540
+    WIDTH 420
+    HEIGHT 120
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #8FD3F4
+    DRAW 0.4s
+  END
+
+  CREATE b_n2t AS TEXT
+    POSITION 300 510
+    SIZE 40
+    TEXT "Water (H2O)"
+    COLOR #8FD3F4
+    DRAW 0.3s
+  END
+
+  CREATE b_n2d AS TEXT
+    POSITION 300 566
+    SIZE 26
+    TEXT "taken up by the roots"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE b_n3 AS RECTANGLE
+    POSITION 300 780
+    WIDTH 420
+    HEIGHT 120
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #F4A6B8
+    DRAW 0.4s
+  END
+
+  CREATE b_n3t AS TEXT
+    POSITION 300 750
+    SIZE 36
+    TEXT "Carbon dioxide (CO2)"
+    COLOR #F4A6B8
+    DRAW 0.3s
+  END
+
+  CREATE b_n3d AS TEXT
+    POSITION 300 806
+    SIZE 26
+    TEXT "enters through tiny pores"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE b_o1 AS RECTANGLE
+    POSITION 1620 400
+    WIDTH 420
+    HEIGHT 120
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #FFB27A
+    DRAW 0.4s
+  END
+
+  CREATE b_o1t AS TEXT
+    POSITION 1620 370
+    SIZE 40
+    TEXT "Glucose"
+    COLOR #FFB27A
+    DRAW 0.3s
+  END
+
+  CREATE b_o1d AS TEXT
+    POSITION 1620 426
+    SIZE 26
+    TEXT "sugar the plant stores"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE b_o2 AS RECTANGLE
+    POSITION 1620 680
+    WIDTH 420
+    HEIGHT 120
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #A8E6A1
+    DRAW 0.4s
+  END
+
+  CREATE b_o2t AS TEXT
+    POSITION 1620 650
+    SIZE 40
+    TEXT "Oxygen (O2)"
+    COLOR #A8E6A1
+    DRAW 0.3s
+  END
+
+  CREATE b_o2d AS TEXT
+    POSITION 1620 706
+    SIZE 26
+    TEXT "released into the air"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  ARROW b_n1 -> b_leaf
+    COLOR #FFD966
+    STROKE 6
+    DRAW 0.5s
+
+  ARROW b_n2 -> b_leaf
+    COLOR #8FD3F4
+    STROKE 6
+    DRAW 0.5s
+
+  ARROW b_n3 -> b_leaf
+    COLOR #F4A6B8
+    STROKE 6
+    DRAW 0.5s
+
+  ARROW b_leaf -> b_o1
+    COLOR #FFB27A
+    STROKE 6
+    DRAW 0.5s
+
+  ARROW b_leaf -> b_o2
+    COLOR #A8E6A1
+    STROKE 6
+    DRAW 0.5s
+
+  SAY "Think of the leaf as a tiny factory: three things arrive, two things leave, and nothing is wasted along the way."
+    DURATION 5s
+    TONE explain
+    DETAIL "Factory analogy that connects inputs to outputs."
+
+  CREATE b_foot AS TEXT
+    POSITION 967.3 923.5
+    SIZE 44
+    MAXWIDTH 1700
+    ALIGN center
+    TEXT "Light, water and carbon dioxide make glucose and oxygen"
+    COLOR #FFD966
+    DRAW 0.6s
+  END
+
+  TRANSITION fade DURATION 0.8s
+END SCENE
+
+SCENE 3 "The equation and quick check"
+
+  CREATE c_title AS TEXT
+    POSITION 960 100
+    SIZE 84
+    TEXT "The equation"
+    COLOR #F4F1E8
+    DRAW 0.5s
+  END
+
+  CREATE c_title_line AS LINE
+    FROM 720 170
+    TO 1200 170
+    COLOR #FFD966
+    STROKE 8
+    DRAW 0.4s
+  END
+
+  CREATE c_e1 AS RECTANGLE
+    POSITION 330 450
+    WIDTH 280
+    HEIGHT 130
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #F4A6B8
+    DRAW 0.4s
+  END
+
+  CREATE c_e1t AS TEXT
+    POSITION 330 450
+    SIZE 64
+    TEXT "6 CO2"
+    COLOR #F4A6B8
+    DRAW 0.3s
+  END
+
+  CREATE c_p1 AS TEXT
+    POSITION 520 450
+    SIZE 80
+    TEXT "+"
+    COLOR #F4F1E8
+    DRAW 0.2s
+  END
+
+  CREATE c_e2 AS RECTANGLE
+    POSITION 710 450
+    WIDTH 280
+    HEIGHT 130
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #8FD3F4
+    DRAW 0.4s
+  END
+
+  CREATE c_e2t AS TEXT
+    POSITION 710 450
+    SIZE 64
+    TEXT "6 H2O"
+    COLOR #8FD3F4
+    DRAW 0.3s
+  END
+
+  CREATE c_e3 AS RECTANGLE
+    POSITION 1210 450
+    WIDTH 280
+    HEIGHT 130
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #FFB27A
+    DRAW 0.4s
+  END
+
+  CREATE c_e3t AS TEXT
+    POSITION 1210 450
+    SIZE 64
+    TEXT "C6H12O6"
+    COLOR #FFB27A
+    DRAW 0.3s
+  END
+
+  CREATE c_p2 AS TEXT
+    POSITION 1400 450
+    SIZE 80
+    TEXT "+"
+    COLOR #F4F1E8
+    DRAW 0.2s
+  END
+
+  CREATE c_e4 AS RECTANGLE
+    POSITION 1590 450
+    WIDTH 280
+    HEIGHT 130
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #A8E6A1
+    DRAW 0.4s
+  END
+
+  CREATE c_e4t AS TEXT
+    POSITION 1590 450
+    SIZE 64
+    TEXT "6 O2"
+    COLOR #A8E6A1
+    DRAW 0.3s
+  END
+
+  ARROW c_e2 -> c_e3
+    COLOR #FFD966
+    STROKE 7
+    DRAW 0.6s
+
+  CREATE c_lt AS TEXT
+    POSITION 960 398
+    SIZE 30
+    TEXT "light energy"
+    COLOR #FFD966
+    DRAW 0.3s
+  END
+
+  CREATE c_lb AS TEXT
+    POSITION 960 504
+    SIZE 30
+    TEXT "chlorophyll"
+    COLOR #FFD966
+    DRAW 0.3s
+  END
+
+  CREATE c_k1 AS TEXT
+    POSITION 330 570
+    SIZE 34
+    TEXT "carbon dioxide"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE c_k2 AS TEXT
+    POSITION 710 570
+    SIZE 34
+    TEXT "water"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE c_k3 AS TEXT
+    POSITION 1210 570
+    SIZE 34
+    TEXT "glucose"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  CREATE c_k4 AS TEXT
+    POSITION 1590 570
+    SIZE 34
+    TEXT "oxygen"
+    COLOR #D9D5C7
+    DRAW 0.3s
+  END
+
+  SAY "Chemists balance the equation so atoms are never created or destroyed, only rearranged into sugar and oxygen."
+    DURATION 5s
+    TONE explain
+    DETAIL "Connects the equation to conservation of atoms."
+
+  CREATE c_quiz AS TEXT
+    POSITION 960 660
+    SIZE 52
+    TEXT "Quick check"
+    COLOR #FFD966
+    DRAW 0.4s
+  END
+
+  CREATE c_q1 AS RECTANGLE
+    POSITION 410 860
+    WIDTH 480
+    HEIGHT 280
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #F4A6B8
+    DRAW 0.4s
+  END
+
+  CREATE c_q1l AS TEXT
+    POSITION 410 765
+    SIZE 30
+    TEXT "Question 1"
+    COLOR #F4A6B8
+    DRAW 0.3s
+  END
+
+  CREATE c_q1q AS TEXT
+    POSITION 410 835
+    SIZE 34
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "Which gas do plants take in?"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE c_q1a AS TEXT
+    POSITION 410 935
+    SIZE 32
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "Answer: carbon dioxide"
+    COLOR #A8E6A1
+    DRAW 0.4s
+  END
+
+  CREATE c_q2 AS RECTANGLE
+    POSITION 960 860
+    WIDTH 480
+    HEIGHT 280
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #8FD3F4
+    DRAW 0.4s
+  END
+
+  CREATE c_q2l AS TEXT
+    POSITION 960 765
+    SIZE 30
+    TEXT "Question 2"
+    COLOR #8FD3F4
+    DRAW 0.3s
+  END
+
+  CREATE c_q2q AS TEXT
+    POSITION 960 835
+    SIZE 34
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "What captures the sunlight?"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE c_q2a AS TEXT
+    POSITION 960 935
+    SIZE 32
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "Answer: chlorophyll in the chloroplasts"
+    COLOR #A8E6A1
+    DRAW 0.4s
+  END
+
+  CREATE c_q3 AS RECTANGLE
+    POSITION 1510 860
+    WIDTH 480
+    HEIGHT 280
+    CORNERS 24
+    FILL #2A4A41
+    COLOR #FFB27A
+    DRAW 0.4s
+  END
+
+  CREATE c_q3l AS TEXT
+    POSITION 1510 765
+    SIZE 30
+    TEXT "Question 3"
+    COLOR #FFB27A
+    DRAW 0.3s
+  END
+
+  CREATE c_q3q AS TEXT
+    POSITION 1510 835
+    SIZE 34
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "What does the plant store as food?"
+    COLOR #F4F1E8
+    DRAW 0.4s
+  END
+
+  CREATE c_q3a AS TEXT
+    POSITION 1510 935
+    SIZE 32
+    MAXWIDTH 420
+    ALIGN center
+    TEXT "Answer: glucose"
+    COLOR #A8E6A1
+    DRAW 0.4s
+  END
+
+  SAY "Cover the answers and say them out loud first, because recalling an answer teaches more than rereading it."
+    DURATION 5s
+    TONE recap
+    DETAIL "Study tip about retrieval practice."
+
+  TRANSITION fade DURATION 0.8s
+END SCENE

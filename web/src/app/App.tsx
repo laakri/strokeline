@@ -4,6 +4,7 @@ import { AppShell } from "@/ui/layout/AppShell.tsx"
 import { LandingPage } from "@/pages/LandingPage.tsx"
 import { LoginPage } from "@/pages/LoginPage.tsx"
 import { DocsPage } from "@/pages/DocsPage.tsx"
+import { TemplateGalleryPage } from "@/pages/TemplateGalleryPage.tsx"
 import { supabase } from "@/lib/supabase.ts"
 
 function ProtectedWorkspace() {
@@ -58,6 +59,7 @@ export function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/docs/:page" element={<DocsPage />} />
+        <Route path="/templates" element={<TemplateGalleryPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/workspace" element={<ProtectedWorkspace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,0 +1,413 @@
+// Strokeline Education Style 9: Mind Map Brainstorm
+// Purpose: Reusable template. One hub idea, four colored question branches, short answer leaves.
+// Demo topic: Photosynthesis (same topic as the Chalkboard style, so the styles compare side by side).
+// Features used: ELLIPSE hub, curved HEAD none branch arrows, one color per branch,
+//   pale leaf pills, 4 scenes (anchor, branches, full map, recap), SAY narration, TRANSITION.
+//
+// HOW TO REUSE
+//  1. Replace "Photosynthesis" (scene 1, 2, 3) with your topic.
+//  2. Rename the 4 branch labels. Good branch questions: What goes in? Where? How? What comes out?
+//  3. Edit leaf text. Keep leaves under about 16 characters at SIZE 32.
+//  4. Scene 3 shows 12 text objects, which is the validator limit (W_TOO_CROWDED).
+//     To add a leaf, remove another one, or split the map across two scenes.
+//  5. Swap colors per branch: deep fill (white text) + pale tint fill (deep text).
+//
+// Validator status: checked with the Strokeline app validator (web/scripts/validate.mjs).
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F8FAFD
+STYLE handdrawn
+FONT handwritten
+STROKE 4
+
+SCENE 1 "One big idea"
+  SAY "Every good study map hangs on a single anchor, so pick it carefully."
+    DURATION 4s
+    TONE hook
+  CREATE hub AS ELLIPSE
+    POSITION 960 540
+    WIDTH 400
+    HEIGHT 240
+    FILL #FFD54A
+    COLOR #1F2933
+    STROKE 5
+    TEXT "Photosynthesis"
+    SIZE 46
+    DRAW 0.8s
+  END
+  CREATE hint AS TEXT
+    POSITION 960 800
+    SIZE 40
+    TEXT "Start with one idea in the middle"
+    COLOR #1F2933
+    DRAW 0.8s
+  END
+  WAIT 1s
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 2 "Four branches"
+  SAY "Each branch is a question, and a color of its own keeps them apart."
+    DURATION 4s
+    TONE explain
+  CREATE head AS TEXT
+    POSITION 960 130
+    SIZE 46
+    TEXT "Split it into four questions"
+    COLOR #1F2933
+    DRAW 0.7s
+  END
+  CREATE hub AS ELLIPSE
+    POSITION 960 540
+    WIDTH 400
+    HEIGHT 240
+    FILL #FFD54A
+    COLOR #1F2933
+    STROKE 5
+    TEXT "Photosynthesis"
+    SIZE 46
+    DRAW 0.4s
+  END
+  CREATE b_in AS RECTANGLE
+    POSITION 650 300
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #B23A1E
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "What goes in?"
+    SIZE 34
+    DRAW 0.5s
+  END
+  ARROW hub -> b_in
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 8
+    DRAW 0.4s
+  CREATE b_wh AS RECTANGLE
+    POSITION 650 780
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #1E7A3C
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "Where?"
+    SIZE 34
+    DRAW 0.5s
+  END
+  ARROW hub -> b_wh
+    ROUTE curve
+    HEAD none
+    COLOR #1E7A3C
+    STROKE 8
+    DRAW 0.4s
+  CREATE b_st AS RECTANGLE
+    POSITION 1270 300
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #1F5FBF
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "How?"
+    SIZE 34
+    DRAW 0.5s
+  END
+  ARROW hub -> b_st
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 8
+    DRAW 0.4s
+  CREATE b_out AS RECTANGLE
+    POSITION 1270 780
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #7A3DB8
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "What comes out?"
+    SIZE 34
+    DRAW 0.5s
+  END
+  ARROW hub -> b_out
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 8
+    DRAW 0.4s
+  WAIT 1s
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 3 "The full map"
+  SAY "Short answers sit at the tips, so one glance on revision day is enough."
+    DURATION 4s
+    TONE explain
+  CREATE hub AS ELLIPSE
+    POSITION 960 540
+    WIDTH 400
+    HEIGHT 240
+    FILL #FFD54A
+    COLOR #1F2933
+    STROKE 5
+    TEXT "Photosynthesis"
+    SIZE 46
+    DRAW 0.4s
+  END
+  CREATE b_in AS RECTANGLE
+    POSITION 650 300
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #B23A1E
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "What goes in?"
+    SIZE 34
+    DRAW 0.4s
+  END
+  ARROW hub -> b_in
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 8
+    DRAW 0.3s
+  CREATE l_in1 AS RECTANGLE
+    POSITION 255 215
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #FFE3D6
+    COLOR #9A2F14
+    STROKE 4
+    TEXT "Sunlight"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_in -> l_in1
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 5
+    DRAW 0.25s
+  CREATE l_in2 AS RECTANGLE
+    POSITION 255 385
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #FFE3D6
+    COLOR #9A2F14
+    STROKE 4
+    TEXT "Water + CO2"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_in -> l_in2
+    ROUTE curve
+    HEAD none
+    COLOR #B23A1E
+    STROKE 5
+    DRAW 0.25s
+  CREATE b_wh AS RECTANGLE
+    POSITION 650 780
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #1E7A3C
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "Where?"
+    SIZE 34
+    DRAW 0.4s
+  END
+  ARROW hub -> b_wh
+    ROUTE curve
+    HEAD none
+    COLOR #1E7A3C
+    STROKE 8
+    DRAW 0.3s
+  CREATE l_wh1 AS RECTANGLE
+    POSITION 255 780
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #DDF4E4
+    COLOR #17602F
+    STROKE 4
+    TEXT "In chloroplasts"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_wh -> l_wh1
+    ROUTE curve
+    HEAD none
+    COLOR #1E7A3C
+    STROKE 5
+    DRAW 0.25s
+  CREATE b_st AS RECTANGLE
+    POSITION 1270 300
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #1F5FBF
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "How?"
+    SIZE 34
+    DRAW 0.4s
+  END
+  ARROW hub -> b_st
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 8
+    DRAW 0.3s
+  CREATE l_st1 AS RECTANGLE
+    POSITION 1665 215
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #DCEBFF
+    COLOR #174A96
+    STROKE 4
+    TEXT "Light reactions"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_st -> l_st1
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 5
+    DRAW 0.25s
+  CREATE l_st2 AS RECTANGLE
+    POSITION 1665 385
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #DCEBFF
+    COLOR #174A96
+    STROKE 4
+    TEXT "Calvin cycle"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_st -> l_st2
+    ROUTE curve
+    HEAD none
+    COLOR #1F5FBF
+    STROKE 5
+    DRAW 0.25s
+  CREATE b_out AS RECTANGLE
+    POSITION 1270 780
+    WIDTH 280
+    HEIGHT 100
+    CORNERS 50
+    FILL #7A3DB8
+    COLOR #FFFFFF
+    STROKE 3
+    TEXT "What comes out?"
+    SIZE 34
+    DRAW 0.4s
+  END
+  ARROW hub -> b_out
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 8
+    DRAW 0.3s
+  CREATE l_out1 AS RECTANGLE
+    POSITION 1665 695
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #EBDDFB
+    COLOR #5E2A92
+    STROKE 4
+    TEXT "Glucose (sugar)"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_out -> l_out1
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 5
+    DRAW 0.25s
+  CREATE l_out2 AS RECTANGLE
+    POSITION 1665 865
+    WIDTH 300
+    HEIGHT 90
+    CORNERS 45
+    FILL #EBDDFB
+    COLOR #5E2A92
+    STROKE 4
+    TEXT "Oxygen gas"
+    SIZE 32
+    DRAW 0.3s
+  END
+  ARROW b_out -> l_out2
+    ROUTE curve
+    HEAD none
+    COLOR #7A3DB8
+    STROKE 5
+    DRAW 0.25s
+  WAIT 1.5s
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 4 "Say it back"
+  SAY "Close the page and rebuild the answer from the branches alone."
+    DURATION 4s
+    TONE recap
+  CREATE recap_title AS TEXT
+    POSITION 960 240
+    SIZE 50
+    TEXT "The whole map in one line"
+    COLOR #1F2933
+    DRAW 0.7s
+  END
+  CREATE left_pill AS RECTANGLE
+    POSITION 480 540
+    WIDTH 600
+    HEIGHT 160
+    CORNERS 80
+    FILL #FFE3D6
+    COLOR #9A2F14
+    STROKE 5
+    TEXT "Light + Water + CO2"
+    SIZE 40
+    DRAW 0.7s
+  END
+  CREATE right_pill AS RECTANGLE
+    POSITION 1440 540
+    WIDTH 600
+    HEIGHT 160
+    CORNERS 80
+    FILL #EBDDFB
+    COLOR #5E2A92
+    STROKE 5
+    TEXT "Glucose + Oxygen"
+    SIZE 40
+    DRAW 0.7s
+  END
+  ARROW left_pill -> right_pill
+    ROUTE straight
+    HEAD end
+    COLOR #1F2933
+    STROKE 7
+    DRAW 0.7s
+  CREATE note AS TEXT
+    POSITION 960 790
+    SIZE 38
+    TEXT "Chloroplasts run the trade"
+    COLOR #1E7A3C
+    DRAW 0.7s
+  END
+  WAIT 1.5s
+END SCENE

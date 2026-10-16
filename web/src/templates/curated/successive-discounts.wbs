@@ -1,0 +1,617 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #FBFAF5
+FONT neat
+STROKE 3
+
+SCENE 1 "Two discounts, one price"
+  PARALLEL STAGGER 0.12s
+    CREATE rule1 AS LINE
+      FROM 150 260
+      TO 1870 260
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE rule2 AS LINE
+      FROM 150 410
+      TO 1870 410
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE rule3 AS LINE
+      FROM 150 560
+      TO 1870 560
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE rule4 AS LINE
+      FROM 150 710
+      TO 1870 710
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE rule5 AS LINE
+      FROM 150 860
+      TO 1870 860
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE rule6 AS LINE
+      FROM 150 1010
+      TO 1870 1010
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE margin1 AS LINE
+      FROM 150 40
+      TO 150 1040
+      COLOR #E7A3A3
+      STROKE 3
+      DRAW 0.6s
+    END
+  END
+
+  CREATE tag1 AS TEXT
+    POSITION 330 75
+    SIZE 30
+    TEXT "WORKED EXAMPLE"
+    COLOR #C23B3B
+    DRAW 0.5s
+  END
+
+  SAY "Stores love stacking discounts, and it feels like the percentages should simply add up. Let's test that on one real price tag."
+    DURATION 7s
+    TONE hook
+    WHO "Narrator"
+    DETAIL "Sets up the misconception before any arithmetic."
+
+  CREATE problem1 AS TEXT
+    POSITION 700 175
+    SIZE 46
+    MAXWIDTH 1000
+    ALIGN left
+    TEXT "A $80 jacket: 25% off, then 10% off that. Same as 35% off?"
+    COLOR #1F3A5F
+    DRAW 1.8s
+  END
+
+  CREATE price1 AS RECTANGLE
+    POSITION 1560 550
+    WIDTH 260
+    HEIGHT 600
+    CORNERS 10
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    ROUGH on
+    ROUGHSEED 7
+    DRAW 0.8s
+  END
+
+  CREATE price1label AS TEXT
+    POSITION 1560 212
+    SIZE 40
+    TEXT "$80"
+    COLOR #1F3A5F
+    BACKGROUND #FBFAF5
+    PADDING 8
+    DRAW 0.4s
+  END
+
+  WAIT 0.5s
+
+  SAY "A quarter off means you still pay three quarters of the price, so multiply by that share instead of subtracting."
+    DURATION 6s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Keep-share thinking is the trick the whole example relies on."
+
+  CREATE badge1 AS CIRCLE
+    POSITION 230 365
+    RADIUS 34
+    FILL #C23B3B
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE badge1t AS TEXT
+    POSITION 230 365
+    SIZE 40
+    TEXT "1"
+    COLOR #FFFFFF
+    DRAW 0.2s
+  END
+  CREATE expr1 AS TEXT
+    POSITION 520 365
+    SIZE 56
+    TEXT "80 × 0.75 ="
+    COLOR #1F3A5F
+    DRAW 0.9s
+  END
+  CREATE mark1 AS RECTANGLE
+    POSITION 770 365
+    WIDTH 120
+    HEIGHT 76
+    CORNERS 10
+    FILL #FFE45C
+    COLOR #FFE45C
+    DRAW 0.4s
+  END
+  CREATE key1 AS TEXT
+    POSITION 770 365
+    SIZE 56
+    TEXT "60"
+    COLOR #1F3A5F
+    DRAW 0.4s
+  END
+  CREATE note1 AS TEXT
+    POSITION 1100 365
+    SIZE 32
+    TEXT "25% off, so keep 75%"
+    COLOR #56606D
+    DRAW 0.7s
+  END
+  CREATE cut1 AS RECTANGLE
+    POSITION 1560 325
+    WIDTH 260
+    HEIGHT 150
+    CORNERS 10
+    FILL #F6C9C9
+    COLOR #C23B3B
+    ROUGH on
+    ROUGHSEED 11
+    DRAW 0.6s
+  END
+  CREATE cut1t AS TEXT
+    POSITION 1560 325
+    SIZE 40
+    TEXT "-20"
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE level60 AS TEXT
+    POSITION 1370 400
+    SIZE 34
+    TEXT "$60"
+    COLOR #1F3A5F
+    DRAW 0.3s
+  END
+
+  WAIT 0.6s
+
+  SAY "The second discount only touches what is left after the first one. That is the detail that quietly changes the answer."
+    DURATION 7s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Highlights that the base price shrinks between discounts."
+
+  CREATE badge2 AS CIRCLE
+    POSITION 230 515
+    RADIUS 34
+    FILL #C23B3B
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE badge2t AS TEXT
+    POSITION 230 515
+    SIZE 40
+    TEXT "2"
+    COLOR #FFFFFF
+    DRAW 0.2s
+  END
+  CREATE expr2 AS TEXT
+    POSITION 520 515
+    SIZE 56
+    TEXT "60 × 0.90 ="
+    COLOR #1F3A5F
+    DRAW 0.9s
+  END
+  CREATE mark2 AS RECTANGLE
+    POSITION 770 515
+    WIDTH 120
+    HEIGHT 76
+    CORNERS 10
+    FILL #FFE45C
+    COLOR #FFE45C
+    DRAW 0.4s
+  END
+  CREATE key2 AS TEXT
+    POSITION 770 515
+    SIZE 56
+    TEXT "54"
+    COLOR #1F3A5F
+    DRAW 0.4s
+  END
+  CREATE note2 AS TEXT
+    POSITION 1100 515
+    SIZE 32
+    TEXT "10% off, so keep 90%"
+    COLOR #56606D
+    DRAW 0.7s
+  END
+  CREATE cut2 AS RECTANGLE
+    POSITION 1560 422
+    WIDTH 260
+    HEIGHT 45
+    CORNERS 6
+    FILL #F6C9C9
+    COLOR #C23B3B
+    ROUGH on
+    ROUGHSEED 13
+    DRAW 0.5s
+  END
+  CREATE cut2t AS TEXT
+    POSITION 1560 422
+    SIZE 28
+    TEXT "-6"
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE level54 AS TEXT
+    POSITION 1370 455
+    SIZE 34
+    TEXT "$54"
+    COLOR #1F3A5F
+    DRAW 0.3s
+  END
+
+  WAIT 0.6s
+
+  SAY "For comparison, here is a single flat cut on the original price, the one the sign seems to promise."
+    DURATION 6s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Introduces the benchmark deal drawn as a green dashed level."
+
+  CREATE badge3 AS CIRCLE
+    POSITION 230 665
+    RADIUS 34
+    FILL #C23B3B
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE badge3t AS TEXT
+    POSITION 230 665
+    SIZE 40
+    TEXT "3"
+    COLOR #FFFFFF
+    DRAW 0.2s
+  END
+  CREATE expr3 AS TEXT
+    POSITION 520 665
+    SIZE 56
+    TEXT "80 × 0.65 ="
+    COLOR #1F3A5F
+    DRAW 0.9s
+  END
+  CREATE mark3 AS RECTANGLE
+    POSITION 770 665
+    WIDTH 120
+    HEIGHT 76
+    CORNERS 10
+    FILL #FFE45C
+    COLOR #FFE45C
+    DRAW 0.4s
+  END
+  CREATE key3 AS TEXT
+    POSITION 770 665
+    SIZE 56
+    TEXT "52"
+    COLOR #1F3A5F
+    DRAW 0.4s
+  END
+  CREATE note3 AS TEXT
+    POSITION 1100 665
+    SIZE 32
+    TEXT "flat 35% off, keep 65%"
+    COLOR #56606D
+    DRAW 0.7s
+  END
+  CREATE level52line AS LINE
+    FROM 1430 460
+    TO 1705 460
+    COLOR #2D7D52
+    STROKE 4
+    LINESTYLE dashed
+    DRAW 0.6s
+  END
+  CREATE level52 AS TEXT
+    POSITION 1765 460
+    SIZE 34
+    TEXT "$52"
+    COLOR #2D7D52
+    DRAW 0.3s
+  END
+
+  WAIT 0.6s
+
+  SAY "The stacked deal ends up two dollars more expensive, because the second cut was taken from a smaller number."
+    DURATION 7s
+    TONE punchline
+    WHO "Narrator"
+    DETAIL "Reveals the verdict and explains the reason in one breath."
+
+  CREATE verdictring AS ELLIPSE
+    POSITION 520 815
+    WIDTH 520
+    HEIGHT 120
+    COLOR #C23B3B
+    STROKE 4
+    ROUGH on
+    ROUGHSEED 21
+    DRAW 0.8s
+  END
+  CREATE verdict AS TEXT
+    POSITION 520 815
+    SIZE 60
+    TEXT "54 is not 52"
+    COLOR #1F3A5F
+    DRAW 0.8s
+  END
+  CREATE why1 AS TEXT
+    POSITION 720 965
+    SIZE 40
+    TEXT "The 10% came off 60, so it was only 6 (not 8)"
+    COLOR #1F3A5F
+    DRAW 1.4s
+  END
+
+  WAIT 1s
+  TRANSITION wipe DURATION 0.8s
+END SCENE
+
+SCENE 2 "The shortcut"
+  PARALLEL STAGGER 0.12s
+    CREATE s2rule1 AS LINE
+      FROM 150 260
+      TO 1870 260
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE s2rule2 AS LINE
+      FROM 150 410
+      TO 1870 410
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE s2rule3 AS LINE
+      FROM 150 560
+      TO 1870 560
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE s2rule4 AS LINE
+      FROM 150 710
+      TO 1870 710
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE s2rule5 AS LINE
+      FROM 150 860
+      TO 1870 860
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE s2rule6 AS LINE
+      FROM 150 1010
+      TO 1870 1010
+      COLOR #D6E4F0
+      STROKE 2
+      DRAW 0.4s
+    END
+    CREATE s2margin AS LINE
+      FROM 150 40
+      TO 150 1040
+      COLOR #E7A3A3
+      STROKE 3
+      DRAW 0.6s
+    END
+  END
+
+  CREATE tag2 AS TEXT
+    POSITION 290 75
+    SIZE 30
+    TEXT "SHORTCUT"
+    COLOR #C23B3B
+    DRAW 0.4s
+  END
+  CREATE title2 AS TEXT
+    POSITION 700 175
+    SIZE 64
+    TEXT "Multiply what you keep"
+    COLOR #1F3A5F
+    DRAW 1.2s
+  END
+
+  SAY "There is a faster route. Each discount is just a multiplier on what you still owe, so chain the multipliers instead of adding the percentages."
+    DURATION 8s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Moves from the long method to the one-line method."
+
+  CREATE chip1 AS RECTANGLE
+    POSITION 470 480
+    WIDTH 260
+    HEIGHT 150
+    CORNERS 16
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    ROUGH on
+    ROUGHSEED 31
+    DRAW 0.6s
+  END
+  CREATE chip1t AS TEXT
+    POSITION 470 480
+    SIZE 64
+    TEXT "0.75"
+    COLOR #1F3A5F
+    DRAW 0.4s
+  END
+  CREATE chip1c AS TEXT
+    POSITION 470 595
+    SIZE 30
+    TEXT "25% off"
+    COLOR #56606D
+    DRAW 0.4s
+  END
+  CREATE times2 AS TEXT
+    POSITION 660 480
+    SIZE 80
+    TEXT "×"
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE chip2 AS RECTANGLE
+    POSITION 860 480
+    WIDTH 260
+    HEIGHT 150
+    CORNERS 16
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    ROUGH on
+    ROUGHSEED 33
+    DRAW 0.6s
+  END
+  CREATE chip2t AS TEXT
+    POSITION 860 480
+    SIZE 64
+    TEXT "0.90"
+    COLOR #1F3A5F
+    DRAW 0.4s
+  END
+  CREATE chip2c AS TEXT
+    POSITION 860 595
+    SIZE 30
+    TEXT "10% off"
+    COLOR #56606D
+    DRAW 0.4s
+  END
+  CREATE equals2 AS TEXT
+    POSITION 1055 480
+    SIZE 80
+    TEXT "="
+    COLOR #C23B3B
+    DRAW 0.3s
+  END
+  CREATE chip3 AS RECTANGLE
+    POSITION 1290 480
+    WIDTH 320
+    HEIGHT 150
+    CORNERS 16
+    FILL #FFE45C
+    COLOR #1F3A5F
+    ROUGH on
+    ROUGHSEED 35
+    DRAW 0.6s
+  END
+  CREATE chip3t AS TEXT
+    POSITION 1290 480
+    SIZE 64
+    TEXT "0.675"
+    COLOR #1F3A5F
+    DRAW 0.5s
+  END
+  CREATE chip3c AS TEXT
+    POSITION 1290 595
+    SIZE 30
+    TEXT "kept in total"
+    COLOR #56606D
+    DRAW 0.4s
+  END
+
+  WAIT 0.5s
+
+  SAY "Stretched across a full price tag, you keep a bit over two thirds. The green mark shows where a true thirty-five percent deal would land."
+    DURATION 8s
+    TONE explain
+    WHO "Narrator"
+    DETAIL "Turns the product into a length so the gap can be seen."
+
+  CREATE keepbar AS RECTANGLE
+    POSITION 738.75 790
+    WIDTH 877.5
+    HEIGHT 110
+    CORNERS 8
+    FILL #CFE3F5
+    COLOR #2F6FB2
+    ROUGH on
+    ROUGHSEED 41
+    DRAW 0.8s
+  END
+  CREATE savebar AS RECTANGLE
+    POSITION 1388.75 790
+    WIDTH 422.5
+    HEIGHT 110
+    CORNERS 8
+    FILL #F6C9C9
+    COLOR #C23B3B
+    ROUGH on
+    ROUGHSEED 43
+    DRAW 0.6s
+  END
+  CREATE keeplabel AS TEXT
+    POSITION 738.75 790
+    SIZE 48
+    TEXT "keep 67.5%"
+    COLOR #1F3A5F
+    DRAW 0.5s
+  END
+  CREATE savelabel AS TEXT
+    POSITION 1388.75 790
+    SIZE 44
+    TEXT "save 32.5%"
+    COLOR #C23B3B
+    DRAW 0.5s
+  END
+  CREATE mark35 AS LINE
+    FROM 1145 690
+    TO 1145 880
+    COLOR #2D7D52
+    STROKE 4
+    LINESTYLE dashed
+    DRAW 0.5s
+  END
+  CREATE mark35t AS TEXT
+    POSITION 1145 660
+    SIZE 30
+    TEXT "35% deal"
+    COLOR #2D7D52
+    BACKGROUND #FBFAF5
+    PADDING 6
+    DRAW 0.4s
+  END
+
+  WAIT 0.5s
+
+  SAY "So the honest saving is a little under what the sign suggests. Whenever discounts stack, multiply the keep-shares and never add the percentages."
+    DURATION 8s
+    TONE recap
+    WHO "Narrator"
+    DETAIL "Closes with the rule students can reuse on any stacked discount."
+
+  CREATE final2 AS TEXT
+    POSITION 960 965
+    SIZE 54
+    TEXT "Real saving: 32.5%, not 35%"
+    COLOR #1F3A5F
+    DRAW 1.4s
+  END
+  CREATE final2line AS LINE
+    FROM 560 1000
+    TO 1360 1000
+    COLOR #C23B3B
+    STROKE 5
+    DRAW 0.6s
+  END
+
+  WAIT 1s
+END SCENE

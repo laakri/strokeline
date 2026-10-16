@@ -8,10 +8,11 @@ import { Button } from "@/ui/button"
 import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
 import { supabase } from "@/lib/supabase.ts"
 
-type Page = "home" | "docs"
+type Page = "home" | "docs" | "templates"
 
 const links: { to: string; label: string; page: Page }[] = [
   { to: "/", label: "Home", page: "home" },
+  { to: "/templates", label: "Templates", page: "templates" },
   { to: "/docs", label: "Docs", page: "docs" },
 ]
 
