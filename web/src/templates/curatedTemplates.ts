@@ -14,11 +14,11 @@ import {
   Zap,
 } from "lucide-react"
 import type { DiagramTemplate } from "@/templates/diagramTemplates.ts"
+import { createVerticalReelScript } from "@/templates/verticalReel.ts"
 import ohmsLaw from "@/templates/curated/ohms-law-blueprint-lab.wbs?raw"
 import tcpVsUdp from "@/templates/curated/tcp-vs-udp.wbs?raw"
 import capitalShowdown from "@/templates/curated/capital-showdown-quiz.wbs?raw"
 import ledCircuit from "@/templates/curated/led-circuit-blueprint.wbs?raw"
-import photosynthesisMicro from "@/templates/curated/photosynthesis-micro-lesson.wbs?raw"
 import photosynthesisBrainstorm from "@/templates/curated/photosynthesis-brainstorm-map.wbs?raw"
 import sugarLab from "@/templates/curated/sugar-dissolving-lab-notebook.wbs?raw"
 import storybook from "@/templates/curated/pip-counts-her-friends.wbs?raw"
@@ -88,10 +88,70 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     title: "Photosynthesis: 60-Second Lesson",
     category: "Reels",
     description:
-      "A vertical, subtitle-ready micro-lesson that explains the essentials in four short scenes.",
+      "A five-beat vertical lesson on how leaves use light, water, and carbon dioxide to make sugar.",
     preview: "rendered",
     icon: Sprout,
-    script: photosynthesisMicro,
+    script: createVerticalReelScript({
+      series: "PHOTOSYNTHESIS IN 60 SECONDS",
+      theme: {
+        background: "#EDF6E7",
+        panel: "#FFFFFF",
+        accent: "#3A8A3F",
+        headline: "#18371F",
+        detail: "#3D5D43",
+        inactive: "#D1E2CB",
+        focusPanel: "#E4F1DB",
+        focusCorners: 80,
+      },
+      beats: [
+        {
+          scene: "A solar-powered kitchen",
+          headline: "A leaf makes its own food",
+          focus: "LIGHT IN",
+          detail: "A tiny solar-powered kitchen is at work.",
+          takeaway:
+            "Photosynthesis turns light energy into stored chemical energy.",
+          narration:
+            "A leaf is like a tiny solar-powered kitchen: it uses light to help make the plant's food.",
+        },
+        {
+          scene: "Catch the light",
+          headline: "Start with sunlight",
+          focus: "CHLOROPHYLL",
+          detail: "This green pigment absorbs light in chloroplasts.",
+          takeaway: "Light energy powers the process.",
+          narration:
+            "Chlorophyll, the green pigment inside chloroplasts, absorbs light energy.",
+        },
+        {
+          scene: "Bring the ingredients",
+          headline: "The leaf needs two inputs",
+          focus: "CO₂ + WATER",
+          detail: "Carbon dioxide enters leaves; roots absorb water.",
+          takeaway: "Light supplies energy, not matter.",
+          narration:
+            "Carbon dioxide comes from the air, while water is absorbed by the roots.",
+        },
+        {
+          scene: "Make sugar",
+          headline: "Now the ingredients change",
+          focus: "SUGAR + OXYGEN",
+          detail: "Light helps turn water and CO₂ into glucose and oxygen.",
+          takeaway: "The plant stores energy in sugar.",
+          narration:
+            "Using light energy, the plant makes glucose from water and carbon dioxide and releases oxygen.",
+        },
+        {
+          scene: "The quick recap",
+          headline: "Remember the direction",
+          focus: "LIGHT → SUGAR",
+          detail: "Air and water go in; oxygen comes out.",
+          takeaway: "Look for the tiny pores where gases move.",
+          narration:
+            "Light powers the process, sugar stores energy, and oxygen is released through tiny leaf pores.",
+        },
+      ],
+    }),
   },
   {
     id: "lightning-60-second-micro-lesson",

@@ -37,8 +37,12 @@ describe("diagram starters", () => {
     expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
     expect(template!.script).toContain('SCENE 1 "Scrum Board - Sprint 12"')
     expect(template!.script).toContain('TEXT "Sprint 12 Board (example data)"')
-    expect(template!.script).toContain("ANIMATE cDoing2 MOVE TO 1170 560 ARC 60")
-    expect(template!.script).toContain("ANIMATE cReview1 MOVE TO 1590 800 ARC -60")
+    expect(template!.script).toContain(
+      "ANIMATE cDoing2 MOVE TO 1170 560 ARC 60"
+    )
+    expect(template!.script).toContain(
+      "ANIMATE cReview1 MOVE TO 1590 800 ARC -60"
+    )
     expect(template!.script).toContain('TEXT "Done: 18 pts"')
 
     const scene = result.document!.scenes[0]!
@@ -65,7 +69,9 @@ describe("diagram starters", () => {
     expect(template!.script).toContain('TEXT "Auth Service"')
     expect(template!.script).toContain('TEXT "User DB"')
     expect(template!.script).toContain('LABEL "6: 200 OK + home page"')
+    expect(template!.script).toContain('TEXT "opt [valid credentials]"')
     expect(template!.script).toContain("LINESTYLE dashed")
+    expect(template!.preview).toBe("rendered")
 
     const result = runScript(template!.script)
     expect(result.document, JSON.stringify(result.diagnostics)).not.toBeNull()
@@ -96,6 +102,9 @@ describe("diagram starters", () => {
     expect(template!.script).toContain('COLUMNS "«aggregate root» Order"')
     expect(template!.script).toContain('COLUMNS "«abstract» Payment"')
     expect(template!.script).toContain('COLUMNS "«concrete» CardPayment"')
+    expect(template!.script).toContain("ARROW itemTbl -> orderTbl")
+    expect(template!.script).toContain('LABEL "part of"')
+    expect(template!.preview).toBe("rendered")
 
     const scene = result.document!.scenes[0]!
     const tables = scene.ops.filter(
@@ -120,12 +129,16 @@ describe("diagram starters", () => {
     expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
     expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
     expect(template!.script).toContain('SCENE 1 "Use Case Diagram Template"')
-    expect(template!.script).toContain('TEXT "Online Store - Use Case Diagram"')
+    expect(template!.script).toContain(
+      'TEXT "Online Store  /  Customer & Admin"'
+    )
     expect(template!.script).toContain("CREATE boundary AS RECTANGLE")
     expect(template!.script).toContain('TEXT "Browse Products"')
     expect(template!.script).toContain('TEXT "Payment API"')
     expect(template!.script).toContain('LABEL "«include»"')
     expect(template!.script).toContain('LABEL "«extend»"')
+    expect(template!.script).toContain('TEXT "Association"')
+    expect(template!.preview).toBe("rendered")
 
     const scene = result.document!.scenes[0]!
     const highlights = scene.ops.filter(
@@ -146,8 +159,10 @@ describe("diagram starters", () => {
         (diagnostic) => diagnostic.code === "W_ARROW_CROSSES_TEXT"
       )
     ).toEqual([])
-    const arrows = result.document!.scenes[0]!.ops
-      .filter((op) => op.kind === "create" && op.node.type === "arrow")
+    const arrows = result
+      .document!.scenes[0]!.ops.filter(
+        (op) => op.kind === "create" && op.node.type === "arrow"
+      )
       .map((op) => (op.kind === "create" ? op.node : undefined))
     const include = arrows.find((arrow) => arrow?.label === "«include»")
     const extend = arrows.find((arrow) => arrow?.label === "«extend»")
@@ -176,7 +191,9 @@ describe("diagram starters", () => {
     expect(template!.script).toContain('TEXT "Rocks: risks ahead"')
 
     const scene = result.document!.scenes[0]!
-    const ink = scene.ops.filter((op) => op.kind === "create" && op.node.type === "ink")
+    const ink = scene.ops.filter(
+      (op) => op.kind === "create" && op.node.type === "ink"
+    )
     const highlights = scene.ops.filter(
       (op) => op.kind === "animate" && op.anim.verb === "highlight"
     )
@@ -292,6 +309,23 @@ describe("diagram starters", () => {
         width: 1080,
         height: 1920,
       })
+      expect(template.preview, template.id).toBe("rendered")
+      expect(result.document?.subtitles, template.id).toBe(true)
+      expect(
+        result.document?.scenes.length,
+        template.id
+      ).toBeGreaterThanOrEqual(4)
+      for (const scene of result.document!.scenes) {
+        const textPositions = scene.ops.flatMap((op) =>
+          op.kind === "create" && op.node.type === "text"
+            ? [op.node.position.y]
+            : []
+        )
+        expect(
+          textPositions.every((y) => y < 1300 || y > 1580),
+          `${template.id}: text should avoid the subtitle-safe band`
+        ).toBe(true)
+      }
       expect(result.diagnostics.filter(blocksScriptRun), template.id).toEqual(
         []
       )

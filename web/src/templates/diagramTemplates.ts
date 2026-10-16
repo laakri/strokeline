@@ -16,6 +16,7 @@ import {
   CURATED_TEMPLATES,
   FEATURED_TEMPLATE_IDS,
 } from "@/templates/curatedTemplates.ts"
+import { createVerticalReelScript } from "@/templates/verticalReel.ts"
 
 export { CURATED_TEMPLATES } from "@/templates/curatedTemplates.ts"
 export { FEATURED_TEMPLATE_IDS } from "@/templates/curatedTemplates.ts"
@@ -51,27 +52,18 @@ export interface DiagramTemplate {
   script: string
 }
 
-const reelsHeader = `VERSION 1.0
-CANVAS 1080 1920
-BACKGROUND #101827
-STYLE clean
-FONT neat
-STROKE 4
-
-`
-
 export const DIAGRAM_TEMPLATES: DiagramTemplate[] = [
   {
     id: "use-case",
-    title: "Use case diagram",
+    title: "Online Store Use Cases",
     category: "UML",
     description:
-      "A polished online-store use-case model with actors, relationships, and animated highlights.",
-    preview: "use-case",
+      "Explore how customers, admins, and a payment service interact with the store.",
+    preview: "rendered",
     icon: UsersRound,
     script: `VERSION 1.0
 CANVAS 1920 1080
-BACKGROUND #F7F9FC
+BACKGROUND #F6F1E7
 BOARD plain
 STYLE clean
 FONT neat
@@ -81,21 +73,21 @@ SCENE 1 "Use Case Diagram Template"
 
   # ---- title ----
   CREATE title AS TEXT
-    TEXT "Online Store - Use Case Diagram"
+    TEXT "Online Store  /  Customer & Admin"
     POSITION 960 130
     SIZE 44
-    COLOR #1F2A44
+    COLOR #25364B
     DRAW 0.4s
   END
 
   # ---- system boundary ----
   CREATE boundary AS RECTANGLE
-    POSITION 960 500
-    WIDTH 1080
-    HEIGHT 640
+    POSITION 960 520
+    WIDTH 1220
+    HEIGHT 660
     CORNERS 24
-    COLOR #8A98B3
-    FILL #FFFFFF
+    COLOR #D6D0C1
+    FILL #FFFEFA
     STROKE 3
     SHADOW 10
     DRAW 0.5s
@@ -107,8 +99,8 @@ SCENE 1 "Use Case Diagram Template"
     WIDTH 300
     HEIGHT 110
     CORNERS 55
-    COLOR #1F5F82
-    FILL #EAF4FA
+    COLOR #2E7180
+    FILL #E6F2F0
     STROKE 3
     TEXT "Browse Products"
     DRAW 0.4s
@@ -119,8 +111,8 @@ SCENE 1 "Use Case Diagram Template"
     WIDTH 300
     HEIGHT 110
     CORNERS 55
-    COLOR #1F5F82
-    FILL #EAF4FA
+    COLOR #2E7180
+    FILL #E6F2F0
     STROKE 3
     TEXT "Place Order"
     DRAW 0.4s
@@ -131,8 +123,8 @@ SCENE 1 "Use Case Diagram Template"
     WIDTH 300
     HEIGHT 110
     CORNERS 55
-    COLOR #1F5F82
-    FILL #EAF4FA
+    COLOR #2E7180
+    FILL #E6F2F0
     STROKE 3
     TEXT "Track Order"
     DRAW 0.4s
@@ -144,8 +136,8 @@ SCENE 1 "Use Case Diagram Template"
     WIDTH 300
     HEIGHT 110
     CORNERS 55
-    COLOR #1F5F82
-    FILL #EAF4FA
+    COLOR #2E7180
+    FILL #E6F2F0
     STROKE 3
     TEXT "Apply Coupon"
     DRAW 0.4s
@@ -156,8 +148,8 @@ SCENE 1 "Use Case Diagram Template"
     WIDTH 300
     HEIGHT 110
     CORNERS 55
-    COLOR #1F5F82
-    FILL #EAF4FA
+    COLOR #2E7180
+    FILL #E6F2F0
     STROKE 3
     TEXT "Make Payment"
     DRAW 0.4s
@@ -168,8 +160,8 @@ SCENE 1 "Use Case Diagram Template"
     WIDTH 300
     HEIGHT 110
     CORNERS 55
-    COLOR #1F5F82
-    FILL #EAF4FA
+    COLOR #2E7180
+    FILL #E6F2F0
     STROKE 3
     TEXT "Manage Products"
     DRAW 0.4s
@@ -177,47 +169,47 @@ SCENE 1 "Use Case Diagram Template"
 
   # ---- actors ----
   CREATE actCustomer AS ICON
-    POSITION 240 480
+    POSITION 160 480
     SIZE 120
     NAME user-round
-    COLOR #1F2A44
+    COLOR #25364B
   END
 
   CREATE lblCustomer AS TEXT
     TEXT "Customer"
-    POSITION 240 580
+    POSITION 160 580
     SIZE 32
-    COLOR #1F2A44
+    COLOR #25364B
     DRAW 0.3s
   END
 
   CREATE actGateway AS ICON
-    POSITION 1700 480
+    POSITION 1760 480
     SIZE 120
     NAME server
-    COLOR #1F2A44
+    COLOR #25364B
   END
 
   CREATE lblGateway AS TEXT
     TEXT "Payment API"
-    POSITION 1700 580
+    POSITION 1760 580
     SIZE 32
-    COLOR #1F2A44
+    COLOR #25364B
     DRAW 0.3s
   END
 
   CREATE actAdmin AS ICON
-    POSITION 1700 700
+    POSITION 1760 700
     SIZE 120
     NAME user-round
-    COLOR #1F2A44
+    COLOR #25364B
   END
 
   CREATE lblAdmin AS TEXT
     TEXT "Admin"
-    POSITION 1700 800
+    POSITION 1760 800
     SIZE 32
-    COLOR #1F2A44
+    COLOR #25364B
     DRAW 0.3s
   END
 
@@ -225,35 +217,35 @@ SCENE 1 "Use Case Diagram Template"
   ARROW actCustomer -> ucBrowse
     ROUTE straight
     HEAD none
-    COLOR #1F2A44
+    COLOR #30465E
     STROKE 3
     DRAW 0.3s
 
   ARROW actCustomer -> ucOrder
     ROUTE straight
     HEAD none
-    COLOR #1F2A44
+    COLOR #30465E
     STROKE 3
     DRAW 0.3s
 
   ARROW actCustomer -> ucTrack
     ROUTE straight
     HEAD none
-    COLOR #1F2A44
+    COLOR #30465E
     STROKE 3
     DRAW 0.3s
 
   ARROW actGateway -> ucPay
     ROUTE straight
     HEAD none
-    COLOR #1F2A44
+    COLOR #30465E
     STROKE 3
     DRAW 0.3s
 
   ARROW actAdmin -> ucManage
     ROUTE straight
     HEAD none
-    COLOR #1F2A44
+    COLOR #30465E
     STROKE 3
     DRAW 0.3s
 
@@ -263,7 +255,7 @@ SCENE 1 "Use Case Diagram Template"
     LINESTYLE dashed
     HEAD open
     LABEL "«include»"
-    COLOR #B8431F
+    COLOR #1B7E75
     STROKE 3
     DRAW 0.4s
 
@@ -273,25 +265,58 @@ SCENE 1 "Use Case Diagram Template"
     LINESTYLE dashed
     HEAD open
     LABEL "«extend»"
-    COLOR #6B2C91
+    COLOR #B45C24
     STROKE 3
     DRAW 0.4s
 
   # ---- legend ----
   CREATE legLine1 AS LINE
-    FROM 480 920
-    TO 600 920
-    COLOR #1F2A44
+    FROM 340 920
+    TO 440 920
+    COLOR #30465E
     STROKE 3
     DRAW 0.3s
   END
 
+  CREATE legAssociation AS TEXT
+    POSITION 535 920
+    SIZE 26
+    COLOR #30465E
+    TEXT "Association"
+    DRAW 0.3s
+  END
+
   CREATE legLine2 AS LINE
-    FROM 1000 920
-    TO 1120 920
-    COLOR #B8431F
+    FROM 760 920
+    TO 860 920
+    COLOR #1B7E75
     STROKE 3
     LINESTYLE dashed
+    DRAW 0.3s
+  END
+
+  CREATE legInclude AS TEXT
+    POSITION 960 920
+    SIZE 26
+    COLOR #1B7E75
+    TEXT "«include»"
+    DRAW 0.3s
+  END
+
+  CREATE legLine3 AS LINE
+    FROM 1190 920
+    TO 1290 920
+    COLOR #B45C24
+    STROKE 3
+    LINESTYLE dashed
+    DRAW 0.3s
+  END
+
+  CREATE legExtend AS TEXT
+    POSITION 1390 920
+    SIZE 26
+    COLOR #B45C24
+    TEXT "«extend»"
     DRAW 0.3s
   END
 
@@ -312,15 +337,15 @@ END SCENE
   },
   {
     id: "class-diagram",
-    title: "Class diagram",
+    title: "Online Store Class Model",
     category: "UML",
     description:
-      "Model an online store with expressive classes, multiplicities, composition, and inheritance.",
-    preview: "class",
+      "Follow an order from customer to line items, products, and payment methods.",
+    preview: "rendered",
     icon: Network,
     script: `VERSION 1.0
 CANVAS 1920 1080
-BACKGROUND #F7F9FC
+BACKGROUND #F1F0FA
 BOARD plain
 STYLE clean
 FONT neat
@@ -330,10 +355,10 @@ SCENE 1 "Class Diagram Template"
 
   # ---- title ----
   CREATE title AS TEXT
-    TEXT "Online Store - Class Diagram"
-    POSITION 960 120
+    TEXT "Online Store  /  Domain Model"
+    POSITION 960 105
     SIZE 44
-    COLOR #1F2A44
+    COLOR #30294A
     DRAW 0.4s
   END
 
@@ -346,7 +371,7 @@ SCENE 1 "Class Diagram Template"
     ROW "- name: String"
     ROW "+ placeOrder(): Order"
     DIVIDER 2
-    HEADERCOLOR #1F5F82
+    HEADERCOLOR #396A82
     DRAW 0.6s
   END
 
@@ -358,7 +383,7 @@ SCENE 1 "Class Diagram Template"
     ROW "+ {static} count: int"
     ROW "+ total(): Money"
     DIVIDER 2
-    HEADERCOLOR #1B3A57
+    HEADERCOLOR #514878
     DRAW 0.6s
   END
 
@@ -370,7 +395,7 @@ SCENE 1 "Class Diagram Template"
     ROW "# status: String"
     ROW "+ pay(): boolean {abstract}"
     DIVIDER 2
-    HEADERCOLOR #6B2C91
+    HEADERCOLOR #A2536E
     DRAW 0.6s
   END
 
@@ -383,7 +408,7 @@ SCENE 1 "Class Diagram Template"
     ROW "- title: String"
     ROW "+ {static} findBySku(): Product"
     DIVIDER 2
-    HEADERCOLOR #1F5F82
+    HEADERCOLOR #396A82
     DRAW 0.6s
   END
 
@@ -395,7 +420,7 @@ SCENE 1 "Class Diagram Template"
     ROW "- unitPrice: Money"
     ROW "+ subtotal(): Money"
     DIVIDER 2
-    HEADERCOLOR #0F6B5C
+    HEADERCOLOR #5C826A
     DRAW 0.6s
   END
 
@@ -406,7 +431,7 @@ SCENE 1 "Class Diagram Template"
     ROW "- cardNo: String"
     ROW "+ pay(): boolean"
     DIVIDER 1
-    HEADERCOLOR #8A2B5E
+    HEADERCOLOR #A2536E
     DRAW 0.6s
   END
 
@@ -417,7 +442,7 @@ SCENE 1 "Class Diagram Template"
     ROW "- email: String"
     ROW "+ pay(): boolean"
     DIVIDER 1
-    HEADERCOLOR #8A2B5E
+    HEADERCOLOR #A2536E
     DRAW 0.6s
   END
 
@@ -436,31 +461,32 @@ SCENE 1 "Class Diagram Template"
   ARROW orderTbl -> payTbl
     ROUTE straight
     HEAD none
-    LABEL "paid by"
+    LABEL "payment"
     SOURCELABEL "1"
-    TARGETLABEL "1..*"
-    COLOR #1F2A44
+    TARGETLABEL "0..1"
+    COLOR #514878
     STROKE 3
     DRAW 0.4s
 
-  # ---- composition: OrderItem is part of Order ----
+  # ---- composition: Order owns its OrderItems ----
   ARROW itemTbl -> orderTbl
     ROUTE straight
     HEAD diamond-filled
     LABEL "part of"
     SOURCELABEL "1..*"
     TARGETLABEL "1"
-    COLOR #1F2A44
+    COLOR #514878
     STROKE 3
     DRAW 0.4s
 
-  # ---- dependency: OrderItem refers to Product ----
+  # ---- association: each OrderItem refers to one Product ----
   ARROW itemTbl -> prodTbl
     ROUTE straight
-    LINESTYLE dashed
-    HEAD open
-    LABEL "refers to"
-    COLOR #B8431F
+    HEAD none
+    LABEL "product"
+    SOURCELABEL "1..*"
+    TARGETLABEL "1"
+    COLOR #396A82
     STROKE 3
     DRAW 0.4s
 
@@ -469,7 +495,7 @@ SCENE 1 "Class Diagram Template"
     ROUTE elbow
     HEAD triangle
     LABEL "extends"
-    COLOR #6B2C91
+    COLOR #A2536E
     STROKE 3
     DRAW 0.4s
 
@@ -477,17 +503,17 @@ SCENE 1 "Class Diagram Template"
     ROUTE elbow
     HEAD triangle
     LABEL "extends"
-    COLOR #6B2C91
+    COLOR #A2536E
     STROKE 3
     DRAW 0.4s
 
   # ---- motion so the scene is not static ----
   ANIMATE payTbl HIGHLIGHT
-    COLOR #E9D8F4
+    COLOR #F1DFE7
     DURATION 1s
 
   ANIMATE itemTbl HIGHLIGHT
-    COLOR #FFF3B0
+    COLOR #F8EAC4
     DURATION 1s
 
   # ---- close scene 1 ----
@@ -496,15 +522,15 @@ END SCENE
   },
   {
     id: "sequence-diagram",
-    title: "Sequence diagram",
+    title: "Sign-In Sequence",
     category: "UML",
     description:
-      "A clear sign-in sequence across the customer, web app, auth service, and user database.",
-    preview: "sequence",
+      "Trace a successful sign-in from the customer through credential checks to the home page.",
+    preview: "rendered",
     icon: Waypoints,
     script: `VERSION 1.0
 CANVAS 1920 1080
-BACKGROUND #FFFFFF
+BACKGROUND #111827
 BOARD plain
 STYLE clean
 FONT neat
@@ -514,10 +540,10 @@ SCENE 1 "Sequence Diagram - Sign In"
 
   # ---- title ----
   CREATE title AS TEXT
-    TEXT "Sign In - Sequence Diagram"
+    TEXT "Sign In  /  Request → Verification → Response"
     POSITION 960 110
     SIZE 44
-    COLOR #1F2A44
+    COLOR #F3F4F6
     DRAW 0.4s
   END
 
@@ -527,8 +553,8 @@ SCENE 1 "Sequence Diagram - Sign In"
     WIDTH 260
     HEIGHT 80
     CORNERS 10
-    COLOR #1F2A44
-    FILL #FDEBD0
+    COLOR #F9FAFB
+    FILL #604B33
     STROKE 3
     TEXT "Customer"
     DRAW 0.4s
@@ -539,8 +565,8 @@ SCENE 1 "Sequence Diagram - Sign In"
     WIDTH 260
     HEIGHT 80
     CORNERS 10
-    COLOR #1F2A44
-    FILL #EAF4FA
+    COLOR #F9FAFB
+    FILL #244A68
     STROKE 3
     TEXT "Web App"
     DRAW 0.4s
@@ -551,8 +577,8 @@ SCENE 1 "Sequence Diagram - Sign In"
     WIDTH 260
     HEIGHT 80
     CORNERS 10
-    COLOR #1F2A44
-    FILL #EAF4FA
+    COLOR #F9FAFB
+    FILL #493A70
     STROKE 3
     TEXT "Auth Service"
     DRAW 0.4s
@@ -563,8 +589,8 @@ SCENE 1 "Sequence Diagram - Sign In"
     WIDTH 260
     HEIGHT 80
     CORNERS 10
-    COLOR #1F2A44
-    FILL #E3F4EC
+    COLOR #F9FAFB
+    FILL #285548
     STROKE 3
     TEXT "User DB"
     DRAW 0.4s
@@ -575,7 +601,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     CREATE lifeCust AS LINE
       FROM 330 260
       TO 330 960
-      COLOR #8A98B3
+      COLOR #627084
       STROKE 2
       LINESTYLE dashed
       DRAW 0.5s
@@ -583,7 +609,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     CREATE lifeWeb AS LINE
       FROM 750 260
       TO 750 960
-      COLOR #8A98B3
+      COLOR #627084
       STROKE 2
       LINESTYLE dashed
       DRAW 0.5s
@@ -591,7 +617,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     CREATE lifeAuth AS LINE
       FROM 1170 260
       TO 1170 960
-      COLOR #8A98B3
+      COLOR #627084
       STROKE 2
       LINESTYLE dashed
       DRAW 0.5s
@@ -599,7 +625,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     CREATE lifeDb AS LINE
       FROM 1590 260
       TO 1590 960
-      COLOR #8A98B3
+      COLOR #627084
       STROKE 2
       LINESTYLE dashed
       DRAW 0.5s
@@ -612,8 +638,8 @@ SCENE 1 "Sequence Diagram - Sign In"
       POSITION 330 640
       WIDTH 20
       HEIGHT 540
-      COLOR #1F5F82
-      FILL #DCE8F3
+      COLOR #57B8C8
+      FILL #193D4A
       STROKE 2
       DRAW 0.3s
     END
@@ -621,8 +647,8 @@ SCENE 1 "Sequence Diagram - Sign In"
       POSITION 750 640
       WIDTH 20
       HEIGHT 540
-      COLOR #1F5F82
-      FILL #DCE8F3
+      COLOR #57B8C8
+      FILL #193D4A
       STROKE 2
       DRAW 0.3s
     END
@@ -630,8 +656,8 @@ SCENE 1 "Sequence Diagram - Sign In"
       POSITION 1170 640
       WIDTH 20
       HEIGHT 320
-      COLOR #1F5F82
-      FILL #DCE8F3
+      COLOR #57B8C8
+      FILL #193D4A
       STROKE 2
       DRAW 0.3s
     END
@@ -639,8 +665,8 @@ SCENE 1 "Sequence Diagram - Sign In"
       POSITION 1590 640
       WIDTH 20
       HEIGHT 120
-      COLOR #1F5F82
-      FILL #DCE8F3
+      COLOR #57B8C8
+      FILL #193D4A
       STROKE 2
       DRAW 0.3s
     END
@@ -652,20 +678,20 @@ SCENE 1 "Sequence Diagram - Sign In"
     WIDTH 1400
     HEIGHT 310
     CORNERS 4
-    COLOR #6B2C91
+    COLOR #A78BFA
     STROKE 3
     DRAW 0.5s
   END
 
   CREATE fragTab AS RECTANGLE
-    POSITION 400 662
-    WIDTH 220
+    POSITION 480 662
+    WIDTH 430
     HEIGHT 44
     CORNERS 4
-    COLOR #6B2C91
-    FILL #F1E6F8
+    COLOR #A78BFA
+    FILL #312A4D
     STROKE 3
-    TEXT "alt [valid]"
+    TEXT "opt [valid credentials]"
     DRAW 0.3s
   END
 
@@ -762,7 +788,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     ROUTE straight
     HEAD end
     LABEL "1: login(email, pwd)"
-    COLOR #1F2A44
+    COLOR #DCE7F3
     STROKE 3
     DRAW 0.5s
 
@@ -770,7 +796,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     ROUTE straight
     HEAD end
     LABEL "2: verify(credentials)"
-    COLOR #1F2A44
+    COLOR #DCE7F3
     STROKE 3
     DRAW 0.5s
 
@@ -778,7 +804,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     ROUTE straight
     HEAD end
     LABEL "3: findUser(email)"
-    COLOR #1F2A44
+    COLOR #DCE7F3
     STROKE 3
     DRAW 0.5s
 
@@ -788,7 +814,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     LINESTYLE dashed
     HEAD open
     LABEL "4: userRecord"
-    COLOR #4A5568
+    COLOR #A9B5C6
     STROKE 3
     DRAW 0.5s
 
@@ -797,7 +823,7 @@ SCENE 1 "Sequence Diagram - Sign In"
     LINESTYLE dashed
     HEAD open
     LABEL "5: jwtToken"
-    COLOR #0F6B5C
+    COLOR #57D6B2
     STROKE 3
     DRAW 0.5s
 
@@ -806,12 +832,12 @@ SCENE 1 "Sequence Diagram - Sign In"
     LINESTYLE dashed
     HEAD open
     LABEL "6: 200 OK + home page"
-    COLOR #4A5568
+    COLOR #A9B5C6
     STROKE 3
     DRAW 0.5s
 
   ANIMATE pAuth HIGHLIGHT
-    COLOR #FFF3B0
+    COLOR #493A70
     DURATION 1s
 
   # ---- close scene 1 ----
@@ -2184,208 +2210,330 @@ END SCENE
   },
   {
     id: "reels-hook-tips",
-    title: "Hook + 3 tips",
+    title: "3 Edits for Clearer Reels",
     category: "Reels",
     description:
-      "A punchy opening followed by three clear, caption-ready tips.",
-    preview: "reels",
+      "A five-beat mini lesson on stronger hooks, clearer visuals, and useful endings.",
+    preview: "rendered",
     icon: Sparkles,
-    script:
-      reelsHeader +
-      `SCENE 1 "Three quick tips"
-  CREATE hook AS TEXT
-    TEXT "MAKE IT CLEAR"
-    POSITION 540 340
-    SIZE 78
-    COLOR #F8FAFC
-    DRAW 0.5s
-  END
-  CREATE tip1 AS TEXT
-    TEXT "01  Start with one idea"
-    POSITION 540 570
-    SIZE 42
-    COLOR #A7F3D0
-    DRAW 0.4s
-  END
-  CREATE tip2 AS TEXT
-    TEXT "02  Show, then explain"
-    POSITION 540 810
-    SIZE 42
-    COLOR #BFDBFE
-    DRAW 0.4s
-  END
-  CREATE tip3 AS TEXT
-    TEXT "03  End with a next step"
-    POSITION 540 1050
-    SIZE 42
-    COLOR #FDE68A
-    DRAW 0.4s
-  END
-  SAY "Three quick tips to make your next diagram easier to follow."
-    DURATION 4s
-END SCENE
-`,
+    script: createVerticalReelScript({
+      series: "3 EDITS FOR CLEARER REELS",
+      theme: {
+        background: "#FFF8E8",
+        panel: "#FFFFFF",
+        accent: "#D48B00",
+        headline: "#182338",
+        detail: "#3C4858",
+        inactive: "#E4DCCB",
+        focusPanel: "#FFF1C2",
+        focusCorners: 12,
+      },
+      beats: [
+        {
+          scene: "Less noise, more meaning",
+          headline: "Your reel feels busy?",
+          focus: "ONE IDEA",
+          detail: "Let one useful point lead the whole video.",
+          takeaway: "If it does not support that point, cut it.",
+          narration:
+            "If your reel feels busy, choose the one idea you want people to remember.",
+        },
+        {
+          scene: "Lead with the payoff",
+          headline: "Give them a reason to stay",
+          focus: "RESULT FIRST",
+          detail: "Show the outcome before the backstory.",
+          takeaway: "Earn attention before you explain.",
+          narration:
+            "Open on the result or the surprising moment, then explain how you got there.",
+        },
+        {
+          scene: "Make the idea visible",
+          headline: "Do not just tell them",
+          focus: "SHOW ONE THING",
+          detail: "Use one example, object, or clear number.",
+          takeaway: "A concrete visual makes an idea stick.",
+          narration:
+            "Choose one visual example that makes your point easier to understand.",
+        },
+        {
+          scene: "Explain the connection",
+          headline: "Make the visual mean something",
+          focus: "SAY WHY",
+          detail: "Connect what they see to what it means.",
+          takeaway: "One short explanation is enough.",
+          narration:
+            "Do not leave the audience guessing; say why the example matters.",
+        },
+        {
+          scene: "Finish with one next step",
+          headline: "Close the loop",
+          focus: "ONE ACTION",
+          detail: "Invite them to save, try, or share.",
+          takeaway: "A clear ending beats three competing asks.",
+          narration:
+            "Give viewers one simple next step, and leave the rest for another video.",
+        },
+      ],
+    }),
   },
   {
     id: "reels-before-after",
-    title: "Before / after",
+    title: "From Clutter to Clarity",
     category: "Reels",
-    description: "Contrast a messy starting point with a clean transformation.",
-    preview: "reels",
+    description:
+      "A practical before-and-after showing how one takeaway can turn a crowded slide into a clear story.",
+    preview: "rendered",
     icon: ArrowLeftRight,
-    script:
-      reelsHeader +
-      `SCENE 1 "Before and after"
-  CREATE beforeCard AS RECTANGLE
-    POSITION 540 560
-    WIDTH 760
-    HEIGHT 320
-    CORNERS 32
-    FILL #2B3546
-    COLOR #64748B
-    TEXT "BEFORE   ·   TOO MUCH AT ONCE"
-    SIZE 38
-    DRAW 0.6s
-  END
-  CREATE afterCard AS RECTANGLE
-    POSITION 540 1010
-    WIDTH 760
-    HEIGHT 320
-    CORNERS 32
-    FILL #123B3A
-    COLOR #34D399
-    TEXT "AFTER   ·   ONE CLEAR STORY"
-    SIZE 38
-    DRAW 0.6s
-  END
-  SAY "Same idea. A clearer story."
-    DURATION 2.5s
-END SCENE
-`,
+    script: createVerticalReelScript({
+      series: "BEFORE / AFTER",
+      theme: {
+        background: "#E8F6F1",
+        panel: "#FFFFFF",
+        accent: "#187A69",
+        headline: "#13372F",
+        detail: "#37534D",
+        inactive: "#CADDD6",
+        focusPanel: "#D3EFE7",
+        focusCorners: 52,
+      },
+      beats: [
+        {
+          scene: "The before",
+          headline: "Why is this slide so hard to read?",
+          focus: "TOO MUCH AT ONCE",
+          detail: "Seven labels. Three arrows. No clear starting point.",
+          takeaway: "The audience has to work out what matters.",
+          narration:
+            "Here is a common problem: every detail is competing for attention.",
+        },
+        {
+          scene: "Pick the point",
+          headline: "Start with one takeaway",
+          focus: "WHAT SHOULD THEY LEARN?",
+          detail: "Write the answer in one plain sentence.",
+          takeaway: "Keep only details that help explain it.",
+          narration:
+            "Before rearranging anything, decide what the viewer should remember.",
+        },
+        {
+          scene: "Show the steps",
+          headline: "Give the idea a simple path",
+          focus: "PROBLEM → CHANGE",
+          detail: "Reveal one step, then the next.",
+          takeaway: "Sequence beats a wall of information.",
+          narration:
+            "Put the cause first, the change second, and the result last.",
+        },
+        {
+          scene: "The after",
+          headline: "Same idea. Clearer story.",
+          focus: "HOOK → VISUAL → POINT",
+          detail: "One entry point. One example. One conclusion.",
+          takeaway: "Make the next step easy to see.",
+          narration:
+            "Now the viewer knows where to look and what to take away.",
+        },
+      ],
+    }),
   },
   {
     id: "reels-product-reveal",
-    title: "Product reveal",
+    title: "Product Story: FoldCup",
     category: "Reels",
     description:
-      "A bold product card with space for a name, promise, and call to action.",
-    preview: "reels",
+      "A sample launch reel for a fictional fold-flat travel cup, built around a problem, benefit, and clear call to action.",
+    preview: "rendered",
     icon: PackageOpen,
-    script:
-      reelsHeader +
-      `SCENE 1 "Product reveal"
-  CREATE glow AS CIRCLE
-    POSITION 540 700
-    RADIUS 235
-    FILL #183B55
-    GRADIENT #2563EB #14B8A6
-    SHADOW 32
-    DRAW 0.8s
-  END
-  CREATE product AS TEXT
-    TEXT "YOUR NEXT BIG THING"
-    POSITION 540 700
-    SIZE 64
-    COLOR #FFFFFF
-    DRAW 0.6s
-  END
-  CREATE promise AS TEXT
-    TEXT "A simpler way to get it done."
-    POSITION 540 1050
-    SIZE 38
-    COLOR #CBD5E1
-    DRAW 0.5s
-  END
-  SAY "Meet the product that makes your next step simpler."
-    DURATION 3.5s
-END SCENE
-`,
+    script: createVerticalReelScript({
+      series: "SAMPLE PRODUCT STORY",
+      theme: {
+        background: "#F8E8DE",
+        panel: "#FFF9F4",
+        accent: "#B95737",
+        headline: "#36221C",
+        detail: "#65483F",
+        inactive: "#DEC7BB",
+        focusPanel: "#FFF9F4",
+        focusCorners: 28,
+      },
+      beats: [
+        {
+          scene: "The small frustration",
+          headline: "Your bag is already full",
+          focus: "ONE LESS BULKY THING",
+          detail: "A demo idea for people who carry a cup.",
+          takeaway: "Start with the moment your product improves.",
+          narration:
+            "This is FoldCup, a fictional product concept for a very real packing problem.",
+        },
+        {
+          scene: "Meet FoldCup",
+          headline: "Meet FoldCup",
+          focus: "FOLDS FLAT",
+          detail: "A sample silicone cup made for travel.",
+          takeaway: "Name the product and its clearest benefit.",
+          narration:
+            "FoldCup is a sample travel cup designed to fold flat between uses.",
+        },
+        {
+          scene: "Show the use",
+          headline: "Ready when you need it",
+          focus: "OPEN. FILL. GO.",
+          detail: "Show the product solving one everyday moment.",
+          takeaway: "A quick demonstration beats a feature list.",
+          narration:
+            "Show how it opens, fills, and fits into the moment your customer cares about.",
+        },
+        {
+          scene: "Make the promise",
+          headline: "Less to carry. More room to roam.",
+          focus: "MADE FOR THE DAY OUT",
+          detail: "Keep the promise specific and believable.",
+          takeaway: "Replace this demo with your real proof.",
+          narration:
+            "For your own launch, swap in a real benefit your product can deliver.",
+        },
+        {
+          scene: "Your product, your story",
+          headline: "Now make it yours",
+          focus: "PROBLEM → DEMO → BENEFIT",
+          detail: "Add your product, real proof, and next step.",
+          takeaway: "Keep the whole story focused on one promise.",
+          narration:
+            "Use this structure for your product: show the problem, demonstrate the fix, and invite one next step.",
+        },
+      ],
+    }),
   },
   {
     id: "reels-quote-card",
-    title: "Quote card",
+    title: "A Line Worth Keeping",
     category: "Reels",
     description:
-      "A high-contrast quote treatment with an editable author line.",
-    preview: "reels",
+      "An original quote-led story about clarity, with room to add your own verified attribution.",
+    preview: "rendered",
     icon: Quote,
-    script:
-      reelsHeader +
-      `SCENE 1 "Quote card"
-  CREATE quotePanel AS RECTANGLE
-    POSITION 540 820
-    WIDTH 820
-    HEIGHT 700
-    CORNERS 40
-    FILL #172554
-    GRADIENT #172554 #134E4A
-    SHADOW 24
-    COLOR #60A5FA
-    DRAW 0.7s
-  END
-  CREATE quote AS TEXT
-    TEXT "“Great work is a series of small, clear steps.”"
-    POSITION 540 760
-    SIZE 58
-    MAXWIDTH 690
-    COLOR #F8FAFC
-    DRAW 0.6s
-  END
-  CREATE author AS TEXT
-    TEXT "— YOUR NAME"
-    POSITION 540 1080
-    SIZE 32
-    COLOR #A7F3D0
-    DRAW 0.4s
-  END
-  SAY "Great work is a series of small, clear steps."
-    DURATION 3s
-END SCENE
-`,
+    script: createVerticalReelScript({
+      series: "A LINE WORTH KEEPING",
+      theme: {
+        background: "#F3ECF7",
+        panel: "#FFF9FF",
+        accent: "#7C51A1",
+        headline: "#2A1D34",
+        detail: "#51455A",
+        inactive: "#D9CBE2",
+        focusPanel: "#E5D6EF",
+        focusCorners: 120,
+      },
+      beats: [
+        {
+          scene: "The line",
+          headline: "A thought for your next project",
+          focus: "CLARITY IS KINDNESS",
+          detail: "A short original line for this demo.",
+          takeaway: "“Make the next step clear for the person watching.”",
+          narration:
+            "Here is an original line to carry into your next project: make the next step clear for the person watching.",
+        },
+        {
+          scene: "One idea at a time",
+          headline: "Clarity starts with focus",
+          focus: "ONE IDEA",
+          detail: "Let the important thought have the frame.",
+          takeaway: "Remove anything that competes with it.",
+          narration:
+            "When everything is emphasized, nothing feels important. Choose one idea for each moment.",
+        },
+        {
+          scene: "Leave room",
+          headline: "Give the message space",
+          focus: "LESS CROWDING",
+          detail: "A little breathing room helps people follow.",
+          takeaway: "Readable is more memorable than packed.",
+          narration:
+            "Whitespace is not wasted space; it gives the message time to land.",
+        },
+        {
+          scene: "Make it yours",
+          headline: "Have a line worth sharing?",
+          focus: "ADD YOUR VERIFIED CREDIT",
+          detail: "Use your own words or check the source.",
+          takeaway: "Never guess who said a quote.",
+          narration:
+            "Replace this original demo with a line you wrote or a quote whose source you have verified.",
+        },
+      ],
+    }),
   },
   {
     id: "reels-countdown",
-    title: "Countdown",
+    title: "The 3-Beat Reel Formula",
     category: "Reels",
     description:
-      "A bold 3–2–1 countdown that ends on an editable call to action.",
-    preview: "reels",
+      "A practical hook, proof, and payoff structure you can use to storyboard a short video.",
+    preview: "rendered",
     icon: Timer,
-    script:
-      reelsHeader +
-      `SCENE 1 "Countdown"
-  CREATE title AS TEXT
-    TEXT "READY?"
-    POSITION 540 380
-    SIZE 60
-    COLOR #CBD5E1
-    DRAW 0.4s
-  END
-  CREATE count3 AS TEXT
-    TEXT "3"
-    POSITION 540 640
-    SIZE 180
-    COLOR #60A5FA
-    DRAW 0.35s
-  END
-  CREATE count2 AS TEXT
-    TEXT "2"
-    POSITION 540 840
-    SIZE 180
-    COLOR #34D399
-    DRAW 0.35s
-  END
-  CREATE count1 AS TEXT
-    TEXT "1"
-    POSITION 540 1040
-    SIZE 180
-    COLOR #FBBF24
-    DRAW 0.35s
-  END
-  SAY "Three. Two. One. Let's go."
-    DURATION 3s
-END SCENE
-`,
+    script: createVerticalReelScript({
+      series: "THE 3-BEAT REEL FORMULA",
+      theme: {
+        background: "#DDF3FF",
+        panel: "#F7FCFF",
+        accent: "#1374B8",
+        headline: "#0B2E4A",
+        detail: "#244963",
+        inactive: "#A9CDE0",
+        focusPanel: "#BDE5FA",
+        focusCorners: 8,
+      },
+      beats: [
+        {
+          scene: "Start here",
+          headline: "Need a simple reel structure?",
+          focus: "3 → 2 → 1",
+          detail: "Hook. Proof. Payoff.",
+          takeaway: "Three beats. One idea.",
+          narration:
+            "Build a short video around three beats: hook, proof, and payoff.",
+        },
+        {
+          scene: "3 — Hook",
+          headline: "First, earn the next second",
+          focus: "3 · HOOK",
+          detail: "Ask a sharp question or show the result.",
+          takeaway: "Skip the long introduction.",
+          narration:
+            "Start with a specific question or the result your viewer wants to see.",
+        },
+        {
+          scene: "2 — Proof",
+          headline: "Next, make it believable",
+          focus: "2 · PROOF",
+          detail: "Show one example, step, or demonstration.",
+          takeaway: "One strong example is enough.",
+          narration:
+            "Back up the hook with one concrete example or a quick demonstration.",
+        },
+        {
+          scene: "1 — Payoff",
+          headline: "End with the useful part",
+          focus: "1 · PAYOFF",
+          detail: "Deliver the answer, result, or next step.",
+          takeaway: "Close the promise you opened.",
+          narration:
+            "Give the promised answer, then choose one next step for the viewer.",
+        },
+        {
+          scene: "Ready to make yours",
+          headline: "Your turn",
+          focus: "HOOK → PROOF → PAYOFF",
+          detail: "Write one sentence for each beat.",
+          takeaway: "Then cut every shot that does not help.",
+          narration:
+            "Draft one sentence per beat and keep only the shots that move the idea forward.",
+        },
+      ],
+    }),
   },
 ]
 

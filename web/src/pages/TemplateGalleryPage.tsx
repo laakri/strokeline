@@ -381,13 +381,19 @@ export function TemplateGalleryPage() {
                       type="button"
                       onClick={() => openTemplate(template)}
                       aria-label={`Preview ${template.title}`}
-                      className="relative block w-full overflow-hidden bg-muted/40 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring"
+                      className={`relative flex w-full justify-center overflow-hidden bg-muted/40 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring ${
+                        template.category === "Reels" ? "min-h-[360px]" : ""
+                      }`}
                     >
                       <TemplatePreviewCanvas
                         script={template.script}
                         label={`${template.title} rendered preview`}
                         lazy
-                        className="aspect-[16/10] w-full"
+                        className={
+                          template.category === "Reels"
+                            ? "aspect-[9/16] h-[min(72vw,440px)] w-auto max-w-full"
+                            : "aspect-[16/10] w-full"
+                        }
                       />
                       <span className="absolute top-3 left-3 rounded-md border bg-background/90 px-2.5 py-1 text-[11px] font-medium shadow-sm backdrop-blur">
                         {template.category}

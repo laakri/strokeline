@@ -46,4 +46,29 @@ describe("curated template library", () => {
       expect(result.document?.scenes.length, template.id).toBeGreaterThan(0)
     }
   })
+
+  it("gives each Reel a distinct palette and subtitle-safe vertical layout", () => {
+    const reels = TEMPLATE_LIBRARY.filter(
+      (template) => template.category === "Reels"
+    )
+
+    expect(reels).toHaveLength(7)
+    expect(
+      new Set(
+        reels.map(
+          (template) => template.script.match(/^BACKGROUND (.+)$/m)?.[1]
+        )
+      ).size
+    ).toBe(reels.length)
+
+    for (const template of reels) {
+      const result = runScript(template.script)
+      expect(result.document, template.id).not.toBeNull()
+      expect(result.document?.subtitles, template.id).toBe(true)
+      expect(
+        result.document?.scenes.length,
+        template.id
+      ).toBeGreaterThanOrEqual(4)
+    }
+  })
 })

@@ -932,8 +932,9 @@ export function DocsPage() {
                   Choose a canvas preset in the editor toolbar: landscape 16:9,
                   Reels 9:16, portrait 4:5, or square 1:1. Custom{" "}
                   <code>CANVAS width height</code> dimensions remain supported.
-                  The Reels category includes Hook + 3 tips, Before / after,
-                  Product reveal, Quote card, and Countdown starters.
+                  The Reels category includes a clarity lesson, a
+                  clutter-to-clarity story, a sample product launch, a quote-led
+                  story, and a hook-proof-payoff formula.
                 </li>
                 <li>
                   Placement and geometry: <code>POSITION x y</code>,{" "}

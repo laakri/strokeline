@@ -249,10 +249,20 @@ function DiagramThumbnail({ kind }: { kind: DiagramPreviewKind }) {
             strokeWidth="2"
             strokeLinejoin="round"
           />
-          <path d="M86 108q10-7 20 0t20 0m72 0q10-7 20 0t20 0" fill="none" stroke={teal} strokeWidth="2" />
+          <path
+            d="M86 108q10-7 20 0t20 0m72 0q10-7 20 0t20 0"
+            fill="none"
+            stroke={teal}
+            strokeWidth="2"
+          />
           <circle cx="66" cy="43" r="4" fill={amber} />
           <circle cx="258" cy="43" r="4" fill={amber} />
-          <path d="M88 63h50m-50 10h42m114-10h42m-42 10h35" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" />
+          <path
+            d="M88 63h50m-50 10h42m114-10h42m-42 10h35"
+            stroke="var(--muted-foreground)"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </>
       )}
       {kind === "flowchart" && (
@@ -652,14 +662,22 @@ export function DiagramStarterPicker({ onSelect }: { onSelect?: () => void }) {
                           className="diagram-template-card group flex min-w-0 flex-col overflow-hidden rounded-xl border border-border/80 bg-card text-left shadow-sm transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         >
                           <div
-                            className={`relative overflow-hidden border-b border-border/70 p-2 ${template.category === "Reels" ? "bg-slate-950" : "bg-muted/40"}`}
+                            className={`relative flex justify-center overflow-hidden border-b border-border/70 p-2 ${
+                              template.category === "Reels"
+                                ? "min-h-[260px] bg-muted/40"
+                                : "bg-muted/40"
+                            }`}
                           >
                             {template.preview === "rendered" ? (
                               <TemplatePreviewCanvas
                                 script={template.script}
                                 label={`${template.title} preview`}
                                 lazy
-                                className="aspect-[2/1] w-full"
+                                className={
+                                  template.category === "Reels"
+                                    ? "aspect-[9/16] h-[230px] w-auto max-w-full"
+                                    : "aspect-[2/1] w-full"
+                                }
                               />
                             ) : (
                               <DiagramThumbnail kind={template.preview} />
