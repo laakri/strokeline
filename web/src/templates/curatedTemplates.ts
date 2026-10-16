@@ -32,6 +32,14 @@ type CuratedTemplate = Omit<DiagramTemplate, "preview"> & {
   preview: "rendered"
 }
 
+export const FEATURED_TEMPLATE_IDS = [
+  "capital-showdown-quiz",
+  "led-circuit-blueprint",
+  "race-to-the-moon",
+  "pip-counts-her-friends",
+  "photosynthesis-micro-lesson",
+]
+
 export const CURATED_TEMPLATES: CuratedTemplate[] = [
   {
     id: "ohms-law-blueprint-lab",

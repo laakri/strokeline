@@ -4,6 +4,7 @@ import { runScript } from "@/dsl/index.ts"
 import {
   CURATED_TEMPLATES,
   DIAGRAM_TEMPLATES,
+  FEATURED_TEMPLATE_IDS,
   TEMPLATE_LIBRARY,
 } from "@/templates/diagramTemplates.ts"
 
@@ -17,7 +18,17 @@ describe("curated template library", () => {
     expect(
       new Set(CURATED_TEMPLATES.map((template) => template.script)).size
     ).toBe(CURATED_TEMPLATES.length)
-    expect(TEMPLATE_LIBRARY.slice(0, DIAGRAM_TEMPLATES.length)).toEqual(
+    expect(
+      TEMPLATE_LIBRARY.slice(0, FEATURED_TEMPLATE_IDS.length).map(
+        (item) => item.id
+      )
+    ).toEqual(FEATURED_TEMPLATE_IDS)
+    expect(
+      TEMPLATE_LIBRARY.slice(0, CURATED_TEMPLATES.length)
+        .map((item) => item.id)
+        .sort()
+    ).toEqual(CURATED_TEMPLATES.map((item) => item.id).sort())
+    expect(TEMPLATE_LIBRARY.slice(CURATED_TEMPLATES.length)).toEqual(
       DIAGRAM_TEMPLATES
     )
   })

@@ -1,18 +1,25 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {
   ArrowDownToLine,
   ArrowRight,
   ArrowUpRight,
+  BookOpen,
+  Home,
+  Layers3,
   Search,
+  Sparkles,
   X,
 } from "lucide-react"
+import logo from "@/assets/logo.png"
+import blackLogo from "@/assets/black-logo.png"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import { useAppStore } from "@/app/store.ts"
+import { AccountMenu } from "@/ui/layout/AccountMenu.tsx"
 import { Button } from "@/ui/button"
-import { PublicHeader } from "@/ui/layout/PublicHeader.tsx"
 import {
+  FEATURED_TEMPLATE_IDS,
   TEMPLATE_LIBRARY,
   type DiagramTemplateCategory,
 } from "@/templates/diagramTemplates.ts"
@@ -22,6 +29,191 @@ const categories = [
   "All",
   ...new Set(TEMPLATE_LIBRARY.map((template) => template.category)),
 ] as Array<"All" | DiagramTemplateCategory>
+
+const featuredTemplates = TEMPLATE_LIBRARY.filter((template) =>
+  FEATURED_TEMPLATE_IDS.includes(template.id)
+)
+
+const galleryLinks = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/templates", label: "Templates", icon: Layers3 },
+  { to: "/docs", label: "Docs", icon: BookOpen },
+]
+
+function GalleryHeader() {
+  return (
+    <header className="sticky top-2 z-40 mx-auto w-full max-w-6xl px-3 sm:top-3 sm:px-6">
+      <div className="flex h-14 items-center justify-between gap-2 rounded-2xl border border-border/70 bg-background/80 px-2.5 shadow-lg shadow-black/[0.04] backdrop-blur-2xl sm:px-4">
+        <Link
+          to="/"
+          aria-label="Strokeline home"
+          className="flex min-w-0 shrink-0 items-center gap-2 rounded-lg text-foreground no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+        >
+          <img
+            src={blackLogo}
+            alt=""
+            className="size-7 shrink-0 object-contain dark:hidden"
+          />
+          <img
+            src={logo}
+            alt=""
+            className="hidden size-7 shrink-0 object-contain dark:block"
+          />
+          <span className="text-sm font-semibold tracking-tight max-[380px]:hidden">
+            Strokeline
+          </span>
+        </Link>
+        <nav
+          aria-label="Main navigation"
+          className="flex min-w-0 items-center justify-center gap-0.5 rounded-xl border bg-muted/45 p-1 sm:gap-1"
+        >
+          {galleryLinks.map(({ to, label, icon: Icon }) => {
+            const active = to === "/templates"
+            return (
+              <Link
+                key={to}
+                to={to}
+                aria-current={active ? "page" : undefined}
+                className={`inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium no-underline transition-colors sm:gap-1.5 sm:px-3 sm:text-xs ${
+                  active
+                    ? "bg-background text-foreground shadow-sm ring-1 ring-border/70"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon aria-hidden="true" className="size-3.5 sm:hidden" />
+                <span className="max-[380px]:hidden">{label}</span>
+              </Link>
+            )
+          })}
+        </nav>
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <Link
+            to="/workspace"
+            className="hidden h-8 items-center gap-1.5 rounded-xl bg-primary px-3 text-xs font-medium text-primary-foreground no-underline transition-colors hover:bg-primary/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:inline-flex"
+          >
+            Open studio <ArrowUpRight className="size-3.5" />
+          </Link>
+          <AccountMenu compact />
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function SpotlightTemplate({
+  template,
+  onPreview,
+}: {
+  template: (typeof TEMPLATE_LIBRARY)[number]
+  onPreview: (template: (typeof TEMPLATE_LIBRARY)[number]) => void
+}) {
+  const sceneCount = getSceneTitles(template.script).length
+
+  return (
+    <article className="group relative overflow-hidden rounded-3xl border bg-foreground text-background shadow-xl shadow-black/[0.08]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-primary/10 blur-3xl"
+      />
+      <div className="relative grid lg:grid-cols-[1.1fr_0.9fr]">
+        <button
+          type="button"
+          onClick={() => onPreview(template)}
+          aria-label={`Preview ${template.title}`}
+          className="relative min-h-52 overflow-hidden bg-background p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring sm:min-h-64 sm:p-5"
+        >
+          <TemplatePreviewCanvas
+            script={template.script}
+            label={`${template.title} rendered preview`}
+            className="h-full min-h-48 w-full sm:min-h-56"
+          />
+          <span className="absolute top-5 left-5 inline-flex items-center gap-1.5 rounded-full border bg-background/90 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-foreground shadow-sm backdrop-blur">
+            <Sparkles aria-hidden="true" className="size-3 text-primary" />
+            EDITOR’S PICK
+          </span>
+          <span className="absolute right-5 bottom-5 grid size-9 place-items-center rounded-full border bg-background/90 text-foreground shadow-sm transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+            <ArrowUpRight aria-hidden="true" className="size-4" />
+          </span>
+        </button>
+        <div className="flex flex-col justify-center p-5 sm:p-7 lg:p-8">
+          <p className="text-xs font-medium tracking-wide text-background/60">
+            {template.category} <span aria-hidden="true">·</span> {sceneCount}{" "}
+            scenes
+          </p>
+          <h2 className="mt-3 text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-3xl">
+            {template.title}
+          </h2>
+          <p className="mt-3 max-w-md text-sm leading-6 text-background/70">
+            {template.description}
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              onClick={() => onPreview(template)}
+              className="h-9 rounded-xl bg-background px-3.5 text-foreground hover:bg-background/85"
+            >
+              Explore this template
+              <ArrowRight className="size-4" />
+            </Button>
+            <span className="text-xs text-background/55">
+              Preview every scene
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}
+
+function FeaturedTemplateCard({
+  template,
+  index,
+  onPreview,
+}: {
+  template: (typeof TEMPLATE_LIBRARY)[number]
+  index: number
+  onPreview: (template: (typeof TEMPLATE_LIBRARY)[number]) => void
+}) {
+  const Icon = template.icon
+  const sceneCount = getSceneTitles(template.script).length
+
+  return (
+    <button
+      type="button"
+      onClick={() => onPreview(template)}
+      aria-label={`Preview ${template.title}`}
+      className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border bg-card text-left transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    >
+      <div className="relative overflow-hidden border-b bg-muted/40">
+        <TemplatePreviewCanvas
+          script={template.script}
+          label={`${template.title} rendered preview`}
+          lazy
+          className="aspect-[16/10] w-full"
+        />
+        <span className="absolute top-2.5 left-2.5 rounded-md border bg-background/90 px-2 py-1 text-[10px] font-medium shadow-sm backdrop-blur">
+          {index === 0 ? "Popular" : template.category}
+        </span>
+        <span className="absolute top-2.5 right-2.5 grid size-7 place-items-center rounded-full border bg-background/90 text-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+          <ArrowUpRight aria-hidden="true" className="size-3.5" />
+        </span>
+      </div>
+      <div className="flex min-h-28 flex-1 items-start gap-3 p-3.5">
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-muted text-foreground">
+          <Icon aria-hidden="true" className="size-4" />
+        </span>
+        <span className="min-w-0">
+          <span className="block text-sm leading-5 font-semibold tracking-tight">
+            {template.title}
+          </span>
+          <span className="mt-1 block text-xs text-muted-foreground">
+            {sceneCount} scenes · {getCanvasFormat(template.script)}
+          </span>
+        </span>
+      </div>
+    </button>
+  )
+}
 
 function getSceneTitles(script: string): string[] {
   return Array.from(
@@ -84,6 +276,11 @@ export function TemplateGalleryPage() {
       return matchesCategory && matchesSearch
     })
   }, [category, search])
+  const showFeatured = category === "All" && search.trim() === ""
+  const featuredIds = new Set(FEATURED_TEMPLATE_IDS)
+  const remainingTemplates = showFeatured
+    ? visibleTemplates.filter((template) => !featuredIds.has(template.id))
+    : visibleTemplates
 
   useEffect(() => {
     if (!selectedTemplate) return
@@ -113,11 +310,11 @@ export function TemplateGalleryPage() {
 
   return (
     <main className="min-h-svh overflow-x-clip bg-background text-foreground">
-      <PublicHeader activePage="templates" />
-      <section className="relative isolate overflow-hidden border-b bg-muted/20">
+      <GalleryHeader />
+      <section className="relative isolate overflow-hidden">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-0 [mask-image:linear-gradient(to_bottom,black,transparent_75%)] opacity-60"
+          className="pointer-events-none absolute inset-0 -z-0 [mask-image:linear-gradient(to_bottom,black,transparent_80%)] opacity-60"
           style={{
             backgroundImage:
               "radial-gradient(var(--border) 1.2px, transparent 1.2px)",
@@ -125,43 +322,83 @@ export function TemplateGalleryPage() {
           }}
         />
         <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-10 sm:px-6 sm:pt-16 sm:pb-14">
-          <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-primary uppercase">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full bg-primary"
-            />
-            Template library
-          </p>
-          <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] font-semibold tracking-[-0.04em] text-balance sm:text-5xl lg:text-6xl">
-            A better place to start creating.
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-            Explore polished, editable starting points. Preview the scenes, then
-            make the template yours in Studio.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">
-              {TEMPLATE_LIBRARY.length} templates
-            </span>
-            <span>Every scene is rendered from its source</span>
-            <span>Ready to edit</span>
+          <div
+            className={`grid gap-8 lg:items-end lg:gap-12 ${
+              showFeatured ? "lg:grid-cols-[0.9fr_1.1fr]" : "lg:grid-cols-1"
+            }`}
+          >
+            <div>
+              <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.15em] text-primary uppercase">
+                <Sparkles aria-hidden="true" className="size-3.5" />
+                Your next idea starts here
+              </p>
+              <h1 className="mt-4 max-w-xl text-4xl leading-[1.05] font-semibold tracking-[-0.045em] text-balance sm:text-5xl lg:text-[3.5rem]">
+                Start with a spark. Make it yours.
+              </h1>
+              <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                Ready-to-edit whiteboard stories, lessons, and diagrams. Pick
+                one, press play, then shape it into your own.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <span className="rounded-full border bg-background/80 px-3 py-1.5 text-xs font-medium">
+                  {TEMPLATE_LIBRARY.length} templates
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  No blank canvas required
+                </span>
+              </div>
+            </div>
+            {showFeatured && featuredTemplates[0] && (
+              <SpotlightTemplate
+                template={featuredTemplates[0]}
+                onPreview={openTemplate}
+              />
+            )}
           </div>
         </div>
       </section>
 
       <section
         aria-label="Browse templates"
-        className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10"
+        className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20"
       >
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+          {showFeatured && featuredTemplates.length > 1 && (
             <div>
-              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-                Explore templates
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Pick a category or search for something specific.
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold tracking-[0.14em] text-primary uppercase">
+                    Hand-picked
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">
+                    Good places to begin
+                  </h2>
+                </div>
+                <span className="pb-1 text-xs text-muted-foreground">
+                  Our favorite starting points
+                </span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {featuredTemplates.slice(1).map((template, index) => (
+                  <FeaturedTemplateCard
+                    key={template.id}
+                    template={template}
+                    index={index}
+                    onPreview={openTemplate}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col justify-between gap-4 border-t pt-6 lg:flex-row lg:items-center">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.14em] text-primary uppercase">
+                The whole library
               </p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">
+                Find your next starting point
+              </h2>
             </div>
             <label className="flex h-11 w-full items-center gap-2 rounded-lg border bg-card px-3 text-muted-foreground transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20 lg:max-w-sm">
               <Search aria-hidden="true" className="size-4 shrink-0" />
@@ -221,9 +458,9 @@ export function TemplateGalleryPage() {
             templates
           </p>
 
-          {visibleTemplates.length > 0 ? (
+          {remainingTemplates.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {visibleTemplates.map((template) => {
+              {remainingTemplates.map((template) => {
                 const Icon = template.icon
                 const sceneCount = getSceneTitles(template.script).length
                 return (
@@ -284,7 +521,7 @@ export function TemplateGalleryPage() {
                 )
               })}
             </div>
-          ) : (
+          ) : visibleTemplates.length === 0 ? (
             <div className="rounded-2xl border border-dashed px-6 py-16 text-center">
               <Search className="mx-auto size-6 text-muted-foreground" />
               <h3 className="mt-4 font-semibold">No templates found</h3>
@@ -303,7 +540,7 @@ export function TemplateGalleryPage() {
                 Clear filters
               </Button>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 

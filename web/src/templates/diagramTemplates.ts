@@ -12,9 +12,13 @@ import {
   UsersRound,
   Waypoints,
 } from "lucide-react"
-import { CURATED_TEMPLATES } from "@/templates/curatedTemplates.ts"
+import {
+  CURATED_TEMPLATES,
+  FEATURED_TEMPLATE_IDS,
+} from "@/templates/curatedTemplates.ts"
 
 export { CURATED_TEMPLATES } from "@/templates/curatedTemplates.ts"
+export { FEATURED_TEMPLATE_IDS } from "@/templates/curatedTemplates.ts"
 
 export type DiagramTemplateCategory =
   | "UML"
@@ -2386,6 +2390,11 @@ END SCENE
 ]
 
 export const TEMPLATE_LIBRARY: DiagramTemplate[] = [
+  ...FEATURED_TEMPLATE_IDS.map((id) =>
+    CURATED_TEMPLATES.find((template) => template.id === id)!
+  ),
+  ...CURATED_TEMPLATES.filter(
+    (template) => !FEATURED_TEMPLATE_IDS.includes(template.id)
+  ),
   ...DIAGRAM_TEMPLATES,
-  ...CURATED_TEMPLATES,
 ]
