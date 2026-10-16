@@ -128,6 +128,7 @@ export interface ASTChart {
   position: { x: number; y: number }
   size: { width: number; height: number }
   rows: Array<{ label: string; value: number }>
+  draw?: ASTValue
   token: Token
 }
 export interface ASTTable {
@@ -698,6 +699,7 @@ class Parser {
     let position = { x: 960, y: 540 }
     let size = { width: 800, height: 500 }
     const rows: ASTChart["rows"] = []
+    let draw: ASTChart["draw"]
     this.endLine()
     while (!this.atEnd()) {
       this.skipNewlines()
@@ -706,6 +708,7 @@ class Parser {
       const rowToken = this.take()
       if (key === "POSITION") position = { x: this.readNumber("E_BAD_RANGE", rowToken) ?? 960, y: this.readNumber("E_BAD_RANGE", rowToken) ?? 540 }
       else if (key === "SIZE") size = { width: this.readNumber("E_BAD_RANGE", rowToken) ?? 800, height: this.readNumber("E_BAD_RANGE", rowToken) ?? 500 }
+      else if (key === "DRAW") draw = this.readValue()
       else if (key === "DATA") {
         const label = String(this.readValue() ?? "")
         const value = this.readNumber("E_BAD_RANGE", rowToken)
@@ -715,7 +718,7 @@ class Parser {
     }
     if (this.word() === "END") { this.take(); this.endLine() }
     else this.report("E_UNCLOSED_BLOCK", `${chartType.toUpperCase()} ${id} is missing END.`, token)
-    return { kind: "chart", chartType, id, position, size, rows, token }
+    return { kind: "chart", chartType, id, position, size, rows, draw, token }
   }
 
   private parseTable(): ASTTable {

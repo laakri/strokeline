@@ -58,7 +58,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n" +
-        "  SIZE 48\n  COLOR #1F2A44\n  DRAW 0.6s\nEND"
+        "  SIZE 48\n  COLOR #1F2A44\n  DRAW 0s\nEND"
       )
     },
   },
@@ -77,7 +77,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  WIDTH 360\n  HEIGHT 240\n" +
-        "  COLOR #1F5F82\n  FILL #EAF4FA\n  DRAW 0.6s\nEND"
+        "  COLOR #1F5F82\n  FILL #EAF4FA\n  DRAW 0s\nEND"
       )
     },
   },
@@ -97,7 +97,7 @@ const objectOptions: InsertOption[] = [
         at.y +
         "\n  WIDTH 480\n  HEIGHT 260\n" +
         "  CORNERS 24\n  COLOR #1F5F82\n  FILL #EAF4FA\n" +
-        '  TEXT "Your message"\n  SIZE 36\n  DRAW 0.7s\nEND'
+        '  TEXT "Your message"\n  SIZE 36\n  DRAW 0s\nEND'
       )
     },
   },
@@ -116,7 +116,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  RADIUS 90\n" +
-        "  COLOR #1F5F82\n  FILL #DBEAFE\n  DRAW 0.7s\nEND"
+        "  COLOR #1F5F82\n  FILL #DBEAFE\n  DRAW 0s\nEND"
       )
     },
   },
@@ -135,7 +135,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  WIDTH 360\n  HEIGHT 220\n" +
-        "  COLOR #0F6B5C\n  FILL #D1FAE5\n  DRAW 0.7s\nEND"
+        "  COLOR #0F6B5C\n  FILL #D1FAE5\n  DRAW 0s\nEND"
       )
     },
   },
@@ -155,7 +155,7 @@ const objectOptions: InsertOption[] = [
         at.y +
         "\n  WIDTH 300\n  HEIGHT 220\n" +
         '  COLOR #B45309\n  FILL #FEF3C7\n  TEXT "Decision"\n' +
-        "  SIZE 30\n  DRAW 0.7s\nEND"
+        "  SIZE 30\n  DRAW 0s\nEND"
       )
     },
   },
@@ -179,7 +179,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n" +
-        "  COLOR #64748B\n  STROKE 5\n  DRAW 0.6s\nEND"
+        "  COLOR #64748B\n  STROKE 5\n  DRAW 0s\nEND"
       )
     },
   },
@@ -196,7 +196,7 @@ const objectOptions: InsertOption[] = [
         at.x +
         " " +
         at.y +
-        ' WITH TEXT "Key idea"'
+        ' WITH TEXT "Key idea" DRAW "0s"'
       )
     },
   },
@@ -213,7 +213,7 @@ const objectOptions: InsertOption[] = [
         at.x +
         " " +
         at.y +
-        ' WITH TEXT "Say something"'
+        ' WITH TEXT "Say something" DRAW "0s"'
       )
     },
   },
@@ -230,7 +230,7 @@ const objectOptions: InsertOption[] = [
         at.x +
         " " +
         at.y +
-        ' WITH TEXT "An idea"'
+        ' WITH TEXT "An idea" DRAW "0s"'
       )
     },
   },
@@ -247,7 +247,7 @@ const objectOptions: InsertOption[] = [
         at.x +
         " " +
         at.y +
-        ' WITH TEXT "NEW"'
+        ' WITH TEXT "NEW" DRAW "0s"'
       )
     },
   },
@@ -264,7 +264,7 @@ const objectOptions: InsertOption[] = [
         at.x +
         " " +
         at.y +
-        ' WITH VALUE "75%"'
+        ' WITH VALUE "75%" DRAW "0s"'
       )
     },
   },
@@ -294,7 +294,7 @@ const objectOptions: InsertOption[] = [
           " " +
           at.y +
           "\n" +
-          "  COLOR #64748B\n  STROKE 5\n  DRAW 0.7s\nEND\n" +
+          "  COLOR #64748B\n  STROKE 5\n  DRAW 0s\nEND\n" +
           ["Start", "Milestone", "Finish"]
             .map((label, index) => {
               const x = at.x + (index - 1) * 220
@@ -308,7 +308,7 @@ const objectOptions: InsertOption[] = [
                 " " +
                 at.y +
                 "\n  RADIUS 16\n" +
-                "  COLOR #1F5F82\n  FILL #DBEAFE\n  DRAW 0.5s\nEND\n" +
+                "  COLOR #1F5F82\n  FILL #DBEAFE\n  DRAW 0s\nEND\n" +
                 "CREATE " +
                 id +
                 "_label AS TEXT\n" +
@@ -319,7 +319,7 @@ const objectOptions: InsertOption[] = [
                 " " +
                 (at.y + 54) +
                 "\n" +
-                "  SIZE 28\n  COLOR #1F2A44\n  DRAW 0.4s\nEND"
+                "  SIZE 28\n  COLOR #1F2A44\n  DRAW 0s\nEND"
               )
             })
             .join("\n")
@@ -339,7 +339,7 @@ const objectOptions: InsertOption[] = [
         at.x +
         " " +
         at.y +
-        ' WITH TEXT "Next action"'
+        ' WITH TEXT "Next action" DRAW "0s"'
       )
     },
   },
@@ -363,7 +363,7 @@ const objectOptions: InsertOption[] = [
           " " +
           (at.y + 80) +
           "\n" +
-          "  COLOR #2E86AB\n  STROKE 6\n  DRAW 0.3s\nEND\n" +
+          "  COLOR #2E86AB\n  STROKE 6\n  DRAW 0s\nEND\n" +
           "CREATE " +
           nextId(source, "connector_vertical") +
           " AS LINE\n" +
@@ -375,7 +375,7 @@ const objectOptions: InsertOption[] = [
           at.x +
           " " +
           (at.y - 80) +
-          "\n  COLOR #2E86AB\n  STROKE 6\n  DRAW 0.3s\nEND\n" +
+          "\n  COLOR #2E86AB\n  STROKE 6\n  DRAW 0s\nEND\n" +
           "INK ARROW FROM " +
           at.x +
           " " +
@@ -384,7 +384,7 @@ const objectOptions: InsertOption[] = [
           (at.x + 180) +
           " " +
           (at.y - 80) +
-          "\n  COLOR #2E86AB\n  WIDTH 6\n  DRAW 0.4s\nEND"
+          "\n  COLOR #2E86AB\n  WIDTH 6\n  DRAW 0s\nEND"
       )
     },
   },
@@ -404,7 +404,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n" +
-        "  COLOR #2E86AB\n  WIDTH 6\n  DRAW 1s\nEND"
+        "  COLOR #2E86AB\n  WIDTH 6\n  DRAW 0s\nEND"
       )
     },
   },
@@ -429,7 +429,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  SIZE 900 500\n" +
-        '  DATA "Alpha" 42\n  DATA "Beta" 68\n  DATA "Gamma" 35\nEND'
+        '  DATA "Alpha" 42\n  DATA "Beta" 68\n  DATA "Gamma" 35\n  DRAW 0s\nEND'
       )
     },
   })),
@@ -448,7 +448,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  SIZE 1000 420\n" +
-        '  COLUMNS "Option" "Value"\n  ROW "Alpha" "42"\n  ROW "Beta" "68"\nEND'
+        '  DRAW 0s\n  COLUMNS "Option" "Value"\n  ROW "Alpha" "42"\n  ROW "Beta" "68"\nEND'
       )
     },
   },
@@ -474,7 +474,7 @@ const objectOptions: InsertOption[] = [
           " " +
           (at.y + 120) +
           "\n" +
-          "  COLOR #1F5F82\n  STROKE 5\n  DRAW 0.4s\nEND\n" +
+          "  COLOR #1F5F82\n  STROKE 5\n  DRAW 0s\nEND\n" +
           "CREATE " +
           boxId +
           " AS RECTANGLE\n" +
@@ -484,7 +484,7 @@ const objectOptions: InsertOption[] = [
           at.y +
           "\n  WIDTH 300\n  HEIGHT 140\n" +
           "  CORNERS 20\n  COLOR #1F5F82\n  FILL #EAF4FA\n" +
-          '  TEXT "Key point"\n  SIZE 32\n  DRAW 0.6s\nEND'
+          '  TEXT "Key point"\n  SIZE 32\n  DRAW 0s\nEND'
       )
     },
   },
@@ -505,7 +505,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  SIZE 104\n" +
-        "  COLOR #2E86AB\n  DRAW 0.8s\nEND"
+        "  COLOR #2E86AB\n  DRAW 0s\nEND"
       )
     },
   })),
@@ -529,7 +529,7 @@ const objectOptions: InsertOption[] = [
         " " +
         at.y +
         "\n  WIDTH 180\n  HEIGHT 140\n" +
-        "  FIT contain\n  DRAW 0.8s\nEND"
+        "  FIT contain\n  DRAW 0s\nEND"
       )
     },
   })),

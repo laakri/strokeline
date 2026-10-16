@@ -1286,7 +1286,7 @@ export function DocsPage() {
                 and <code>SIZE</code>, then one or more{" "}
                 <code>DATA "label" number</code> rows. Close each chart with{" "}
                 <code>END</code>. Axes and build animation are generated from
-                the data.
+                the data; add <code>DRAW 0s</code> to show a chart immediately.
               </p>
               <CodeBlock title="Bar chart" code={chartScript} />
             </DocsSection>

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { runScript } from "@/dsl/index.ts"
+import { Timeline } from "@/timeline/timeline.ts"
 import { objectInsertOptionsForQuery } from "@/ui/editor/objectInsertOptions.ts"
 
 describe("canvas object insertion", () => {
@@ -28,6 +29,36 @@ describe("canvas object insertion", () => {
     ).toBe(true)
   })
 
+  it("makes searched icon and brand assets visible at the insertion playhead", () => {
+    const icon = objectInsertOptionsForQuery("lucide symbol star").find(
+      (option) => option.label === "star"
+    )
+    const brand = objectInsertOptionsForQuery("brand logo").find((option) =>
+      option.category.startsWith("Brand · ")
+    )
+    expect(icon).toBeDefined()
+    expect(brand).toBeDefined()
+
+    for (const option of [icon!, brand!]) {
+      const result = runScript(`VERSION 1.0
+CANVAS 1080 1920
+SCENE 1
+  AT 2.5s
+    ${option.snippet("VERSION 1.0\nCANVAS 1080 1920\nSCENE 1", { x: 320, y: 240 }).replace(/\n/g, "\n    ")}
+END SCENE`)
+      expect(result.diagnostics.filter((diagnostic) => diagnostic.severity === "error")).toEqual([])
+      expect(result.document?.scenes[0]?.ops).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            kind: "create",
+            t: 2.5,
+            draw: expect.objectContaining({ duration: 0 }),
+          }),
+        ])
+      )
+    }
+  })
+
   it("provides insertable examples that compile at the chosen playhead time", () => {
     const options = objectInsertOptionsForQuery("")
     const failures: string[] = []
@@ -46,6 +77,15 @@ END SCENE`)
         (diagnostic) => diagnostic.severity === "error"
       )
       const operations = result.document?.scenes[0]?.ops ?? []
+      const createOperations = operations.filter(
+        (operation) => operation.kind === "create"
+      )
+      const nodesAtPlayhead = result.document
+        ? new Timeline(
+            result.document.scenes[0]!,
+            result.document.canvas
+          ).resolveAt(2.5).nodes
+        : []
       const simultaneousComposite = [
         "Timeline",
         "Elbow arrow",
@@ -58,6 +98,9 @@ END SCENE`)
         !result.document ||
         errors.length > 0 ||
         !startsAtPlayhead ||
+        createOperations.length === 0 ||
+        createOperations.some((operation) => operation.draw.duration !== 0) ||
+        nodesAtPlayhead.some((node) => node.revealProgress !== 1) ||
         (simultaneousComposite &&
           !operations.every((operation) => operation.t === 2.5))
       ) {
@@ -67,7 +110,11 @@ END SCENE`)
             (errors.length > 0
               ? JSON.stringify(errors)
               : "operation times " +
-                JSON.stringify(operations.map((operation) => operation.t)))
+                JSON.stringify(operations.map((operation) => operation.t)) +
+                ", draw durations " +
+                JSON.stringify(
+                  createOperations.map((operation) => operation.draw.duration)
+                ))
         )
       }
     }

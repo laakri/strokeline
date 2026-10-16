@@ -340,7 +340,18 @@ function compileScene(
         data: { chartType: statement.chartType, rows: statement.rows },
       }
       sceneNodes.set(node.id, node)
-      const draw = { ...defaultReveal }
+      const draw = {
+        ...defaultReveal,
+        duration:
+          statement.draw === undefined
+            ? defaultReveal.duration
+            : durationSeconds(
+                statement.draw,
+                statement.token.line,
+                statement.token.col,
+                diagnostics
+              ),
+      }
       return { ops: [{ kind: "create", t: start, node, draw,
         source: { line: statement.token.line, col: statement.token.col } }], end: start + draw.duration }
     }
@@ -715,15 +726,23 @@ function expandMacro(
     typeof entry === "string"
       ? (Object.keys(resolvedArgs).find((key) => key.toLowerCase() === entry.toLowerCase()) ? resolvedArgs[Object.keys(resolvedArgs).find((key) => key.toLowerCase() === entry.toLowerCase())!]! : entry)
       : entry
-  const props = (items: ASTProperty[]) => items.map((prop) => ({
-    ...prop,
-    values: prop.values.map((raw, index) => {
-      const resolved = value(raw)
-      return typeof resolved === "number" && ["POSITION", "FROM", "TO", "AT"].includes(prop.key.toUpperCase())
-        ? resolved + (index % 2 === 0 ? at.x : at.y)
-        : resolved
-    }),
-  }))
+  const props = (items: ASTProperty[]) => {
+    const result = items.map((prop) => ({
+      ...prop,
+      values:
+        prop.key === "DRAW" && resolvedArgs.DRAW !== undefined
+          ? [value(resolvedArgs.DRAW)]
+          : prop.values.map((raw, index) => {
+              const resolved = value(raw)
+              return typeof resolved === "number" && ["POSITION", "FROM", "TO", "AT"].includes(prop.key.toUpperCase())
+                ? resolved + (index % 2 === 0 ? at.x : at.y)
+                : resolved
+            }),
+    }))
+    if (resolvedArgs.DRAW !== undefined && !items.some((prop) => prop.key === "DRAW"))
+      result.push({ key: "DRAW", values: [value(resolvedArgs.DRAW)], token: macro.token })
+    return result
+  }
   const mapStatement = (statement: ASTStatement): ASTStatement => {
     switch (statement.kind) {
       case "create": return { ...statement, id: id(statement.id), props: props(statement.props) }
@@ -752,7 +771,15 @@ function expandMacro(
       case "table": return { ...statement, id: id(statement.id), props: props(statement.props) }
       case "parallel": case "group": case "stack": case "grid":
         return { ...statement, id: statement.id ? id(statement.id) : undefined, statements: statement.statements.map(mapStatement) }
-      case "use": return { ...statement, id: `${prefix}_${statement.id}`, at: { x: statement.at.x + at.x, y: statement.at.y + at.y }, args: Object.fromEntries(Object.entries(statement.args).map(([key, item]) => [key, value(item)])) }
+      case "use": return {
+        ...statement,
+        id: `${prefix}_${statement.id}`,
+        at: { x: statement.at.x + at.x, y: statement.at.y + at.y },
+        args: {
+          ...Object.fromEntries(Object.entries(statement.args).map(([key, item]) => [key, value(item)])),
+          ...(resolvedArgs.DRAW !== undefined ? { DRAW: value(resolvedArgs.DRAW) } : {}),
+        },
+      }
     }
   }
   return macro.statements.map(mapStatement)
