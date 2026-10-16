@@ -21,6 +21,39 @@ const source = (folder: string, file: string) =>
   readFileSync(join(fixtureRoot, folder, file), "utf8")
 
 describe("DSL pipeline", () => {
+  it("schedules an AT statement without shifting existing scene timing", () => {
+    const result = runScript(`VERSION 1.0
+CANVAS 800 600
+SCENE 1
+  CREATE first AS CIRCLE
+    POSITION 100 100
+    RADIUS 20
+    DRAW 1s
+  END
+  AT 2.5s
+    CREATE overlay AS TEXT
+      TEXT "Overlay"
+      POSITION 200 200
+      DRAW 0.5s
+    END
+  CREATE next AS CIRCLE
+    POSITION 300 300
+    RADIUS 20
+    DRAW 1s
+  END
+END SCENE`)
+
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
+    const ops = result.document?.scenes[0]?.ops.filter(
+      (op) => op.kind === "create"
+    )
+    expect(
+      Object.fromEntries(ops?.map((op) => [op.node.id, op.t]) ?? [])
+    ).toEqual({ first: 0, overlay: 2.5, next: 1 })
+    expect(result.document?.scenes[0]?.duration).toBeUndefined()
+    expect(new Timeline(result.document!.scenes[0]!).duration).toBe(3)
+  })
+
   it("normalizes natural easing and rejects unsupported runtime eases", () => {
     const valid = runScript(`VERSION 1.0
 CANVAS 800 600

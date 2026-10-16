@@ -32,8 +32,6 @@ import {
   STATEMENT_KEYWORDS,
 } from "@/dsl/grammar.ts"
 import { useAppStore, type EditorSourceEdit } from "@/app/store.ts"
-import { ObjectQuickInsert } from "@/ui/editor/ObjectQuickInsert.tsx"
-import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
 import { colorSwatches } from "@/ui/editor/colorSwatches.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
 import { DiagramStarterPicker } from "@/ui/editor/DiagramStarterPicker.tsx"
@@ -378,27 +376,6 @@ export function ScriptEditor({ onTemplateSelected }: { onTemplateSelected?: () =
     view.current.dispatch(setDiagnostics(view.current.state, mapped))
   }, [diagnostics])
 
-  const insertObjectSnippet = (snippet: string, sceneIndex?: number): boolean => {
-    const editor = view.current
-    if (!editor) return false
-    const state = editor.state
-    const edit = makeSceneInsertEdit(
-      state.doc.toString(),
-      snippet,
-      sceneIndex,
-      state.doc.lineAt(state.selection.main.head).number
-    )
-    if (!edit) return false
-    editor.dispatch({
-      changes: edit,
-      annotations: isolateHistory.of("full"),
-      scrollIntoView: true,
-    })
-    editor.focus()
-    useAppStore.getState().compileScript()
-    return true
-  }
-
   const selectCanvasPreset = (value: string) => {
     const preset = CANVAS_PRESETS.find(
       ({ width, height }) => `${width}x${height}` === value
@@ -417,11 +394,7 @@ export function ScriptEditor({ onTemplateSelected }: { onTemplateSelected?: () =
 
   return (
     <div className="grid h-full min-h-0 grid-rows-[40px_minmax(0,1fr)]" aria-label="Script editor">
-      <ObjectQuickInsert
-        onInsert={insertObjectSnippet}
-        getSource={() => view.current?.state.doc.toString() ?? script}
-        toolbarContent={
-          <>
+      <div className="flex h-10 shrink-0 items-center gap-1.5 overflow-x-auto border-b border-border/70 bg-card px-2">
             <label className="sr-only" htmlFor="canvas-preset">
               Canvas preset
             </label>
@@ -440,9 +413,7 @@ export function ScriptEditor({ onTemplateSelected }: { onTemplateSelected?: () =
               ))}
             </select>
             <DiagramStarterPicker onSelect={onTemplateSelected} />
-          </>
-        }
-      />
+      </div>
       <div ref={container} className="h-full min-h-0" />
     </div>
   )

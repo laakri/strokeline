@@ -20,6 +20,7 @@ import { drawPreflightOverlay, preflightNodeAt, preflightNodesAt } from "@/rende
 import { makeSceneInsertEdit } from "@/dsl/insertSnippet.ts"
 import { editObjectProperties, objectSourceCapability, removeObjectBlock } from "@/dsl/objectSourceEdits.ts"
 import { ObjectActions } from "@/ui/preview/ObjectActions.tsx"
+import { ObjectQuickInsert, type ObjectInsertContext } from "@/ui/editor/ObjectQuickInsert.tsx"
 import type { ObjectEditValues } from "@/dsl/objectSourceEdits.ts"
 import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
 import { VoiceSettingsDialog } from "@/ui/preview/VoiceSettingsDialog.tsx"
@@ -197,6 +198,7 @@ export function PreviewPane({
     hitIds: string[]
     sceneIndex: number
   } | null>(null)
+  const [insertContext, setInsertContext] = useState<ObjectInsertContext | null>(null)
   const [connectFrom, setConnectFrom] = useState<{ id: string; sceneIndex: number } | null>(null)
   const [objectNotice, setObjectNotice] = useState("")
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
@@ -954,6 +956,34 @@ export function PreviewPane({
     })
   }
 
+  const handlePreflightContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    event.preventDefault()
+    if (presentationMode || !compiledIR) return
+    const state = renderStateRef.current
+    const canvas = preflightCanvasRef.current
+    if (!state || !canvas) return
+    const position = worldPointAt(event.clientX, event.clientY, canvas, state, compiledIR.canvas)
+    if (!position) return
+    const sceneIndex = effectivePlayAllMode ? sequenceSceneIndex : activeSceneIndex
+    const targetScene = compiledIR.scenes[sceneIndex]
+    if (!targetScene) return
+    const playbackTime = playerRef.current?.currentTime ?? player.elapsed
+    const sceneOffset = effectivePlayAllMode ? sequenceStarts[sceneIndex] ?? 0 : 0
+    const sceneDuration = new Timeline(targetScene, compiledIR.canvas).duration
+    const time = Math.max(0, Math.min(sceneDuration, playbackTime - sceneOffset))
+    setObjectMenu(null)
+    setObjectNotice("")
+    setInsertContext({
+      clientX: event.clientX,
+      clientY: event.clientY,
+      position,
+      sceneIndex,
+      time,
+      playbackTime,
+      wasPlaying: playerRef.current?.isPlaying ?? player.isPlaying,
+    })
+  }
+
   useEffect(() => {
     if (runId <= 0 || handledRunId.current === runId) return
     // A new run owns the narration now: stop any audio from the previous script
@@ -1153,7 +1183,8 @@ export function PreviewPane({
                 onPointerMove={handlePreflightPointerMove}
                 onPointerUp={handlePreflightPointerUp}
                 onPointerCancel={handlePreflightPointerCancel}
-                title="Click an object for edit, delete, or arrow actions; drag to reposition"
+                onContextMenu={handlePreflightContextMenu}
+                title="Click an object for actions; right-click to add an object here; drag to reposition"
                 className="absolute inset-0 block touch-none cursor-pointer active:cursor-grabbing"
               />
             )}
@@ -1603,6 +1634,28 @@ export function PreviewPane({
       error={voiceStatus === "error" ? voiceNotice : ""}
       onClose={() => setVoiceDialogOpen(false)}
       onUseVoice={(voice) => void enableReader(voice)}
+    />
+    <ObjectQuickInsert
+      context={insertContext}
+      getSource={() => useAppStore.getState().editorSourceReader?.() ?? useAppStore.getState().script}
+      onClose={() => setInsertContext(null)}
+      onInsert={(snippet, context) => {
+        const source = useAppStore.getState().editorSourceReader?.() ?? useAppStore.getState().script
+        const time = `${Math.round(context.time * 1000) / 1000}s`
+        const edit = makeSceneInsertEdit(
+          source,
+          `AT ${time}\n${snippet}`,
+          context.sceneIndex
+        )
+        if (!edit) return false
+        preservedPlayback.current = {
+          time: context.playbackTime,
+          wasPlaying: context.wasPlaying,
+        }
+        useAppStore.getState().applyEditorSourceEdits([edit])
+        window.requestAnimationFrame(() => useAppStore.getState().compileScript())
+        return true
+      }}
     />
     {objectMenu && selectedObjectNode && !presentationMode && (
       <ObjectActions

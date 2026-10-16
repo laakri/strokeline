@@ -771,6 +771,7 @@ export function DocsPage() {
                 <InfoCard title="No-END statements">
                   <code>ARROW</code>, <code>ANIMATE</code>, <code>ENTER</code>,{" "}
                   <code>EXIT</code>, <code>CAMERA</code>, <code>WAIT</code>,{" "}
+                  <code>AT</code>,{" "}
                   <code>LOOP</code>, <code>SAY</code>, <code>TRANSITION</code>,{" "}
                   <code>GAP</code>, <code>USE</code>, <code>DUPLICATE</code>,{" "}
                   and <code>DELETE</code> do not take an <code>END</code>. Some
@@ -780,7 +781,9 @@ export function DocsPage() {
                   Write durations with units: <code>1s</code> or{" "}
                   <code>400ms</code>. Sequential actions advance the timeline;{" "}
                   <code>PARALLEL</code> overlaps them, and <code>SAY</code>{" "}
-                  never advances it.
+                  never advances it. Put <code>AT 2.5s</code> before one
+                  statement to schedule it at that time without shifting other
+                  actions.
                 </InfoCard>
                 <InfoCard title="Object identity">
                   Give each created object a unique, readable ID. Create it
@@ -1430,6 +1433,11 @@ export function DocsPage() {
                 <li>
                   <strong>Scene markers</strong> divide the full timeline by
                   scene. The scene strip adapts to narrow screens.
+                </li>
+                <li>
+                  <strong>Add objects:</strong> right-click the preview to
+                  choose an object at that canvas position and playhead time.
+                  Existing scene timing stays unchanged.
                 </li>
                 <li>
                   <strong>Playback options</strong> control the gap between

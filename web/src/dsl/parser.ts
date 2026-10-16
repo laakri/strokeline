@@ -107,6 +107,12 @@ export interface ASTLoop {
   period: ASTValue
   token: Token
 }
+export interface ASTAt {
+  kind: "at"
+  time: ASTValue
+  statement: ASTStatement
+  token: Token
+}
 export interface ASTUse {
   kind: "use"
   name: string
@@ -152,6 +158,7 @@ export type ASTStatement =
   | ASTWait
   | ASTSay
   | ASTLoop
+  | ASTAt
   | ASTUse
   | ASTChart
   | ASTTable
@@ -416,6 +423,7 @@ class Parser {
 
   private parseStatement(): ASTStatement | undefined {
     const word = this.word()
+    if (word === "AT") return this.parseAt()
     if (word === "CREATE") return this.parseCreate()
     if ((SHAPE_TYPES as readonly string[]).includes(word))
       return this.parseShape()
@@ -442,6 +450,19 @@ class Parser {
       this.peek()
     )
     return undefined
+  }
+
+  private parseAt(): ASTAt | undefined {
+    const token = this.take()
+    const time = this.readValue() ?? ""
+    this.endLine()
+    this.skipNewlines()
+    const statement = this.parseStatement()
+    if (!statement) {
+      this.report("E_EXPECTED_STATEMENT", "AT needs a statement on the following line.", token)
+      return undefined
+    }
+    return { kind: "at", time, statement, token }
   }
 
   private parseCreate(): ASTCreate {

@@ -113,6 +113,16 @@ function compileScene(
     start: number,
     groupId?: string
   ): { ops: TimelineOp[]; end: number } => {
+    if (statement.kind === "at") {
+      const time = durationSeconds(
+        statement.time,
+        statement.token.line,
+        statement.token.col,
+        diagnostics
+      )
+      const result = compileStatement(statement.statement, time, groupId)
+      return { ops: result.ops, end: start }
+    }
     if (statement.kind === "parallel") {
       const childEnds: number[] = []
       const before = ops.length

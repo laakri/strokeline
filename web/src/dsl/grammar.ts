@@ -142,6 +142,7 @@ export const STATEMENT_KEYWORDS = [
   "ANIMATE",
   "CAMERA",
   "WAIT",
+  "AT",
   "LOOP",
   "PARALLEL",
   "GROUP",
