@@ -1,0 +1,1170 @@
+// ============================================================
+// STYLE 10: Vertical Micro-Lesson (1080x1920)  (template + demo topic)
+// Topic: Lightning in 60 seconds - five facts + a recap card
+// Phone-first rules built in:
+//   top slot    y=215 series tag, y=335 hook line (2 lines max)
+//   visual zone y=450..1100  (one fact, one picture, one number)
+//   takeaway    y=1215, big, 2 lines max
+//   subtitle band y=1300..1580 is LEFT EMPTY (SUBTITLES on)
+//   progress dots y=1665 (shapes only), text stays above y=1720
+//   keep text x between 100 and 980 (right-side buttons)
+// One fact per scene, ~8-10 s each. Dark stage, yellow = the number.
+// Reuse: swap hook / visual / takeaway, keep the slots.
+// ============================================================
+VERSION 1.0
+CANVAS 1080 1920
+BACKGROUND #0B1030
+BOARD plain
+STYLE clean
+FONT neat
+STROKE 4
+SUBTITLES on
+
+SCENE 1 "Hotter than the Sun"
+  CREATE prog1_0 AS CIRCLE
+    POSITION 365 1665
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog1_1 AS CIRCLE
+    POSITION 435 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog1_2 AS CIRCLE
+    POSITION 505 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog1_3 AS CIRCLE
+    POSITION 575 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog1_4 AS CIRCLE
+    POSITION 645 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog1_5 AS CIRCLE
+    POSITION 715 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE tag1 AS TEXT
+    POSITION 540 215
+    SIZE 34
+    COLOR #5CC8FF
+    TEXT "LIGHTNING IN 60 SECONDS"
+    DRAW 0.4s
+  END
+  CREATE hook1 AS TEXT
+    POSITION 540 335
+    SIZE 68
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Lightning is hotter than the Sun's surface."
+    DRAW 0.8s
+  END
+  CREATE base1 AS LINE
+    FROM 140 1060
+    TO 940 1060
+    COLOR #FFFFFF
+    STROKE 4
+    DRAW 0.4s
+  END
+  CREATE barSun AS RECTANGLE
+    POSITION 300 1008
+    WIDTH 260
+    HEIGHT 104
+    FILL #FFA726
+    COLOR #FFFFFF
+    STROKE 4
+    CORNERS 10
+    DRAW 0.7s
+  END
+  CREATE barBolt AS RECTANGLE
+    POSITION 700 790
+    WIDTH 260
+    HEIGHT 540
+    FILL #FFD93D
+    COLOR #FFFFFF
+    STROKE 4
+    CORNERS 10
+    DRAW 1.2s
+  END
+  CREATE sparkA AS LINE
+    FROM 560 520
+    TO 520 480
+    COLOR #FFD93D
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE sparkB AS LINE
+    FROM 555 570
+    TO 505 570
+    COLOR #FFD93D
+    STROKE 6
+    DRAW 0.15s
+  END
+  CREATE valSun AS TEXT
+    POSITION 300 912
+    SIZE 46
+    COLOR #FFFFFF
+    TEXT "5,800 K"
+    DRAW 0.5s
+  END
+  CREATE valBolt AS TEXT
+    POSITION 700 475
+    SIZE 52
+    COLOR #FFD93D
+    TEXT "30,000 K"
+    DRAW 0.5s
+  END
+  ANIMATE valBolt SCALE TO 1.15
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE valBolt SCALE TO 1
+    DURATION 0.2s
+  CREATE catSun AS TEXT
+    POSITION 300 1105
+    SIZE 36
+    COLOR #FFFFFF
+    TEXT "Sun's surface"
+    DRAW 0.4s
+  END
+  CREATE catBolt AS TEXT
+    POSITION 700 1105
+    SIZE 36
+    COLOR #FFFFFF
+    TEXT "Lightning"
+    DRAW 0.4s
+  END
+  CREATE take1 AS TEXT
+    POSITION 540 1215
+    SIZE 64
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFD93D
+    TEXT "About 5x hotter"
+    DRAW 0.8s
+  END
+  SAY "The air in its path superheats so fast that it explodes outward."
+    DURATION 3.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Hints at where thunder comes from."
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 2 "Thumb-wide"
+  CREATE prog2_0 AS CIRCLE
+    POSITION 365 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog2_1 AS CIRCLE
+    POSITION 435 1665
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog2_2 AS CIRCLE
+    POSITION 505 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog2_3 AS CIRCLE
+    POSITION 575 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog2_4 AS CIRCLE
+    POSITION 645 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog2_5 AS CIRCLE
+    POSITION 715 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE tag2 AS TEXT
+    POSITION 540 215
+    SIZE 34
+    COLOR #5CC8FF
+    TEXT "LIGHTNING IN 60 SECONDS"
+    DRAW 0.4s
+  END
+  CREATE hook2 AS TEXT
+    POSITION 540 335
+    SIZE 68
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "How thick is a lightning bolt?"
+    DRAW 0.8s
+  END
+  CREATE boltG0 AS LINE
+    FROM 340 470
+    TO 250 700
+    COLOR #FFD93D
+    STROKE 24
+    DRAW 0.3s
+  END
+  CREATE boltG1 AS LINE
+    FROM 250 700
+    TO 370 720
+    COLOR #FFD93D
+    STROKE 24
+    DRAW 0.3s
+  END
+  CREATE boltG2 AS LINE
+    FROM 370 720
+    TO 230 1000
+    COLOR #FFD93D
+    STROKE 24
+    DRAW 0.3s
+  END
+  CREATE boltC0 AS LINE
+    FROM 340 470
+    TO 250 700
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE boltC1 AS LINE
+    FROM 250 700
+    TO 370 720
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE boltC2 AS LINE
+    FROM 370 720
+    TO 230 1000
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.15s
+  END
+  CREATE thumb AS RECTANGLE
+    POSITION 760 830
+    WIDTH 150
+    HEIGHT 330
+    FILL #F2C9A0
+    COLOR #C9906A
+    STROKE 5
+    CORNERS 70
+    DRAW 0.6s
+  END
+  CREATE nail AS ELLIPSE
+    POSITION 760 700
+    WIDTH 92
+    HEIGHT 112
+    FILL #FFE9D3
+    COLOR #C9906A
+    STROKE 4
+    DRAW 0.4s
+  END
+  CREATE equals AS TEXT
+    POSITION 540 830
+    SIZE 140
+    COLOR #FFFFFF
+    TEXT "="
+    DRAW 0.4s
+  END
+  CREATE lblBolt AS TEXT
+    POSITION 300 1050
+    SIZE 38
+    COLOR #FFFFFF
+    TEXT "bolt core"
+    DRAW 0.4s
+  END
+  CREATE lblThumb AS TEXT
+    POSITION 760 1050
+    SIZE 38
+    COLOR #FFFFFF
+    TEXT "about 2.5 cm"
+    DRAW 0.5s
+  END
+  CREATE take2 AS TEXT
+    POSITION 540 1215
+    SIZE 64
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFD93D
+    TEXT "Only about thumb-wide"
+    DRAW 0.8s
+  END
+  SAY "Its glowing halo looks wider, but the white-hot core is skinny."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Explains why bolts look thicker than they are."
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 3 "Flashes per second"
+  CREATE prog3_0 AS CIRCLE
+    POSITION 365 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog3_1 AS CIRCLE
+    POSITION 435 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog3_2 AS CIRCLE
+    POSITION 505 1665
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog3_3 AS CIRCLE
+    POSITION 575 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog3_4 AS CIRCLE
+    POSITION 645 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog3_5 AS CIRCLE
+    POSITION 715 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE tag3 AS TEXT
+    POSITION 540 215
+    SIZE 34
+    COLOR #5CC8FF
+    TEXT "LIGHTNING IN 60 SECONDS"
+    DRAW 0.4s
+  END
+  CREATE hook3 AS TEXT
+    POSITION 540 335
+    SIZE 68
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "How often does lightning flash?"
+    DRAW 0.8s
+  END
+  CREATE globe AS CIRCLE
+    POSITION 540 790
+    RADIUS 260
+    FILL #1E5A8A
+    COLOR #FFFFFF
+    STROKE 6
+    DRAW 0.8s
+  END
+  CREATE land1 AS ELLIPSE
+    POSITION 360 650
+    WIDTH 120
+    HEIGHT 90
+    FILL #3E9B4F
+    COLOR #3E9B4F
+    STROKE 1
+    DRAW 0.3s
+  END
+  CREATE land2 AS ELLIPSE
+    POSITION 735 700
+    WIDTH 110
+    HEIGHT 100
+    FILL #3E9B4F
+    COLOR #3E9B4F
+    STROKE 1
+    DRAW 0.3s
+  END
+  CREATE land3 AS ELLIPSE
+    POSITION 735 985
+    WIDTH 120
+    HEIGHT 70
+    FILL #3E9B4F
+    COLOR #3E9B4F
+    STROKE 1
+    DRAW 0.3s
+  END
+  CREATE spark3_0 AS CIRCLE
+    POSITION 350 570
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_0 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_0 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_1 AS CIRCLE
+    POSITION 720 600
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_1 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_1 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_2 AS CIRCLE
+    POSITION 290 820
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_2 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_2 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_3 AS CIRCLE
+    POSITION 800 830
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_3 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_3 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_4 AS CIRCLE
+    POSITION 420 1010
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_4 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_4 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_5 AS CIRCLE
+    POSITION 650 1030
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_5 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_5 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_6 AS CIRCLE
+    POSITION 520 545
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_6 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_6 SCALE TO 1
+    DURATION 0.2s
+  CREATE spark3_7 AS CIRCLE
+    POSITION 600 1060
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.15s
+  END
+  ANIMATE spark3_7 SCALE TO 1.8
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE spark3_7 SCALE TO 1
+    DURATION 0.2s
+  CREATE count44 AS TEXT
+    POSITION 540 770
+    SIZE 220
+    COLOR #FFD93D
+    TEXT "44"
+    DRAW 0.6s
+  END
+  ANIMATE count44 SCALE TO 1.1
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE count44 SCALE TO 1
+    DURATION 0.2s
+  CREATE per AS TEXT
+    POSITION 540 930
+    SIZE 44
+    MAXWIDTH 420
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "flashes per second"
+    DRAW 0.5s
+  END
+  CREATE take3 AS TEXT
+    POSITION 540 1215
+    SIZE 64
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFD93D
+    TEXT "Over a billion flashes a year"
+    DRAW 0.8s
+  END
+  SAY "Most never reach the ground; they flicker between clouds."
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds that many flashes stay inside clouds."
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 4 "Count to find distance"
+  CREATE prog4_0 AS CIRCLE
+    POSITION 365 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog4_1 AS CIRCLE
+    POSITION 435 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog4_2 AS CIRCLE
+    POSITION 505 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog4_3 AS CIRCLE
+    POSITION 575 1665
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog4_4 AS CIRCLE
+    POSITION 645 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog4_5 AS CIRCLE
+    POSITION 715 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE tag4 AS TEXT
+    POSITION 540 215
+    SIZE 34
+    COLOR #5CC8FF
+    TEXT "LIGHTNING IN 60 SECONDS"
+    DRAW 0.4s
+  END
+  CREATE hook4 AS TEXT
+    POSITION 540 335
+    SIZE 68
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Flash, then boom. How far away is it?"
+    DRAW 0.8s
+  END
+  CREATE dial AS CIRCLE
+    POSITION 540 780
+    RADIUS 230
+    FILL #1D2550
+    COLOR #FFFFFF
+    STROKE 8
+    DRAW 0.7s
+  END
+  CREATE crown AS RECTANGLE
+    POSITION 540 528
+    WIDTH 70
+    HEIGHT 46
+    FILL #FFFFFF
+    COLOR #FFFFFF
+    STROKE 2
+    CORNERS 8
+    DRAW 0.3s
+  END
+  CREATE tickm0 AS LINE
+    FROM 540 584
+    TO 540 566
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm1 AS LINE
+    FROM 638 610
+    TO 647 595
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm2 AS LINE
+    FROM 710 682
+    TO 725 673
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm3 AS LINE
+    FROM 736 780
+    TO 754 780
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm4 AS LINE
+    FROM 710 878
+    TO 725 887
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm5 AS LINE
+    FROM 638 950
+    TO 647 965
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm6 AS LINE
+    FROM 540 976
+    TO 540 994
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm7 AS LINE
+    FROM 442 950
+    TO 433 965
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm8 AS LINE
+    FROM 370 878
+    TO 355 887
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm9 AS LINE
+    FROM 344 780
+    TO 326 780
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm10 AS LINE
+    FROM 370 682
+    TO 355 673
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE tickm11 AS LINE
+    FROM 442 610
+    TO 433 595
+    COLOR #5CC8FF
+    STROKE 6
+    DRAW 0.08s
+  END
+  CREATE needle AS LINE
+    FROM 540 640
+    TO 540 920
+    COLOR #FF5A5F
+    STROKE 10
+    DRAW 0.4s
+  END
+  ANIMATE needle ROTATE TO 360
+    DURATION 2.4s
+    EASE linear
+  CREATE five AS TEXT
+    POSITION 540 780
+    SIZE 150
+    COLOR #FFD93D
+    TEXT "5 s"
+    DRAW 0.5s
+  END
+  CREATE take4 AS TEXT
+    POSITION 540 1215
+    SIZE 64
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFD93D
+    TEXT "Count the seconds, divide by 5 for miles"
+    DRAW 0.8s
+  END
+  SAY "Light arrives almost instantly, but sound drags along far slower."
+    DURATION 3.2s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Explains why the gap measures distance."
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 5 "Stay inside"
+  CREATE prog5_0 AS CIRCLE
+    POSITION 365 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog5_1 AS CIRCLE
+    POSITION 435 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog5_2 AS CIRCLE
+    POSITION 505 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog5_3 AS CIRCLE
+    POSITION 575 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog5_4 AS CIRCLE
+    POSITION 645 1665
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog5_5 AS CIRCLE
+    POSITION 715 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE tag5 AS TEXT
+    POSITION 540 215
+    SIZE 34
+    COLOR #5CC8FF
+    TEXT "LIGHTNING IN 60 SECONDS"
+    DRAW 0.4s
+  END
+  CREATE hook5 AS TEXT
+    POSITION 540 335
+    SIZE 68
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Storm outside. When is it safe to go out?"
+    DRAW 0.8s
+  END
+  CREATE cloudA AS ELLIPSE
+    POSITION 250 560
+    WIDTH 300
+    HEIGHT 130
+    FILL #5B6580
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.4s
+  END
+  CREATE cloudB AS ELLIPSE
+    POSITION 180 600
+    WIDTH 160
+    HEIGHT 110
+    FILL #5B6580
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE cloudC AS ELLIPSE
+    POSITION 335 595
+    WIDTH 180
+    HEIGHT 120
+    FILL #5B6580
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.3s
+  END
+  CREATE zapA AS LINE
+    FROM 250 650
+    TO 215 720
+    COLOR #FFD93D
+    STROKE 10
+    DRAW 0.2s
+  END
+  CREATE zapB AS LINE
+    FROM 215 720
+    TO 265 725
+    COLOR #FFD93D
+    STROKE 10
+    DRAW 0.2s
+  END
+  CREATE zapC AS LINE
+    FROM 265 725
+    TO 225 810
+    COLOR #FFD93D
+    STROKE 10
+    DRAW 0.2s
+  END
+  CREATE houseBody AS RECTANGLE
+    POSITION 600 880
+    WIDTH 420
+    HEIGHT 260
+    FILL #E8D5B5
+    COLOR #C9A878
+    STROKE 5
+    CORNERS 12
+    DRAW 0.6s
+  END
+  CREATE roofL AS LINE
+    FROM 370 750
+    TO 600 610
+    COLOR #B5523B
+    STROKE 18
+    DRAW 0.4s
+  END
+  CREATE roofR AS LINE
+    FROM 600 610
+    TO 830 750
+    COLOR #B5523B
+    STROKE 18
+    DRAW 0.4s
+  END
+  CREATE door AS RECTANGLE
+    POSITION 600 940
+    WIDTH 90
+    HEIGHT 140
+    FILL #7A4B2A
+    COLOR #7A4B2A
+    STROKE 2
+    CORNERS 10
+    DRAW 0.3s
+  END
+  CREATE win AS RECTANGLE
+    POSITION 720 850
+    WIDTH 80
+    HEIGHT 80
+    FILL #BFE3F5
+    COLOR #7A4B2A
+    STROKE 4
+    CORNERS 6
+    DRAW 0.3s
+  END
+  CREATE badge AS CIRCLE
+    POSITION 860 560
+    RADIUS 95
+    FILL #2E7D4F
+    COLOR #FFFFFF
+    STROKE 5
+    DRAW 0.4s
+  END
+  CREATE thirty AS TEXT
+    POSITION 860 560
+    SIZE 52
+    COLOR #FFFFFF
+    TEXT "30 min"
+    DRAW 0.4s
+  END
+  ANIMATE thirty SCALE TO 1.15
+    DURATION 0.2s
+    EASE bounce
+  ANIMATE thirty SCALE TO 1
+    DURATION 0.2s
+  CREATE take5 AS TEXT
+    POSITION 540 1215
+    SIZE 64
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFD93D
+    TEXT "Wait 30 minutes after the last thunder"
+    DRAW 0.8s
+  END
+  SAY "A closed building or a hard-topped car keeps you far safer."
+    DURATION 3.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Adds where to wait out a storm."
+  TRANSITION slide DURATION 0.4s
+END SCENE
+
+SCENE 6 "Recap"
+  CREATE prog6_0 AS CIRCLE
+    POSITION 365 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog6_1 AS CIRCLE
+    POSITION 435 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog6_2 AS CIRCLE
+    POSITION 505 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog6_3 AS CIRCLE
+    POSITION 575 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog6_4 AS CIRCLE
+    POSITION 645 1665
+    RADIUS 12
+    COLOR #8A93C8
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE prog6_5 AS CIRCLE
+    POSITION 715 1665
+    RADIUS 12
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 3
+    DRAW 0.1s
+  END
+  CREATE tag6 AS TEXT
+    POSITION 540 215
+    SIZE 34
+    COLOR #5CC8FF
+    TEXT "LIGHTNING IN 60 SECONDS"
+    DRAW 0.4s
+  END
+  CREATE hook6 AS TEXT
+    POSITION 540 335
+    SIZE 68
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Quick recap"
+    DRAW 0.8s
+  END
+  CREATE chip0 AS RECTANGLE
+    POSITION 540 560
+    WIDTH 820
+    HEIGHT 84
+    FILL #1D2550
+    COLOR #FFD93D
+    STROKE 5
+    CORNERS 40
+    DRAW 0.4s
+  END
+  CREATE chipDot0 AS CIRCLE
+    POSITION 190 560
+    RADIUS 18
+    FILL #FFD93D
+    COLOR #FFD93D
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE chipText0 AS TEXT
+    POSITION 560 560
+    SIZE 40
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "5x hotter than the Sun's surface"
+    DRAW 0.4s
+  END
+  CREATE chip1 AS RECTANGLE
+    POSITION 540 670
+    WIDTH 820
+    HEIGHT 84
+    FILL #1D2550
+    COLOR #5CC8FF
+    STROKE 5
+    CORNERS 40
+    DRAW 0.4s
+  END
+  CREATE chipDot1 AS CIRCLE
+    POSITION 190 670
+    RADIUS 18
+    FILL #5CC8FF
+    COLOR #5CC8FF
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE chipText1 AS TEXT
+    POSITION 560 670
+    SIZE 40
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Thumb-wide core"
+    DRAW 0.4s
+  END
+  CREATE chip2 AS RECTANGLE
+    POSITION 540 780
+    WIDTH 820
+    HEIGHT 84
+    FILL #1D2550
+    COLOR #FFA726
+    STROKE 5
+    CORNERS 40
+    DRAW 0.4s
+  END
+  CREATE chipDot2 AS CIRCLE
+    POSITION 190 780
+    RADIUS 18
+    FILL #FFA726
+    COLOR #FFA726
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE chipText2 AS TEXT
+    POSITION 560 780
+    SIZE 40
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "44 flashes per second"
+    DRAW 0.4s
+  END
+  CREATE chip3 AS RECTANGLE
+    POSITION 540 890
+    WIDTH 820
+    HEIGHT 84
+    FILL #1D2550
+    COLOR #FF7AB6
+    STROKE 5
+    CORNERS 40
+    DRAW 0.4s
+  END
+  CREATE chipDot3 AS CIRCLE
+    POSITION 190 890
+    RADIUS 18
+    FILL #FF7AB6
+    COLOR #FF7AB6
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE chipText3 AS TEXT
+    POSITION 560 890
+    SIZE 40
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "5 seconds = 1 mile"
+    DRAW 0.4s
+  END
+  CREATE chip4 AS RECTANGLE
+    POSITION 540 1000
+    WIDTH 820
+    HEIGHT 84
+    FILL #1D2550
+    COLOR #5BD68A
+    STROKE 5
+    CORNERS 40
+    DRAW 0.4s
+  END
+  CREATE chipDot4 AS CIRCLE
+    POSITION 190 1000
+    RADIUS 18
+    FILL #5BD68A
+    COLOR #5BD68A
+    STROKE 2
+    DRAW 0.2s
+  END
+  CREATE chipText4 AS TEXT
+    POSITION 560 1000
+    SIZE 40
+    MAXWIDTH 620
+    ALIGN center
+    COLOR #FFFFFF
+    TEXT "Wait 30 minutes indoors"
+    DRAW 0.4s
+  END
+  CREATE take6 AS TEXT
+    POSITION 540 1215
+    SIZE 64
+    MAXWIDTH 880
+    ALIGN center
+    COLOR #FFD93D
+    TEXT "Save this for the next storm"
+    DRAW 0.8s
+  END
+  SAY "Which of these will you tell your friends first?"
+    DURATION 3.0s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts comments and sharing."
+END SCENE

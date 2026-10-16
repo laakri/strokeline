@@ -10,8 +10,8 @@ import {
 
 describe("curated template library", () => {
   it("keeps every supplied WBS project once alongside the original starters", () => {
-    expect(CURATED_TEMPLATES).toHaveLength(14)
-    expect(TEMPLATE_LIBRARY).toHaveLength(27)
+    expect(CURATED_TEMPLATES).toHaveLength(15)
+    expect(TEMPLATE_LIBRARY).toHaveLength(28)
     expect(new Set(TEMPLATE_LIBRARY.map((template) => template.id)).size).toBe(
       TEMPLATE_LIBRARY.length
     )

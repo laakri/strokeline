@@ -11,6 +11,7 @@ import {
   Presentation,
   Sprout,
   Trophy,
+  Zap,
 } from "lucide-react"
 import type { DiagramTemplate } from "@/templates/diagramTemplates.ts"
 import ohmsLaw from "@/templates/curated/ohms-law-blueprint-lab.wbs?raw"
@@ -27,6 +28,7 @@ import moonTimeline from "@/templates/curated/race-to-the-moon.wbs?raw"
 import discounts from "@/templates/curated/successive-discounts.wbs?raw"
 import sqlEssentials from "@/templates/curated/sql-essentials.wbs?raw"
 import photosynthesisRecall from "@/templates/curated/photosynthesis-quick-recall-map.wbs?raw"
+import lightningMicro from "@/templates/curated/lightning-60-second-micro-lesson.wbs?raw"
 
 type CuratedTemplate = Omit<DiagramTemplate, "preview"> & {
   preview: "rendered"
@@ -90,6 +92,16 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     preview: "rendered",
     icon: Sprout,
     script: photosynthesisMicro,
+  },
+  {
+    id: "lightning-60-second-micro-lesson",
+    title: "Lightning: 60-Second Micro-Lesson",
+    category: "Reels",
+    description:
+      "A six-scene vertical weather explainer with memorable lightning facts and a storm-safety recap.",
+    preview: "rendered",
+    icon: Zap,
+    script: lightningMicro,
   },
   {
     id: "photosynthesis-brainstorm-map",
