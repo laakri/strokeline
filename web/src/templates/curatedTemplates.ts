@@ -30,6 +30,7 @@ import sqlEssentials from "@/templates/curated/sql-essentials.wbs?raw"
 import photosynthesisRecall from "@/templates/curated/photosynthesis-quick-recall-map.wbs?raw"
 import lightningMicro from "@/templates/curated/lightning-60-second-micro-lesson.wbs?raw"
 import memoryLab from "@/templates/curated/memory-lab.wbs?raw"
+import webDevBasics from "@/templates/curated/web-dev-basics.wbs?raw"
 
 type CuratedTemplate = Omit<DiagramTemplate, "preview"> & {
   preview: "rendered"
@@ -264,5 +265,15 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     preview: "rendered",
     icon: BrainCircuit,
     script: memoryLab,
+  },
+  {
+    id: "web-dev-basics",
+    title: "Web Dev Basics: A Browser Request",
+    category: "Technology",
+    description:
+      "A five-scene visual tour of browsers, servers, DNS, HTTP requests, rendering, and a quick knowledge check.",
+    preview: "rendered",
+    icon: Cpu,
+    script: webDevBasics,
   },
 ]

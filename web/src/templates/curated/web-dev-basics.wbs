@@ -1,0 +1,1694 @@
+VERSION 1.0
+CANVAS 1920 1080
+BACKGROUND #F3F0FF
+STYLE clean
+FONT neat
+STROKE 4
+SUBTITLES off
+
+SCENE 1 "Hook"
+  PARALLEL STAGGER 0.05s
+    CREATE s1_hdr_bar AS RECTANGLE
+      POSITION 960 60
+      WIDTH 1920
+      HEIGHT 120
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s1_hdr_title AS TEXT
+      POSITION 960 60
+      SIZE 52
+      COLOR #FFFFFF
+      TEXT "WEB DEV BASICS · START HERE"
+      DRAW 0.3s
+    END
+    CREATE s1_hdr_num AS RECTANGLE
+      POSITION 110 60
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "01 / 05"
+      DRAW 0.35s
+    END
+    CREATE s1_hdr_tag AS RECTANGLE
+      POSITION 1790 60
+      WIDTH 220
+      HEIGHT 64
+      CORNERS 14
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "LESSON 1"
+      DRAW 0.35s
+    END
+    CREATE s1_ftr_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1920
+      HEIGHT 100
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s1_ftr_text AS TEXT
+      POSITION 960 1030
+      SIZE 40
+      COLOR #FFD93D
+      TEXT "5 steps · 3 skills · under a minute"
+      DRAW 0.3s
+    END
+    CREATE s1_hero AS RECTANGLE
+      POSITION 960 285
+      WIDTH 1760
+      HEIGHT 250
+      CORNERS 28
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_title AS TEXT
+      POSITION 960 285
+      SIZE 140
+      COLOR #14112B
+      TEXT "How the Web Works"
+      DRAW 0.7s
+    END
+    CREATE s1_sub AS TEXT
+      POSITION 960 475
+      SIZE 52
+      COLOR #14112B
+      TEXT "From typing a URL to a loaded page"
+      DRAW 0.3s
+    END
+    CREATE s1_chip1 AS RECTANGLE
+      POSITION 580 555
+      WIDTH 320
+      HEIGHT 64
+      CORNERS 14
+      FILL #FF9F43
+      COLOR #14112B
+      STROKE 4
+      TEXT "5 STEPS"
+      DRAW 0.35s
+    END
+    CREATE s1_chip2 AS RECTANGLE
+      POSITION 960 555
+      WIDTH 320
+      HEIGHT 64
+      CORNERS 14
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "3 SKILLS"
+      DRAW 0.35s
+    END
+    CREATE s1_chip3 AS RECTANGLE
+      POSITION 1340 555
+      WIDTH 320
+      HEIGHT 64
+      CORNERS 14
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      TEXT "45 SECONDS"
+      DRAW 0.35s
+    END
+    CREATE s1_card1 AS RECTANGLE
+      POSITION 360 775
+      WIDTH 560
+      HEIGHT 330
+      CORNERS 26
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_badge1 AS CIRCLE
+      POSITION 360 665
+      RADIUS 44
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s1_h1 AS TEXT
+      POSITION 360 755
+      SIZE 48
+      COLOR #14112B
+      TEXT "Client and server"
+      DRAW 0.3s
+    END
+    CREATE s1_d1 AS TEXT
+      POSITION 360 825
+      SIZE 32
+      MAXWIDTH 480
+      COLOR #14112B
+      TEXT "Who asks and who answers"
+      DRAW 0.3s
+    END
+    CREATE s1_t1 AS TEXT
+      POSITION 360 900
+      SIZE 28
+      COLOR #14112B
+      TEXT "Browser · Server · DNS"
+      DRAW 0.3s
+    END
+    CREATE s1_card2 AS RECTANGLE
+      POSITION 960 775
+      WIDTH 560
+      HEIGHT 330
+      CORNERS 26
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_badge2 AS CIRCLE
+      POSITION 960 665
+      RADIUS 44
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s1_h2 AS TEXT
+      POSITION 960 755
+      SIZE 48
+      COLOR #14112B
+      TEXT "Requests"
+      DRAW 0.3s
+    END
+    CREATE s1_d2 AS TEXT
+      POSITION 960 825
+      SIZE 32
+      MAXWIDTH 480
+      COLOR #14112B
+      TEXT "What a browser really sends"
+      DRAW 0.3s
+    END
+    CREATE s1_t2 AS TEXT
+      POSITION 960 900
+      SIZE 28
+      COLOR #14112B
+      TEXT "GET · POST · status codes"
+      DRAW 0.3s
+    END
+    CREATE s1_card3 AS RECTANGLE
+      POSITION 1560 775
+      WIDTH 560
+      HEIGHT 330
+      CORNERS 26
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s1_badge3 AS CIRCLE
+      POSITION 1560 665
+      RADIUS 44
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s1_h3 AS TEXT
+      POSITION 1560 755
+      SIZE 48
+      COLOR #14112B
+      TEXT "Rendering"
+      DRAW 0.3s
+    END
+    CREATE s1_d3 AS TEXT
+      POSITION 1560 825
+      SIZE 32
+      MAXWIDTH 480
+      COLOR #14112B
+      TEXT "How code becomes pixels"
+      DRAW 0.3s
+    END
+    CREATE s1_t3 AS TEXT
+      POSITION 1560 900
+      SIZE 28
+      COLOR #14112B
+      TEXT "HTML · CSS · JavaScript"
+      DRAW 0.3s
+    END
+  END
+  SAY "Every page you open takes this hidden journey."
+    DURATION 2.8s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Frames the lesson as a journey that happens in milliseconds."
+  SAY "Three ideas cover almost everything ahead."
+    DURATION 2.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Previews the structure before the details start."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 2 "The players"
+  PARALLEL STAGGER 0.05s
+    CREATE s2_hdr_bar AS RECTANGLE
+      POSITION 960 60
+      WIDTH 1920
+      HEIGHT 120
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s2_hdr_title AS TEXT
+      POSITION 960 60
+      SIZE 52
+      COLOR #FFFFFF
+      TEXT "The Four Players"
+      DRAW 0.3s
+    END
+    CREATE s2_hdr_num AS RECTANGLE
+      POSITION 110 60
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "02 / 05"
+      DRAW 0.35s
+    END
+    CREATE s2_hdr_tag AS RECTANGLE
+      POSITION 1790 60
+      WIDTH 220
+      HEIGHT 64
+      CORNERS 14
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "LESSON 1"
+      DRAW 0.35s
+    END
+    CREATE s2_ftr_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1920
+      HEIGHT 100
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s2_ftr_text AS TEXT
+      POSITION 960 1030
+      SIZE 40
+      COLOR #FFD93D
+      TEXT "Four players, one round trip, under half a second"
+      DRAW 0.3s
+    END
+    CREATE s2_you AS RECTANGLE
+      POSITION 270 235
+      WIDTH 240
+      HEIGHT 56
+      CORNERS 14
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "YOUR DEVICE"
+      DRAW 0.35s
+    END
+    CREATE s2_dns AS RECTANGLE
+      POSITION 615 225
+      WIDTH 320
+      HEIGHT 90
+      CORNERS 18
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "DNS"
+      DRAW 0.35s
+    END
+    CREATE s2_browser AS RECTANGLE
+      POSITION 270 400
+      WIDTH 340
+      HEIGHT 120
+      CORNERS 18
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "Browser"
+      DRAW 0.35s
+    END
+    CREATE s2_server AS RECTANGLE
+      POSITION 960 400
+      WIDTH 340
+      HEIGHT 120
+      CORNERS 18
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "Web server"
+      DRAW 0.35s
+    END
+    CREATE s2_db AS RECTANGLE
+      POSITION 1650 400
+      WIDTH 340
+      HEIGHT 120
+      CORNERS 18
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      TEXT "Database"
+      DRAW 0.35s
+    END
+    CREATE s2_panel AS RECTANGLE
+      POSITION 1340 235
+      WIDTH 980
+      HEIGHT 110
+      CORNERS 22
+      FILL #FF9F43
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_paneltext AS TEXT
+      POSITION 1340 235
+      SIZE 34
+      MAXWIDTH 920
+      COLOR #14112B
+      TEXT "A full round trip takes under half a second, and the browser repeats it for every file."
+      DRAW 0.3s
+    END
+    CREATE s2_back AS RECTANGLE
+      POSITION 960 525
+      WIDTH 1760
+      HEIGHT 70
+      CORNERS 16
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_backtext AS TEXT
+      POSITION 960 525
+      SIZE 38
+      COLOR #14112B
+      TEXT "4 · The response travels back along the same path"
+      DRAW 0.3s
+    END
+    CREATE s2_card1 AS RECTANGLE
+      POSITION 293 770
+      WIDTH 425
+      HEIGHT 360
+      CORNERS 24
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_n1 AS TEXT
+      POSITION 293 650
+      SIZE 46
+      COLOR #14112B
+      TEXT "Browser"
+      DRAW 0.3s
+    END
+    CREATE s2_j1 AS TEXT
+      POSITION 293 735
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "Sends requests and shows the page"
+      DRAW 0.3s
+    END
+    CREATE s2_el1 AS TEXT
+      POSITION 293 840
+      SIZE 26
+      COLOR #14112B
+      TEXT "EXAMPLE"
+      DRAW 0.3s
+    END
+    CREATE s2_e1 AS TEXT
+      POSITION 293 890
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "Chrome · Firefox · Safari"
+      DRAW 0.3s
+    END
+    CREATE s2_card2 AS RECTANGLE
+      POSITION 738 770
+      WIDTH 425
+      HEIGHT 360
+      CORNERS 24
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_n2 AS TEXT
+      POSITION 738 650
+      SIZE 46
+      COLOR #14112B
+      TEXT "DNS"
+      DRAW 0.3s
+    END
+    CREATE s2_j2 AS TEXT
+      POSITION 738 735
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "Turns names into IP addresses"
+      DRAW 0.3s
+    END
+    CREATE s2_el2 AS TEXT
+      POSITION 738 840
+      SIZE 26
+      COLOR #14112B
+      TEXT "EXAMPLE"
+      DRAW 0.3s
+    END
+    CREATE s2_e2 AS TEXT
+      POSITION 738 890
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "1.1.1.1 · 8.8.8.8"
+      DRAW 0.3s
+    END
+    CREATE s2_card3 AS RECTANGLE
+      POSITION 1183 770
+      WIDTH 425
+      HEIGHT 360
+      CORNERS 24
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_n3 AS TEXT
+      POSITION 1183 650
+      SIZE 46
+      COLOR #14112B
+      TEXT "Web server"
+      DRAW 0.3s
+    END
+    CREATE s2_j3 AS TEXT
+      POSITION 1183 735
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "Receives requests and sends files"
+      DRAW 0.3s
+    END
+    CREATE s2_el3 AS TEXT
+      POSITION 1183 840
+      SIZE 26
+      COLOR #14112B
+      TEXT "EXAMPLE"
+      DRAW 0.3s
+    END
+    CREATE s2_e3 AS TEXT
+      POSITION 1183 890
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "nginx · Apache"
+      DRAW 0.3s
+    END
+    CREATE s2_card4 AS RECTANGLE
+      POSITION 1628 770
+      WIDTH 425
+      HEIGHT 360
+      CORNERS 24
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s2_n4 AS TEXT
+      POSITION 1628 650
+      SIZE 46
+      COLOR #14112B
+      TEXT "Database"
+      DRAW 0.3s
+    END
+    CREATE s2_j4 AS TEXT
+      POSITION 1628 735
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "Stores users, posts and orders"
+      DRAW 0.3s
+    END
+    CREATE s2_el4 AS TEXT
+      POSITION 1628 840
+      SIZE 26
+      COLOR #14112B
+      TEXT "EXAMPLE"
+      DRAW 0.3s
+    END
+    CREATE s2_e4 AS TEXT
+      POSITION 1628 890
+      SIZE 32
+      MAXWIDTH 380
+      COLOR #14112B
+      TEXT "PostgreSQL · MongoDB"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.15s
+    ARROW s2_browser -> s2_dns
+      ROUTE straight
+      HEAD end
+      LABEL "1 · Find the IP"
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+    ARROW s2_browser -> s2_server
+      ROUTE straight
+      HEAD end
+      LABEL "2 · Request"
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+    ARROW s2_server -> s2_db
+      ROUTE straight
+      HEAD end
+      LABEL "3 · Query"
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+  END
+  SAY "A name becomes an address first."
+    DURATION 2.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Computers route by number, so the lookup comes before any request."
+  SAY "Servers fetch stored content from a database."
+    DURATION 2.6s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Explains why a server often needs one more hop before it can reply."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 3 "The request"
+  PARALLEL STAGGER 0.04s
+    CREATE s3_hdr_bar AS RECTANGLE
+      POSITION 960 60
+      WIDTH 1920
+      HEIGHT 120
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s3_hdr_title AS TEXT
+      POSITION 960 60
+      SIZE 52
+      COLOR #FFFFFF
+      TEXT "Anatomy of a Request"
+      DRAW 0.3s
+    END
+    CREATE s3_hdr_num AS RECTANGLE
+      POSITION 110 60
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "03 / 05"
+      DRAW 0.35s
+    END
+    CREATE s3_hdr_tag AS RECTANGLE
+      POSITION 1790 60
+      WIDTH 220
+      HEIGHT 64
+      CORNERS 14
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "LESSON 1"
+      DRAW 0.35s
+    END
+    CREATE s3_ftr_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1920
+      HEIGHT 100
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s3_ftr_text AS TEXT
+      POSITION 960 1030
+      SIZE 40
+      COLOR #FFD93D
+      TEXT "Requests ask, status codes answer"
+      DRAW 0.3s
+    END
+    CREATE s3_req AS RECTANGLE
+      POSITION 480 300
+      WIDTH 820
+      HEIGHT 280
+      CORNERS 22
+      FILL #14112B
+      COLOR #5BE3B0
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_res AS RECTANGLE
+      POSITION 1440 300
+      WIDTH 820
+      HEIGHT 280
+      CORNERS 22
+      FILL #14112B
+      COLOR #FF7AA8
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_reqhead AS TEXT
+      POSITION 480 200
+      SIZE 32
+      COLOR #5BE3B0
+      TEXT "REQUEST · browser asks"
+      DRAW 0.3s
+    END
+    CREATE s3_reshead AS TEXT
+      POSITION 1440 200
+      SIZE 32
+      COLOR #FF7AA8
+      TEXT "RESPONSE · server answers"
+      DRAW 0.3s
+    END
+    CREATE s3_rq1 AS TEXT
+      POSITION 480 270
+      SIZE 34
+      COLOR #FFD93D
+      TEXT "GET /index.html HTTP/1.1"
+      DRAW 0.3s
+    END
+    CREATE s3_rs1 AS TEXT
+      POSITION 1440 270
+      SIZE 34
+      COLOR #FFD93D
+      TEXT "HTTP/1.1 200 OK"
+      DRAW 0.3s
+    END
+    CREATE s3_rq2 AS TEXT
+      POSITION 480 330
+      SIZE 34
+      COLOR #FFFFFF
+      TEXT "Host: learn.dev"
+      DRAW 0.3s
+    END
+    CREATE s3_rs2 AS TEXT
+      POSITION 1440 330
+      SIZE 34
+      COLOR #FFFFFF
+      TEXT "Content-Type: text/html"
+      DRAW 0.3s
+    END
+    CREATE s3_rq3 AS TEXT
+      POSITION 480 390
+      SIZE 34
+      COLOR #FFFFFF
+      TEXT "Accept: text/html"
+      DRAW 0.3s
+    END
+    CREATE s3_rs3 AS TEXT
+      POSITION 1440 390
+      SIZE 34
+      COLOR #FFFFFF
+      TEXT "Body: your page, as text"
+      DRAW 0.3s
+    END
+    CREATE s3_mlabel AS TEXT
+      POSITION 960 468
+      SIZE 28
+      COLOR #14112B
+      TEXT "COMMON REQUEST METHODS"
+      DRAW 0.3s
+    END
+    CREATE s3_m1 AS RECTANGLE
+      POSITION 293 555
+      WIDTH 425
+      HEIGHT 130
+      CORNERS 20
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_mn1 AS TEXT
+      POSITION 293 528
+      SIZE 46
+      COLOR #14112B
+      TEXT "GET"
+      DRAW 0.3s
+    END
+    CREATE s3_md1 AS TEXT
+      POSITION 293 590
+      SIZE 28
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Fetch a page or data"
+      DRAW 0.3s
+    END
+    CREATE s3_m2 AS RECTANGLE
+      POSITION 738 555
+      WIDTH 425
+      HEIGHT 130
+      CORNERS 20
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_mn2 AS TEXT
+      POSITION 738 528
+      SIZE 46
+      COLOR #14112B
+      TEXT "POST"
+      DRAW 0.3s
+    END
+    CREATE s3_md2 AS TEXT
+      POSITION 738 590
+      SIZE 28
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Send new data, like a form"
+      DRAW 0.3s
+    END
+    CREATE s3_m3 AS RECTANGLE
+      POSITION 1183 555
+      WIDTH 425
+      HEIGHT 130
+      CORNERS 20
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_mn3 AS TEXT
+      POSITION 1183 528
+      SIZE 46
+      COLOR #14112B
+      TEXT "PUT"
+      DRAW 0.3s
+    END
+    CREATE s3_md3 AS TEXT
+      POSITION 1183 590
+      SIZE 28
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Replace or update data"
+      DRAW 0.3s
+    END
+    CREATE s3_m4 AS RECTANGLE
+      POSITION 1628 555
+      WIDTH 425
+      HEIGHT 130
+      CORNERS 20
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_mn4 AS TEXT
+      POSITION 1628 528
+      SIZE 46
+      COLOR #14112B
+      TEXT "DELETE"
+      DRAW 0.3s
+    END
+    CREATE s3_md4 AS TEXT
+      POSITION 1628 590
+      SIZE 28
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Remove data"
+      DRAW 0.3s
+    END
+    CREATE s3_slabel AS TEXT
+      POSITION 960 648
+      SIZE 28
+      COLOR #14112B
+      TEXT "STATUS CODES"
+      DRAW 0.3s
+    END
+    CREATE s3_c1 AS RECTANGLE
+      POSITION 293 805
+      WIDTH 425
+      HEIGHT 290
+      CORNERS 24
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_cn1 AS TEXT
+      POSITION 293 735
+      SIZE 100
+      COLOR #14112B
+      TEXT "200"
+      DRAW 0.3s
+    END
+    CREATE s3_cm1 AS TEXT
+      POSITION 293 820
+      SIZE 40
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "OK"
+      DRAW 0.3s
+    END
+    CREATE s3_cw1 AS TEXT
+      POSITION 293 890
+      SIZE 30
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "The page loaded fine"
+      DRAW 0.3s
+    END
+    CREATE s3_c2 AS RECTANGLE
+      POSITION 738 805
+      WIDTH 425
+      HEIGHT 290
+      CORNERS 24
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_cn2 AS TEXT
+      POSITION 738 735
+      SIZE 100
+      COLOR #14112B
+      TEXT "301"
+      DRAW 0.3s
+    END
+    CREATE s3_cm2 AS TEXT
+      POSITION 738 820
+      SIZE 40
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Moved permanently"
+      DRAW 0.3s
+    END
+    CREATE s3_cw2 AS TEXT
+      POSITION 738 890
+      SIZE 30
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "The address changed"
+      DRAW 0.3s
+    END
+    CREATE s3_c3 AS RECTANGLE
+      POSITION 1183 805
+      WIDTH 425
+      HEIGHT 290
+      CORNERS 24
+      FILL #FF9F43
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_cn3 AS TEXT
+      POSITION 1183 735
+      SIZE 100
+      COLOR #14112B
+      TEXT "404"
+      DRAW 0.3s
+    END
+    CREATE s3_cm3 AS TEXT
+      POSITION 1183 820
+      SIZE 40
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Not found"
+      DRAW 0.3s
+    END
+    CREATE s3_cw3 AS TEXT
+      POSITION 1183 890
+      SIZE 30
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Bad link or a typo"
+      DRAW 0.3s
+    END
+    CREATE s3_c4 AS RECTANGLE
+      POSITION 1628 805
+      WIDTH 425
+      HEIGHT 290
+      CORNERS 24
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s3_cn4 AS TEXT
+      POSITION 1628 735
+      SIZE 100
+      COLOR #14112B
+      TEXT "500"
+      DRAW 0.3s
+    END
+    CREATE s3_cm4 AS TEXT
+      POSITION 1628 820
+      SIZE 40
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "Server error"
+      DRAW 0.3s
+    END
+    CREATE s3_cw4 AS TEXT
+      POSITION 1628 890
+      SIZE 30
+      MAXWIDTH 390
+      COLOR #14112B
+      TEXT "A bug on the server side"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.05s
+    ARROW s3_req -> s3_res
+      ROUTE straight
+      HEAD end
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+  END
+  SAY "Both sides speak plain, readable text."
+    DURATION 2.4s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "The HTTP protocol is text-based, which makes debugging approachable."
+  SAY "Status codes tell you who made the mistake."
+    DURATION 2.8s
+    TONE punchline
+    WHO "Narrator"
+    LANG en
+    DETAIL "Codes in the 400 range blame the client; the 500 range blames the server."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 4 "Rendering"
+  PARALLEL STAGGER 0.04s
+    CREATE s4_hdr_bar AS RECTANGLE
+      POSITION 960 60
+      WIDTH 1920
+      HEIGHT 120
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s4_hdr_title AS TEXT
+      POSITION 960 60
+      SIZE 52
+      COLOR #FFFFFF
+      TEXT "From Files to Pixels"
+      DRAW 0.3s
+    END
+    CREATE s4_hdr_num AS RECTANGLE
+      POSITION 110 60
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "04 / 05"
+      DRAW 0.35s
+    END
+    CREATE s4_hdr_tag AS RECTANGLE
+      POSITION 1790 60
+      WIDTH 220
+      HEIGHT 64
+      CORNERS 14
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "LESSON 1"
+      DRAW 0.35s
+    END
+    CREATE s4_ftr_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1920
+      HEIGHT 100
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s4_ftr_text AS TEXT
+      POSITION 960 1030
+      SIZE 40
+      COLOR #FFD93D
+      TEXT "Smaller files and fewer requests mean a faster page"
+      DRAW 0.3s
+    END
+    CREATE s4_card AS RECTANGLE
+      POSITION 515 555
+      WIDTH 890
+      HEIGHT 790
+      CORNERS 26
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_cap AS TEXT
+      POSITION 515 215
+      SIZE 36
+      COLOR #14112B
+      TEXT "Where 420 ms go (example)"
+      DRAW 0.3s
+    END
+    CREATE s4_l1 AS TEXT
+      POSITION 170 310
+      SIZE 32
+      COLOR #14112B
+      TEXT "DNS"
+      DRAW 0.3s
+    END
+    CREATE s4_b1 AS RECTANGLE
+      POSITION 332 310
+      WIDTH 64
+      HEIGHT 70
+      CORNERS 12
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_v1 AS TEXT
+      POSITION 444 310
+      SIZE 32
+      COLOR #14112B
+      TEXT "20 ms"
+      DRAW 0.3s
+    END
+    CREATE s4_l2 AS TEXT
+      POSITION 170 430
+      SIZE 32
+      COLOR #14112B
+      TEXT "Connect"
+      DRAW 0.3s
+    END
+    CREATE s4_b2 AS RECTANGLE
+      POSITION 364 430
+      WIDTH 128
+      HEIGHT 70
+      CORNERS 12
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_v2 AS TEXT
+      POSITION 508 430
+      SIZE 32
+      COLOR #14112B
+      TEXT "40 ms"
+      DRAW 0.3s
+    END
+    CREATE s4_l3 AS TEXT
+      POSITION 170 550
+      SIZE 32
+      COLOR #14112B
+      TEXT "Server"
+      DRAW 0.3s
+    END
+    CREATE s4_b3 AS RECTANGLE
+      POSITION 492 550
+      WIDTH 384
+      HEIGHT 70
+      CORNERS 12
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_v3 AS TEXT
+      POSITION 764 550
+      SIZE 32
+      COLOR #14112B
+      TEXT "120 ms"
+      DRAW 0.3s
+    END
+    CREATE s4_l4 AS TEXT
+      POSITION 170 670
+      SIZE 32
+      COLOR #14112B
+      TEXT "Download"
+      DRAW 0.3s
+    END
+    CREATE s4_b4 AS RECTANGLE
+      POSITION 444 670
+      WIDTH 288
+      HEIGHT 70
+      CORNERS 12
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_v4 AS TEXT
+      POSITION 668 670
+      SIZE 32
+      COLOR #14112B
+      TEXT "90 ms"
+      DRAW 0.3s
+    END
+    CREATE s4_l5 AS TEXT
+      POSITION 170 790
+      SIZE 32
+      COLOR #14112B
+      TEXT "Render"
+      DRAW 0.3s
+    END
+    CREATE s4_b5 AS RECTANGLE
+      POSITION 540 790
+      WIDTH 480
+      HEIGHT 70
+      CORNERS 12
+      FILL #FF9F43
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_v5 AS TEXT
+      POSITION 860 790
+      SIZE 32
+      COLOR #14112B
+      TEXT "150 ms"
+      DRAW 0.3s
+    END
+    CREATE s4_totalbar AS RECTANGLE
+      POSITION 515 890
+      WIDTH 800
+      HEIGHT 70
+      CORNERS 16
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_total AS TEXT
+      POSITION 515 890
+      SIZE 36
+      COLOR #14112B
+      TEXT "Total: about 420 ms"
+      DRAW 0.3s
+    END
+    CREATE s4_st1 AS RECTANGLE
+      POSITION 1430 248
+      WIDTH 860
+      HEIGHT 175
+      CORNERS 24
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_n1 AS CIRCLE
+      POSITION 1090 248
+      RADIUS 46
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "1"
+      DRAW 0.3s
+    END
+    CREATE s4_sh1 AS TEXT
+      POSITION 1500 216
+      SIZE 42
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "HTML builds the structure"
+      DRAW 0.3s
+    END
+    CREATE s4_sc1 AS TEXT
+      POSITION 1500 280
+      SIZE 30
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "Tags become the DOM tree of the page"
+      DRAW 0.3s
+    END
+    CREATE s4_st2 AS RECTANGLE
+      POSITION 1430 453
+      WIDTH 860
+      HEIGHT 175
+      CORNERS 24
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_n2 AS CIRCLE
+      POSITION 1090 453
+      RADIUS 46
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "2"
+      DRAW 0.3s
+    END
+    CREATE s4_sh2 AS TEXT
+      POSITION 1500 421
+      SIZE 42
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "CSS adds style and layout"
+      DRAW 0.3s
+    END
+    CREATE s4_sc2 AS TEXT
+      POSITION 1500 485
+      SIZE 30
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "Colors, fonts, grids and spacing"
+      DRAW 0.3s
+    END
+    CREATE s4_st3 AS RECTANGLE
+      POSITION 1430 658
+      WIDTH 860
+      HEIGHT 175
+      CORNERS 24
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_n3 AS CIRCLE
+      POSITION 1090 658
+      RADIUS 46
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "3"
+      DRAW 0.3s
+    END
+    CREATE s4_sh3 AS TEXT
+      POSITION 1500 626
+      SIZE 42
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "JavaScript adds behavior"
+      DRAW 0.3s
+    END
+    CREATE s4_sc3 AS TEXT
+      POSITION 1500 690
+      SIZE 30
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "Clicks, menus, data and animations"
+      DRAW 0.3s
+    END
+    CREATE s4_st4 AS RECTANGLE
+      POSITION 1430 863
+      WIDTH 860
+      HEIGHT 175
+      CORNERS 24
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s4_n4 AS CIRCLE
+      POSITION 1090 863
+      RADIUS 46
+      FILL #FFFFFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "4"
+      DRAW 0.3s
+    END
+    CREATE s4_sh4 AS TEXT
+      POSITION 1500 831
+      SIZE 42
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "The browser paints pixels"
+      DRAW 0.3s
+    END
+    CREATE s4_sc4 AS TEXT
+      POSITION 1500 895
+      SIZE 30
+      MAXWIDTH 640
+      COLOR #14112B
+      TEXT "Layout is computed, then drawn on screen"
+      DRAW 0.3s
+    END
+  END
+  SAY "Server time and rendering take the biggest slices."
+    DURATION 2.7s
+    TONE explain
+    WHO "Narrator"
+    LANG en
+    DETAIL "Reads the bar lengths so the chart is understood without squinting."
+  SAY "Speed work usually starts with the biggest bar."
+    DURATION 2.7s
+    TONE punchline
+    WHO "Narrator"
+    LANG en
+    DETAIL "Gives students the practical rule for where to optimize first."
+  TRANSITION fade DURATION 0.4s
+END SCENE
+
+SCENE 5 "Recap and quiz"
+  PARALLEL STAGGER 0.05s
+    CREATE s5_hdr_bar AS RECTANGLE
+      POSITION 960 60
+      WIDTH 1920
+      HEIGHT 120
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s5_hdr_title AS TEXT
+      POSITION 960 60
+      SIZE 52
+      COLOR #FFFFFF
+      TEXT "Recap and Quick Check"
+      DRAW 0.3s
+    END
+    CREATE s5_hdr_num AS RECTANGLE
+      POSITION 110 60
+      WIDTH 150
+      HEIGHT 64
+      CORNERS 14
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "05 / 05"
+      DRAW 0.35s
+    END
+    CREATE s5_hdr_tag AS RECTANGLE
+      POSITION 1790 60
+      WIDTH 220
+      HEIGHT 64
+      CORNERS 14
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "LESSON 1"
+      DRAW 0.35s
+    END
+    CREATE s5_ftr_bar AS RECTANGLE
+      POSITION 960 1030
+      WIDTH 1920
+      HEIGHT 100
+      CORNERS 0
+      FILL #14112B
+      COLOR #14112B
+      STROKE 2
+      DRAW 0.35s
+    END
+    CREATE s5_ftr_text AS TEXT
+      POSITION 960 1030
+      SIZE 40
+      COLOR #FFD93D
+      TEXT "Next up: HTML in 45 seconds"
+      DRAW 0.3s
+    END
+    CREATE s5_c1 AS RECTANGLE
+      POSITION 235 250
+      WIDTH 310
+      HEIGHT 130
+      CORNERS 22
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      TEXT "URL"
+      DRAW 0.35s
+    END
+    CREATE s5_cc1 AS TEXT
+      POSITION 235 350
+      SIZE 28
+      COLOR #14112B
+      TEXT "You type it"
+      DRAW 0.3s
+    END
+    CREATE s5_c2 AS RECTANGLE
+      POSITION 598 250
+      WIDTH 310
+      HEIGHT 130
+      CORNERS 22
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      TEXT "DNS"
+      DRAW 0.35s
+    END
+    CREATE s5_cc2 AS TEXT
+      POSITION 598 350
+      SIZE 28
+      COLOR #14112B
+      TEXT "Name to IP"
+      DRAW 0.3s
+    END
+    CREATE s5_c3 AS RECTANGLE
+      POSITION 960 250
+      WIDTH 310
+      HEIGHT 130
+      CORNERS 22
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      TEXT "Request"
+      DRAW 0.35s
+    END
+    CREATE s5_cc3 AS TEXT
+      POSITION 960 350
+      SIZE 28
+      COLOR #14112B
+      TEXT "Browser asks"
+      DRAW 0.3s
+    END
+    CREATE s5_c4 AS RECTANGLE
+      POSITION 1322 250
+      WIDTH 310
+      HEIGHT 130
+      CORNERS 22
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      TEXT "Response"
+      DRAW 0.35s
+    END
+    CREATE s5_cc4 AS TEXT
+      POSITION 1322 350
+      SIZE 28
+      COLOR #14112B
+      TEXT "Server answers"
+      DRAW 0.3s
+    END
+    CREATE s5_c5 AS RECTANGLE
+      POSITION 1685 250
+      WIDTH 310
+      HEIGHT 130
+      CORNERS 22
+      FILL #FF9F43
+      COLOR #14112B
+      STROKE 4
+      TEXT "Render"
+      DRAW 0.35s
+    END
+    CREATE s5_cc5 AS TEXT
+      POSITION 1685 350
+      SIZE 28
+      COLOR #14112B
+      TEXT "Page appears"
+      DRAW 0.3s
+    END
+    CREATE s5_qlabel AS TEXT
+      POSITION 960 420
+      SIZE 36
+      COLOR #14112B
+      TEXT "TEST YOURSELF"
+      DRAW 0.3s
+    END
+    CREATE s5_qc1 AS RECTANGLE
+      POSITION 360 650
+      WIDTH 560
+      HEIGHT 360
+      CORNERS 26
+      FILL #6C8CFF
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_q1 AS TEXT
+      POSITION 360 550
+      SIZE 38
+      MAXWIDTH 500
+      COLOR #14112B
+      TEXT "What turns a name into an IP address?"
+      DRAW 0.3s
+    END
+    CREATE s5_hint1 AS TEXT
+      POSITION 360 650
+      SIZE 30
+      MAXWIDTH 500
+      COLOR #14112B
+      TEXT "Hint: it happens before the request"
+      DRAW 0.3s
+    END
+    CREATE s5_qc2 AS RECTANGLE
+      POSITION 960 650
+      WIDTH 560
+      HEIGHT 360
+      CORNERS 26
+      FILL #FF7AA8
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_q2 AS TEXT
+      POSITION 960 550
+      SIZE 38
+      MAXWIDTH 500
+      COLOR #14112B
+      TEXT "Which status code means not found?"
+      DRAW 0.3s
+    END
+    CREATE s5_hint2 AS TEXT
+      POSITION 960 650
+      SIZE 30
+      MAXWIDTH 500
+      COLOR #14112B
+      TEXT "Hint: it starts with a 4"
+      DRAW 0.3s
+    END
+    CREATE s5_qc3 AS RECTANGLE
+      POSITION 1560 650
+      WIDTH 560
+      HEIGHT 360
+      CORNERS 26
+      FILL #5BE3B0
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_q3 AS TEXT
+      POSITION 1560 550
+      SIZE 38
+      MAXWIDTH 500
+      COLOR #14112B
+      TEXT "Which language adds behavior to a page?"
+      DRAW 0.3s
+    END
+    CREATE s5_hint3 AS TEXT
+      POSITION 1560 650
+      SIZE 30
+      MAXWIDTH 500
+      COLOR #14112B
+      TEXT "Hint: it makes pages interactive"
+      DRAW 0.3s
+    END
+    CREATE s5_ctabar AS RECTANGLE
+      POSITION 960 905
+      WIDTH 1760
+      HEIGHT 90
+      CORNERS 20
+      FILL #FFD93D
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.35s
+    END
+    CREATE s5_cta AS TEXT
+      POSITION 960 905
+      SIZE 42
+      COLOR #14112B
+      TEXT "Try it: open DevTools, then the Network tab"
+      DRAW 0.3s
+    END
+  END
+  PARALLEL STAGGER 0.1s
+    ARROW s5_c1 -> s5_c2
+      ROUTE straight
+      HEAD end
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+    ARROW s5_c2 -> s5_c3
+      ROUTE straight
+      HEAD end
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+    ARROW s5_c3 -> s5_c4
+      ROUTE straight
+      HEAD end
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+    ARROW s5_c4 -> s5_c5
+      ROUTE straight
+      HEAD end
+      COLOR #14112B
+      STROKE 4
+      DRAW 0.4s
+  END
+  SAY "Quick check: answer out loud before each reveal."
+    DURATION 2.6s
+    TONE hook
+    WHO "Narrator"
+    LANG en
+    DETAIL "Prompts active recall, which beats passive watching."
+  PARALLEL STAGGER 0.2s
+    CREATE s5_a1 AS TEXT
+      POSITION 360 760
+      SIZE 64
+      COLOR #14112B
+      TEXT "DNS"
+      DRAW 0.4s
+    END
+    CREATE s5_a2 AS TEXT
+      POSITION 960 760
+      SIZE 64
+      COLOR #14112B
+      TEXT "404"
+      DRAW 0.4s
+    END
+    CREATE s5_a3 AS TEXT
+      POSITION 1560 760
+      SIZE 64
+      COLOR #14112B
+      TEXT "JavaScript"
+      DRAW 0.4s
+    END
+  END
+  SAY "You can watch this journey live in any browser."
+    DURATION 2.8s
+    TONE recap
+    WHO "Narrator"
+    LANG en
+    DETAIL "Connects the lesson to a hands-on habit students can start today."
+END SCENE

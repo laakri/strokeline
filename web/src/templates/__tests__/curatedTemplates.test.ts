@@ -10,8 +10,8 @@ import {
 
 describe("curated template library", () => {
   it("keeps every supplied WBS project once alongside the original starters", () => {
-    expect(CURATED_TEMPLATES).toHaveLength(16)
-    expect(TEMPLATE_LIBRARY).toHaveLength(29)
+    expect(CURATED_TEMPLATES).toHaveLength(17)
+    expect(TEMPLATE_LIBRARY).toHaveLength(30)
     expect(new Set(TEMPLATE_LIBRARY.map((template) => template.id)).size).toBe(
       TEMPLATE_LIBRARY.length
     )
@@ -61,6 +61,24 @@ describe("curated template library", () => {
     const result = runScript(memoryLab.script)
     expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
     expect(result.document?.scenes).toHaveLength(8)
+    expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
+  })
+
+  it("adds Web Dev Basics as a five-scene landscape technology template", () => {
+    const webDevBasics = TEMPLATE_LIBRARY.find(
+      (template) => template.id === "web-dev-basics"
+    )
+    if (!webDevBasics)
+      throw new Error("Web Dev Basics template is not registered.")
+
+    expect(webDevBasics).toMatchObject({
+      title: "Web Dev Basics: A Browser Request",
+      category: "Technology",
+      preview: "rendered",
+    })
+    const result = runScript(webDevBasics.script)
+    expect(result.document?.canvas).toEqual({ width: 1920, height: 1080 })
+    expect(result.document?.scenes).toHaveLength(5)
     expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
   })
 
