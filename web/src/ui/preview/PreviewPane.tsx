@@ -161,6 +161,7 @@ export function PreviewPane({
   const autoplayNext = useRef(false)
   const autoplayAll = useRef(false)
   const preservedPlayback = useRef<{ time: number; wasPlaying: boolean } | null>(null)
+  const pendingEditSource = useRef<string | null>(null)
   const setPreviewCanvasReader = useAppStore(
     (state) => state.setPreviewCanvasReader
   )
@@ -359,12 +360,24 @@ export function PreviewPane({
   }, [captionStyle])
   const voiceSupported = typeof window !== "undefined" && "Worker" in window && "AudioContext" in window
 
-  const preservePlaybackPosition = () => {
+  const preservePlaybackPosition = useCallback(() => {
     preservedPlayback.current = {
       time: playerRef.current?.currentTime ?? player.elapsed,
       wasPlaying: playerRef.current?.isPlaying ?? player.isPlaying,
     }
-  }
+  }, [player.elapsed, player.isPlaying])
+
+  useEffect(() => {
+    if (script === compiledSource) {
+      if (pendingEditSource.current !== null && pendingEditSource.current !== script)
+        preservedPlayback.current = null
+      pendingEditSource.current = null
+      return
+    }
+    if (pendingEditSource.current === null && preservedPlayback.current === null)
+      preservePlaybackPosition()
+    pendingEditSource.current = script
+  }, [script, compiledSource, preservePlaybackPosition])
 
   const toggleSubtitles = useCallback(() => {
     setSubtitleOverride((current) => {
@@ -507,9 +520,12 @@ export function PreviewPane({
       // replacement player is created. Keep the saved playhead through that
       // wait instead of consuming it and resetting the preview to zero.
       if (scene && compiledIR && canvasRef.current) return
-      preservedPlayback.current = null
       renderStateRef.current = null
       setSequenceStarts([])
+      if (preservedPlayback.current) {
+        setPlayerState({ isPlaying: false })
+        return
+      }
       setPlayerState({ elapsed: 0, duration: 0, isPlaying: false })
       return
     }
@@ -930,6 +946,7 @@ export function PreviewPane({
         setConnectFrom(null)
         return
       }
+      if (!preservedPlayback.current) preservePlaybackPosition()
       current.applyEditorSourceEdits([edit])
       window.requestAnimationFrame(() => useAppStore.getState().compileScript())
       setObjectNotice(`Arrow connected: ${connectFrom.id} → ${targetId}`)
@@ -1033,6 +1050,7 @@ export function PreviewPane({
   const sourceIsCurrent = currentEditorSource === compiledSource
   const applyAndCompileEdits = (edits: EditorSourceEdit[]) => {
     const current = useAppStore.getState()
+    if (!preservedPlayback.current) preservePlaybackPosition()
     current.applyEditorSourceEdits(edits)
     window.requestAnimationFrame(() => useAppStore.getState().compileScript())
   }
