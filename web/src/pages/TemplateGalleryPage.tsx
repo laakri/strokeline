@@ -79,12 +79,12 @@ function TemplateCarousel({
           type="button"
           onClick={() => onPreview(current)}
           aria-label={`Preview ${current.title}`}
-          className="template-carousel-in relative min-h-32 overflow-hidden border-r bg-muted/30 p-2 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring sm:min-h-36 sm:p-3"
+          className="template-carousel-in relative h-32 overflow-hidden border-r bg-muted/30 p-2 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring sm:h-36 sm:p-3"
         >
           <TemplatePreviewCanvas
             script={current.script}
             label={`${current.title} rendered preview`}
-            className="h-full min-h-28 w-full sm:min-h-32"
+            className="h-full min-h-0 w-full"
           />
         </button>
         <div
@@ -381,19 +381,13 @@ export function TemplateGalleryPage() {
                       type="button"
                       onClick={() => openTemplate(template)}
                       aria-label={`Preview ${template.title}`}
-                      className={`relative flex w-full justify-center overflow-hidden bg-muted/40 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring ${
-                        template.category === "Reels" ? "min-h-[360px]" : ""
-                      }`}
+                      className="relative flex aspect-[16/10] w-full justify-center overflow-hidden bg-muted/40 text-left focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-ring"
                     >
                       <TemplatePreviewCanvas
                         script={template.script}
                         label={`${template.title} rendered preview`}
                         lazy
-                        className={
-                          template.category === "Reels"
-                            ? "aspect-[9/16] h-[min(72vw,440px)] w-auto max-w-full"
-                            : "aspect-[16/10] w-full"
-                        }
+                        className="h-full w-full"
                       />
                       <span className="absolute top-3 left-3 rounded-md border bg-background/90 px-2.5 py-1 text-[11px] font-medium shadow-sm backdrop-blur">
                         {template.category}

@@ -170,7 +170,7 @@ export function TemplatePreviewCanvas({
               ref={canvasRef}
               role="img"
               aria-label={label}
-              className={`h-full w-full object-contain transition-opacity duration-300 ${
+              className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ${
                 previewStatus === "ready" ? "opacity-100" : "opacity-0"
               }`}
             />
