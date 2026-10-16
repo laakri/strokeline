@@ -93,6 +93,7 @@ export const CURATED_TEMPLATES: CuratedTemplate[] = [
     icon: Sprout,
     script: createVerticalReelScript({
       series: "PHOTOSYNTHESIS IN 60 SECONDS",
+      layout: "science-flow",
       theme: {
         background: "#EDF6E7",
         panel: "#FFFFFF",

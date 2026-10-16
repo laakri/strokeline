@@ -61,6 +61,21 @@ describe("curated template library", () => {
       ).size
     ).toBe(reels.length)
 
+    const designMarkers: Record<string, string> = {
+      "photosynthesis-micro-lesson": "CREATE lightSource",
+      "lightning-60-second-micro-lesson": "CREATE barSun",
+      "reels-hook-tips": "CREATE editorialRule",
+      "reels-before-after": "CREATE beforePanel",
+      "reels-product-reveal": "CREATE cupBody",
+      "reels-quote-card": "CREATE quoteGlyph",
+      "reels-countdown": "CREATE step1Number",
+    }
+    expect(
+      reels.map((template) =>
+        template.script.includes(designMarkers[template.id])
+      )
+    ).toEqual(reels.map(() => true))
+
     for (const template of reels) {
       const result = runScript(template.script)
       expect(result.document, template.id).not.toBeNull()
@@ -69,6 +84,21 @@ describe("curated template library", () => {
         result.document?.scenes.length,
         template.id
       ).toBeGreaterThanOrEqual(4)
+      expect(result.diagnostics.filter(blocksScriptRun), template.id).toEqual(
+        []
+      )
+      const textYPositions =
+        result.document?.scenes.flatMap((scene) =>
+          scene.ops.flatMap((op) =>
+            op.kind === "create" && op.node.type === "text"
+              ? [op.node.position.y]
+              : []
+          )
+        ) ?? []
+      expect(
+        textYPositions.every((y) => y < 1300 || y > 1580),
+        `${template.id} text avoids the subtitle-safe band`
+      ).toBe(true)
     }
   })
 })

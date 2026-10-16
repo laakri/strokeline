@@ -2218,6 +2218,7 @@ END SCENE
     icon: Sparkles,
     script: createVerticalReelScript({
       series: "3 EDITS FOR CLEARER REELS",
+      layout: "editorial",
       theme: {
         background: "#FFF8E8",
         panel: "#FFFFFF",
@@ -2287,6 +2288,7 @@ END SCENE
     icon: ArrowLeftRight,
     script: createVerticalReelScript({
       series: "BEFORE / AFTER",
+      layout: "comparison",
       theme: {
         background: "#E8F6F1",
         panel: "#FFFFFF",
@@ -2306,6 +2308,8 @@ END SCENE
           takeaway: "The audience has to work out what matters.",
           narration:
             "Here is a common problem: every detail is competing for attention.",
+          before: "Seven labels. Three arrows. Everything shouts.",
+          after: "One clear path. One message to remember.",
         },
         {
           scene: "Pick the point",
@@ -2315,6 +2319,8 @@ END SCENE
           takeaway: "Keep only details that help explain it.",
           narration:
             "Before rearranging anything, decide what the viewer should remember.",
+          before: "A slide full of equally loud facts.",
+          after: "One sentence tells you what stays.",
         },
         {
           scene: "Show the steps",
@@ -2324,6 +2330,8 @@ END SCENE
           takeaway: "Sequence beats a wall of information.",
           narration:
             "Put the cause first, the change second, and the result last.",
+          before: "Facts scattered with no order.",
+          after: "Problem → change → result.",
         },
         {
           scene: "The after",
@@ -2333,6 +2341,8 @@ END SCENE
           takeaway: "Make the next step easy to see.",
           narration:
             "Now the viewer knows where to look and what to take away.",
+          before: "Where should I look first?",
+          after: "A clear hook, example, and point.",
         },
       ],
     }),
@@ -2347,6 +2357,7 @@ END SCENE
     icon: PackageOpen,
     script: createVerticalReelScript({
       series: "SAMPLE PRODUCT STORY",
+      layout: "product-stage",
       theme: {
         background: "#F8E8DE",
         panel: "#FFF9F4",
@@ -2416,6 +2427,7 @@ END SCENE
     icon: Quote,
     script: createVerticalReelScript({
       series: "A LINE WORTH KEEPING",
+      layout: "quote",
       theme: {
         background: "#F3ECF7",
         panel: "#FFF9FF",
@@ -2476,6 +2488,7 @@ END SCENE
     icon: Timer,
     script: createVerticalReelScript({
       series: "THE 3-BEAT REEL FORMULA",
+      layout: "step-stack",
       theme: {
         background: "#DDF3FF",
         panel: "#F7FCFF",
