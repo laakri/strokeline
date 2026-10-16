@@ -1,7 +1,7 @@
 import type { SayLine } from "@/ir/types.ts"
 import { fontFamilyFor } from "@/lib/textMetrics.ts"
 import { plainSubtitleText, wrapSubtitleText } from "@/subtitles/subtitles.ts"
-import { type CaptionStyle } from "@/reels/reels.ts"
+import { REELS_SAFE_ZONES, type CaptionStyle } from "@/reels/reels.ts"
 import { watermarkLayout } from "@/renderer/watermark.ts"
 
 const subtitleWidth = 1680
@@ -147,8 +147,10 @@ function drawReelsCaption(
   const paddingY = style === "minimal" ? 0 : fontSize * 0.18
   const watermark = watermarkLayout(context, canvasSize)
   const watermarkGap = Math.max(12, fontSize * 0.25)
+  const bottomSafeEdge = canvasSize.height - REELS_SAFE_ZONES.bottom
   const centerY = Math.min(
-    canvasSize.height * 0.87,
+    canvasSize.height * 0.82,
+    bottomSafeEdge - watermarkGap - paddingY - contentHeight / 2,
     watermark.y - watermarkGap - paddingY - contentHeight / 2
   )
 

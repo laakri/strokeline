@@ -4,6 +4,7 @@ import {
   drawSubtitleLayer,
   reelsCaptionFontSize,
 } from "@/renderer/subtitles.ts"
+import { REELS_SAFE_ZONES } from "@/reels/reels.ts"
 import { watermarkLayout } from "@/renderer/watermark.ts"
 
 describe("Reels captions", () => {
@@ -13,7 +14,7 @@ describe("Reels captions", () => {
     expect(reelsCaptionFontSize(320)).toBe(26)
   })
 
-  it("places reel captions above the bottom watermark area", () => {
+  it("keeps reel captions above the bottom platform UI safe zone", () => {
     const canvas = createCanvas(540, 960)
     const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
     drawSubtitleLayer(
@@ -39,10 +40,11 @@ describe("Reels captions", () => {
       }
     }
 
-    expect((minY + maxY) / 2).toBeCloseTo(canvas.height * 0.87, -1)
+    expect((minY + maxY) / 2).toBeLessThan(canvas.height * 0.82)
+    expect(maxY).toBeLessThan(canvas.height - REELS_SAFE_ZONES.bottom)
   })
 
-  it("keeps long captions above the watermark without jumping upward", () => {
+  it("keeps long captions above the platform UI and watermark", () => {
     const canvas = createCanvas(1080, 1350)
     const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
     drawSubtitleLayer(
@@ -68,7 +70,7 @@ describe("Reels captions", () => {
 
     const watermark = watermarkLayout(context, { width: 1080, height: 1350 })
     expect(maxY).toBeLessThan(watermark.y - 10)
-    expect(maxY).toBeGreaterThan(1350 * 0.8)
+    expect(maxY).toBeLessThan(1350 - REELS_SAFE_ZONES.bottom)
   })
 
   it("keeps a long unbroken word's caption background within the canvas", () => {
