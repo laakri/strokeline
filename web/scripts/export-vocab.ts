@@ -5,6 +5,7 @@ import { BOARD_BASES, THEMES } from "../src/defaults/themes.ts"
 import { BUILTIN_MACROS } from "../src/dsl/builtinMacros.ts"
 import {
   CAMERA_VERBS,
+  COMPONENT_TYPES,
   EASE_NAMES,
   ENTER_EFFECT_NAMES,
   EXIT_EFFECT_NAMES,
@@ -107,24 +108,53 @@ const properties: Record<string, string> = {
   GRADIENT: "Two-color shape gradient.",
   WORDS: "Selected words for a marker text entrance.",
   TRAIL: "PATHFOLLOW trail toggle.",
+  LANGUAGE: "CODE syntax-highlighting language: js, ts, html, css, json, or python.",
+  CODELINE: "One source line in a CODE window; may be repeated.",
+  HIGHLIGHTLINE: "Static CODE source line to emphasize; line indexes start at 1.",
+  TITLE: "Window title for CODE, TERMINAL, BROWSER, or PHONE.",
+  ADDRESS: "Address bar text for BROWSER or PHONE.",
+  COMMAND: "A typed command in TERMINAL; may be repeated.",
+  OUTPUT: "A displayed command result in TERMINAL; may be repeated.",
+  PROMPT: "TERMINAL command prompt text; defaults to `$`.",
+  VALUE: "COUNTER target value.",
+  PREFIX: "Text before the COUNTER value.",
+  SUFFIX: "Text after the COUNTER value.",
+  LEFT: "Left panel label for SPLIT.",
+  RIGHT: "Right panel label for SPLIT.",
+  BEFORE: "Before panel label for BEFORE-AFTER.",
+  AFTER: "After panel label for BEFORE-AFTER.",
+  PARENT: "Earlier BROWSER or PHONE ID for a child object inside its content area.",
 }
 
 let output = `# Strokeline vocabulary\n\n`
 output += `Generated from the app DSL registries by \`web/scripts/export-vocab.ts\`. Regenerate with \`npm run export:vocab\` from \`web/\`. The app parser/compiler/renderer are the source of truth.\n\n`
 output += `## Shapes and components\n\n| Name | Exact form | Block/action | Meaning |\n|---|---|---|---|\n`
 for (const type of SHAPE_TYPES) output += `| \`${type}\` | \`CREATE id AS ${type}\` | block; \`END\` | ${titleCase(type.toLowerCase())} shape/object. |\n`
+const componentForms: Record<string, string> = {
+  CODE: "`POSITION`, `WIDTH`, `HEIGHT`, `CODELINE`; optional `LANGUAGE`, `TITLE`, `HIGHLIGHTLINE`.",
+  TERMINAL: "`POSITION`, `WIDTH`, `HEIGHT`, `COMMAND` and/or `OUTPUT`; optional `PROMPT`, `TITLE`.",
+  BROWSER: "`POSITION`, `WIDTH`, `HEIGHT`; optional `TITLE`, `ADDRESS`; child objects may use `PARENT id`.",
+  PHONE: "`POSITION`, `WIDTH`, `HEIGHT`; optional `TITLE`, `ADDRESS`; child objects may use `PARENT id`.",
+  SPLIT: "`POSITION`, `WIDTH`, `HEIGHT`, `LEFT`, `RIGHT`.",
+  "BEFORE-AFTER": "`POSITION`, `WIDTH`, `HEIGHT`, `BEFORE`, `AFTER`.",
+  COUNTER: "`POSITION`, `WIDTH`, `HEIGHT`, numeric `VALUE`; optional `PREFIX`, `SUFFIX`.",
+}
+for (const type of COMPONENT_TYPES) {
+  const meaning = componentForms[type]!
+  output += `| \`${type}\` | \`CREATE id AS ${type}\` + ${meaning} | block; \`END\` | Procedural, measurable themed component. |\n`
+}
 output += `| \`ARROW\` | \`ARROW [id FROM] source -> target\` | action; no \`END\` | Route connector between existing objects. |\n| \`TABLE\` | \`TABLE id\` | block; \`END\` | Measurable rows/columns table. |\n| \`BARCHART\`, \`LINECHART\`, \`PIECHART\` | \`BARCHART id\`, \`LINECHART id\`, \`PIECHART id\` | block; \`END\` | Data chart with \`POSITION\`, \`SIZE\`, and repeated \`DATA "label" number\`. |\n| \`INK\` raw | \`INK id\` + \`POINTS x y x y ...\` | block; \`END\` | Procedural raw stroke; requires at least two coordinate pairs. |\n| \`INK ARROW\` | \`INK ARROW FROM x y TO x y\` | action; optional properties, optional \`END\` | Hand-drawn annotation arrow. |\n| \`INK UNDERLINE\`, \`INK CIRCLE\` | \`INK UNDERLINE id\`, \`INK CIRCLE id\` | action; optional properties, optional \`END\` | Annotation attached to an existing object. |\n| \`PATHFOLLOW\` | \`PATHFOLLOW object ALONG namedArrow\` | action; no \`END\` | Moves an object along an existing named ARROW route. |\n`
-output += `\nCODE, TERMINAL, BROWSER, PHONE, SPLIT, BEFORE-AFTER, and COUNTER are not registered DSL types/statements in the current app and are not valid syntax.\n\n`
+output += `\n`
 output += `## Statements and animation effects\n\n`
 output += `| Category | Exact spellings | Form | Meaning |\n|---|---|---|---|\n`
-output += `| ENTER | ${ENTER_EFFECT_NAMES.map((value) => `\`${value}\``).join(", ")} | \`ENTER id effect [DURATION time]\`; action | Entrance; text effects target TEXT. \`marker\` additionally takes \`WORDS "word1 word2"\`. |\n`
+output += `| ENTER | ${ENTER_EFFECT_NAMES.map((value) => `\`${value}\``).join(", ")} | \`ENTER id effect [DURATION time]\`; action | Entrance; text effects target TEXT, except \`typewriter\` also works on CODE/TERMINAL. \`marker\` additionally takes \`WORDS "word1 word2"\`. |\n`
 output += `| EXIT | ${EXIT_EFFECT_NAMES.map((value) => `\`${value}\``).join(", ")} | \`EXIT id effect [DURATION time]\`; action | Exit animation. |\n`
 output += `| LOOP | ${LOOP_EFFECT_NAMES.map((value) => `\`${value}\``).join(", ")} | \`LOOP id effect [AMPLITUDE n] [PERIOD time]\`; action | Procedural idle animation. |\n`
 output += `| CAMERA | ${CAMERA_VERBS.map((value) => `\`${value}\``).join(", ")} | \`CAMERA verb\` + property lines; action | Camera operations. |\n`
 output += `| EASE | ${EASE_NAMES.map((value) => `\`${value}\``).join(", ")} | \`EASE name\` | Animation interpolation curve. |\n`
 output += `| TRANSITION | ${TRANSITION_NAMES.map((value) => `\`${value}\``).join(", ")} | \`TRANSITION type DURATION time\` | Scene transition. |\n`
 output += `| SAY TONE | ${SAY_TONES.map((value) => `\`${value}\``).join(", ")} | \`TONE name\` | Narration intent metadata. |\n`
-output += `| Text effect | ${TEXT_EFFECT_NAMES.map((value) => `\`${value}\``).join(", ")} | \`ENTER textId effect\`; action | Text-only entrance; marker uses \`WORDS\`. |\n`
+output += `| Text effect | ${TEXT_EFFECT_NAMES.map((value) => `\`${value}\``).join(", ")} | \`ENTER textId effect\`; action | \`typewriter\` supports TEXT/CODE/TERMINAL; other text effects target TEXT; marker uses \`WORDS\`. |\n`
 output += `| PARALLEL | \`STAGGER\` | \`PARALLEL [STAGGER duration]\` ... \`END\`; block | Runs children concurrently; stagger offsets successive child start times. |\n`
 output += `| STACK, GRID | \`STACK\`, \`GRID\` | block; \`END\` | Measurable shape/text layout containers. |\n`
 output += `\n## Built-in macros\n\n| Macro | Parameters | Form | Meaning |\n|---|---|---|---|\n`

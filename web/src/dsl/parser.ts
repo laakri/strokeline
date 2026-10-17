@@ -2,6 +2,7 @@
 import { lex, type Token } from "@/dsl/lexer.ts"
 import {
   ANIMATION_PROPERTY_KEYS,
+  COMPONENT_TYPES,
   SHAPE_TYPES,
   STATEMENT_KEYWORDS,
 } from "@/dsl/grammar.ts"
@@ -483,7 +484,11 @@ class Parser {
     const token = this.take()
     const id = this.readIdent("E_EXPECTED_ID", token)
     this.expect("AS", token)
-    const type = this.takeValue("E_EXPECTED_TYPE", token)
+    const rawType = this.takeValue("E_EXPECTED_TYPE", token)
+    const normalizedType = rawType.toUpperCase()
+    const type = (COMPONENT_TYPES as readonly string[]).includes(normalizedType)
+      ? normalizedType
+      : rawType
     this.endLine()
     const props = this.parseProperties(["END"])
     if (this.word() === "END") {

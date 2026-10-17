@@ -400,6 +400,35 @@ const iconScript = `CREATE brain AS ICON
   COLOR #8CC8FF
 END`
 
+const componentsScript = `VERSION 1.0
+CANVAS 1920 1080
+SCENE 1 "Code and browser"
+  CREATE code AS CODE
+    POSITION 470 500
+    WIDTH 700
+    HEIGHT 430
+    TITLE "Request handler"
+    LANGUAGE ts
+    CODELINE "const response = await fetch(url)"
+    CODELINE "return response.json()"
+    DRAW 1.2s
+  END
+  AT 1.4s
+    ANIMATE code HIGHLIGHT ROW 2 DURATION 0.5s
+  CREATE browser AS BROWSER
+    POSITION 1410 500
+    WIDTH 700
+    HEIGHT 430
+    ADDRESS "https://example.com"
+  END
+  CREATE pageTitle AS TEXT
+    TEXT "The returned page"
+    POSITION 1410 500
+    SIZE 32
+    PARENT browser
+  END
+END SCENE`
+
 const sayScript = `SAY "The cache keeps frequently used data close."
   DURATION 3s
   WHO "Narrator"
@@ -919,7 +948,8 @@ export function DocsPage() {
                 Use <code>CREATE id AS TYPE</code> and close it with{" "}
                 <code>END</code>. Types are <code>TEXT</code>,{" "}
                 <code>CIRCLE</code>, <code>ELLIPSE</code>, <code>RECTANGLE</code>, <code>DIAMOND</code>, <code>LINE</code>,
-                <code>ICON</code>, and <code>IMAGE</code>.
+                <code>ICON</code>, and <code>IMAGE</code>; procedural component
+                types are documented below.
               </p>
               <ul className={listCls}>
                 <li>
@@ -988,6 +1018,35 @@ export function DocsPage() {
                   right; hand-drawn ink tapers at both ends.
                 </li>
               </ul>
+              <h3>Procedural components</h3>
+              <p>
+                Components are measurable <code>CREATE id AS TYPE</code> blocks.
+                Set <code>POSITION</code>, <code>WIDTH</code>, and{" "}
+                <code>HEIGHT</code>; they can be arranged by <code>STACK</code>{" "}
+                or <code>GRID</code>, animated, and framed by the camera.{" "}
+                <code>CODE</code> accepts a <code>TITLE</code>,{" "}
+                <code>LANGUAGE js|ts|html|css|json|python</code>, repeated{" "}
+                <code>CODELINE "..."</code>, and optional{" "}
+                <code>HIGHLIGHTLINE n</code>. Animate a code line with{" "}
+                <code>ANIMATE id HIGHLIGHT ROW n</code>.
+              </p>
+              <p>
+                <code>BROWSER</code> and <code>PHONE</code> take optional{" "}
+                <code>TITLE</code> and <code>ADDRESS</code>. A child shape or
+                text created afterward can set <code>PARENT browserId</code>;
+                its measurable bounds must fit in the content viewport and it
+                is clipped there. <code>TERMINAL</code> uses repeated{" "}
+                <code>COMMAND "..."</code>/<code>OUTPUT "..."</code> lines and
+                optional <code>PROMPT "..."</code>. <code>COUNTER</code> uses
+                numeric <code>VALUE</code> and optional <code>PREFIX</code> /
+                <code>SUFFIX</code>. <code>SPLIT</code> uses{" "}
+                <code>LEFT</code>/<code>RIGHT</code>;{" "}
+                <code>BEFORE-AFTER</code> uses <code>BEFORE</code>/
+                <code>AFTER</code>. Component content reveals with{" "}
+                <code>DRAW duration</code>; <code>ENTER typewriter</code> also
+                types CODE and TERMINAL content.
+              </p>
+              <CodeBlock title="CODE and BROWSER" code={componentsScript} />
               <h3>Text plates and math</h3>
               <p>
                 A text plate draws a rounded, translucent background behind the
@@ -1528,8 +1587,16 @@ ENTER keyPoints marker WORDS "procedural deterministic" DURATION 0.8s`}
                   <code>WAIT 2s</code>.
                 </InfoCard>
                 <InfoCard title="Text effect target">
-                  Text-only <code>ENTER</code> effects need a <code>TEXT</code>{" "}
-                  object. Marker effects also need <code>WORDS "..."</code>.
+                  <code>typewriter</code> supports <code>TEXT</code>,{" "}
+                  <code>CODE</code>, and <code>TERMINAL</code>;{" "}
+                  <code>scramble</code>, <code>word-by-word</code>, and{" "}
+                  <code>marker</code> need <code>TEXT</code>. Marker effects
+                  also need <code>WORDS "..."</code>.
+                </InfoCard>
+                <InfoCard title="Browser child bounds">
+                  <code>PARENT</code> must name an earlier <code>BROWSER</code>{" "}
+                  or <code>PHONE</code>, and the child's full bounds must fit
+                  inside its content viewport.
                 </InfoCard>
                 <InfoCard title="Text outside safe area">
                   Keep the full text box inside the canvas margins, not just the

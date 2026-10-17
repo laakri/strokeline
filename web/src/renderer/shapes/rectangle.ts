@@ -7,6 +7,7 @@ import { fitTextFontSize } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { applyShapeShadow, clearShapeShadow, drawShapeShadow, fillShape } from "@/renderer/shapes/shapePaint.ts"
 import { drawRoughFill, drawSampledPathGroups, groupSampledPaths, sampledRoughPathsForNode, shouldUseRoughSampledGeometry, usesPatternedRoughFill } from "@/renderer/roughPath.ts"
+import { drawComponent } from "@/renderer/shapes/components.ts"
 
 export function rectangleBoundingBox(node: SceneNode): BoundingBox {
   const width = node.size?.width ?? 0
@@ -44,6 +45,7 @@ export function drawRectangle(
   renderContext: RenderContext,
   node: SceneNode
 ): void {
+  if (drawComponent(renderContext, node)) return
   const box = rectangleBoundingBox(node)
   const progress = Math.max(
     0,

@@ -8,6 +8,15 @@ export const SHAPE_TYPES = [
   "ICON",
   "IMAGE",
 ] as const
+export const COMPONENT_TYPES = [
+  "CODE",
+  "TERMINAL",
+  "BROWSER",
+  "PHONE",
+  "SPLIT",
+  "BEFORE-AFTER",
+  "COUNTER",
+] as const
 export const ANIMATION_VERBS = [
   "MOVE",
   "FADE",
@@ -127,6 +136,22 @@ export const PROPERTY_KEYS = [
   "GRADIENT",
   "WORDS",
   "TRAIL",
+  "LANGUAGE",
+  "CODELINE",
+  "HIGHLIGHTLINE",
+  "TITLE",
+  "ADDRESS",
+  "COMMAND",
+  "OUTPUT",
+  "PROMPT",
+  "VALUE",
+  "PREFIX",
+  "SUFFIX",
+  "LEFT",
+  "RIGHT",
+  "BEFORE",
+  "AFTER",
+  "PARENT",
 ] as const
 
 export { ICON_NAMES, type IconName } from "@/defaults/icons.ts"

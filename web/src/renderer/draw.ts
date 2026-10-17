@@ -10,6 +10,7 @@ import type { RenderState } from "@/timeline/timeline.ts"
 import { drawSubtitleLayer } from "@/renderer/subtitles.ts"
 import { getImageStatus } from "@/renderer/images.ts"
 import { drawWatermark } from "@/renderer/watermark.ts"
+import { componentContentBounds } from "@/renderer/shapes/components.ts"
 import {
   FREE_BRANDING_ENTITLEMENTS,
   type BrandingEntitlements,
@@ -199,6 +200,17 @@ function* drawSceneSteps(
     }
 
     context.save()
+    const parentId = node.data?.parentId
+    const parent = typeof parentId === "string" ? nodes.get(parentId) : undefined
+    if (
+      parent &&
+      (parent.data?.componentType === "BROWSER" || parent.data?.componentType === "PHONE")
+    ) {
+      const content = componentContentBounds(parent)
+      context.beginPath()
+      context.rect(content.x, content.y, content.width, content.height)
+      context.clip()
+    }
     context.globalAlpha = node.opacity
     const cached =
       cacheNodes && node.revealProgress >= 1 && node.rotation === 0 && tableHighlights.length === 0

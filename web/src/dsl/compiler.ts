@@ -13,7 +13,7 @@ import { formatMathText } from "@/lib/mathText.ts"
 import { layoutTable } from "@/lib/tableLayout.ts"
 import { BOARD_BASES, THEMES } from "@/defaults/themes.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
-import { ENTER_EFFECT_NAMES, EXIT_EFFECT_NAMES, LOOP_EFFECT_NAMES, SAY_TONES, STYLE_NAMES, TEXT_EFFECT_NAMES } from "@/dsl/grammar.ts"
+import { COMPONENT_TYPES, ENTER_EFFECT_NAMES, EXIT_EFFECT_NAMES, LOOP_EFFECT_NAMES, SAY_TONES, STYLE_NAMES, TEXT_EFFECT_NAMES } from "@/dsl/grammar.ts"
 import { normalizeTextAnchor, positionFromAnchor } from "@/lib/anchors.ts"
 import { error, type Diagnostic } from "@/dsl/diagnostics.ts"
 import { fitTextFontSize, layoutText } from "@/lib/textLayout.ts"
@@ -822,6 +822,10 @@ function nodeFromCreate(
   allowMissingPosition = false
 ): SceneNode {
   const props = statement.props
+  const sourceType = statement.type.toUpperCase()
+  const componentType = (COMPONENT_TYPES as readonly string[]).includes(sourceType)
+    ? sourceType
+    : undefined
   const position = propNumbers(props, "POSITION")
   const relativeProperties = props.filter((prop) =>
     [
@@ -950,7 +954,7 @@ function nodeFromCreate(
       (line, fontSize) => measureTextWidth(line, fontSize, fontFamilyName(ast.font))
     )
   }
-  const type = statement.type.toLowerCase()
+  const type = componentType ? "rectangle" : statement.type.toLowerCase()
   const sizeValues = propNumbers(props, "SIZE")
   const legacyShapeSize =
     ["rectangle", "diamond", "ellipse"].includes(type) &&
@@ -1069,7 +1073,7 @@ function nodeFromCreate(
     )
   return {
     id: statement.id,
-    type: statement.type.toLowerCase() as SceneNode["type"],
+    type: type as SceneNode["type"],
     position: resolvedPosition,
     size:
       width !== undefined || height !== undefined
@@ -1112,6 +1116,55 @@ function nodeFromCreate(
     groupId,
     data: {
       _sourceProperties: props.map((prop) => prop.key),
+      ...(componentType
+        ? {
+            componentType,
+            ...(componentType === "CODE"
+              ? {
+                  language: propString(props, "LANGUAGE")?.toLowerCase(),
+                  codeLines: propStrings(props, "CODELINE"),
+                  highlightLines: props
+                    .filter((prop) => prop.key === "HIGHLIGHTLINE")
+                    .flatMap((prop) => prop.values.map(Number)),
+                }
+              : {}),
+            ...(componentType === "TERMINAL"
+              ? {
+                  commands: propStrings(props, "COMMAND"),
+                  outputs: propStrings(props, "OUTPUT"),
+                  prompt: propString(props, "PROMPT") ?? "$",
+                }
+              : {}),
+            ...(componentType === "BROWSER" || componentType === "PHONE"
+              ? {
+                  title: propString(props, "TITLE"),
+                  address: propString(props, "ADDRESS") ?? "https://example.com",
+                }
+              : {}),
+            ...(componentType === "COUNTER"
+              ? {
+                  value: propNumber(props, "VALUE"),
+                  prefix: propString(props, "PREFIX") ?? "",
+                  suffix: propString(props, "SUFFIX") ?? "",
+                }
+              : {}),
+            ...(componentType === "SPLIT"
+              ? {
+                  left: propString(props, "LEFT"),
+                  right: propString(props, "RIGHT"),
+                }
+              : {}),
+            ...(componentType === "BEFORE-AFTER"
+              ? {
+                  left: propString(props, "BEFORE"),
+                  right: propString(props, "AFTER"),
+                }
+              : {}),
+          }
+        : {}),
+      ...(propString(props, "PARENT")
+        ? { parentId: propString(props, "PARENT") }
+        : {}),
       _sourcePropertyLocations: Object.fromEntries(
         props.map((prop) => [
           prop.key,
@@ -1870,6 +1923,11 @@ function propNumbers(props: ASTProperty[], key: string): number[] {
 }
 function propValues(props: ASTProperty[], key: string): ASTValue[] {
   return props.find((prop) => prop.key === key)?.values ?? []
+}
+function propStrings(props: ASTProperty[], key: string): string[] {
+  return props
+    .filter((prop) => prop.key === key)
+    .flatMap((prop) => prop.values.map(String))
 }
 
 function fitSizeProperty(props: ASTProperty[]): {

@@ -6,7 +6,9 @@ import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { layoutTable, TABLE_CELL_PADDING } from "@/lib/tableLayout.ts"
 import { resolveArrowEndpoints } from "@/renderer/geometry.ts"
 import { tableBounds } from "@/renderer/shapes/table.ts"
-import { ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES } from "@/dsl/grammar.ts"
+import { componentContentBounds } from "@/renderer/shapes/components.ts"
+import { ShapeRegistry } from "@/renderer/shapes/registry.ts"
+import { COMPONENT_TYPES, ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES } from "@/dsl/grammar.ts"
 import type { Point, Scene, SceneDocument, SceneNode, TimelineOp } from "@/ir/types.ts"
 import { plainSubtitleText } from "@/subtitles/subtitles.ts"
 
@@ -199,7 +201,8 @@ export function validate(document: SceneDocument): Diagnostic[] {
             )
           )
         if (
-          (op.node.type === "rectangle" || op.node.type === "diamond" || op.node.type === "ellipse") &&
+          (op.node.type === "diamond" || op.node.type === "ellipse" ||
+            (op.node.type === "rectangle" && typeof op.node.data?.componentType !== "string")) &&
           (!op.node.size || op.node.size.width <= 0 || op.node.size.height <= 0)
         )
           diagnostics.push(
@@ -210,6 +213,7 @@ export function validate(document: SceneDocument): Diagnostic[] {
               op.source?.col ?? 1
             )
           )
+        validateComponentNode(op.node, op.source, diagnostics)
         if (op.node.type === "image") {
           const image = op.node.image
           const propertyLocations = op.node.data?._sourcePropertyLocations as
@@ -379,8 +383,11 @@ export function validate(document: SceneDocument): Diagnostic[] {
         const textEffects = ["typewriter", "scramble", "word-by-word", "marker"]
         if (op.anim.verb === "enter" && textEffects.includes(op.anim.effectName ?? "")) {
           const effectTarget = createdNodes.get(op.targetId)
-          if (effectTarget && effectTarget.type !== "text")
-            diagnostics.push(error("E_TEXT_EFFECT_TARGET", `${op.anim.effectName} is only supported on TEXT objects.`, op.source?.line ?? 1, op.source?.col ?? 1))
+          const componentType = effectTarget?.data?.componentType
+          const supportsTyping = op.anim.effectName === "typewriter" &&
+            (componentType === "CODE" || componentType === "TERMINAL")
+          if (effectTarget && effectTarget.type !== "text" && !supportsTyping)
+            diagnostics.push(error("E_TEXT_EFFECT_TARGET", `${op.anim.effectName} is supported on TEXT objects${op.anim.effectName === "typewriter" ? " and CODE or TERMINAL components" : ""}.`, op.source?.line ?? 1, op.source?.col ?? 1))
           if (op.anim.effectName === "marker" && !op.anim.textWords?.length)
             diagnostics.push(error("E_TEXT_EFFECT_WORDS", "ENTER target marker needs WORDS \"...\".", op.source?.line ?? 1, op.source?.col ?? 1))
         }
@@ -394,12 +401,18 @@ export function validate(document: SceneDocument): Diagnostic[] {
           const selector = op.anim.tableTarget
           const rows = (target?.data?.rows as string[][] | undefined) ?? []
           const columns = (target?.data?.columns as string[] | undefined) ?? []
-          const invalid = target?.type !== "table" ||
+          const codeLines = (target?.data?.codeLines as string[] | undefined) ?? []
+          const isCodeLine = target?.data?.componentType === "CODE" &&
+            selector.type === "row" &&
+            selector.row <= codeLines.length
+          const invalid = !isCodeLine && (
+            target?.type !== "table" ||
             (selector.type === "row" && selector.row > rows.length) ||
             (selector.type === "column" && selector.column > columns.length) ||
             (selector.type === "cell" && (selector.row > rows.length || selector.column > columns.length))
+          )
           if (invalid)
-            diagnostics.push(error("E_BAD_RANGE", `HIGHLIGHT target is outside TABLE "${op.targetId}".`, op.source?.line ?? 1, op.source?.col ?? 1))
+            diagnostics.push(error("E_BAD_RANGE", `HIGHLIGHT target is outside TABLE "${op.targetId}" or CODE line range.`, op.source?.line ?? 1, op.source?.col ?? 1))
         }
         if (op.anim.duration <= 0)
           diagnostics.push(
@@ -482,9 +495,163 @@ export function validate(document: SceneDocument): Diagnostic[] {
           )
       }
     }
+    validateComponentParents(scene.ops, diagnostics)
     validateSceneWarnings(scene, document, diagnostics)
   }
   return diagnostics
+}
+
+function validateComponentNode(
+  node: SceneNode,
+  source: { line: number; col: number } | undefined,
+  diagnostics: Diagnostic[]
+): void {
+  const type = node.data?.componentType
+  if (typeof type !== "string" || !(COMPONENT_TYPES as readonly string[]).includes(type))
+    return
+
+  const properties = (node.data?._sourceProperties as string[] | undefined) ?? []
+  const locations = node.data?._sourcePropertyLocations as
+    | Record<string, { line: number; col: number }>
+    | undefined
+  const at = (property: string) => locations?.[property] ?? source ?? { line: 1, col: 1 }
+  const requireProperty = (property: string) => {
+    if (!properties.includes(property))
+      diagnostics.push(error(
+        "E_MISSING_REQUIRED_PROP",
+        `${type} "${node.id}" needs ${property}.`,
+        at(property).line,
+        at(property).col
+      ))
+  }
+  const requireTextProperty = (property: string, value: unknown) => {
+      if (typeof value !== "string" || !value.trim())
+        diagnostics.push(error(
+          "E_MISSING_REQUIRED_PROP",
+          `${type} "${node.id}" needs non-empty ${property} text.`,
+          at(property).line,
+          at(property).col
+        ))
+  }
+
+  for (const property of ["WIDTH", "HEIGHT"])
+    requireProperty(property)
+  if (!node.size || node.size.width <= 0 || node.size.height <= 0)
+    diagnostics.push(error(
+      "E_BAD_RANGE",
+      `${type} "${node.id}" needs positive WIDTH and HEIGHT.`,
+      at("WIDTH").line,
+      at("WIDTH").col
+    ))
+
+  if (type === "CODE") {
+    const lines = (node.data?.codeLines as string[] | undefined) ?? []
+    const language = String(node.data?.language ?? "js").toLowerCase()
+    if (!["js", "ts", "html", "css", "json", "python"].includes(language))
+      diagnostics.push(error(
+        "E_BAD_RANGE",
+        `CODE LANGUAGE must be js, ts, html, css, json, or python; received "${language}".`,
+        at("LANGUAGE").line,
+        at("LANGUAGE").col
+      ))
+    if (!lines.length)
+      diagnostics.push(error(
+        "E_MISSING_REQUIRED_PROP",
+        `CODE "${node.id}" needs at least one CODELINE "source line".`,
+        at("CODELINE").line,
+        at("CODELINE").col
+      ))
+    for (const line of (node.data?.highlightLines as number[] | undefined) ?? []) {
+      if (!Number.isInteger(line) || line < 1 || line > lines.length)
+        diagnostics.push(error(
+          "E_BAD_RANGE",
+          `CODE HIGHLIGHTLINE must be between 1 and ${lines.length}.`,
+          at("HIGHLIGHTLINE").line,
+          at("HIGHLIGHTLINE").col
+        ))
+    }
+    if (properties.includes("HIGHLIGHTLINE") && !(node.data?.highlightLines as number[] | undefined)?.length)
+        diagnostics.push(error(
+          "E_BAD_RANGE",
+          "CODE HIGHLIGHTLINE needs a positive source line number.",
+          at("HIGHLIGHTLINE").line,
+          at("HIGHLIGHTLINE").col
+        ))
+  } else if (type === "TERMINAL") {
+    const commands = (node.data?.commands as string[] | undefined) ?? []
+    const outputs = (node.data?.outputs as string[] | undefined) ?? []
+    if (!commands.length && !outputs.length)
+      diagnostics.push(error(
+        "E_MISSING_REQUIRED_PROP",
+        `TERMINAL "${node.id}" needs at least one COMMAND or OUTPUT.`,
+        source?.line ?? 1,
+        source?.col ?? 1
+      ))
+  } else if (type === "COUNTER") {
+    requireProperty("VALUE")
+    const value = node.data?.value
+    if (typeof value !== "number" || !Number.isFinite(value))
+      diagnostics.push(error(
+        "E_BAD_RANGE",
+        `COUNTER VALUE for "${node.id}" must be a finite number.`,
+        at("VALUE").line,
+        at("VALUE").col
+      ))
+  } else if (type === "SPLIT") {
+    requireProperty("LEFT")
+    requireProperty("RIGHT")
+    requireTextProperty("LEFT", node.data?.left)
+    requireTextProperty("RIGHT", node.data?.right)
+  } else if (type === "BEFORE-AFTER") {
+    requireProperty("BEFORE")
+    requireProperty("AFTER")
+    requireTextProperty("BEFORE", node.data?.left)
+    requireTextProperty("AFTER", node.data?.right)
+  }
+}
+
+function validateComponentParents(
+  ops: TimelineOp[],
+  diagnostics: Diagnostic[]
+): void {
+  const created = new Map<string, SceneNode>()
+  for (const op of ops) {
+    if (op.kind !== "create") continue
+    const parentId = op.node.data?.parentId
+    if (typeof parentId === "string") {
+      const location = (
+        op.node.data?._sourcePropertyLocations as
+          | Record<string, { line: number; col: number }>
+          | undefined
+      )?.PARENT ?? op.source ?? { line: 1, col: 1 }
+      const parent = created.get(parentId)
+      if (!parent || !["BROWSER", "PHONE"].includes(String(parent.data?.componentType))) {
+        diagnostics.push(error(
+          "E_COMPONENT_PARENT",
+          `PARENT "${parentId}" must name an earlier BROWSER or PHONE component.`,
+          location.line,
+          location.col
+        ))
+      } else {
+        const content = componentContentBounds(parent)
+        const renderer = op.node.type === "ink" ? undefined : ShapeRegistry[op.node.type]
+        const bounds = renderer?.boundingBox(op.node)
+        if (bounds && (
+          bounds.x < content.x ||
+          bounds.y < content.y ||
+          bounds.x + bounds.width > content.x + content.width ||
+          bounds.y + bounds.height > content.y + content.height
+        ))
+          diagnostics.push(error(
+            "E_COMPONENT_PARENT",
+            `Object "${op.node.id}" must fit inside BROWSER or PHONE "${parentId}" content bounds.`,
+            location.line,
+            location.col
+          ))
+      }
+    }
+    created.set(op.node.id, op.node)
+  }
 }
 
 function validateSays(scene: Scene, diagnostics: Diagnostic[]): void {
