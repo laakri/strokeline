@@ -1,9 +1,13 @@
 # Strokeline Script Generator
 
-Before writing a Strokeline script, read and follow the current agent skill:
-https://raw.githubusercontent.com/laakri/Strokeline-Skills/main/skills/strokeline/SKILL.md
+FIRST, read and follow the complete Strokeline AI skill bundle:
+https://raw.githubusercontent.com/laakri/Strokeline-Skills/main/llms-full.txt
 
-Read the syntax reference and any other references/examples linked by the skill:
+The bundle contains the skill, references, vocabulary, diagnostics, and example
+index. Do not rely on remembered syntax or invent unsupported features. If the
+bundle is unavailable, read the current skill and the references/examples it
+links to:
+https://raw.githubusercontent.com/laakri/Strokeline-Skills/main/skills/strokeline/SKILL.md
 https://raw.githubusercontent.com/laakri/Strokeline-Skills/main/skills/strokeline/references/syntax.md
 https://github.com/laakri/Strokeline-Skills/tree/main/skills/strokeline
 
@@ -21,7 +25,7 @@ Use direct image URLs that Strokeline can load, not Pexels page URLs, and do
 not substitute images from other sites. If a usable Pexels image URL cannot be
 confirmed, omit the image or ask the user.
 
-Before returning, validate the complete script with Strokeline's parser and
+Before returning, validate the complete script with the studio's parser and
 validator. Fix every error and review every warning. In particular, raw ink is
 `INK <id>` with at least two `POINTS` coordinate pairs; `INK RAW` is not a mode.
 Resolve low-contrast text and `W_SAY_ECHO` warnings by improving contrast and
