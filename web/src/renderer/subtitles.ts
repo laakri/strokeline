@@ -1,49 +1,24 @@
-import type { SayLine } from "@/ir/types.ts"
+import type { SayLine, WordTiming } from "@/ir/types.ts"
 import { fontFamilyFor } from "@/lib/textMetrics.ts"
 import { plainSubtitleText, wordTimingsForDuration, wrapSubtitleText } from "@/subtitles/subtitles.ts"
-import { REELS_SAFE_ZONES, type CaptionStyle } from "@/reels/reels.ts"
-import { watermarkLayout } from "@/renderer/watermark.ts"
+import { type CaptionStyle } from "@/reels/reels.ts"
 
-const subtitleWidth = 1680
-const subtitleCenterX = 960
-const subtitleCenterY = 1010
-const subtitleFontSize = 36
+type CaptionWord = WordTiming & { trailing: string }
+type CaptionGroup = { words: CaptionWord[]; start: number; end: number }
+
 export const reelsCaptionFontSize = (canvasWidth: number) =>
   Math.min(54, Math.max(26, canvasWidth * 0.05))
 
 export function visibleSubtitleLines(
   text: string,
-  readingProgress: number
+  _readingProgress: number
 ): Array<{ text: string; start: number }> {
-  const normalizedText = plainSubtitleText(text)
-  const lines = wrapSubtitleText(normalizedText)
-  if (lines.length <= 2) {
-    let start = 0
-    return lines.map((line) => {
-      const entry = { text: line, start }
-      start += line.length + 1
-      return entry
-    })
-  }
-
-  const textProgress = Math.max(0, Math.min(1, readingProgress)) * normalizedText.length
-  let activeLine = 0
   let start = 0
-  const lineStarts = lines.map((line) => {
-    const lineStart = start
+  return wrapSubtitleText(plainSubtitleText(text)).slice(0, 2).map((line) => {
+    const entry = { text: line, start }
     start += line.length + 1
-    if (textProgress > lineStart + line.length) activeLine += 1
-    return lineStart
+    return entry
   })
-  activeLine = Math.min(activeLine, lines.length - 1)
-  const firstLine = Math.min(
-    Math.max(0, activeLine - 1),
-    lines.length - 2
-  )
-  return lines.slice(firstLine, firstLine + 2).map((line, index) => ({
-    text: line,
-    start: lineStarts[firstLine + index] ?? 0,
-  }))
 }
 
 export function drawSubtitleLayer(
@@ -51,249 +26,228 @@ export function drawSubtitleLayer(
   subtitle: SayLine & { opacity: number; readingProgress: number },
   canvasSize: { width: number; height: number },
   devicePixelRatio = 1,
-  readAlong = false,
+  _readAlong = false,
   captionStyle: CaptionStyle = "bold"
 ): void {
-  const opacity = Math.max(0, Math.min(1, subtitle.opacity))
-  if (!opacity) return
-  const fullText = plainSubtitleText(subtitle.text)
+  if (subtitle.opacity <= 0) return
+  const text = plainSubtitleText(subtitle.text)
+  const duration = Math.max(subtitle.duration, subtitle.audioTiming?.duration ?? 0)
   const timings = subtitle.audioTiming?.wordTimings.length
     ? subtitle.audioTiming.wordTimings
     : subtitle.wordTimings?.length
-    ? subtitle.wordTimings
-    : wordTimingsForDuration(fullText, subtitle.duration)
-  const captionDuration = Math.max(subtitle.duration, subtitle.audioTiming?.duration ?? 0)
-  const elapsed = subtitle.readingProgress * captionDuration
-  const activeIndex = Math.max(0, timings.findIndex((word) => elapsed < word.end))
-  const firstIndex = Math.max(0, activeIndex - 2)
-  const visible = timings.slice(firstIndex, firstIndex + 6)
-  const visibleText = visible.map((word) => word.text).join(" ")
-  const visibleStart = visible[0]?.start ?? 0
-  const visibleDuration = Math.max(0.001, (visible.at(-1)?.end ?? captionDuration) - visibleStart)
-  subtitle = {
-    ...subtitle,
-    text: visibleText || subtitle.text,
-    readingProgress: Math.max(0, Math.min(1, (elapsed - visibleStart) / visibleDuration)),
-    wordTimings: visible.map((word) => ({
-      ...word,
-      start: word.start - visibleStart,
-      end: word.end - visibleStart,
-    })),
-    duration: visibleDuration,
-  }
-  if (canvasSize.height > canvasSize.width) {
-    drawReelsCaption(context, subtitle, canvasSize, devicePixelRatio, captionStyle, opacity)
-    return
-  }
-  const lines = visibleSubtitleLines(subtitle.text, subtitle.readingProgress)
-  if (!lines.length) return
-  const direction = /^(ar|fa|ur|he|ps|dv)(-|$)/i.test(subtitle.lang ?? "") ||
-    /[\u0590-\u08ff]/u.test(subtitle.text)
-    ? "rtl"
-    : "ltr"
-  const family = direction === "rtl" ? "Amiri" : fontFamilyFor("neat")
-  const font = `${subtitleFontSize}px "${family}"`
+      ? subtitle.wordTimings
+      : wordTimingsForDuration(text, duration)
+  const groups = captionGroups(text, timings)
+  if (!groups.length) return
+  const elapsed = subtitle.readingProgress * duration
+  const groupIndex = Math.max(0, groups.findIndex((group, index) => {
+    const next = groups[index + 1]
+    if (!next) return true
+    const transitionEnd = (group.end + next.start) / 2 + 0.06
+    return elapsed < transitionEnd
+  }))
+  const current = groups[groupIndex]!
+  const next = groups[groupIndex + 1]
+  const transition = next ? transitionAt(current, next, elapsed) : undefined
+
   context.save()
   context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
-  context.globalAlpha = opacity
-  context.fillStyle = "rgba(0, 0, 0, 0.65)"
-  context.fillRect(
-    (canvasSize.width - subtitleWidth) / 2,
-    subtitleCenterY - 44,
-    subtitleWidth,
-    88
-  )
-  context.font = font
-  context.textBaseline = "middle"
-  context.direction = direction
-  const emphasized = new Set(
-    [...subtitle.text.matchAll(/\*([^*]+)\*/g)].flatMap((match) =>
-      match[1]!.split(/\s+/u).map((word) => word.toLowerCase())
+  context.globalAlpha = Math.max(0, Math.min(1, subtitle.opacity))
+  if (transition) {
+    drawCaptionGroup(
+      context,
+      current,
+      elapsed,
+      canvasSize,
+      captionStyle,
+      1 - transition.progress
     )
-  )
-  const lineGap = 44
-  const firstY = subtitleCenterY - ((lines.length - 1) * lineGap) / 2
-  const lineWidths = lines.map(({ text }) => context.measureText(text).width)
-  const lineMetrics = lines.map(({ text, start }, index) => ({
-    line: text,
-    start,
-    y: firstY + index * lineGap,
-    width: lineWidths[index] ?? 0,
-  }))
-  const textProgress = subtitle.readingProgress * plainSubtitleText(subtitle.text).length
-  lineMetrics.forEach(({ line, start, y }) => {
-    const lineProgress = Math.max(0, Math.min(1, (textProgress - start) / line.length))
-    drawSubtitleLine(context, line, y, direction, emphasized, readAlong ? lineProgress : 0)
-  })
+    drawCaptionGroup(
+      context,
+      next!,
+      elapsed,
+      canvasSize,
+      captionStyle,
+      transition.progress
+    )
+  } else {
+    drawCaptionGroup(context, current, elapsed, canvasSize, captionStyle, 1)
+  }
   context.restore()
 }
 
-function drawReelsCaption(
+function captionGroups(text: string, timings: WordTiming[]): CaptionGroup[] {
+  if (!timings.length) return []
+  const matches = [...text.matchAll(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu)]
+  const words = timings.map((timing, index) => ({
+    ...timing,
+    trailing: text.slice(
+      (matches[index]?.index ?? 0) + (matches[index]?.[0].length ?? 0),
+      matches[index + 1]?.index ?? text.length
+    ),
+  }))
+  const groups: CaptionGroup[] = []
+  let cursor = 0
+  while (cursor < words.length) {
+    const remaining = words.length - cursor
+    if (remaining <= 6) {
+      groups.push(makeGroup(words.slice(cursor)))
+      break
+    }
+    const maximum = Math.min(6, remaining - 3)
+    let count = maximum
+    for (let candidate = maximum; candidate >= 3; candidate--) {
+      if (/[.!?,;:。！？、，；：—–]$/u.test(words[cursor + candidate - 1]?.trailing ?? "")) {
+        count = candidate
+        break
+      }
+    }
+    groups.push(makeGroup(words.slice(cursor, cursor + count)))
+    cursor += count
+  }
+  return groups
+}
+
+function makeGroup(words: CaptionWord[]): CaptionGroup {
+  return {
+    words,
+    start: words[0]?.start ?? 0,
+    end: words.at(-1)?.end ?? 0,
+  }
+}
+
+function transitionAt(
+  current: CaptionGroup,
+  next: CaptionGroup,
+  elapsed: number
+): { progress: number } | undefined {
+  const boundary = (current.end + next.start) / 2
+  const start = boundary - 0.06
+  const end = boundary + 0.06
+  if (elapsed < start || elapsed >= end) return undefined
+  return { progress: Math.max(0, Math.min(1, (elapsed - start) / (end - start))) }
+}
+
+function drawCaptionGroup(
   context: CanvasRenderingContext2D,
-  subtitle: SayLine & { opacity: number; readingProgress: number },
-  canvasSize: { width: number; height: number },
-  devicePixelRatio: number,
+  group: CaptionGroup,
+  elapsed: number,
+  canvas: { width: number; height: number },
   style: CaptionStyle,
   opacity: number
 ): void {
-  const words = subtitle.text
-    .replace(/\*([^*]+)\*/g, "$1")
-    .replace(/\*/g, "")
-    .trim()
-    .split(/\s+/u)
-    .filter(Boolean)
-  if (!words.length) return
-  const direction = /^(ar|fa|ur|he|ps|dv)(-|$)/i.test(subtitle.lang ?? "") ||
-    /[\u0590-\u08ff]/u.test(subtitle.text)
-    ? "rtl"
-    : "ltr"
-  const maxWidth = Math.max(
-    1,
-    Math.min(canvasSize.width * 0.88, canvasSize.width - 48)
-  )
+  if (opacity <= 0 || !group.words.length) return
+  const words = group.words.map((word) => word.text + word.trailing.trimEnd())
+  const direction = /[\u0590-\u08ff]/u.test(words.join(" ")) ? "rtl" : "ltr"
   const family = direction === "rtl" ? "Amiri" : fontFamilyFor("neat")
-  let fontSize = reelsCaptionFontSize(canvasSize.width)
-  let lines: string[][] = []
-  while (fontSize >= 18) {
-    context.font = `800 ${fontSize}px "${family}"`
-    lines = wrapWords(words, maxWidth, (word) => context.measureText(word).width)
-    if (lines.length * fontSize * 1.18 <= canvasSize.height * 0.3) break
-    fontSize -= 2
-  }
-  context.font = `800 ${fontSize}px "${family}"`
-  const lineHeight = fontSize * 1.18
-  const widths = lines.map((line) =>
-    line.reduce((sum, word, index) =>
-      sum + context.measureText(word).width + (index ? context.measureText(" ").width : 0), 0)
-  )
-  const longest = Math.min(maxWidth, Math.max(...widths))
-  const contentHeight = lines.length * lineHeight
-  const paddingX = style === "minimal" ? 0 : fontSize * 0.3
-  const paddingY = style === "minimal" ? 0 : fontSize * 0.18
-  const watermark = watermarkLayout(context, canvasSize)
-  const watermarkGap = Math.max(12, fontSize * 0.25)
-  const bottomSafeEdge = canvasSize.height - REELS_SAFE_ZONES.bottom
-  const centerY = Math.min(
-    canvasSize.height * 0.82,
-    bottomSafeEdge - watermarkGap - paddingY - contentHeight / 2,
-    watermark.y - watermarkGap - paddingY - contentHeight / 2
-  )
-
-  context.save()
-  context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
-  context.globalAlpha = opacity
-  context.direction = direction
-  if (style !== "minimal") {
-    const plateX = (canvasSize.width - longest) / 2 - paddingX
-    const plateY = centerY - contentHeight / 2 - paddingY
-    const plateWidth = longest + paddingX * 2
-    const plateHeight = contentHeight + paddingY * 2
-    context.fillStyle = style === "coral" ? "rgba(19, 24, 36, 0.9)" : "rgba(0, 0, 0, 0.78)"
-    context.beginPath()
-    context.roundRect(plateX, plateY, plateWidth, plateHeight, fontSize * 0.24)
-    context.fill()
+  const maxWidth = canvas.width * 0.88
+  const minimumFontSize = Math.max(16, canvas.height * 0.024)
+  let fontSize = Math.max(minimumFontSize, canvas.height * 0.042)
+  let lines: number[][] = []
+  const gaps = group.words.map((word) => word.trailing)
+  while (true) {
+    context.font = `700 ${fontSize}px "${family}"`
+    lines = wrapCaptionIndices(words, maxWidth, (word, index) =>
+      context.measureText(word).width +
+      (index < words.length - 1 ? context.measureText(gaps[index] || " ").width : 0)
+    )
+    if (lines.length <= 2 || fontSize <= minimumFontSize) break
+    fontSize = Math.max(minimumFontSize, fontSize - 2)
   }
 
-  context.font = `800 ${fontSize}px "${family}"`
+  context.font = `700 ${fontSize}px "${family}"`
   context.textBaseline = "middle"
   context.textAlign = "left"
-  let timingIndex = 0
-  const playhead = subtitle.readingProgress * subtitle.duration
+  context.direction = direction
+  const lineHeight = fontSize * 1.2
+  const lineWidths = lines.map((line) =>
+    line.reduce((sum, wordIndex) => {
+      const word = words[wordIndex] ?? ""
+      const gap = wordIndex < words.length - 1 ? gaps[wordIndex] || " " : ""
+      return sum + context.measureText(word).width + context.measureText(gap).width
+    }, 0)
+  )
+  const contentWidth = Math.max(0, ...lineWidths)
+  const contentHeight = lines.length * lineHeight
+  const paddingX = fontSize * 0.34
+  const paddingY = fontSize * 0.22
+  const plateWidth = Math.min(canvas.width - 24, contentWidth + paddingX * 2)
+  const plateHeight = contentHeight + paddingY * 2
+  const plateX = (canvas.width - plateWidth) / 2
+  const plateY = canvas.height * 0.92 - plateHeight
+  const background = style === "coral"
+    ? "rgba(19, 24, 36, 0.92)"
+    : "rgba(0, 0, 0, 0.78)"
+
+  context.save()
+  context.globalAlpha *= opacity
+  context.fillStyle = background
+  context.beginPath()
+  context.roundRect(plateX, plateY, plateWidth, plateHeight, fontSize * 0.24)
+  context.fill()
+
+  const firstY = plateY + paddingY + lineHeight / 2
   lines.forEach((line, lineIndex) => {
-    const y = centerY + (lineIndex - (lines.length - 1) / 2) * lineHeight
-    const wordWidths = line.map((word) => context.measureText(word).width)
-    const totalWidth = wordWidths.reduce((sum, width) => sum + width, 0) +
-      Math.max(0, line.length - 1) * context.measureText(" ").width
-    let x = canvasSize.width / 2 - totalWidth / 2
-    line.forEach((word, wordIndex) => {
-      const timing = subtitle.wordTimings?.[timingIndex++]
-      const active = timing !== undefined && playhead >= timing.start && playhead < timing.end
-      const spoken = timing !== undefined && playhead >= timing.end
-      const wordWidth = wordWidths[wordIndex] ?? 0
-      context.save()
-      context.globalAlpha *= spoken || active ? 1 : 0.42
-      context.fillStyle = active ? "#FFD966" : style === "coral" ? "#FF8066" : "#F8FAFC"
-      if (style === "minimal") {
-        context.strokeStyle = "rgba(0, 0, 0, 0.9)"
-        context.lineWidth = fontSize * 0.12
-        context.lineJoin = "round"
-        context.strokeText(word, x, y)
-      }
+    const totalWidth = lineWidths[lineIndex] ?? 0
+    let x = canvas.width / 2 - totalWidth / 2
+    const y = firstY + lineIndex * lineHeight
+    for (const index of line) {
+      const word = words[index] ?? ""
+      const timing = group.words[index]
+      const wordWidth = context.measureText(word).width
+      const gapText = index < words.length - 1 ? gaps[index] || " " : ""
+      const gapWidth = context.measureText(gapText).width
+      const active = timing !== undefined && elapsed >= timing.start && elapsed < timing.end
+      const spoken = timing !== undefined && elapsed >= timing.end
+      const accent = style === "coral" ? "#FF8066" : "#FFD966"
+
       if (active) {
-        context.translate(x + wordWidth / 2, y)
-        context.scale(1.06, 1.06)
-        context.fillText(word, -wordWidth / 2, 0)
-      } else {
-        context.fillText(word, x, y)
+        const pillPaddingX = fontSize * 0.14
+        const pillHeight = fontSize * 1.18
+        context.save()
+        context.globalAlpha *= 0.34
+        context.fillStyle = accent
+        context.beginPath()
+        context.roundRect(
+          x - pillPaddingX,
+          y - pillHeight / 2,
+          wordWidth + pillPaddingX * 2,
+          pillHeight,
+          pillHeight / 2
+        )
+        context.fill()
+        context.restore()
       }
+
+      context.save()
+      context.globalAlpha *= spoken || active ? 1 : 0.55
+      context.fillStyle = active ? accent : "#FFFFFF"
+      context.fillText(word, x, y, maxWidth)
       context.restore()
-      x += wordWidth + context.measureText(" ").width
-    })
+      x += wordWidth + gapWidth
+    }
   })
   context.restore()
 }
 
-function wrapWords(
+function wrapCaptionIndices(
   words: string[],
   maxWidth: number,
-  measure: (word: string) => number
-): string[][] {
-  const lines: string[][] = []
-  let line: string[] = []
+  measure: (word: string, index: number) => number
+): number[][] {
+  const lines: number[][] = []
+  let line: number[] = []
   let width = 0
-  for (const word of words) {
-    const nextWidth = width + (line.length ? measure(" ") : 0) + measure(word)
+  words.forEach((word, index) => {
+    const nextWidth = width + measure(word, index)
     if (line.length && nextWidth > maxWidth) {
       lines.push(line)
       line = []
       width = 0
     }
-    width += (line.length ? measure(" ") : 0) + measure(word)
-    line.push(word)
-  }
+    line.push(index)
+    width += measure(word, index)
+  })
   if (line.length) lines.push(line)
   return lines
-}
-
-function drawSubtitleLine(
-  context: CanvasRenderingContext2D,
-  line: string,
-  y: number,
-  direction: "ltr" | "rtl",
-  emphasized: Set<string>,
-  readProgress: number
-): void {
-  const segments = line.match(/\s+|[^\s]+/gu) ?? []
-  const widths = segments.map((segment) => context.measureText(segment).width)
-  const total = widths.reduce((sum, width) => sum + width, 0)
-  let cursor = direction === "rtl" ? subtitleCenterX + total / 2 : subtitleCenterX - total / 2
-  let charsBeforeSegment = 0
-  segments.forEach((segment, index) => {
-    const width = widths[index] ?? 0
-    if (!/^\s+$/u.test(segment)) {
-      const normalized = segment.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "")
-      const isEmphasized = emphasized.has(normalized)
-      context.fillStyle = isEmphasized ? "#FFD966" : "#FFFFFF"
-      context.textAlign = direction === "rtl" ? "right" : "left"
-      context.fillText(segment, cursor, y)
-      const readChars = Math.max(0, Math.min(segment.length, readProgress * line.length - charsBeforeSegment))
-      if (!isEmphasized && readChars > 0) {
-        const readWidth = context.measureText(segment.slice(0, Math.ceil(readChars))).width
-        context.save()
-        context.beginPath()
-        context.rect(
-          direction === "rtl" ? cursor - readWidth : cursor,
-          y - subtitleFontSize / 2,
-          readWidth,
-          subtitleFontSize
-        )
-        context.clip()
-        context.fillStyle = "#DCE8E5"
-        context.fillText(segment, cursor, y)
-        context.restore()
-      }
-    }
-    cursor += direction === "rtl" ? -width : width
-    charsBeforeSegment += segment.length
-  })
 }
