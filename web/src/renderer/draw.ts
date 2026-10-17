@@ -321,27 +321,43 @@ function drawPathFollowTrails(
       return Math.hypot(point.x - previous.x, point.y - previous.y)
     })
     const total = lengths.reduce((sum, length) => sum + length, 0)
-    let remaining = total * Math.min(1, trail.progress)
+    const travelled = total * Math.min(1, trail.progress)
+    const trailStart = Math.max(0, travelled - total * 0.25)
+    if (travelled <= trailStart) continue
+    const segmentCount = 20
     context.save()
-    context.globalAlpha *= 0.34
-    context.strokeStyle = trail.color
-    context.lineWidth = Math.max(1.5, 5 / Math.max(cameraScale, 0.1))
     context.lineCap = "round"
-    context.lineJoin = "round"
-    context.beginPath()
-    context.moveTo(trail.points[0]!.x, trail.points[0]!.y)
-    for (let index = 0; index < lengths.length && remaining > 0; index++) {
-      const from = trail.points[index]!
-      const to = trail.points[index + 1]!
-      const length = lengths[index]!
-      if (remaining >= length) context.lineTo(to.x, to.y)
-      else {
-        const fraction = remaining / Math.max(length, 0.001)
-        context.lineTo(from.x + (to.x - from.x) * fraction, from.y + (to.y - from.y) * fraction)
+    const sampleAt = (distance: number) => {
+      let remaining = distance
+      for (let index = 0; index < lengths.length; index++) {
+        const segmentLength = lengths[index]!
+        if (remaining <= segmentLength || index === lengths.length - 1) {
+          const from = trail.points[index]!
+          const to = trail.points[index + 1]!
+          const amount = segmentLength > 0 ? Math.min(1, remaining / segmentLength) : 0
+          return {
+            x: from.x + (to.x - from.x) * amount,
+            y: from.y + (to.y - from.y) * amount,
+          }
+        }
+        remaining -= segmentLength
       }
-      remaining -= length
+      return trail.points.at(-1)!
     }
-    context.stroke()
+    for (let index = 0; index < segmentCount; index++) {
+      const startDistance = trailStart + (travelled - trailStart) * index / segmentCount
+      const endDistance = trailStart + (travelled - trailStart) * (index + 1) / segmentCount
+      const from = sampleAt(startDistance)
+      const to = sampleAt(endDistance)
+      const amount = (index + 1) / segmentCount
+      context.globalAlpha = amount * 0.48
+      context.strokeStyle = trail.color
+      context.lineWidth = (1.2 + amount * 4.8) / Math.max(cameraScale, 0.1)
+      context.beginPath()
+      context.moveTo(from.x, from.y)
+      context.lineTo(to.x, to.y)
+      context.stroke()
+    }
     context.restore()
   }
 }

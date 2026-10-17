@@ -136,6 +136,7 @@ export const PROPERTY_KEYS = [
   "GRADIENT",
   "WORDS",
   "TRAIL",
+  "GLOW",
   "LANGUAGE",
   "CODELINE",
   "HIGHLIGHTLINE",

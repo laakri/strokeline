@@ -1184,6 +1184,9 @@ function nodeFromCreate(
           }
         : {}),
       ...(isIcon || iconName ? { iconName, name: iconName } : {}),
+      ...(propString(props, "GLOW") !== undefined
+        ? { glow: propString(props, "GLOW")?.toLowerCase() === "on" }
+        : {}),
       ...(propString(props, "PENFOLLOW") !== undefined
         ? { penFollow: propString(props, "PENFOLLOW")?.toLowerCase() === "on" }
         : {}),

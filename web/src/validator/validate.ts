@@ -318,6 +318,20 @@ export function validate(document: SceneDocument): Diagnostic[] {
         }
         const sourceProperties =
           (op.node.data?._sourceProperties as string[] | undefined) ?? []
+        if (sourceProperties.includes("GLOW")) {
+          const glowLocation = location(op, "GLOW")
+          const glowValue = String(
+            (op.node.data?.glow as boolean | undefined) === true
+              ? "on"
+              : (op.node.data?.glow as boolean | undefined) === false
+                ? "off"
+                : ""
+          )
+          if (op.node.type !== "circle")
+            diagnostics.push(error("E_BAD_RANGE", "GLOW is supported only on CIRCLE objects.", glowLocation.line, glowLocation.col))
+          else if (glowValue !== "on" && glowValue !== "off")
+            diagnostics.push(error("E_BAD_RANGE", "GLOW must be on or off.", glowLocation.line, glowLocation.col))
+        }
         if (sourceProperties.includes("FREEHAND")) {
           const freehandSetting = String(op.node.data?.freehandSetting ?? "").toLowerCase()
           if (op.node.type !== "ink")

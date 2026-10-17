@@ -570,6 +570,7 @@ function resolveAnimationGroupAtTime(
             position,
             data: {
               ...node.data,
+              pathFollowing: true,
                 ...(op.anim.trail && progress < 1
                   ? { pathFollowTrail: { points: path, progress, color: node.style.color } }
                   : { pathFollowTrail: undefined }),

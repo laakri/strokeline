@@ -59,10 +59,26 @@ export function drawCircle(
   const bounds = circleBoundingBox(node)
   const roughReveal = shouldUseRoughSampledGeometry(node)
   const patternedFill = roughReveal && usesPatternedRoughFill(node)
+  const pathFollowing = node.data?.pathFollowing === true
+  const paintNode = pathFollowing && node.style.shadow === undefined
+    ? { ...node, style: { ...node.style, shadow: 10 } }
+    : node
+  if (node.data?.glow === true && progress > 0) {
+    const context = renderContext.context
+    context.save()
+    context.globalAlpha *= 0.32 * progress
+    context.fillStyle = node.style.fill ?? node.style.color
+    context.shadowColor = node.style.fill ?? node.style.color
+    context.shadowBlur = Math.max(8, radius * 0.7 / renderContext.cameraScale)
+    context.beginPath()
+    context.arc(node.position.x, node.position.y, radius * 0.72, 0, Math.PI * 2)
+    context.fill()
+    context.restore()
+  }
   if (!patternedFill) {
     drawShapeShadow(
       renderContext.context,
-      node,
+      paintNode,
       bounds,
       renderContext.cameraScale,
       () =>
@@ -93,7 +109,7 @@ export function drawCircle(
     if (!patternedFill) {
       fillShape(
         context,
-        node,
+        paintNode,
         bounds,
         renderContext.cameraScale,
         () =>
@@ -101,7 +117,7 @@ export function drawCircle(
         false
       )
     }
-    applyShapeShadow(context, node, renderContext.cameraScale)
+    applyShapeShadow(context, paintNode, renderContext.cameraScale)
     if (roughReveal) {
       if (progress >= 1)
         drawRoughFill(
@@ -132,6 +148,23 @@ export function drawCircle(
     clearShapeShadow(context)
     context.restore()
   }
+  if (pathFollowing && progress > 0) {
+    const context = renderContext.context
+    context.save()
+    context.globalAlpha *= progress * 0.72
+    context.strokeStyle = lightenColor(node.style.fill ?? node.style.color)
+    context.lineWidth = Math.max(1, 1.5 / renderContext.cameraScale)
+    context.beginPath()
+    context.arc(
+      node.position.x,
+      node.position.y,
+      Math.max(0, radius - context.lineWidth * 1.5),
+      0,
+      Math.PI * 2
+    )
+    context.stroke()
+    context.restore()
+  }
   drawLabel(
     renderContext,
     text,
@@ -146,6 +179,16 @@ export function drawCircle(
     },
     progress
   )
+}
+
+function lightenColor(color: string): string {
+  const match = /^#([\da-f]{3}|[\da-f]{6})$/i.exec(color)
+  if (!match) return "#FFFFFF"
+  const hex = match[1]!.length === 3
+    ? [...match[1]!].map((part) => part + part).join("")
+    : match[1]!
+  const channels = [0, 2, 4].map((index) => parseInt(hex.slice(index, index + 2), 16))
+  return `#${channels.map((channel) => Math.round(channel + (255 - channel) * 0.58).toString(16).padStart(2, "0")).join("")}`
 }
 
 export const circle: ShapeRenderer = {
