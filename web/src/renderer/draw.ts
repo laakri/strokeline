@@ -181,6 +181,7 @@ function* drawSceneSteps(
     )
     context.restore()
   }
+  drawPathFollowTrails(context, visibleNodes, resolvedCamera.scale)
   let renderedNodes = 0
   for (const node of visibleNodes) {
     if (node.data?.layoutContainer === true) continue
@@ -196,6 +197,7 @@ function* drawSceneSteps(
       style: { ...node.style, pen: node.style.pen ?? mode },
       ...(tableHighlights.length ? { data: { ...node.data, _animatedTableHighlights: tableHighlights } } : {}),
     }
+
     context.save()
     context.globalAlpha = node.opacity
     const cached =
@@ -290,6 +292,46 @@ function drawPen(
   context.closePath()
   context.fill()
   context.restore()
+}
+
+function drawPathFollowTrails(
+  context: CanvasRenderingContext2D,
+  nodes: RenderState["nodes"],
+  cameraScale: number
+): void {
+  for (const node of nodes) {
+    const trail = node.data?.pathFollowTrail as
+      | { points: Array<{ x: number; y: number }>; progress: number; color: string }
+      | undefined
+    if (!trail || trail.points.length < 2 || trail.progress <= 0) continue
+    const lengths = trail.points.slice(1).map((point, index) => {
+      const previous = trail.points[index]!
+      return Math.hypot(point.x - previous.x, point.y - previous.y)
+    })
+    const total = lengths.reduce((sum, length) => sum + length, 0)
+    let remaining = total * Math.min(1, trail.progress)
+    context.save()
+    context.globalAlpha *= 0.34
+    context.strokeStyle = trail.color
+    context.lineWidth = Math.max(1.5, 5 / Math.max(cameraScale, 0.1))
+    context.lineCap = "round"
+    context.lineJoin = "round"
+    context.beginPath()
+    context.moveTo(trail.points[0]!.x, trail.points[0]!.y)
+    for (let index = 0; index < lengths.length && remaining > 0; index++) {
+      const from = trail.points[index]!
+      const to = trail.points[index + 1]!
+      const length = lengths[index]!
+      if (remaining >= length) context.lineTo(to.x, to.y)
+      else {
+        const fraction = remaining / Math.max(length, 0.001)
+        context.lineTo(from.x + (to.x - from.x) * fraction, from.y + (to.y - from.y) * fraction)
+      }
+      remaining -= length
+    }
+    context.stroke()
+    context.restore()
+  }
 }
 
 function drawHand(context: CanvasRenderingContext2D, node: RenderState["nodes"][number]): void {

@@ -113,6 +113,7 @@ export const PROPERTY_KEYS = [
   "SHADOW",
   "GRADIENT",
   "WORDS",
+  "TRAIL",
 ] as const
 
 export { ICON_NAMES, type IconName } from "@/defaults/icons.ts"
@@ -140,6 +141,7 @@ export const STATEMENT_KEYWORDS = [
   "DIAMOND",
   "LINE",
   "ARROW",
+  "PATHFOLLOW",
   "ANIMATE",
   "CAMERA",
   "WAIT",

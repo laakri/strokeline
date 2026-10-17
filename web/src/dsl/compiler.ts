@@ -480,8 +480,11 @@ function compileScene(
         statement.token.col
       )
       const label = propString(statement.props, "LABEL")
+      const arrowId = statement.id ?? `arrow_${autoId++}`
+      if (sceneNodes.has(arrowId))
+        diagnostics.push(error("E_DUPLICATE_ID", `Object id "${arrowId}" is already used in this scene.`, statement.token.line, statement.token.col))
       const node: SceneNode = {
-        id: `arrow_${autoId++}`,
+        id: arrowId,
         type: "arrow",
         position: { x: 0, y: 0 },
         rotation: 0,
@@ -514,6 +517,7 @@ function compileScene(
           _sourcePropertyLocations: Object.fromEntries(statement.props.map((prop) => [prop.key, { line: prop.token.line, col: prop.token.col }])),
         },
       }
+      sceneNodes.set(node.id, node)
       return {
         ops: [
           {
@@ -525,6 +529,28 @@ function compileScene(
           },
         ],
         end: start + draw.duration,
+      }
+    }
+    if (statement.kind === "pathFollow") {
+      const duration = statement.duration === undefined
+        ? DEFAULT_DURATION
+        : durationSeconds(statement.duration, statement.token.line, statement.token.col, diagnostics)
+      const ease = resolveEase(statement.ease, statement.token.line, statement.token.col, diagnostics)
+      return {
+        ops: [{
+          kind: "animate",
+          t: start,
+          targetId: statement.targetId,
+          anim: {
+            verb: "path-follow",
+            pathArrowId: statement.arrowId,
+            trail: statement.trail,
+            duration,
+            ease,
+          },
+          source: { line: statement.token.line, col: statement.token.col },
+        }],
+        end: start + duration,
       }
     }
     if (statement.kind === "animate") {

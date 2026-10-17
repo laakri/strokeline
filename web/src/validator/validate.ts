@@ -384,6 +384,11 @@ export function validate(document: SceneDocument): Diagnostic[] {
           if (op.anim.effectName === "marker" && !op.anim.textWords?.length)
             diagnostics.push(error("E_TEXT_EFFECT_WORDS", "ENTER target marker needs WORDS \"...\".", op.source?.line ?? 1, op.source?.col ?? 1))
         }
+        if (op.anim.verb === "path-follow") {
+          const route = createdNodes.get(op.anim.pathArrowId ?? "")
+          if (!route || route.type !== "arrow")
+            diagnostics.push(error("E_PATH_FOLLOW_ARROW", `PATHFOLLOW must reference an existing ARROW route, received "${op.anim.pathArrowId ?? ""}".`, op.source?.line ?? 1, op.source?.col ?? 1))
+        }
         if (op.anim.tableTarget) {
           const target = createdNodes.get(op.targetId)
           const selector = op.anim.tableTarget

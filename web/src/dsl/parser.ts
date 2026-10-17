@@ -29,9 +29,19 @@ export interface ASTShape {
 }
 export interface ASTArrow {
   kind: "arrow"
+  id?: string
   from: string
   to: string
   props: ASTProperty[]
+  token: Token
+}
+export interface ASTPathFollow {
+  kind: "pathFollow"
+  targetId: string
+  arrowId: string
+  duration?: ASTValue
+  ease?: string
+  trail: boolean
   token: Token
 }
 export interface ASTAnimate {
@@ -154,6 +164,7 @@ export type ASTStatement =
   | ASTCreate
   | ASTShape
   | ASTArrow
+  | ASTPathFollow
   | ASTAnimate
   | ASTEffect
   | ASTCamera
@@ -430,6 +441,7 @@ class Parser {
     if ((SHAPE_TYPES as readonly string[]).includes(word))
       return this.parseShape()
     if (word === "ARROW") return this.parseArrow()
+    if (word === "PATHFOLLOW") return this.parsePathFollow()
     if (word === "ANIMATE") return this.parseAnimate()
     if (word === "ENTER" || word === "EXIT") return this.parseEffect()
     if (word === "CAMERA") return this.parseCamera()
@@ -500,7 +512,10 @@ class Parser {
 
   private parseArrow(): ASTArrow {
     const token = this.take()
-    const from = this.readIdent("E_EXPECTED_ID", token)
+    const first = this.readIdent("E_EXPECTED_ID", token)
+    const id = this.word() === "FROM" ? first : undefined
+    if (id) this.take()
+    const from = id ? this.readIdent("E_EXPECTED_ID", token) : first
     if (this.peek().kind === "arrow") this.take()
     else
       this.report(
@@ -510,7 +525,26 @@ class Parser {
       )
     const to = this.readIdent("E_EXPECTED_ID", token)
     this.endLine()
-    return { kind: "arrow", from, to, props: this.parseProperties([]), token }
+    return { kind: "arrow", id, from, to, props: this.parseProperties([]), token }
+  }
+
+  private parsePathFollow(): ASTPathFollow {
+    const token = this.take()
+    const targetId = this.readIdent("E_EXPECTED_ID", token)
+    this.expect("ALONG", token)
+    const arrowId = this.readIdent("E_EXPECTED_ID", token)
+    let duration: ASTValue | undefined
+    let ease: string | undefined
+    let trail = false
+    while (!this.atEnd() && this.peek().kind !== "newline") {
+      const key = this.word()
+      this.take()
+      if (key === "DURATION") duration = this.readValue()
+      else if (key === "EASE") ease = this.readValue()?.toString()
+      else if (key === "TRAIL") trail = String(this.readValue() ?? "").toLowerCase() === "on"
+    }
+    this.endLine()
+    return { kind: "pathFollow", targetId, arrowId, duration, ease, trail, token }
   }
 
   private parseAnimate(): ASTAnimate {

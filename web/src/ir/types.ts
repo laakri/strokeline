@@ -83,8 +83,10 @@ export interface Reveal {
 }
 
 export interface AnimationSpec {
-  verb: "move" | "scale" | "fade" | "opacity" | "color" | "rotate" | "erase" | "highlight" | "loop" | "enter" | "exit" | "morph"
+  verb: "move" | "scale" | "fade" | "opacity" | "color" | "rotate" | "erase" | "highlight" | "loop" | "enter" | "exit" | "morph" | "path-follow"
   morphTargetId?: string
+  pathArrowId?: string
+  trail?: boolean
   effectName?: string
   textWords?: string[]
   loopName?: "float" | "pulse" | "wobble" | "breathe" | "blink"

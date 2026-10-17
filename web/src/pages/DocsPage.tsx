@@ -1303,6 +1303,13 @@ export function DocsPage() {
                 timing. Close either block with <code>END</code>.
               </p>
               <CodeBlock title="Motion and camera" code={animationScript} />
+              <CodeBlock
+                title="Follow an arrow route"
+                code={`ARROW request FROM client -> server
+  ROUTE curve
+  VIA 700 360 1220 360
+PATHFOLLOW packet ALONG request DURATION 1.4s EASE easeInOut TRAIL on`}
+              />
               <h3>Animation and effects</h3>
               <ul className={listCls}>
                 <li>

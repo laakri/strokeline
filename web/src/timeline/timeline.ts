@@ -555,6 +555,30 @@ function resolveAnimationGroupAtTime(
   let node = current
   for (const op of group.ops) {
     const animated = interpolateAnimation(group.start, op.anim, time - op.t)
+    if (op.anim.verb === "path-follow") {
+      const routeNode = lookupNode(op.anim.pathArrowId ?? "")
+      const from = routeNode ? lookupNode(String(routeNode.data?.fromId ?? "")) : undefined
+      const to = routeNode ? lookupNode(String(routeNode.data?.toId ?? "")) : undefined
+      if (routeNode && from && to) {
+        const routeNodes = new Map([[routeNode.id, routeNode], [from.id, from], [to.id, to]])
+        const path = arrowPathForNode(routeNode, routeNodes)
+        if (path.length > 1) {
+          const progress = easing[op.anim.ease](clamp((time - op.t) / Math.max(op.anim.duration, 0.001)))
+          const position = pointAtPolylineProgress(path, progress).point
+          node = {
+            ...node,
+            position,
+            data: {
+              ...node.data,
+                ...(op.anim.trail && progress < 1
+                  ? { pathFollowTrail: { points: path, progress, color: node.style.color } }
+                  : { pathFollowTrail: undefined }),
+            },
+          }
+        }
+      }
+      continue
+    }
     if (op.anim.verb === "morph" && op.anim.morphTargetId) {
       const target = lookupNode(op.anim.morphTargetId)
       if (target) {

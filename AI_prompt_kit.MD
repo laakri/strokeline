@@ -32,4 +32,6 @@ estimated cue timing is appropriate; use explicit `s`/`ms` timing when the
 scene requires a fixed duration. Captions follow each cue in short word-timed
 groups. Text-only `ENTER` effects are `typewriter`, `scramble`,
 `word-by-word`, and `marker`; use `WORDS "..."` with `marker` to name its
-highlighted words.
+highlighted words. For route motion, use a named `ARROW route FROM source ->
+target`, then `PATHFOLLOW object ALONG route` with explicit timing and optional
+`TRAIL on`.
