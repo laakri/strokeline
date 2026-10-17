@@ -97,6 +97,8 @@ function compileScene(
   const ops: TimelineOp[] = []
   const says: SayLine[] = []
   const sceneNodes = new Map<string, SceneNode>()
+  const createTimes = new Map<string, { start: number; end: number }>()
+  const initialEnterUsed = new Set<string>()
   const compileStatements = (
     statements: ASTStatement[],
     start: number,
@@ -252,6 +254,7 @@ function compileScene(
         if (!position) return
         op.node = { ...op.node, position }
         sceneNodes.set(op.node.id, op.node)
+        createTimes.set(op.node.id, { start: op.t, end: op.t + op.draw.duration })
       })
 
       const containerNode: SceneNode = {
@@ -269,6 +272,7 @@ function compileScene(
         data: { layoutContainer: true },
       }
       sceneNodes.set(layoutId, containerNode)
+      createTimes.set(layoutId, { start, end: start })
       ops.splice(before, 0, {
         kind: "create",
         t: start,
@@ -307,6 +311,7 @@ function compileScene(
         normalized.token.line,
         normalized.token.col
       )
+      createTimes.set(node.id, { start, end: start + draw.duration })
       return {
         ops: [
           {
@@ -324,6 +329,7 @@ function compileScene(
       const node = nodeFromTable(statement, groupId, ast, diagnostics)
       sceneNodes.set(node.id, node)
       const draw = revealFromProps(statement.props, diagnostics, statement.token.line, statement.token.col)
+      createTimes.set(node.id, { start, end: start + draw.duration })
       return { ops: [{ kind: "create", t: start, node, draw,
         source: { line: statement.token.line, col: statement.token.col } }], end: start + draw.duration }
     }
@@ -354,6 +360,7 @@ function compileScene(
                 diagnostics
               ),
       }
+      createTimes.set(node.id, { start, end: start + draw.duration })
       return { ops: [{ kind: "create", t: start, node, draw,
         source: { line: statement.token.line, col: statement.token.col } }], end: start + draw.duration }
     }
@@ -389,6 +396,7 @@ function compileScene(
         statement.token.line,
         statement.token.col
       )
+      createTimes.set(node.id, { start, end: start + draw.duration })
       return {
         ops: [
           {
@@ -445,6 +453,7 @@ function compileScene(
         statement.token.line,
         statement.token.col
       )
+      createTimes.set(node.id, { start, end: start + draw.duration })
       return {
         ops: [
           {
@@ -519,6 +528,7 @@ function compileScene(
         },
       }
       sceneNodes.set(node.id, node)
+      createTimes.set(node.id, { start, end: start + draw.duration })
       return {
         ops: [
           {
@@ -625,9 +635,16 @@ function compileScene(
         : EXIT_EFFECT_NAMES
       if (!allowed.includes(statement.effect))
         diagnostics.push(error("E_UNKNOWN_ANIMATION", `Unknown ${statement.phase} effect "${statement.effect}".`, statement.token.line, statement.token.col))
-      return { ops: [{ kind: "animate", t: start, targetId: statement.targetId,
+      const createTime = createTimes.get(statement.targetId)
+      const startsWithCreate = statement.phase === "enter" &&
+        createTime !== undefined &&
+        start <= createTime.end &&
+        !initialEnterUsed.has(statement.targetId)
+      if (startsWithCreate) initialEnterUsed.add(statement.targetId)
+      const animationStart = startsWithCreate ? createTime.start : start
+      return { ops: [{ kind: "animate", t: animationStart, targetId: statement.targetId,
         anim: { verb: statement.phase, effectName: statement.effect, textWords: statement.words, duration, ease: DEFAULT_EASE },
-        source: { line: statement.token.line, col: statement.token.col } }], end: start + duration }
+        source: { line: statement.token.line, col: statement.token.col } }], end: Math.max(start, animationStart + duration) }
     }
     if (statement.kind === "camera") {
       const camera = cameraFrom(statement, diagnostics)

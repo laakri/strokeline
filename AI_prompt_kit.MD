@@ -38,7 +38,9 @@ audio duration to rescale the estimated word timings, while preserving any
 longer declared duration. Captions follow each cue in short word-timed groups.
 Text-only `ENTER` effects are `typewriter`, `scramble`,
 `word-by-word`, and `marker`; use `WORDS "..."` with `marker` to name its
-highlighted words. For route motion, use a named `ARROW route FROM source ->
+highlighted words. When `ENTER` follows `CREATE` for the same object, its
+entrance starts with creation instead of replaying after the default reveal.
+For route motion, use a named `ARROW route FROM source ->
 target`, then `PATHFOLLOW object ALONG route` with explicit timing and optional
 `TRAIL on`, which draws a tapered, fading wake over the last quarter of the
 travelled route. Following circles get a subtle shadow and lighter ring;

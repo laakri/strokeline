@@ -1414,7 +1414,9 @@ END`}
                   fade, write, drop, zoom, or text-only typewriter, scramble,
                   word-by-word, and marker effects.
                   <code>marker</code> takes <code>WORDS "..."</code> to pick
-                  words to highlight.
+                  words to highlight. When ENTER immediately follows a
+                  CREATE, it begins with the object's creation instead of
+                  replaying after the default reveal.
                 </li>
                 <li>
                   <code>EXIT id effect</code>: fade, shrink,
