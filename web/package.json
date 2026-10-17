@@ -11,6 +11,7 @@
     "test:update-snapshots": "node scripts/update-golden-snapshots.mjs",
     "icons:brands": "node scripts/gen-brand-icons.mjs",
     "export:vocab": "vite-node scripts/export-vocab.ts",
+    "validate:examples": "vite-node scripts/validate-examples.ts",
     "check": "npm run typecheck && npm run lint && npm test",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
