@@ -1046,6 +1046,15 @@ export function DocsPage() {
                 <code>DRAW duration</code>; <code>ENTER typewriter</code> also
                 types CODE and TERMINAL content.
               </p>
+              <p>
+                Component text stays at readable minimums: CODE/TERMINAL source
+                text is at least 26px at 1080p, BROWSER/PHONE address and title
+                text 24px, SPLIT/BEFORE-AFTER labels 32px, and COUNTER values
+                48px; sizes scale with canvas height. Content that does not fit
+                is clipped and warned rather than reduced below the minimum.
+                Code and terminal text uses a high-contrast monospace style;
+                syntax colors target at least 4.5:1 contrast against the editor.
+              </p>
               <CodeBlock title="CODE and BROWSER" code={componentsScript} />
               <h3>Text plates and math</h3>
               <p>
@@ -1234,9 +1243,10 @@ export function DocsPage() {
                 header; each ROW must provide one value for every column. Keep
                 tables to four columns and five rows or fewer for comfortable
                 reading. Columns grow to fit their widest cell up to the declared
-                width; longer text shrinks to 18px without wrapping. If a cell
-                still needs more room, the table widens beyond that size instead
-                of clipping its text. Rows keep their set height. Use{" "}
+                width; longer text may shrink to 18px without wrapping and
+                triggers <code>W_TEXT_TOO_SMALL</code> below 24px at 1080p
+                equivalent. Increase table size or shorten its text when warned.
+                Rows keep their set height. Use{" "}
                 <code>DIVIDER n</code> to draw a stronger
                 separator after body row n, such as between class attributes and operations.
               </p>
@@ -1367,8 +1377,21 @@ export function DocsPage() {
                 code={`ARROW request FROM client -> server
   ROUTE curve
   VIA 700 360 1220 360
-PATHFOLLOW packet ALONG request DURATION 1.4s EASE easeInOut TRAIL on`}
+PATHFOLLOW packet ALONG request DURATION 1.4s EASE easeInOut TRAIL on
+
+CREATE pulse AS CIRCLE
+  POSITION 700 360
+  RADIUS 20
+  GLOW on
+END`}
               />
+              <p>
+                A path-following circle has a soft shadow and lighter edge
+                ring. Add <code>GLOW on</code> to a <code>CIRCLE</code> for a
+                soft halo in its color. <code>TRAIL on</code> draws a tapered,
+                fading trail over roughly the last quarter of the route
+                already travelled.
+              </p>
               <h3>Animation and effects</h3>
               <ul className={listCls}>
                 <li>
@@ -1613,8 +1636,9 @@ ENTER keyPoints marker WORDS "procedural deterministic" DURATION 0.8s`}
                 <li>
                   <code>W_TEXT_OFF_SAFE</code>, <code>W_TEXT_TOO_SMALL</code>,{" "}
                   <code>W_LONG_TEXT</code>: text bounds should stay in
-                  x=120..1800 and y=100..980; below 28px is warned and below
-                  18px is an error; over 60 characters needs{" "}
+                  x=120..1800 and y=100..980; text below 24px at 1080p
+                  equivalent (scaled with canvas height) is warned with its
+                  object ID and measured size; over 60 characters needs{" "}
                   <code>MAXWIDTH</code>.
                 </li>
                 <li>

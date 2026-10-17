@@ -40,10 +40,19 @@ Text-only `ENTER` effects are `typewriter`, `scramble`,
 `word-by-word`, and `marker`; use `WORDS "..."` with `marker` to name its
 highlighted words. For route motion, use a named `ARROW route FROM source ->
 target`, then `PATHFOLLOW object ALONG route` with explicit timing and optional
-`TRAIL on`. MP4 export writes fragmented output incrementally and may retry a
+`TRAIL on`, which draws a tapered, fading wake over the last quarter of the
+travelled route. Following circles get a subtle shadow and lighter ring;
+`GLOW on` on a `CIRCLE` adds a soft halo in its color. MP4 export writes fragmented output incrementally and may retry a
 1080p memory-pressure failure at 720p. Procedural `CODE`, `TERMINAL`,
 `BROWSER`, `PHONE`, `COUNTER`, `SPLIT`, and `BEFORE-AFTER` are available as
 measurable `CREATE id AS TYPE` blocks; use the exact component properties in
 the vocabulary and syntax references. Browser/phone children use `PARENT id`
 and must fit inside the component content bounds. Code lines use repeated
 `CODELINE "..."`; timed row highlights use `ANIMATE id HIGHLIGHT ROW n`.
+Keep rendered text at least 24px at 1080p equivalent, scaled to other canvas
+heights; the validator reports `W_TEXT_TOO_SMALL` with the affected object ID
+and measured size. Component text has enforced minimum sizes of 26px for
+CODE/TERMINAL content, 24px for BROWSER/PHONE title/address, 32px for
+SPLIT/BEFORE-AFTER labels, and 48px for COUNTER values (all scaled by canvas
+height). Increase component bounds or shorten content rather than shrinking
+below those component minimums.

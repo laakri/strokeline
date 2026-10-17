@@ -108,6 +108,7 @@ const properties: Record<string, string> = {
   GRADIENT: "Two-color shape gradient.",
   WORDS: "Selected words for a marker text entrance.",
   TRAIL: "PATHFOLLOW trail toggle.",
+  GLOW: "Soft halo toggle for CIRCLE nodes (`on` or `off`).",
   LANGUAGE: "CODE syntax-highlighting language: js, ts, html, css, json, or python.",
   CODELINE: "One source line in a CODE window; may be repeated.",
   HIGHLIGHTLINE: "Static CODE source line to emphasize; line indexes start at 1.",
