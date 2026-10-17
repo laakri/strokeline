@@ -1,4 +1,4 @@
-import type { SayLine, SceneDocument } from "@/ir/types.ts"
+import type { SayLine, SceneDocument, WordTiming } from "@/ir/types.ts"
 
 export function plainSubtitleText(text: string): string {
   return text.replace(/\*([^*]+)\*/g, "$1").replace(/\*/g, "").replace(/\s+/g, " ").trim()
@@ -49,7 +49,7 @@ export function scheduleSays(says: SayLine[]): SayLine[] {
     const duration = Math.max(say.duration, need)
     const start = Math.max(say.start, cursor)
     cursor = start + duration + (index < says.length - 1 ? 0.22 : 0)
-    return { ...say, start, duration }
+    return { ...say, start, duration, wordTimings: wordTimingsForDuration(say.text, duration) }
   })
 }
 
@@ -63,6 +63,26 @@ export function estimateSayDuration(text: string): number {
     (spoken.match(/[.!?。！？]/g)?.length ?? 0) * 0.32 +
     (spoken.match(/[—–]/g)?.length ?? 0) * 0.2
   return Math.max(1.8, Math.ceil((wordTime + punctuationTime) * 10) / 10)
+}
+
+export function wordTimingsForDuration(text: string, duration: number): WordTiming[] {
+  const normalizedText = plainSubtitleText(text)
+  const tokens = [...normalizedText.matchAll(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu)]
+  if (!tokens.length || duration <= 0) return []
+  const weights = tokens.map((match, index) => {
+    const word = match[0]
+    const end = tokens[index + 1]?.index ?? normalizedText.length
+    const trailing = normalizedText.slice(match.index + word.length, end).trim()
+    return Math.max(1, [...word].filter((char) => /[\p{L}\p{N}]/u.test(char)).length) +
+      (/[,:;，、:：]/.test(trailing) ? 2 : /[.!?。！？]/.test(trailing) ? 4 : 0)
+  })
+  const total = weights.reduce((sum, weight) => sum + weight, 0)
+  let cursor = 0
+  return tokens.map((match, index) => {
+    const start = cursor
+    cursor += duration * weights[index]! / total
+    return { text: match[0], start, end: index === tokens.length - 1 ? duration : cursor }
+  })
 }
 
 export function scheduleDocumentSays(document: SceneDocument): SceneDocument {

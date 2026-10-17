@@ -27,4 +27,7 @@ validator. Fix every error and review every warning. In particular, raw ink is
 Resolve low-contrast text and `W_SAY_ECHO` warnings by improving contrast and
 rewriting narration to add context instead of repeating visible text. Re-run
 validation after fixes, then return the complete editable script in the format
-the user requests.
+the user requests. For narration, use `DURATION auto` or omit `DURATION` when
+estimated cue timing is appropriate; use explicit `s`/`ms` timing when the
+scene requires a fixed duration. Captions follow each cue in short word-timed
+groups.

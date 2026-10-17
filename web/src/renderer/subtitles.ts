@@ -1,6 +1,6 @@
 import type { SayLine } from "@/ir/types.ts"
 import { fontFamilyFor } from "@/lib/textMetrics.ts"
-import { plainSubtitleText, wrapSubtitleText } from "@/subtitles/subtitles.ts"
+import { plainSubtitleText, wordTimingsForDuration, wrapSubtitleText } from "@/subtitles/subtitles.ts"
 import { REELS_SAFE_ZONES, type CaptionStyle } from "@/reels/reels.ts"
 import { watermarkLayout } from "@/renderer/watermark.ts"
 
@@ -56,6 +56,28 @@ export function drawSubtitleLayer(
 ): void {
   const opacity = Math.max(0, Math.min(1, subtitle.opacity))
   if (!opacity) return
+  const fullText = plainSubtitleText(subtitle.text)
+  const timings = subtitle.wordTimings?.length
+    ? subtitle.wordTimings
+    : wordTimingsForDuration(fullText, subtitle.duration)
+  const elapsed = subtitle.readingProgress * subtitle.duration
+  const activeIndex = Math.max(0, timings.findIndex((word) => elapsed < word.end))
+  const firstIndex = Math.max(0, activeIndex - 2)
+  const visible = timings.slice(firstIndex, firstIndex + 6)
+  const visibleText = visible.map((word) => word.text).join(" ")
+  const visibleStart = visible[0]?.start ?? 0
+  const visibleDuration = Math.max(0.001, (visible.at(-1)?.end ?? subtitle.duration) - visibleStart)
+  subtitle = {
+    ...subtitle,
+    text: visibleText || subtitle.text,
+    readingProgress: Math.max(0, Math.min(1, (elapsed - visibleStart) / visibleDuration)),
+    wordTimings: visible.map((word) => ({
+      ...word,
+      start: word.start - visibleStart,
+      end: word.end - visibleStart,
+    })),
+    duration: visibleDuration,
+  }
   if (canvasSize.height > canvasSize.width) {
     drawReelsCaption(context, subtitle, canvasSize, devicePixelRatio, captionStyle, opacity)
     return
@@ -171,18 +193,39 @@ function drawReelsCaption(
 
   context.font = `800 ${fontSize}px "${family}"`
   context.textBaseline = "middle"
-  context.textAlign = "center"
+  context.textAlign = "left"
+  let timingIndex = 0
+  const playhead = subtitle.readingProgress * subtitle.duration
   lines.forEach((line, lineIndex) => {
     const y = centerY + (lineIndex - (lines.length - 1) / 2) * lineHeight
-    const text = line.join(" ")
-    context.fillStyle = style === "coral" ? "#FF8066" : "#F8FAFC"
-    if (style === "minimal") {
-      context.strokeStyle = "rgba(0, 0, 0, 0.9)"
-      context.lineWidth = fontSize * 0.12
-      context.lineJoin = "round"
-      context.strokeText(text, canvasSize.width / 2, y, maxWidth)
-    }
-    context.fillText(text, canvasSize.width / 2, y, maxWidth)
+    const wordWidths = line.map((word) => context.measureText(word).width)
+    const totalWidth = wordWidths.reduce((sum, width) => sum + width, 0) +
+      Math.max(0, line.length - 1) * context.measureText(" ").width
+    let x = canvasSize.width / 2 - totalWidth / 2
+    line.forEach((word, wordIndex) => {
+      const timing = subtitle.wordTimings?.[timingIndex++]
+      const active = timing !== undefined && playhead >= timing.start && playhead < timing.end
+      const spoken = timing !== undefined && playhead >= timing.end
+      const wordWidth = wordWidths[wordIndex] ?? 0
+      context.save()
+      context.globalAlpha *= spoken || active ? 1 : 0.42
+      context.fillStyle = active ? "#FFD966" : style === "coral" ? "#FF8066" : "#F8FAFC"
+      if (style === "minimal") {
+        context.strokeStyle = "rgba(0, 0, 0, 0.9)"
+        context.lineWidth = fontSize * 0.12
+        context.lineJoin = "round"
+        context.strokeText(word, x, y)
+      }
+      if (active) {
+        context.translate(x + wordWidth / 2, y)
+        context.scale(1.06, 1.06)
+        context.fillText(word, -wordWidth / 2, 0)
+      } else {
+        context.fillText(word, x, y)
+      }
+      context.restore()
+      x += wordWidth + context.measureText(" ").width
+    })
   })
   context.restore()
 }

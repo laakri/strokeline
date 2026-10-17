@@ -17,6 +17,7 @@ import { normalizeTextAnchor, positionFromAnchor } from "@/lib/anchors.ts"
 import { error, type Diagnostic } from "@/dsl/diagnostics.ts"
 import { fitTextFontSize, layoutText } from "@/lib/textLayout.ts"
 import { measureTextWidth } from "@/lib/textMetrics.ts"
+import { estimateSayDuration, wordTimingsForDuration } from "@/subtitles/subtitles.ts"
 import {
   arrowPoints,
   circleAnnotationPoints,
@@ -666,11 +667,10 @@ function compileSay(
   diagnostics: Diagnostic[]
 ): SayLine | undefined {
   const source = { line: statement.token.line, col: statement.token.col }
-  if (statement.duration === undefined) {
-    diagnostics.push(error("E_BAD_DURATION", "SAY needs a DURATION with s or ms.", source.line, source.col))
-    return undefined
-  }
-  const duration = durationSeconds(statement.duration, source.line, source.col, diagnostics)
+  const duration =
+    statement.duration === undefined || String(statement.duration).toLowerCase() === "auto"
+      ? estimateSayDuration(statement.text)
+      : durationSeconds(statement.duration, source.line, source.col, diagnostics)
   const tones = ["explain", "hook", "warning", "punchline", "recap"]
   if (statement.tone && !tones.includes(statement.tone))
     diagnostics.push(error("E_BAD_TONE", `Unknown SAY tone "${statement.tone}".`, source.line, source.col))
@@ -678,6 +678,7 @@ function compileSay(
     text: statement.text,
     start,
     duration,
+    wordTimings: wordTimingsForDuration(statement.text, duration),
     ...(statement.who ? { who: statement.who } : {}),
     ...(statement.tone && tones.includes(statement.tone) ? { tone: statement.tone as SayLine["tone"] } : {}),
     ...(statement.lang ? { lang: statement.lang } : {}),

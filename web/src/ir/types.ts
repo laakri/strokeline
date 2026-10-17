@@ -115,10 +115,17 @@ export interface SourceLocation {
 
 export type SayTone = "explain" | "hook" | "warning" | "punchline" | "recap"
 
+export interface WordTiming {
+  text: string
+  start: number
+  end: number
+}
+
 export interface SayLine {
   text: string
   start: number
   duration: number
+  wordTimings?: WordTiming[]
   who?: string
   tone?: SayTone
   lang?: string

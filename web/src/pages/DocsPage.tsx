@@ -1386,6 +1386,11 @@ export function DocsPage() {
                 spoken, and distinct from on-screen labels.
               </p>
               <p>
+                Omit <code>DURATION</code> or write <code>DURATION auto</code>{" "}
+                to use an estimated speech length. Timed captions advance in
+                short word groups and keep the active group in view.
+              </p>
+              <p>
                 There is no hard character limit for <code>SAY</code>.{" "}
                 <code>W_SAY_FAST</code> flags unusually dense narration.
                 Playback schedules cues in order using an estimate of about 2.6
