@@ -57,16 +57,19 @@ export function drawSubtitleLayer(
   const opacity = Math.max(0, Math.min(1, subtitle.opacity))
   if (!opacity) return
   const fullText = plainSubtitleText(subtitle.text)
-  const timings = subtitle.wordTimings?.length
+  const timings = subtitle.audioTiming?.wordTimings.length
+    ? subtitle.audioTiming.wordTimings
+    : subtitle.wordTimings?.length
     ? subtitle.wordTimings
     : wordTimingsForDuration(fullText, subtitle.duration)
-  const elapsed = subtitle.readingProgress * subtitle.duration
+  const captionDuration = Math.max(subtitle.duration, subtitle.audioTiming?.duration ?? 0)
+  const elapsed = subtitle.readingProgress * captionDuration
   const activeIndex = Math.max(0, timings.findIndex((word) => elapsed < word.end))
   const firstIndex = Math.max(0, activeIndex - 2)
   const visible = timings.slice(firstIndex, firstIndex + 6)
   const visibleText = visible.map((word) => word.text).join(" ")
   const visibleStart = visible[0]?.start ?? 0
-  const visibleDuration = Math.max(0.001, (visible.at(-1)?.end ?? subtitle.duration) - visibleStart)
+  const visibleDuration = Math.max(0.001, (visible.at(-1)?.end ?? captionDuration) - visibleStart)
   subtitle = {
     ...subtitle,
     text: visibleText || subtitle.text,

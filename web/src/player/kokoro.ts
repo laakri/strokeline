@@ -15,6 +15,7 @@ export type KokoroState = {
 }
 
 export type KokoroAudio = { samples: Float32Array; sampleRate: number }
+export type KokoroSpeed = number
 
 type PendingAudio = {
   resolve: (audio: KokoroAudio) => void
@@ -206,14 +207,15 @@ export function loadKokoro(): Promise<void> {
   return job
 }
 
-export async function generateKokoroAudio(text: string, voice: string): Promise<KokoroAudio> {
-  const key = `${voice}:${text}`
+export async function generateKokoroAudio(text: string, voice: string, speed = 1): Promise<KokoroAudio> {
+  const key = JSON.stringify([text, voice, speed])
   const cached = audioCache.get(key)
   if (cached) return cached
   const existing = generationJobs.get(key)
   if (existing) return existing
   const job = (async () => {
-    const saved = await readStoredAudio(key)
+    const saved = await readStoredAudio(key) ??
+      (speed === 1 ? await readStoredAudio(`${voice}:${text}`) : null)
     if (saved) {
       audioCache.set(key, saved)
       return saved
@@ -222,7 +224,7 @@ export async function generateKokoroAudio(text: string, voice: string): Promise<
     const id = ++requestId
     const generated = await new Promise<KokoroAudio>((resolve, reject) => {
       pending.set(id, { resolve, reject })
-      getWorker().postMessage({ type: "generate", id, text, voice })
+      getWorker().postMessage({ type: "generate", id, text, voice, speed })
     })
     audioCache.set(key, generated)
     await writeStoredAudio(key, generated).catch(() => undefined)

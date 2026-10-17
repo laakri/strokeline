@@ -124,11 +124,20 @@ export interface WordTiming {
   end: number
 }
 
+export interface SayAudioTiming {
+  text: string
+  voice: string
+  speed: number
+  duration: number
+  wordTimings: WordTiming[]
+}
+
 export interface SayLine {
   text: string
   start: number
   duration: number
   wordTimings?: WordTiming[]
+  audioTiming?: SayAudioTiming
   who?: string
   tone?: SayTone
   lang?: string

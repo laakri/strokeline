@@ -1,5 +1,5 @@
 import { GIFEncoder, applyPalette, quantize } from "gifenc"
-import type { SayLine, SceneDocument } from "@/ir/types.ts"
+import type { SayAudioTiming, SayLine, SceneDocument } from "@/ir/types.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { drawScene, drawSceneAsync } from "@/renderer/draw.ts"
 import { pngExportSize } from "@/export/pngSizing.ts"
@@ -11,7 +11,7 @@ import {
   frameTimestamp,
   pingPongFrameTimes,
 } from "@/export/frameTiming.ts"
-import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode } from "@/subtitles/subtitles.ts"
+import { plainSubtitleText, scheduleSays, subtitleExportEntries, subtitleTimecode, wordTimingsForDuration } from "@/subtitles/subtitles.ts"
 import { getKokoroState, generateKokoroAudio, subscribeKokoro } from "@/player/kokoro.ts"
 import { readReaderVolume } from "@/player/readerVolume.ts"
 import {
@@ -100,8 +100,8 @@ function throwIfAborted(signal?: AbortSignal): void {
   }
 }
 
-function sceneTimelines(document: SceneDocument): Timeline[] {
-  return document.scenes.map((scene) => new Timeline(scene, document.canvas))
+function sceneTimelines(document: SceneDocument, voice = exportVoiceId()): Timeline[] {
+  return document.scenes.map((scene) => new Timeline(scene, document.canvas, voice))
 }
 
 export function videoExportDimensions(
@@ -181,7 +181,7 @@ export async function exportPng(
     options.onProgress?.(1)
   } else {
     const scene = document.scenes[sceneIndex]!
-    const timeline = new Timeline(scene, document.canvas)
+    const timeline = new Timeline(scene, document.canvas, exportVoiceId())
     const at = Math.min(Math.max(0, elapsed), timeline.duration)
     await preloadImages(document)
     await loadHandwrittenFont()
@@ -244,7 +244,7 @@ export async function exportGif(
   context.imageSmoothingEnabled = true
   context.imageSmoothingQuality = "high"
   const subtitleSettings = exportSubtitleSettings(document)
-  const timelines = sceneTimelines(document)
+  const timelines = sceneTimelines(document, exportVoiceId())
   if (seamlessLoop) {
     const sequence = createSequenceRenderer(
       document,
@@ -353,8 +353,21 @@ export async function exportVideo(
     await preloadImages(document)
     await loadHandwrittenFont()
     const { width, height } = videoExportDimensions(document, resolution)
-    const timelines = sceneTimelines(document)
-    const sequence = createSequenceRenderer(document, timelines, width, height, brandingEntitlements)
+    const voice = exportVoiceId()
+    const timedDocument = voiceEnabled && audioContext
+      ? await cacheNarrationTimings(
+          document,
+          voice,
+          audioContext,
+          signal,
+          (fraction, message) => {
+            onProgress?.(fraction * 0.12)
+            onMessage?.(message)
+          }
+        )
+      : document
+    const timelines = sceneTimelines(timedDocument, voice)
+    const sequence = createSequenceRenderer(timedDocument, timelines, width, height, brandingEntitlements)
     const total = sequence.player.duration
     if (total <= 0) {
       sequence.player.dispose()
@@ -364,10 +377,10 @@ export async function exportVideo(
       throwIfAborted(signal)
       const narration = voiceEnabled
         ? await renderNarrationAudio(
-            document,
+            timedDocument,
             sequence.sceneStartTimes,
             total,
-            exportVoiceId(),
+            voice,
             signal,
             (fraction, message) => {
               onProgress?.(fraction * 0.25)
@@ -402,9 +415,9 @@ export async function exportVideo(
 
 type TimedSay = { line: SayLine; start: number }
 
-function timedSays(document: SceneDocument, sceneStarts: number[]): TimedSay[] {
+function timedSays(document: SceneDocument, sceneStarts: number[], voice: string): TimedSay[] {
   return document.scenes.flatMap((scene, index) =>
-    scheduleSays(scene.says ?? []).map((line) => ({
+    scheduleSays(scene.says ?? [], voice).map((line) => ({
       line,
       start: (sceneStarts[index] ?? 0) + line.start,
     }))
@@ -415,6 +428,58 @@ function isUnsupportedNarration(line: SayLine): boolean {
   return line.lang?.toLowerCase().startsWith("ar") === true || /\p{Script=Arabic}/u.test(line.text)
 }
 
+async function cacheNarrationTimings(
+  document: SceneDocument,
+  voice: string,
+  audioContext: AudioContext,
+  signal: AbortSignal | undefined,
+  onProgress: (fraction: number, message: string) => void
+): Promise<SceneDocument> {
+  const says = document.scenes.flatMap((scene) => scene.says ?? [])
+    .filter((line) => !isUnsupportedNarration(line))
+  const unique = new Map<string, string>()
+  for (const line of says) {
+    const text = plainSubtitleText(line.text).trim()
+    if (text) unique.set(JSON.stringify([text, voice, 1]), text)
+  }
+  const timings = new Map<string, SayAudioTiming>()
+  let completed = 0
+  for (const [key, text] of unique) {
+    throwIfAborted(signal)
+    onProgress(
+      0.12 * completed / Math.max(1, unique.size),
+      `Preparing narration ${completed + 1}/${unique.size}…`
+    )
+    const audio = await generateKokoroAudio(text, voice, 1)
+    const buffer = audioContext.createBuffer(1, audio.samples.length, audio.sampleRate)
+    buffer.copyToChannel(audio.samples, 0)
+    timings.set(key, {
+      text,
+      voice,
+      speed: 1,
+      duration: buffer.duration,
+      wordTimings: wordTimingsForDuration(text, buffer.duration),
+    })
+    completed++
+  }
+  onProgress(0.12, "Narration timings ready.")
+  return {
+    ...document,
+    scenes: document.scenes.map((scene) => ({
+      ...scene,
+      ...(scene.says
+        ? {
+            says: scene.says.map((line) => {
+              const text = plainSubtitleText(line.text).trim()
+              const timing = timings.get(JSON.stringify([text, voice, 1]))
+              return timing ? { ...line, audioTiming: timing } : line
+            }),
+          }
+        : {}),
+    })),
+  }
+}
+
 async function renderNarrationAudio(
   document: SceneDocument,
   sceneStarts: number[],
@@ -423,7 +488,7 @@ async function renderNarrationAudio(
   signal: AbortSignal | undefined,
   onProgress: (fraction: number, message: string) => void
 ): Promise<AudioBuffer | null> {
-  const allSays = timedSays(document, sceneStarts)
+  const allSays = timedSays(document, sceneStarts, voice)
   const says = allSays.filter(({ line }) => !isUnsupportedNarration(line))
   const skipped = allSays.length - says.length
   if (skipped) onProgress(0, `Kokoro skipped ${skipped} Arabic line${skipped === 1 ? "" : "s"}; rendering supported narration…`)
@@ -456,10 +521,17 @@ async function renderNarrationAudio(
       throwIfAborted(signal)
       const { line, start } = says[index]!
       onProgress(0.12 + (index / says.length) * 0.13, `Preparing narration ${index + 1}/${says.length}…`)
-      const audio = await generateKokoroAudio(plainSubtitleText(line.text).trim(), voice)
+      const audio = await generateKokoroAudio(plainSubtitleText(line.text).trim(), voice, 1)
       if (start >= totalDuration) continue
       const buffer = audioContext.createBuffer(1, audio.samples.length, audio.sampleRate)
       buffer.copyToChannel(audio.samples, 0)
+      line.audioTiming = {
+        text: plainSubtitleText(line.text).trim(),
+        voice,
+        speed: 1,
+        duration: buffer.duration,
+        wordTimings: wordTimingsForDuration(line.text, buffer.duration),
+      }
       const source = audioContext.createBufferSource()
       source.buffer = buffer
       source.connect(gain)
@@ -570,14 +642,14 @@ function createSequenceRenderer(
 }
 
 export function exportSrt(document: SceneDocument): void {
-  const body = subtitleExportEntries(document)
+  const body = subtitleExportEntries(document, exportVoiceId())
     .map((entry, index) => `${index + 1}\n${subtitleTimecode(entry.start, ",")} --> ${subtitleTimecode(entry.end, ",")}\n${entry.text}\n`)
     .join("\n")
   download(new Blob([body], { type: "application/x-subrip;charset=utf-8" }), `strokeline-${timestamp()}.srt`)
 }
 
 export function exportVtt(document: SceneDocument): void {
-  const body = subtitleExportEntries(document)
+  const body = subtitleExportEntries(document, exportVoiceId())
     .map((entry) => `${subtitleTimecode(entry.start, ".")} --> ${subtitleTimecode(entry.end, ".")}\n${entry.text}`)
     .join("\n\n")
   download(new Blob([`WEBVTT\n\n${body}${body ? "\n" : ""}`], { type: "text/vtt;charset=utf-8" }), `strokeline-${timestamp()}.vtt`)

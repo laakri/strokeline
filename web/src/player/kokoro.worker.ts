@@ -2,7 +2,7 @@ import { KokoroTTS } from "kokoro-js"
 
 type WorkerRequest =
   | { type: "load" }
-  | { type: "generate"; id: number; text: string; voice: string }
+  | { type: "generate"; id: number; text: string; voice: string; speed: number }
 
 type VoiceInfo = { name?: string; language?: string; gender?: string; traits?: string }
 
@@ -105,7 +105,7 @@ workerScope.addEventListener("message", (event: MessageEvent<WorkerRequest>) => 
   }
 
   void loadModel().then(async (model) => {
-    const audio = await model.generate(request.text, { voice: request.voice as never })
+    const audio = await model.generate(request.text, { voice: request.voice as never, speed: request.speed })
     const samples = new Float32Array(audio.audio)
     workerScope.postMessage(
       {

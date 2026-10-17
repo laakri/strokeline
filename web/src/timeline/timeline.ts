@@ -91,8 +91,8 @@ export class Timeline {
   readonly duration: number
   private readonly canvas: CanvasSize
 
-  constructor(scene: Scene, canvas: CanvasSize = defaultCanvas) {
-    this.sceneSays = scheduleSays(scene.says ?? [])
+  constructor(scene: Scene, canvas: CanvasSize = defaultCanvas, voice = "af_heart", speed = 1) {
+    this.sceneSays = scheduleSays(scene.says ?? [], voice, speed)
     const creates = scene.ops.filter((op): op is CreateOp => op.kind === "create")
     const members = new Map<string, SceneNode[]>()
     for (const op of creates) if (op.node.groupId) {

@@ -1,11 +1,13 @@
-import type { SayLine } from "@/ir/types.ts"
-import { plainSubtitleText } from "@/subtitles/subtitles.ts"
+import type { SayAudioTiming, SayLine } from "@/ir/types.ts"
+import { plainSubtitleText, wordTimingsForDuration } from "@/subtitles/subtitles.ts"
 import { generateKokoroAudio } from "@/player/kokoro.ts"
 import { clampReaderVolume } from "@/player/readerVolume.ts"
 
 export type VoiceStatus = "idle" | "ready" | "preparing" | "speaking" | "paused" | "error"
 
 type NarratedLine = SayLine & { readingProgress: number }
+type TimingReady = (timing: SayAudioTiming) => void
+const speechTimings = new Map<string, SayAudioTiming>()
 
 export function narrationPlaybackTiming(
   audioDuration: number,
@@ -18,8 +20,8 @@ export function narrationPlaybackTiming(
   }
 }
 
-function audioKey(text: string, voice: string): string {
-  return `${voice}:${text}`
+function audioKey(text: string, voice: string, speed = 1): string {
+  return JSON.stringify([text, voice, speed])
 }
 
 function isUnsupportedLine(line: SayLine): boolean {
@@ -57,7 +59,7 @@ export class SubtitleNarration {
     this.cancel()
     this.voice = voice
     for (const key of this.buffers.keys()) {
-      if (!key.startsWith(`${voice}:`)) this.buffers.delete(key)
+      if (JSON.parse(key)[1] !== voice) this.buffers.delete(key)
     }
   }
 
@@ -68,8 +70,9 @@ export class SubtitleNarration {
   async prepare(
     lines: SayLine[],
     voice: string,
-    onProgress?: (completed: number, total: number) => void
-  ): Promise<{ skipped: number }> {
+    onProgress?: (completed: number, total: number) => void,
+    onTiming?: TimingReady
+  ): Promise<{ skipped: number; timings: SayAudioTiming[] }> {
     const eligible = new Map<string, string>()
     let skipped = 0
     for (const line of lines) {
@@ -83,11 +86,12 @@ export class SubtitleNarration {
     }
     const total = eligible.size
     let completed = 0
+    const timings: SayAudioTiming[] = []
     onProgress?.(0, total)
     this.setStatus("preparing")
     for (const [key, text] of eligible) {
       if (!this.buffers.has(key)) {
-        const generated = await generateKokoroAudio(text, voice)
+        const generated = await generateKokoroAudio(text, voice, 1)
         await this.waitForPreparationResume()
         const buffer = this.getContext().createBuffer(
           1,
@@ -99,11 +103,24 @@ export class SubtitleNarration {
       } else {
         await this.waitForPreparationResume()
       }
+      const buffer = this.buffers.get(key)
+      if (buffer) {
+        const timing: SayAudioTiming = {
+          text,
+          voice,
+          speed: 1,
+          duration: buffer.duration,
+          wordTimings: wordTimingsForDuration(text, buffer.duration),
+        }
+        speechTimings.set(key, timing)
+        timings.push(timing)
+        onTiming?.(timing)
+      }
       completed++
       onProgress?.(completed, total)
     }
     this.setStatus("ready")
-    return { skipped }
+    return { skipped, timings }
   }
 
   pausePreparation(): void {
@@ -132,6 +149,13 @@ export class SubtitleNarration {
 
     const text = plainSubtitleText(line.text).trim()
     const key = `${scope}:${line.start}:${audioKey(text, this.voice)}`
+    const buffer = this.buffers.get(audioKey(text, this.voice))
+    const audioTiming = speechTimings.get(audioKey(text, this.voice))
+    if (audioTiming) {
+      line.duration = Math.max(line.duration, audioTiming.duration)
+      line.wordTimings = audioTiming.wordTimings
+      line.audioTiming = audioTiming
+    }
     const progress = Math.max(0, Math.min(1, line.readingProgress))
     const now = performance.now()
     const wallDelta = Math.max(0, (now - this.lastUpdate) / 1000)
@@ -148,7 +172,6 @@ export class SubtitleNarration {
     }
 
     this.stopSource()
-    const buffer = this.buffers.get(audioKey(text, this.voice))
     if (!buffer) {
       this.activeKey = null
       this.setStatus("preparing")

@@ -33,8 +33,10 @@ rewriting narration to add context instead of repeating visible text. Re-run
 validation after fixes, then return the complete editable script in the format
 the user requests. For narration, use `DURATION auto` or omit `DURATION` when
 estimated cue timing is appropriate; use explicit `s`/`ms` timing when the
-scene requires a fixed duration. Captions follow each cue in short word-timed
-groups. Text-only `ENTER` effects are `typewriter`, `scramble`,
+scene requires a fixed duration. Prepared Kokoro narration uses the decoded
+audio duration to rescale the estimated word timings, while preserving any
+longer declared duration. Captions follow each cue in short word-timed groups.
+Text-only `ENTER` effects are `typewriter`, `scramble`,
 `word-by-word`, and `marker`; use `WORDS "..."` with `marker` to name its
 highlighted words. For route motion, use a named `ARROW route FROM source ->
 target`, then `PATHFOLLOW object ALONG route` with explicit timing and optional

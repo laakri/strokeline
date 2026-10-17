@@ -6,7 +6,8 @@ import { blocksScriptRun } from "@/dsl/diagnostics.ts"
 import { normalizeScriptSource } from "@/dsl/source.ts"
 import { formatScript } from "@/dsl/format.ts"
 import { trackProductEvent } from "@/analytics/productAnalytics.ts"
-import type { Diagnostic, Scene, SceneDocument } from "@/ir/types.ts"
+import type { Diagnostic, SayAudioTiming, Scene, SceneDocument } from "@/ir/types.ts"
+import { plainSubtitleText } from "@/subtitles/subtitles.ts"
 
 const STORAGE_KEY = "strokeline.script.v1"
 
@@ -84,6 +85,7 @@ interface AppStore {
   setActiveSceneIndex: (index: number) => void
   setPlayerState: (state: Partial<PlayerState>) => void
   setImageDiagnostics: (diagnostics: Diagnostic[]) => void
+  setSayAudioTiming: (timing: SayAudioTiming) => void
   requestEditorJump: (line: number, col: number) => void
   clearEditorJump: () => void
   setEditorSourceReader: (reader: (() => string) | null) => void
@@ -182,6 +184,27 @@ export const useAppStore = create<AppStore>((set, get) => ({
         ...imageDiagnostics,
       ],
     })),
+  setSayAudioTiming: (timing) =>
+    set((state) => {
+      if (!state.compiledIR) return state
+      return {
+        compiledIR: {
+          ...state.compiledIR,
+          scenes: state.compiledIR.scenes.map((scene) => ({
+            ...scene,
+            ...(scene.says
+              ? {
+                  says: scene.says.map((say) =>
+                    plainSubtitleText(say.text).trim() === timing.text
+                      ? { ...say, audioTiming: timing }
+                      : say
+                  ),
+                }
+              : {}),
+          })),
+        },
+      }
+    }),
   requestEditorJump: (line, col) => set({ editorJump: { line, col } }),
   clearEditorJump: () => set({ editorJump: null }),
   setEditorSourceReader: (editorSourceReader) => set({ editorSourceReader }),

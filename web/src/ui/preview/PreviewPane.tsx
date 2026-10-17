@@ -11,6 +11,7 @@ import { trackProductEvent } from "@/analytics/productAnalytics.ts"
 import { preloadImages } from "@/renderer/images.ts"
 import { loadHandwrittenFont } from "@/renderer/handdrawn.ts"
 import { useAppStore, type EditorSourceEdit } from "@/app/store.ts"
+import type { SayAudioTiming } from "@/ir/types.ts"
 import { Player, SequencePlayer } from "@/player/usePlayer.ts"
 import { SubtitleNarration, type VoiceStatus } from "@/player/subtitleNarration.ts"
 import { getKokoroState, subscribeKokoro } from "@/player/kokoro.ts"
@@ -161,7 +162,12 @@ export function PreviewPane({
   const lastUiUpdate = useRef(0)
   const autoplayNext = useRef(false)
   const autoplayAll = useRef(false)
-  const preservedPlayback = useRef<{ time: number; wasPlaying: boolean } | null>(null)
+  const preservedPlayback = useRef<{
+    time: number
+    wasPlaying: boolean
+    sceneIndex?: number
+    localTime?: number
+  } | null>(null)
   const pendingEditSource = useRef<string | null>(null)
   const setPreviewCanvasReader = useAppStore(
     (state) => state.setPreviewCanvasReader
@@ -362,11 +368,23 @@ export function PreviewPane({
   const voiceSupported = typeof window !== "undefined" && "Worker" in window && "AudioContext" in window
 
   const preservePlaybackPosition = useCallback(() => {
+    const time = playerRef.current?.currentTime ?? player.elapsed
+    const sceneIndex = effectivePlayAllMode ? sequenceSceneIndex : undefined
     preservedPlayback.current = {
-      time: playerRef.current?.currentTime ?? player.elapsed,
+      time,
       wasPlaying: playerRef.current?.isPlaying ?? player.isPlaying,
+      ...(sceneIndex !== undefined
+        ? {
+            sceneIndex,
+            localTime: Math.max(0, time - (sequenceStarts[sceneIndex] ?? 0)),
+          }
+        : {}),
     }
-  }, [player.elapsed, player.isPlaying])
+  }, [player.elapsed, player.isPlaying, effectivePlayAllMode, sequenceSceneIndex, sequenceStarts])
+  const applyActualSayTiming = useCallback((timing: SayAudioTiming) => {
+    preservePlaybackPosition()
+    useAppStore.getState().setSayAudioTiming(timing)
+  }, [preservePlaybackPosition])
 
   useEffect(() => {
     if (script === compiledSource) {
@@ -401,16 +419,18 @@ export function PreviewPane({
     setVoiceStatus("preparing")
     setVoiceNotice("Preparing narration. The video keeps playing; use the progress button to pause or resume preparation.")
     try {
+      narrationRef.current.setVoice(voice)
+      preservePlaybackPosition()
+      setReaderVoice(voice)
       await narrationRef.current.unlock()
-      const lines = compiledIR?.scenes.flatMap((item) => scheduleSays(item.says ?? [])) ?? []
+      const lines = compiledIR?.scenes.flatMap((item) => scheduleSays(item.says ?? [], voice)) ?? []
       const { skipped } = await narrationRef.current.prepare(
         lines,
         voice,
-        (completed, total) => setVoicePrepProgress({ completed, total })
+        (completed, total) => setVoicePrepProgress({ completed, total }),
+        applyActualSayTiming
       )
       await narrationRef.current.unlock()
-      narrationRef.current.setVoice(voice)
-      setReaderVoice(voice)
       setSelectedVoice(voice)
       try {
         localStorage.setItem(VOICE_STORAGE_KEY, voice)
@@ -438,7 +458,7 @@ export function PreviewPane({
       setVoicePreparationPaused(false)
       setVoicePreparationActive(false)
     }
-  }, [compiledIR, showReaderToast])
+  }, [compiledIR, showReaderToast, applyActualSayTiming, preservePlaybackPosition])
 
   const toggleReadAlong = useCallback(() => {
     if (!voiceSupported) return
@@ -542,7 +562,7 @@ export function PreviewPane({
     const context = canvas.getContext("2d")
     if (!context) return
     const timelines = compiledIR.scenes.map(
-      (item) => new Timeline(item, compiledIR.canvas)
+      (item) => new Timeline(item, compiledIR.canvas, readerVoice)
     )
     const transitionFromCanvas = document.createElement("canvas")
     const transitionToCanvas = document.createElement("canvas")
@@ -724,8 +744,11 @@ export function PreviewPane({
     void loadHandwrittenFont().then(() =>
       controller.seek(controller.currentTime)
     )
+    const preservedTime = preserved?.sceneIndex !== undefined && controller instanceof SequencePlayer
+      ? (controller.sceneStartTimes[preserved.sceneIndex] ?? 0) + (preserved.localTime ?? 0)
+      : preserved?.time ?? 0
     const startTime = preserved
-      ? Math.min(preserved.time, controller.duration)
+      ? Math.min(preservedTime, controller.duration)
       : 0
     controller.seek(startTime)
     setPlayerState({
@@ -747,7 +770,7 @@ export function PreviewPane({
       controller.dispose()
       narration?.cancel()
     }
-  }, [compiledIR, activeSceneIndex, scene, effectivePlayAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState, brandingEntitlements])
+  }, [compiledIR, activeSceneIndex, scene, effectivePlayAllMode, sceneGapSeconds, sceneAnimation, transitionDuration, imageReadiness, setPlayerState, brandingEntitlements, readerVoice])
 
   useEffect(() => {
     const overlay = preflightCanvasRef.current
@@ -987,7 +1010,7 @@ export function PreviewPane({
     if (!targetScene) return
     const playbackTime = playerRef.current?.currentTime ?? player.elapsed
     const sceneOffset = effectivePlayAllMode ? sequenceStarts[sceneIndex] ?? 0 : 0
-    const sceneDuration = new Timeline(targetScene, compiledIR.canvas).duration
+    const sceneDuration = new Timeline(targetScene, compiledIR.canvas, readerVoice).duration
     const time = Math.max(0, Math.min(sceneDuration, playbackTime - sceneOffset))
     setObjectMenu(null)
     setObjectNotice("")
@@ -1512,13 +1535,15 @@ export function PreviewPane({
                     setVoiceStatus("preparing")
                     setVoicePrepProgress({ completed: 0, total: 0 })
                     setVoiceNotice("Preparing narration…")
-                    const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? []))
+                    const lines = compiledIR.scenes.flatMap((item) => scheduleSays(item.says ?? [], selectedVoice))
                     narrationRef.current.setVoice(selectedVoice)
+                    preservePlaybackPosition()
                     setReaderVoice(selectedVoice)
                     const { skipped } = await narrationRef.current.prepare(
                       lines,
                       selectedVoice,
-                      (completed, total) => setVoicePrepProgress({ completed, total })
+                      (completed, total) => setVoicePrepProgress({ completed, total }),
+                      applyActualSayTiming
                     )
                     await narrationRef.current?.unlock()
                     setVoiceNotice(skipped
@@ -1531,8 +1556,9 @@ export function PreviewPane({
                   setVoiceNotice(`Kokoro could not prepare narration: ${message}`)
                 }
                 narrationRef.current?.resume()
-                controller.play()
-                setPlayerState({ isPlaying: true })
+                const activeController = playerRef.current
+                activeController?.play()
+                setPlayerState({ isPlaying: activeController !== null })
               })()
             }
           }}

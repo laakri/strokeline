@@ -42,14 +42,24 @@ export function wrapSubtitleText(text: string, maxChars = 44): string[] {
   return lines
 }
 
-export function scheduleSays(says: SayLine[]): SayLine[] {
+export function scheduleSays(says: SayLine[], voice = "af_heart", speed = 1): SayLine[] {
   let cursor = 0
   return says.map((say, index) => {
     const need = estimateSayDuration(say.text)
-    const duration = Math.max(say.duration, need)
+    const audioTiming = say.audioTiming?.voice === voice &&
+        say.audioTiming.speed === speed &&
+        say.audioTiming.text === plainSubtitleText(say.text).trim()
+      ? say.audioTiming
+      : undefined
+    const duration = Math.max(say.duration, need, audioTiming?.duration ?? 0)
     const start = Math.max(say.start, cursor)
     cursor = start + duration + (index < says.length - 1 ? 0.22 : 0)
-    return { ...say, start, duration, wordTimings: wordTimingsForDuration(say.text, duration) }
+    return {
+      ...say,
+      start,
+      duration,
+      wordTimings: audioTiming?.wordTimings ?? say.wordTimings ?? wordTimingsForDuration(say.text, duration),
+    }
   })
 }
 
@@ -103,11 +113,11 @@ export function subtitleTimecode(seconds: number, separator: "." | ","): string 
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}${separator}${String(millis).padStart(3, "0")}`
 }
 
-export function subtitleExportEntries(document: SceneDocument) {
+export function subtitleExportEntries(document: SceneDocument, voice = "af_heart") {
   let offset = 0
   const entries: Array<{ start: number; end: number; text: string; lang?: string }> = []
   for (const scene of document.scenes) {
-    const says = scheduleSays(scene.says ?? [])
+    const says = scheduleSays(scene.says ?? [], voice)
     const opsDuration = scene.ops.reduce((end, op) => {
       if (op.kind === "create") return Math.max(end, op.t + op.draw.duration)
       if (op.kind === "animate") return Math.max(end, op.t + op.anim.duration)

@@ -1438,11 +1438,15 @@ ENTER keyPoints marker WORDS "procedural deterministic" DURATION 0.8s`}
               <p>
                 The reader uses the local Kokoro voice model. First setup
                 downloads about 92 MB and shows progress; the model and
-                generated clips are cached in this browser. Choose a voice and
-                adjust volume from 0 to 150% in Voice settings; those choices
-                are saved for this browser. Kokoro does not speak Arabic, but
-                Arabic SAY text remains available for captions and subtitle
-                exports. SRT and VTT exports use the scheduled SAY cues.
+                generated clips are cached in this browser. Word captions begin
+                with estimated timing and switch to timings scaled to the
+                generated AudioBuffer duration when narration is prepared; the
+                timing cache is keyed by text, voice, and speed. Audio generation
+                never blocks the first visual frame. Choose a voice and adjust
+                volume from 0 to 150% in Voice settings; those choices are saved
+                for this browser. Kokoro does not speak Arabic, but Arabic SAY
+                text remains available for captions and subtitle exports. SRT
+                and VTT exports use the scheduled SAY cues.
               </p>
             </DocsSection>
 
