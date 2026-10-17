@@ -13,6 +13,7 @@ import { formatMathText } from "@/lib/mathText.ts"
 import { layoutTable } from "@/lib/tableLayout.ts"
 import { BOARD_BASES, THEMES } from "@/defaults/themes.ts"
 import { BUILTIN_MACROS } from "@/dsl/builtinMacros.ts"
+import { ENTER_EFFECT_NAMES, EXIT_EFFECT_NAMES, LOOP_EFFECT_NAMES, SAY_TONES, STYLE_NAMES, TEXT_EFFECT_NAMES } from "@/dsl/grammar.ts"
 import { normalizeTextAnchor, positionFromAnchor } from "@/lib/anchors.ts"
 import { error, type Diagnostic } from "@/dsl/diagnostics.ts"
 import { fitTextFontSize, layoutText } from "@/lib/textLayout.ts"
@@ -72,7 +73,7 @@ export function compile(ast: ASTScript): CompileResult {
       background: ast.background ?? (ast.board ? BOARD_BASES[board] ?? theme?.background ?? "#FAFAFA" : theme?.background ?? "#FAFAFA"),
       ...(ast.subtitles !== undefined ? { subtitles: ast.subtitles } : {}),
       style: {
-        mode: ["handdrawn", "chalk", "marker", "pencil", "brush", "clean"].includes(mode) ? mode as SceneDocument["style"]["mode"] : theme?.pen ?? "handdrawn",
+      mode: (STYLE_NAMES as readonly string[]).includes(mode) ? mode as SceneDocument["style"]["mode"] : theme?.pen ?? "handdrawn",
         strokeWidth: ast.stroke ?? DEFAULT_STROKE_WIDTH,
         font: ast.font ?? "handwritten",
         ...(ast.board || ast.theme ? { board } : {}),
@@ -607,7 +608,7 @@ function compileScene(
     }
     if (statement.kind === "loop") {
       const period = durationSeconds(statement.period, statement.token.line, statement.token.col, diagnostics)
-      const allowed = ["float", "pulse", "wobble", "breathe", "blink"] as const
+      const allowed = LOOP_EFFECT_NAMES
       if (!(allowed as readonly string[]).includes(statement.effect))
         diagnostics.push(error("E_UNKNOWN_ANIMATION", `Unknown loop effect "${statement.effect}".`, statement.token.line, statement.token.col))
       return {
@@ -619,10 +620,9 @@ function compileScene(
     }
     if (statement.kind === "effect") {
       const duration = statement.duration === undefined ? DEFAULT_DURATION : durationSeconds(statement.duration, statement.token.line, statement.token.col, diagnostics)
-      const textEffects = ["typewriter", "scramble", "word-by-word", "marker"]
       const allowed = statement.phase === "enter"
-        ? ["pop", "slide-left", "slide-right", "slide-up", "slide-down", "fade", "write", "drop", "zoom", ...textEffects]
-        : ["fade", "shrink", "slide-left", "slide-right", "slide-up", "slide-down", "erase"]
+        ? ENTER_EFFECT_NAMES
+        : EXIT_EFFECT_NAMES
       if (!allowed.includes(statement.effect))
         diagnostics.push(error("E_UNKNOWN_ANIMATION", `Unknown ${statement.phase} effect "${statement.effect}".`, statement.token.line, statement.token.col))
       return { ops: [{ kind: "animate", t: start, targetId: statement.targetId,
@@ -698,7 +698,7 @@ function compileSay(
     statement.duration === undefined || String(statement.duration).toLowerCase() === "auto"
       ? estimateSayDuration(statement.text)
       : durationSeconds(statement.duration, source.line, source.col, diagnostics)
-  const tones = ["explain", "hook", "warning", "punchline", "recap"]
+  const tones = SAY_TONES
   if (statement.tone && !tones.includes(statement.tone))
     diagnostics.push(error("E_BAD_TONE", `Unknown SAY tone "${statement.tone}".`, source.line, source.col))
   return {

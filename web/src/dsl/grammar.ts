@@ -31,6 +31,19 @@ export const EASE_NAMES = [
   "spring",
   "natural",
 ] as const
+export const ENTER_EFFECT_NAMES = [
+  "pop", "slide-left", "slide-right", "slide-up", "slide-down", "fade", "write", "drop", "zoom",
+  "typewriter", "scramble", "word-by-word", "marker",
+] as const
+export const EXIT_EFFECT_NAMES = [
+  "fade", "shrink", "slide-left", "slide-right", "slide-up", "slide-down", "erase",
+] as const
+export const LOOP_EFFECT_NAMES = ["float", "pulse", "wobble", "breathe", "blink"] as const
+export const TRANSITION_NAMES = ["fade", "wipe", "slide", "erase", "none"] as const
+export const SAY_TONES = ["explain", "hook", "warning", "punchline", "recap"] as const
+export const STYLE_NAMES = ["handdrawn", "chalk", "marker", "pencil", "brush", "clean"] as const
+export const FONT_NAMES = ["handwritten", "arabic", "neat", "marker"] as const
+export const TEXT_EFFECT_NAMES = ["typewriter", "scramble", "word-by-word", "marker"] as const
 
 export const PROPERTY_KEYS = [
   "POSITION",
