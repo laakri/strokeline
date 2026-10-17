@@ -6,7 +6,7 @@ import { measureTextWidth } from "@/lib/textMetrics.ts"
 import { layoutTable, TABLE_CELL_PADDING } from "@/lib/tableLayout.ts"
 import { resolveArrowEndpoints } from "@/renderer/geometry.ts"
 import { tableBounds } from "@/renderer/shapes/table.ts"
-import { componentContentBounds } from "@/renderer/shapes/components.ts"
+import { componentContentBounds, componentTextMetrics } from "@/renderer/shapes/components.ts"
 import { ShapeRegistry } from "@/renderer/shapes/registry.ts"
 import { COMPONENT_TYPES, ICON_NAMES, PROPERTY_KEYS, SHAPE_TYPES } from "@/dsl/grammar.ts"
 import type { Point, Scene, SceneDocument, SceneNode, TimelineOp } from "@/ir/types.ts"
@@ -771,6 +771,7 @@ function validateSceneWarnings(
       const cellColors = op.node.data?.cellColors as Record<string, string> | undefined
       const end = erasures.get(op.node.id) ?? Number.POSITIVE_INFINITY
       const cellRows = [columns, ...rows]
+      const minimumTextSize = 24 * document.canvas.height / 1080
       const tableX = op.node.position.x - tableLayout.width / 2
       cellRows.forEach((cells, rowIndex) => cells.forEach((cell, columnIndex) => {
         const text = String(cell)
@@ -811,8 +812,14 @@ function validateSceneWarnings(
           bounds.y + bounds.height > document.canvas.height - safeMarginY
         )
           diagnostics.push(warning("W_TEXT_OFF_SAFE", `Table cell "${cellId}" extends outside the safe area.`, source.line, source.col, "Move or resize the table inside x=120..1800 and y=100..980."))
-        if (!layout.fits)
-          diagnostics.push(warning("W_TEXT_TOO_SMALL", `Table cell "${cellId}" is clipped at the minimum 18px text size.`, source.line, source.col, "Increase SIZE or shorten the cell text."))
+        if (layout.fontSize < minimumTextSize || !layout.fits)
+          diagnostics.push(warning(
+            "W_TEXT_TOO_SMALL",
+            `Table cell "${cellId}" renders at ${layout.fontSize.toFixed(1)}px, below the ${minimumTextSize.toFixed(1)}px minimum or clipped.`,
+            source.line,
+            source.col,
+            "Increase table SIZE or shorten the cell text."
+          ))
         const rowColor = rowColors?.[rowIndex] ??
           (rowIndex > 0 && rowIndex % 2 === 0 ? alternateColor : "")
         const cellColor = rowIndex > 0 ? cellColors?.[`${rowIndex},${columnIndex + 1}`] : undefined
@@ -831,6 +838,24 @@ function validateSceneWarnings(
           diagnostics.push(warning("W_LOW_CONTRAST", `Table cell "${cellId}" has a contrast ratio of ${contrast.toFixed(2)}:1.`, source.line, source.col, "Choose cell and background colors with a WCAG contrast ratio of at least 4.5:1."))
       }))
       continue
+    }
+    if (typeof op.node.data?.componentType === "string") {
+      const metrics = componentTextMetrics(op.node, document.canvas.height)
+      const minimumTextSize = 24 * document.canvas.height / 1080
+      const smallSizes = metrics.fontSizes.filter((size) => size < minimumTextSize)
+      if (smallSizes.length > 0 || metrics.overflows) {
+        const measuredSize = smallSizes.length > 0
+          ? Math.min(...smallSizes)
+          : Math.min(...metrics.fontSizes)
+        const componentName = String(op.node.data.componentType)
+        diagnostics.push(warning(
+          "W_TEXT_TOO_SMALL",
+          `Component "${op.node.id}" (${componentName}) text measures ${measuredSize.toFixed(1)}px${metrics.overflows ? " and overflows its content bounds" : ""}.`,
+          location(op, "SIZE").line,
+          location(op, "SIZE").col,
+          "Increase component SIZE or reduce its content; text is not shrunk below its minimum."
+        ))
+      }
     }
     const text = op.node.text ?? op.node.label ?? ""
     if (!text) continue
@@ -905,24 +930,15 @@ function validateSceneWarnings(
         )
       )
     }
-    if (fontSize < 18) {
-      diagnostics.push(
-        error(
-          "W_TEXT_TOO_SMALL",
-          `Text "${op.node.id}" is smaller than 18px.`,
-          source.line,
-          source.col,
-          "Increase SIZE to at least 18px; 28px or larger is recommended."
-        )
-      )
-    } else if (fontSize < 28) {
+    const minimumTextSize = 24 * document.canvas.height / 1080
+    if (fontSize < minimumTextSize) {
       diagnostics.push(
         warning(
           "W_TEXT_TOO_SMALL",
-          `Text "${op.node.id}" is smaller than the recommended 28px.`,
+          `Text "${op.node.id}" renders at ${fontSize.toFixed(1)}px, below the ${minimumTextSize.toFixed(1)}px minimum.`,
           source.line,
           source.col,
-          "Increase SIZE to 28px or larger."
+          `Increase SIZE to at least ${minimumTextSize.toFixed(1)}px.`
         )
       )
     }

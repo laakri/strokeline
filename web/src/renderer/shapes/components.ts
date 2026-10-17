@@ -47,7 +47,7 @@ export function componentTextMetrics(
     )
     const longest = Math.max(0, ...lines.map((line) => line.length))
     return {
-      fontSizes: lines.length ? [fontSize, 26 * scale] : [],
+      fontSizes: [24 * scale, ...(lines.length ? [fontSize, 26 * scale] : [])],
       overflows: lines.length * fontSize * 1.42 > content.height ||
         longest * fontSize * 0.61 > content.width - 54,
     }
@@ -66,7 +66,7 @@ export function componentTextMetrics(
       Math.min(box.height * 0.1, content.height / Math.max(1, rows.length * 1.42))
     )
     return {
-      fontSizes: rows.length ? [fontSize] : [],
+      fontSizes: [24 * scale, ...(rows.length ? [fontSize] : [])],
       overflows: rows.length * fontSize * 1.42 > content.height ||
         longest * fontSize * 0.61 > content.width - 12,
     }
