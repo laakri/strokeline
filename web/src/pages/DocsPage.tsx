@@ -1476,9 +1476,13 @@ ENTER keyPoints marker WORDS "procedural deterministic" DURATION 0.8s`}
                   script or open one from your device.
                 </li>
                 <li>
-                  <strong>Video:</strong> export MP4 with mixed narration audio
-                  when the browser supports H.264/AAC; otherwise export falls
-                  back to WebM with audio.
+                  <strong>Video:</strong> MP4 frames and audio are encoded
+                  incrementally. Browsers with File System Access can stream
+                  directly to a chosen file; other browsers assemble streamed
+                  MP4 fragments for download. MP4 includes mixed narration
+                  audio when H.264/AAC is available; otherwise export falls
+                  back to WebM. If 1080p encoding runs out of memory, the app
+                  retries at 720p and reports a clear error if that also fails.
                 </li>
                 <li>
                   <strong>Other formats:</strong> export GIF, a PNG frame, or

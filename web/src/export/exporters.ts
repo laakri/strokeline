@@ -85,6 +85,7 @@ export interface ExportOptions {
   scale?: number
   resolution?: VideoResolution
   includeNarration?: boolean
+  outputFile?: FileSystemFileHandle
   seamlessLoop?: boolean
   brandingEntitlements?: BrandingEntitlements
   signal?: AbortSignal
@@ -400,10 +401,22 @@ export async function exportVideo(
       const videoProgress = (fraction: number) =>
         onProgress?.((narration ? 0.25 : 0) + fraction * (narration ? 0.75 : 1))
       const blob = format === "mp4"
-        ? await exportMp4(sequence, height, fps, signal, videoProgress, narration)
+        ? await exportMp4WithMemoryFallback(
+            timedDocument,
+            sequence,
+            resolution,
+            height,
+            fps,
+            signal,
+            videoProgress,
+            narration,
+            options.outputFile,
+            brandingEntitlements,
+            onMessage
+          )
         : await recordCanvasWebm(sequence, fps, total, signal, videoProgress, narration, audioContext)
       throwIfAborted(signal)
-      download(blob, `strokeline-${timestamp()}.${format}`)
+      if (blob) download(blob, `strokeline-${timestamp()}.${format}`)
       return format
     } finally {
       sequence.player.dispose()
@@ -552,6 +565,68 @@ interface SequenceRenderer {
   renderAt: (time: number) => void
 }
 
+function isMemoryPressureError(error: unknown): boolean {
+  if (error instanceof RangeError) return true
+  if (error instanceof DOMException && /memory|allocation/i.test(error.name)) return true
+  return error instanceof Error &&
+    /out of memory|memory allocation|allocation failed|cannot allocate/i.test(error.message)
+}
+
+async function exportMp4WithMemoryFallback(
+  document: SceneDocument,
+  sequence: SequenceRenderer,
+  resolution: VideoResolution,
+  height: number,
+  fps: number,
+  signal: AbortSignal | undefined,
+  onProgress: ((fraction: number) => void) | undefined,
+  narration: AudioBuffer | null,
+  fileHandle: FileSystemFileHandle | undefined,
+  brandingEntitlements: BrandingEntitlements,
+  onMessage: ((message: string) => void) | undefined
+): Promise<Blob | null> {
+  try {
+    return await exportMp4(sequence, height, fps, signal, onProgress, narration, fileHandle)
+  } catch (error) {
+    if (!isMemoryPressureError(error)) throw error
+    if (resolution !== "1080p") {
+      throw new Error(
+        "MP4 export ran out of memory at 720p. Choose a shorter script or close other memory-heavy tabs.",
+        { cause: error }
+      )
+    }
+    onMessage?.("Memory pressure at 1080p. Retrying the MP4 export at 720p…")
+    const dimensions = videoExportDimensions(document, "720p")
+    const lowerResolutionSequence = createSequenceRenderer(
+      document,
+      sceneTimelines(document),
+      dimensions.width,
+      dimensions.height,
+      brandingEntitlements
+    )
+    try {
+      throwIfAborted(signal)
+      return await exportMp4(
+        lowerResolutionSequence,
+        dimensions.height,
+        fps,
+        signal,
+        onProgress,
+        narration,
+        fileHandle
+      )
+    } catch (retryError) {
+      if (!isMemoryPressureError(retryError)) throw retryError
+      throw new Error(
+        "MP4 export exceeded available memory at 1080p and the automatic 720p retry also ran out of memory. Choose a shorter script or export at 720p.",
+        { cause: retryError }
+      )
+    } finally {
+      lowerResolutionSequence.player.dispose()
+    }
+  }
+}
+
 function createSequenceRenderer(
   document: SceneDocument,
   timelines: Timeline[],
@@ -661,13 +736,29 @@ async function exportMp4(
   fps: number,
   signal: AbortSignal | undefined,
   onProgress: ((fraction: number) => void) | undefined,
-  narration: AudioBuffer | null = null
-): Promise<Blob> {
-  const { AudioBufferSource, BufferTarget, CanvasSource, Mp4OutputFormat, Output, Quality } =
+  narration: AudioBuffer | null = null,
+  fileHandle?: FileSystemFileHandle
+): Promise<Blob | null> {
+  const { AudioBufferSource, CanvasSource, Mp4OutputFormat, Output, Quality, StreamTarget } =
     await import("mediabunny")
-  const target = new BufferTarget()
+  const chunks: Uint8Array[] = []
+  let outputLength = 0
+  const fileWritable = fileHandle ? await fileHandle.createWritable() : null
+  const writable = new WritableStream<import("mediabunny").StreamTargetChunk>({
+    async write(chunk) {
+      if (chunk.position !== outputLength)
+        throw new Error("The MP4 stream produced non-sequential chunks; use a browser with File System Access support.")
+      if (fileWritable) {
+        await fileWritable.write(chunk)
+      } else {
+        chunks.push(chunk.data)
+      }
+      outputLength += chunk.data.byteLength
+    },
+  })
+  const target = new StreamTarget(writable)
   const output = new Output({
-    format: new Mp4OutputFormat({ fastStart: "in-memory" }),
+    format: new Mp4OutputFormat({ fastStart: "fragmented" }),
     target,
   })
   const videoSource = new CanvasSource(sequence.canvas, {
@@ -714,9 +805,9 @@ async function exportMp4(
     await output.finalize()
     throwIfAborted(signal)
     onProgress?.(1)
-    const buffer = target.buffer
-    if (!buffer) throw new Error("The MP4 muxer produced no output data.")
-    return new Blob([buffer], { type: "video/mp4" })
+    if (fileHandle) return null
+    if (chunks.length === 0) throw new Error("The MP4 muxer produced no output data.")
+    return new Blob(chunks, { type: "video/mp4" })
   } catch (error) {
     if (
       output.state === "pending" ||

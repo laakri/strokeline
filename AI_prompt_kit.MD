@@ -40,4 +40,5 @@ Text-only `ENTER` effects are `typewriter`, `scramble`,
 `word-by-word`, and `marker`; use `WORDS "..."` with `marker` to name its
 highlighted words. For route motion, use a named `ARROW route FROM source ->
 target`, then `PATHFOLLOW object ALONG route` with explicit timing and optional
-`TRAIL on`.
+`TRAIL on`. MP4 export writes fragmented output incrementally and may retry a
+1080p memory-pressure failure at 720p.

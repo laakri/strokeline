@@ -144,6 +144,22 @@ export function ExportMenu() {
     setProgress(["srt", "vtt"].includes(kind) ? 100 : 0)
     setOpen(false)
     try {
+      let outputFile: FileSystemFileHandle | undefined
+      const pickerWindow = window as Window & {
+        showSaveFilePicker?: (options: {
+          suggestedName: string
+          types: Array<{
+            description: string
+            accept: Record<string, string[]>
+          }>
+        }) => Promise<FileSystemFileHandle>
+      }
+      if (kind === "video" && videoFormat === "mp4" && pickerWindow.showSaveFilePicker) {
+        outputFile = await pickerWindow.showSaveFilePicker({
+          suggestedName: `strokeline-${new Date().toISOString().slice(0, 10)}.mp4`,
+          types: [{ description: "MP4 video", accept: { "video/mp4": [".mp4"] } }],
+        })
+      }
       if (kind === "srt") {
         exportSrt(state.compiledIR)
         trackProductEvent({ name: "export_completed", properties: { format: "srt" } })
@@ -155,6 +171,7 @@ export function ExportMenu() {
           resolution,
           fps,
           includeNarration,
+          outputFile,
           signal: controller.signal,
           onProgress: (fraction) => setProgress(Math.round(fraction * 100)),
           onMessage: setExportMessage,
