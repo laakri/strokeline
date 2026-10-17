@@ -72,6 +72,14 @@ export function compile(ast: ASTScript): CompileResult {
       canvas: ast.canvas,
       background: ast.background ?? (ast.board ? BOARD_BASES[board] ?? theme?.background ?? "#FAFAFA" : theme?.background ?? "#FAFAFA"),
       ...(ast.subtitles !== undefined ? { subtitles: ast.subtitles } : {}),
+      ...(ast.captionStyle === "bold" || ast.captionStyle === "minimal" || ast.captionStyle === "coral"
+        ? { captionStyle: ast.captionStyle }
+        : {}),
+      ...(ast.captionPosition === "bottom" ||
+      ast.captionPosition === "top" ||
+      ast.captionPosition === "center"
+        ? { captionPosition: ast.captionPosition }
+        : {}),
       style: {
       mode: (STYLE_NAMES as readonly string[]).includes(mode) ? mode as SceneDocument["style"]["mode"] : theme?.pen ?? "handdrawn",
         strokeWidth: ast.stroke ?? DEFAULT_STROKE_WIDTH,

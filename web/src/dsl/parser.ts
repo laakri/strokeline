@@ -207,6 +207,8 @@ export interface ASTScript {
   theme?: string
   hand?: boolean
   subtitles?: boolean
+  captionStyle?: string
+  captionPosition?: string
   macros: ASTMacro[]
   scenes: ASTScene[]
 }
@@ -277,6 +279,8 @@ class Parser {
     let theme: string | undefined
     let hand: boolean | undefined
     let subtitles: boolean | undefined
+    let captionStyle: string | undefined
+    let captionPosition: string | undefined
     if (this.word() === "VERSION") {
       this.take()
       version = this.readValue()?.toString() ?? ""
@@ -341,6 +345,18 @@ class Parser {
         if (value === "on" || value === "off") subtitles = value === "on"
         else this.report("E_BAD_SUBTITLES", "SUBTITLES must be on or off.", token)
         this.endLine()
+      } else if (key === "CAPTIONSTYLE") {
+        const token = this.take()
+        const value = this.readValue()?.toString().toLowerCase()
+        if (value === "bold" || value === "minimal" || value === "coral") captionStyle = value
+        else this.report("E_BAD_CAPTIONSTYLE", "CAPTIONSTYLE must be bold, minimal, or coral.", token)
+        this.endLine()
+      } else if (key === "CAPTIONPOS") {
+        const token = this.take()
+        const value = this.readValue()?.toString().toLowerCase()
+        if (value === "bottom" || value === "top" || value === "center") captionPosition = value
+        else this.report("E_BAD_CAPTIONPOS", "CAPTIONPOS must be bottom, top, or center.", token)
+        this.endLine()
       } else if (key === "SAY") {
         const token = this.take()
         this.report("E_SAY_OUTSIDE_SCENE", "SAY is only valid inside a SCENE.", token)
@@ -358,7 +374,20 @@ class Parser {
       this.skipNewlines()
       this.ensureProgress(start)
     }
-    return { version, canvas, background, style, font, stroke, board, theme, hand, subtitles }
+    return {
+      version,
+      canvas,
+      background,
+      style,
+      font,
+      stroke,
+      board,
+      theme,
+      hand,
+      subtitles,
+      captionStyle,
+      captionPosition,
+    }
   }
 
   private parseScene(): ASTScene {

@@ -879,7 +879,9 @@ export function DocsPage() {
                 </li>
                 <li>
                   <code>SUBTITLES on|off</code> sets the initial caption state.
-                  Missing means off.
+                  Missing means off. Optional <code>CAPTIONSTYLE</code> and{" "}
+                  <code>CAPTIONPOS</code> (default <code>bottom</code>) configure
+                  the shared caption layer.
                 </li>
               </ul>
               <p>
@@ -1503,21 +1505,24 @@ ENTER keyPoints marker WORDS "procedural deterministic" DURATION 0.8s`}
               <p>
                 <code>SUBTITLES on|off</code> sets the initial caption state;
                 vertical canvases with <code>SAY</code> cues default on unless
-                overridden. Use
-                the CC control or <kbd>K</kbd> to toggle captions; the choice is
-                saved in this browser and overrides the script default. Captions stay in a screen-space layer
-                when the camera moves. SAY lines remain in the script when
-                captions are off.
+                overridden. Optional header lines <code>CAPTIONSTYLE bold|minimal|coral</code> and
+                <code>CAPTIONPOS bottom|top|center</code> configure look and placement
+                (default position is <code>bottom</code>, so captions stay clear of the board).
+                Use the CC control or <kbd>K</kbd> to toggle captions; preview caption
+                style and position controls apply the same system on landscape and
+                vertical canvases and are saved in this browser. Captions stay in a
+                screen-space layer when the camera moves. SAY lines remain in the
+                script when captions are off.
               </p>
               <p>
-                Reels captions are large and bold, with the active word
-                highlighted as the SAY cue progresses. Choose Bold, Outline, or
-                Coral highlight in the preview. Landscape captions use balanced
-                wrapping; optional read-along smoothly tints already-read text.
-                Captions remain fixed
-                while the camera moves, and preserve Arabic text with RTL
-                shaping. <code>DETAIL</code> is kept with the cue; the current
-                player displays and reads <code>SAY</code>.
+                Captions use one shared system on every canvas: timed word groups with
+                the active word highlighted as the SAY cue progresses. Choose Bold,
+                Outline, or Coral in the preview. Vertical frames keep the bottom band
+                above platform UI safe zones and the watermark; landscape frames pin
+                captions near the bottom edge by default. Captions remain fixed while
+                the camera moves, and preserve Arabic text with RTL shaping.{" "}
+                <code>DETAIL</code> is kept with the cue; the current player displays
+                and reads <code>SAY</code>.
               </p>
               <p>
                 The reader uses the local Kokoro voice model. First setup

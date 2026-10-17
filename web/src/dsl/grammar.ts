@@ -198,6 +198,9 @@ export const STATEMENT_KEYWORDS = [
   "GRID",
 ] as const
 
+export const CAPTION_STYLE_NAMES = ["bold", "minimal", "coral"] as const
+export const CAPTION_POSITION_NAMES = ["bottom", "top", "center"] as const
+
 export const HEADER_KEYWORDS = [
   "VERSION",
   "CANVAS",
@@ -209,4 +212,6 @@ export const HEADER_KEYWORDS = [
   "HAND",
   "THEME",
   "SUBTITLES",
+  "CAPTIONSTYLE",
+  "CAPTIONPOS",
 ] as const

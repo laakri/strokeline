@@ -28,11 +28,19 @@ import { SceneTabs } from "@/ui/preview/SceneTabs.tsx"
 import { VoiceSettingsDialog } from "@/ui/preview/VoiceSettingsDialog.tsx"
 import { readReaderVolume, saveReaderVolume } from "@/player/readerVolume.ts"
 import {
-  captionStyleFromStorage,
   isVerticalCanvas,
   REELS_SAFE_ZONES,
-  type CaptionStyle,
 } from "@/reels/reels.ts"
+import {
+  CAPTION_POSITION_STORAGE_KEY,
+  CAPTION_STYLE_STORAGE_KEY,
+  captionPositionFromStorage,
+  captionStyleFromStorage,
+  resolveCaptionConfig,
+  type CaptionConfig,
+  type CaptionPosition,
+  type CaptionStyle,
+} from "@/subtitles/config.ts"
 
 const SUBTITLES_STORAGE_KEY = "strokeline.subtitles.v1"
 const READ_ALONG_STORAGE_KEY = "strokeline.voice.v1"
@@ -210,7 +218,20 @@ export function PreviewPane({
   const [connectFrom, setConnectFrom] = useState<{ id: string; sceneIndex: number } | null>(null)
   const [objectNotice, setObjectNotice] = useState("")
   const [subtitleOverride, setSubtitleOverride] = useState<boolean | null>(readSubtitleOverride)
-  const [captionStyle, setCaptionStyle] = useState<CaptionStyle>(captionStyleFromStorage)
+  const [captionStyleOverride, setCaptionStyleOverride] = useState<CaptionStyle | null>(() => {
+    try {
+      return localStorage.getItem(CAPTION_STYLE_STORAGE_KEY) ? captionStyleFromStorage() : null
+    } catch {
+      return null
+    }
+  })
+  const [captionPositionOverride, setCaptionPositionOverride] = useState<CaptionPosition | null>(() => {
+    try {
+      return localStorage.getItem(CAPTION_POSITION_STORAGE_KEY) ? captionPositionFromStorage() : null
+    } catch {
+      return null
+    }
+  })
   const [safeZonesOn, setSafeZonesOn] = useState(false)
   const [readAlongOn, setReadAlongOn] = useState(readReadAlongSetting)
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false)
@@ -334,13 +355,19 @@ export function PreviewPane({
     compiledIR?.subtitles ??
     (isReelsCanvas && compiledIR?.scenes.some((item) => (item.says?.length ?? 0) > 0))
   )
+  const captionConfig = resolveCaptionConfig({
+    styleOverride: captionStyleOverride,
+    positionOverride: captionPositionOverride,
+    documentStyle: compiledIR?.captionStyle,
+    documentPosition: compiledIR?.captionPosition,
+  })
   const activeVoice = kokoroState.voices.find((voice) => voice.id === readerVoice)
   const activeVoiceLabel = activeVoice?.name || readerVoice
     .replace(/^[a-z]{2}_/, "")
     .replace(/^\w/, (letter) => letter.toUpperCase())
   const subtitlesOnRef = useRef(subtitlesOn)
   const readAlongRef = useRef(readAlongOn)
-  const captionStyleRef = useRef(captionStyle)
+  const captionConfigRef = useRef<CaptionConfig>(captionConfig)
   useEffect(() => {
     let active = true
     if (!compiledIR) {
@@ -361,10 +388,10 @@ export function PreviewPane({
     readAlongRef.current = readAlongOn
   }, [readAlongOn])
   useEffect(() => {
-    captionStyleRef.current = captionStyle
+    captionConfigRef.current = captionConfig
     const controller = playerRef.current
     if (controller && !controller.isPlaying) controller.seek(controller.currentTime)
-  }, [captionStyle])
+  }, [captionConfig.style, captionConfig.position])
   const voiceSupported = typeof window !== "undefined" && "Worker" in window && "AudioContext" in window
 
   const preservePlaybackPosition = useCallback(() => {
@@ -573,7 +600,7 @@ export function PreviewPane({
     let cachedTransitionSubtitles: boolean | null = null
     let cachedTransitionReadAlong: boolean | null = null
     let cachedTransitionCanRemoveWatermark: boolean | null = null
-    let cachedTransitionCaptionStyle: CaptionStyle | null = null
+    let cachedTransitionCaption: CaptionConfig | null = null
     const controller = effectivePlayAllMode
       ? new SequencePlayer(
           timelines,
@@ -598,7 +625,7 @@ export function PreviewPane({
                 subtitlesOnRef.current,
                 readAlongRef.current,
                 brandingEntitlements,
-                captionStyleRef.current
+                captionConfigRef.current
               )
             } else {
               const fromContext = transitionFromCanvas.getContext("2d")
@@ -612,7 +639,8 @@ export function PreviewPane({
                   cachedTransitionSubtitles !== subtitlesEnabled ||
                   cachedTransitionReadAlong !== readAlongEnabled ||
                   cachedTransitionCanRemoveWatermark !== brandingEntitlements.canRemoveWatermark ||
-                  cachedTransitionCaptionStyle !== captionStyleRef.current
+                  cachedTransitionCaption?.style !== captionConfigRef.current.style ||
+                  cachedTransitionCaption?.position !== captionConfigRef.current.position
                 ) {
                   drawScene(
                     fromContext,
@@ -626,7 +654,7 @@ export function PreviewPane({
                     subtitlesEnabled,
                     readAlongEnabled,
                     brandingEntitlements,
-                    captionStyleRef.current
+                    captionConfigRef.current
                   )
                   drawScene(
                     toContext,
@@ -640,14 +668,14 @@ export function PreviewPane({
                     subtitlesEnabled,
                     readAlongEnabled,
                     brandingEntitlements,
-                    captionStyleRef.current
+                    captionConfigRef.current
                   )
                   cachedTransitionFrom = transition.from
                   cachedTransitionTo = transition.to
                   cachedTransitionSubtitles = subtitlesEnabled
                   cachedTransitionReadAlong = readAlongEnabled
                   cachedTransitionCanRemoveWatermark = brandingEntitlements.canRemoveWatermark
-                  cachedTransitionCaptionStyle = captionStyleRef.current
+                  cachedTransitionCaption = captionConfigRef.current
                 }
                 context.save()
                 context.setTransform(1, 0, 0, 1, 0, 0)
@@ -723,7 +751,7 @@ export function PreviewPane({
             subtitlesOnRef.current,
             readAlongRef.current,
             brandingEntitlements,
-            captionStyleRef.current
+            captionConfigRef.current
           )
           const now = performance.now()
           if (
@@ -890,7 +918,7 @@ export function PreviewPane({
         subtitlesOnRef.current,
         readAlongRef.current,
         brandingEntitlements,
-        captionStyleRef.current
+        captionConfigRef.current
       )
     }
     event.preventDefault()
@@ -1432,17 +1460,17 @@ export function PreviewPane({
             <span className="hidden sm:inline">Safe zones</span>
           </button>
         )}
-        {isReelsCanvas && !presentationMode && (
+        {!presentationMode && (
           <label className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground sm:gap-1.5">
-            <span className="hidden sm:inline">Caption style</span>
+            <span className="hidden sm:inline">Captions</span>
             <select
               aria-label="Caption style"
-              value={captionStyle}
+              value={captionConfig.style}
               onChange={(event) => {
                 const style = event.target.value as CaptionStyle
-                setCaptionStyle(style)
+                setCaptionStyleOverride(style)
                 try {
-                  localStorage.setItem("strokeline.caption-style.v1", style)
+                  localStorage.setItem(CAPTION_STYLE_STORAGE_KEY, style)
                 } catch {
                   // Caption appearance still updates in this session.
                 }
@@ -1451,7 +1479,26 @@ export function PreviewPane({
             >
               <option value="bold">Bold</option>
               <option value="minimal">Outline</option>
-              <option value="coral">Coral highlight</option>
+              <option value="coral">Coral</option>
+            </select>
+            <select
+              aria-label="Caption position"
+              value={captionConfig.position}
+              onChange={(event) => {
+                const position = event.target.value as CaptionPosition
+                setCaptionPositionOverride(position)
+                try {
+                  localStorage.setItem(CAPTION_POSITION_STORAGE_KEY, position)
+                } catch {
+                  // Caption placement still updates in this session.
+                }
+              }}
+              className="h-8 max-w-[5.5rem] rounded-md border border-border bg-background px-1 text-foreground sm:max-w-none sm:px-2"
+              title="Default is bottom so captions stay clear of the board"
+            >
+              <option value="bottom">Bottom</option>
+              <option value="top">Top</option>
+              <option value="center">Center</option>
             </select>
           </label>
         )}

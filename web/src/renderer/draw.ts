@@ -15,7 +15,7 @@ import {
   FREE_BRANDING_ENTITLEMENTS,
   type BrandingEntitlements,
 } from "@/branding/entitlements.ts"
-import type { CaptionStyle } from "@/reels/reels.ts"
+import type { CaptionConfig, CaptionStyle } from "@/subtitles/config.ts"
 
 interface CachedNode {
   image: HTMLCanvasElement
@@ -50,7 +50,7 @@ type DrawSceneArguments = [
   subtitlesEnabled?: boolean,
   readAlong?: boolean,
   brandingEntitlements?: BrandingEntitlements,
-  captionStyle?: CaptionStyle,
+  captionStyle?: CaptionStyle | CaptionConfig,
   cacheNodes?: boolean,
 ]
 

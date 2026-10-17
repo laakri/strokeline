@@ -8,7 +8,14 @@ export const REELS_SAFE_ZONES = {
 } as const
 
 export type ReelsDurationPreset = 7 | 15 | 30 | 60
-export type CaptionStyle = "bold" | "minimal" | "coral"
+
+export type { CaptionStyle, CaptionPosition, CaptionConfig } from "@/subtitles/config.ts"
+export {
+  captionStyleFromStorage,
+  captionPositionFromStorage,
+  captionConfigFromStorage,
+  DEFAULT_CAPTION_CONFIG,
+} from "@/subtitles/config.ts"
 
 export function exceedsDurationPreset(
   duration: number,
@@ -54,14 +61,4 @@ export function estimateDocumentDuration(document: SceneDocument): number {
         : 0
     return total + duration + transition
   }, 0)
-}
-
-export function captionStyleFromStorage(): CaptionStyle {
-  try {
-    const stored = localStorage.getItem("strokeline.caption-style.v1")
-    if (stored === "minimal" || stored === "coral") return stored
-  } catch {
-    // Use the default style when browser storage is unavailable.
-  }
-  return "bold"
 }

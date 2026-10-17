@@ -18,12 +18,21 @@ import {
   FREE_BRANDING_ENTITLEMENTS,
   type BrandingEntitlements,
 } from "@/branding/entitlements.ts"
-import { captionStyleFromStorage, isVerticalCanvas } from "@/reels/reels.ts"
+import { isVerticalCanvas } from "@/reels/reels.ts"
+import {
+  type CaptionConfig,
+  CAPTION_POSITION_STORAGE_KEY,
+  CAPTION_STYLE_STORAGE_KEY,
+  captionConfigFromStorage,
+  isCaptionPosition,
+  isCaptionStyle,
+  resolveCaptionConfig,
+} from "@/subtitles/config.ts"
 
 function exportSubtitleSettings(document: SceneDocument): {
   subtitles: boolean
   readAlong: boolean
-  captionStyle: ReturnType<typeof captionStyleFromStorage>
+  caption: CaptionConfig
 } {
   const readSetting = (key: string): boolean | null => {
     try {
@@ -33,6 +42,15 @@ function exportSubtitleSettings(document: SceneDocument): {
       return null
     }
   }
+  let storedStyle: string | null = null
+  let storedPosition: string | null = null
+  try {
+    storedStyle = localStorage.getItem(CAPTION_STYLE_STORAGE_KEY)
+    storedPosition = localStorage.getItem(CAPTION_POSITION_STORAGE_KEY)
+  } catch {
+    // Use script defaults when storage is unavailable.
+  }
+  const stored = captionConfigFromStorage()
   return {
     subtitles: readSetting("strokeline.subtitles.v1") ??
       (document.subtitles ?? (
@@ -40,7 +58,12 @@ function exportSubtitleSettings(document: SceneDocument): {
         document.scenes.some((scene) => (scene.says?.length ?? 0) > 0)
       )),
     readAlong: readSetting("strokeline.voice.v1") ?? false,
-    captionStyle: captionStyleFromStorage(),
+    caption: resolveCaptionConfig({
+      styleOverride: isCaptionStyle(storedStyle) ? stored.style : null,
+      positionOverride: isCaptionPosition(storedPosition) ? stored.position : null,
+      documentStyle: document.captionStyle,
+      documentPosition: document.captionPosition,
+    }),
   }
 }
 
@@ -201,7 +224,7 @@ export async function exportPng(
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
         brandingEntitlements,
-        subtitleSettings.captionStyle,
+        subtitleSettings.caption,
         false,
       ],
       {
@@ -309,7 +332,7 @@ export async function exportGif(
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
         brandingEntitlements,
-        subtitleSettings.captionStyle
+        subtitleSettings.caption
       )
       context.clearRect(0, 0, width, height)
       context.drawImage(renderCanvas, 0, 0, width, height)
@@ -659,7 +682,7 @@ function createSequenceRenderer(
           subtitleSettings.subtitles,
           subtitleSettings.readAlong,
           brandingEntitlements,
-          subtitleSettings.captionStyle
+          subtitleSettings.caption
         )
         return
       }
@@ -675,7 +698,7 @@ function createSequenceRenderer(
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
         brandingEntitlements,
-        subtitleSettings.captionStyle
+        subtitleSettings.caption
       )
       drawScene(
         toContext,
@@ -689,7 +712,7 @@ function createSequenceRenderer(
         subtitleSettings.subtitles,
         subtitleSettings.readAlong,
         brandingEntitlements,
-        subtitleSettings.captionStyle
+        subtitleSettings.caption
       )
       context.save()
       context.setTransform(1, 0, 0, 1, 0, 0)

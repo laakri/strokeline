@@ -7,14 +7,14 @@ import {
 import { REELS_SAFE_ZONES } from "@/reels/reels.ts"
 import { watermarkLayout } from "@/renderer/watermark.ts"
 
-describe("Reels captions", () => {
+describe("shared captions", () => {
   it("uses smaller responsive captions for vertical canvases", () => {
     expect(reelsCaptionFontSize(1080)).toBe(54)
     expect(reelsCaptionFontSize(540)).toBe(27)
     expect(reelsCaptionFontSize(320)).toBe(26)
   })
 
-  it("keeps reel captions above the bottom platform UI safe zone", () => {
+  it("keeps bottom captions above the platform UI safe zone", () => {
     const canvas = createCanvas(540, 960)
     const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
     drawSubtitleLayer(
@@ -26,7 +26,10 @@ describe("Reels captions", () => {
         opacity: 1,
         readingProgress: 0.4,
       },
-      { width: 540, height: 960 }
+      { width: 540, height: 960 },
+      1,
+      false,
+      { style: "bold", position: "bottom" }
     )
 
     const image = context.getImageData(0, 0, canvas.width, canvas.height)
@@ -56,7 +59,10 @@ describe("Reels captions", () => {
         opacity: 1,
         readingProgress: 0.5,
       },
-      { width: 1080, height: 1350 }
+      { width: 1080, height: 1350 },
+      1,
+      false,
+      { style: "bold", position: "bottom" }
     )
 
     const image = context.getImageData(0, 0, canvas.width, canvas.height)
@@ -103,7 +109,7 @@ describe("Reels captions", () => {
     expect(maxX).toBeLessThan(canvas.width - 1)
   })
 
-  it("shows static subtitle text without a moving word highlight", () => {
+  it("highlights the active word as reading progress advances", () => {
     const render = (readingProgress: number) => {
       const canvas = createCanvas(540, 960)
       const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
@@ -119,14 +125,14 @@ describe("Reels captions", () => {
         { width: 540, height: 960 },
         1,
         false,
-        "bold"
+        { style: "bold", position: "bottom" }
       )
       return Buffer.from(context.getImageData(0, 0, 540, 960).data)
     }
 
     const start = render(0)
     expect(start.some((channel) => channel !== 0)).toBe(true)
-    expect(start.equals(render(0.8))).toBe(true)
+    expect(start.equals(render(0.8))).toBe(false)
   })
 
   it("keeps the three caption styles visually distinct", () => {
@@ -145,12 +151,75 @@ describe("Reels captions", () => {
         { width: 540, height: 960 },
         1,
         false,
-        style
+        { style, position: "bottom" }
       )
       return Buffer.from(context.getImageData(0, 0, 540, 960).data)
     }
 
     expect(render("bold").equals(render("minimal"))).toBe(false)
     expect(render("bold").equals(render("coral"))).toBe(false)
+  })
+
+  it("places landscape captions near the bottom by default", () => {
+    const canvas = createCanvas(1920, 1080)
+    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+    drawSubtitleLayer(
+      context,
+      {
+        text: "Landscape captions stay low",
+        start: 0,
+        duration: 3,
+        opacity: 1,
+        readingProgress: 0.2,
+      },
+      { width: 1920, height: 1080 },
+      1,
+      false,
+      { style: "bold", position: "bottom" }
+    )
+
+    const image = context.getImageData(0, 0, canvas.width, canvas.height)
+    let minY = canvas.height
+    let maxY = -1
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        if (image.data[(y * canvas.width + x) * 4 + 3] === 0) continue
+        minY = Math.min(minY, y)
+        maxY = Math.max(maxY, y)
+      }
+    }
+
+    expect(minY).toBeGreaterThan(canvas.height * 0.75)
+    expect(maxY).toBeLessThan(canvas.height - 8)
+  })
+
+  it("honors an explicit top caption position", () => {
+    const canvas = createCanvas(1920, 1080)
+    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D
+    drawSubtitleLayer(
+      context,
+      {
+        text: "Top captions stay high",
+        start: 0,
+        duration: 3,
+        opacity: 1,
+        readingProgress: 0.2,
+      },
+      { width: 1920, height: 1080 },
+      1,
+      false,
+      { style: "bold", position: "top" }
+    )
+
+    const image = context.getImageData(0, 0, canvas.width, canvas.height)
+    let maxY = -1
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        if (image.data[(y * canvas.width + x) * 4 + 3] === 0) continue
+        maxY = Math.max(maxY, y)
+      }
+    }
+
+    expect(maxY).toBeLessThan(canvas.height * 0.35)
   })
 })

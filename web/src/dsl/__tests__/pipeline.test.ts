@@ -230,6 +230,8 @@ END SCENE`)
     const result = runScript(`VERSION 1.0
 CANVAS 1920 1080
 SUBTITLES on
+CAPTIONSTYLE coral
+CAPTIONPOS bottom
 SCENE 1 "Narration"
   PARALLEL
     SAY "A *memory* keeps yesterday close."
@@ -242,6 +244,8 @@ SCENE 1 "Narration"
 END SCENE`)
     expect(result.diagnostics.filter(blocksScriptRun)).toEqual([])
     expect(result.document?.subtitles).toBe(true)
+    expect(result.document?.captionStyle).toBe("coral")
+    expect(result.document?.captionPosition).toBe("bottom")
     expect(result.document?.scenes[0]?.says?.[0]).toMatchObject({
       text: "A *memory* keeps yesterday close.",
       start: 0,

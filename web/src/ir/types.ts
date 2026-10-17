@@ -182,6 +182,10 @@ export interface SceneDocument {
   canvas: { width: number; height: number }
   background: string
   subtitles?: boolean
+  /** Caption look: bold plate, minimal outline, or coral accent. */
+  captionStyle?: "bold" | "minimal" | "coral"
+  /** Caption placement. Defaults to bottom so captions stay clear of content. */
+  captionPosition?: "bottom" | "top" | "center"
   style: { mode: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean"; strokeWidth: number; font: string; board?: string; hand?: boolean; theme?: string }
   scenes: Scene[]
 }
