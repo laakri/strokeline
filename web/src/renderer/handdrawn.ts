@@ -14,6 +14,7 @@ export interface RenderContext {
   roughGenerator: RoughGenerator
   nodes: Map<string, SceneNode>
   cameraScale: number
+  canvasHeight: number
   mode: "handdrawn" | "chalk" | "marker" | "pencil" | "brush" | "clean"
 }
 
@@ -21,7 +22,8 @@ export function createRenderContext(
   context: CanvasRenderingContext2D,
   nodes: Map<string, SceneNode>,
   cameraScale = 1,
-  mode: RenderContext["mode"] = "handdrawn"
+  mode: RenderContext["mode"] = "handdrawn",
+  canvasHeight = context.canvas.height
 ): RenderContext {
   if (!context.canvas)
     throw new Error("A canvas-backed 2D context is required.")
@@ -30,7 +32,7 @@ export function createRenderContext(
     roughCanvas = rough.canvas(context.canvas)
     roughCanvasCache.set(context.canvas, roughCanvas)
   }
-  return { context, roughCanvas, roughGenerator, nodes, cameraScale, mode }
+  return { context, roughCanvas, roughGenerator, nodes, cameraScale, canvasHeight, mode }
 }
 
 export function seedFromId(id: string): number {

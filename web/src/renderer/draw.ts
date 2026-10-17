@@ -147,7 +147,7 @@ function* drawSceneSteps(
         fogContext.scale(node.scale, node.scale)
         fogContext.translate(-node.position.x, -node.position.y)
         InkRegistry.ink.draw(
-          createRenderContext(fogContext, nodes, (camera ?? state.camera ?? identityCamera(logicalCanvas)).scale, renderNode.style.pen ?? mode),
+          createRenderContext(fogContext, nodes, (camera ?? state.camera ?? identityCamera(logicalCanvas)).scale, renderNode.style.pen ?? mode, logicalCanvas.height),
           renderNode
         )
         fogContext.restore()
@@ -166,7 +166,8 @@ function* drawSceneSteps(
     context,
     nodes,
     resolvedCamera.scale,
-    mode
+    mode,
+    logicalCanvas.height
   )
   for (const highlight of state.highlights) {
     if (highlight.tableTarget) continue
@@ -220,7 +221,8 @@ function* drawSceneSteps(
             renderer,
             nodes,
             resolvedCamera.scale,
-            devicePixelRatio
+            devicePixelRatio,
+            logicalCanvas.height
           )
         : undefined
     if (cached) {
@@ -247,7 +249,7 @@ function* drawSceneSteps(
         if (renderNode.style.fill) context.fill(path)
         context.stroke(path)
       } else {
-        renderer.draw(createRenderContext(context, nodes, resolvedCamera.scale, renderNode.style.pen ?? mode), renderNode)
+        renderer.draw(createRenderContext(context, nodes, resolvedCamera.scale, renderNode.style.pen ?? mode, logicalCanvas.height), renderNode)
       }
     }
     if (hand && node.revealProgress > 0 && node.revealProgress < 1 && ["ink", "line", "text"].includes(node.type))
@@ -1145,7 +1147,8 @@ function getCachedNode(
   renderer: ShapeRenderer,
   nodes: Map<string, RenderState["nodes"][number]>,
   cameraScale: number,
-  devicePixelRatio: number
+  devicePixelRatio: number,
+  canvasHeight: number
 ): CachedNode | undefined {
   if (typeof document === "undefined") return undefined
   let cache = canvasCaches.get(canvas)
@@ -1179,7 +1182,8 @@ function getCachedNode(
     imageContext,
     nodes,
     cameraScale,
-    node.style.pen ?? "handdrawn"
+    node.style.pen ?? "handdrawn",
+    canvasHeight
   )
   imageContext.save()
   imageContext.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
