@@ -1322,7 +1322,10 @@ export function DocsPage() {
                 </li>
                 <li>
                   <code>ENTER id effect</code>: pop, slide-left/right/up/down,
-                  fade, write, drop, or zoom.
+                  fade, write, drop, zoom, or text-only typewriter, scramble,
+                  word-by-word, and marker effects.
+                  <code>marker</code> takes <code>WORDS "..."</code> to pick
+                  words to highlight.
                 </li>
                 <li>
                   <code>EXIT id effect</code>: fade, shrink,
@@ -1344,6 +1347,13 @@ export function DocsPage() {
                   Reveal eases are only easeOut, linear, and natural.
                 </li>
               </ul>
+              <CodeBlock
+                title="Text entrance effects"
+                code={`ENTER heading typewriter DURATION 1s
+ENTER keywords scramble DURATION 0.8s
+ENTER summary word-by-word DURATION 1.2s
+ENTER keyPoints marker WORDS "procedural deterministic" DURATION 0.8s`}
+              />
               <h3>Camera and scene changes</h3>
               <p>
                 Camera statements take property lines and do not use{" "}
@@ -1501,6 +1511,10 @@ export function DocsPage() {
                 <InfoCard title="Bad duration">
                   Include a unit, for example <code>DRAW 0.8s</code> or{" "}
                   <code>WAIT 2s</code>.
+                </InfoCard>
+                <InfoCard title="Text effect target">
+                  Text-only <code>ENTER</code> effects need a <code>TEXT</code>{" "}
+                  object. Marker effects also need <code>WORDS "..."</code>.
                 </InfoCard>
                 <InfoCard title="Text outside safe area">
                   Keep the full text box inside the canvas margins, not just the

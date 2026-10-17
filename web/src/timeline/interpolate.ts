@@ -45,6 +45,8 @@ export function interpolateAnimation(
     const entering = animation.verb === "enter"
     const amount = entering ? progress : 1 - progress
     const effect = animation.effectName ?? "fade"
+    if (["typewriter", "scramble", "word-by-word", "marker"].includes(effect))
+      return { ...node, revealProgress: amount }
     if (["fade", "write", "erase"].includes(effect))
       return { ...node, opacity: effect === "write" || effect === "erase" ? node.opacity : node.opacity * amount,
         revealProgress: effect === "write" ? amount : effect === "erase" ? amount : node.revealProgress }

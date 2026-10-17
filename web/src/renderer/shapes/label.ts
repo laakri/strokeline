@@ -19,6 +19,8 @@ export interface LabelOptions {
   backgroundOpacity?: number
   backgroundPadding?: number
   backgroundCorners?: number
+  markerWords?: string[]
+  markerProgress?: number
 }
 
 export function drawLabel(
@@ -127,6 +129,37 @@ export function drawLabel(
       layout.height + fontSize * 0.2
     )
     context.clip()
+  }
+  if (options.markerWords?.length) {
+    const selected = new Set(options.markerWords.map((word) => word.toLocaleLowerCase()))
+    const markerCount = layout.lines.reduce(
+      (count, line) => count + [...line.matchAll(/\S+/gu)].filter((match) => selected.has(match[0]!.toLocaleLowerCase())).length,
+      0
+    )
+    let markerIndex = 0
+    for (let lineIndex = 0; lineIndex < layout.lines.length; lineIndex++) {
+      const line = layout.lines[lineIndex]!
+      const lineY = firstY + lineIndex * lineSpacing
+      const lineX = alignment === "center"
+        ? center.x + (options.offset?.x ?? 0) - measureTextWidth(line, fontSize, options.fontFamily) / 2
+        : alignment === "right"
+          ? startX + blockWidth - measureTextWidth(line, fontSize, options.fontFamily)
+          : startX
+      for (const match of line.matchAll(/\S+/gu)) {
+        const word = match[0]!
+        if (!selected.has(word.toLocaleLowerCase())) continue
+        const prefixWidth = measureTextWidth(line.slice(0, match.index), fontSize, options.fontFamily)
+        const wordWidth = measureTextWidth(word, fontSize, options.fontFamily)
+        const sweep = Math.max(0, Math.min(1, (options.markerProgress ?? 1) * markerCount - markerIndex))
+        markerIndex++
+        if (sweep <= 0) continue
+        context.save()
+        context.globalAlpha *= 0.48
+        context.fillStyle = "#FFD966"
+        context.fillRect(lineX + prefixWidth, lineY - fontSize * 0.4, wordWidth * sweep, fontSize * 0.8)
+        context.restore()
+      }
+    }
   }
   context.fillStyle = options.color
   layout.lines.forEach((line, index) => {

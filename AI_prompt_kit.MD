@@ -30,4 +30,6 @@ validation after fixes, then return the complete editable script in the format
 the user requests. For narration, use `DURATION auto` or omit `DURATION` when
 estimated cue timing is appropriate; use explicit `s`/`ms` timing when the
 scene requires a fixed duration. Captions follow each cue in short word-timed
-groups.
+groups. Text-only `ENTER` effects are `typewriter`, `scramble`,
+`word-by-word`, and `marker`; use `WORDS "..."` with `marker` to name its
+highlighted words.

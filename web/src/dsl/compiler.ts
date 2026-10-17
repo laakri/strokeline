@@ -593,13 +593,14 @@ function compileScene(
     }
     if (statement.kind === "effect") {
       const duration = statement.duration === undefined ? DEFAULT_DURATION : durationSeconds(statement.duration, statement.token.line, statement.token.col, diagnostics)
+      const textEffects = ["typewriter", "scramble", "word-by-word", "marker"]
       const allowed = statement.phase === "enter"
-        ? ["pop", "slide-left", "slide-right", "slide-up", "slide-down", "fade", "write", "drop", "zoom"]
+        ? ["pop", "slide-left", "slide-right", "slide-up", "slide-down", "fade", "write", "drop", "zoom", ...textEffects]
         : ["fade", "shrink", "slide-left", "slide-right", "slide-up", "slide-down", "erase"]
       if (!allowed.includes(statement.effect))
         diagnostics.push(error("E_UNKNOWN_ANIMATION", `Unknown ${statement.phase} effect "${statement.effect}".`, statement.token.line, statement.token.col))
       return { ops: [{ kind: "animate", t: start, targetId: statement.targetId,
-        anim: { verb: statement.phase, effectName: statement.effect, duration, ease: DEFAULT_EASE },
+        anim: { verb: statement.phase, effectName: statement.effect, textWords: statement.words, duration, ease: DEFAULT_EASE },
         source: { line: statement.token.line, col: statement.token.col } }], end: start + duration }
     }
     if (statement.kind === "camera") {

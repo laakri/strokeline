@@ -86,6 +86,7 @@ export interface AnimationSpec {
   verb: "move" | "scale" | "fade" | "opacity" | "color" | "rotate" | "erase" | "highlight" | "loop" | "enter" | "exit" | "morph"
   morphTargetId?: string
   effectName?: string
+  textWords?: string[]
   loopName?: "float" | "pulse" | "wobble" | "breathe" | "blink"
   amplitude?: number
   period?: number

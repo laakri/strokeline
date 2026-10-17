@@ -376,6 +376,14 @@ export function validate(document: SceneDocument): Diagnostic[] {
         }
       } else if (op.kind === "animate") {
         checkReference(op.targetId, created, op.t, diagnostics, op.source)
+        const textEffects = ["typewriter", "scramble", "word-by-word", "marker"]
+        if (op.anim.verb === "enter" && textEffects.includes(op.anim.effectName ?? "")) {
+          const effectTarget = createdNodes.get(op.targetId)
+          if (effectTarget && effectTarget.type !== "text")
+            diagnostics.push(error("E_TEXT_EFFECT_TARGET", `${op.anim.effectName} is only supported on TEXT objects.`, op.source?.line ?? 1, op.source?.col ?? 1))
+          if (op.anim.effectName === "marker" && !op.anim.textWords?.length)
+            diagnostics.push(error("E_TEXT_EFFECT_WORDS", "ENTER target marker needs WORDS \"...\".", op.source?.line ?? 1, op.source?.col ?? 1))
+        }
         if (op.anim.tableTarget) {
           const target = createdNodes.get(op.targetId)
           const selector = op.anim.tableTarget

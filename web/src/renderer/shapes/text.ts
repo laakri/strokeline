@@ -26,9 +26,13 @@ export function textBoundingBox(node: SceneNode): BoundingBox {
 }
 
 export function drawText(renderContext: RenderContext, node: SceneNode): void {
+  const effect = String(node.data?.textEffect ?? "")
+  const progress = Number(node.data?.textEffectProgress ?? 1)
+  const source = node.text ?? node.label
+  const text = source === undefined ? undefined : textForEffect(source, effect, progress, node.id)
   drawLabel(
     renderContext,
-    node.text ?? node.label,
+    text,
     node.position,
     {
       color: node.style.color,
@@ -41,11 +45,39 @@ export function drawText(renderContext: RenderContext, node: SceneNode): void {
       backgroundOpacity: node.textBox?.opacity,
       backgroundPadding: node.textBox?.padding,
       backgroundCorners: node.textBox?.corners,
+      ...(effect === "marker" ? {
+        markerWords: (node.data?.textEffectWords as string[] | undefined) ?? [],
+        markerProgress: progress,
+      } : {}),
     },
-    (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1,
+    effect === "typewriter" ? progress : effect === "marker" || effect === "scramble" || effect === "word-by-word"
+      ? 1
+      : (node as SceneNode & { revealProgress?: number }).revealProgress ?? 1,
     (node as SceneNode & { revealStyle?: string }).revealStyle === "text-wipe",
     node.id
   )
+}
+
+function textForEffect(text: string, effect: string, progress: number, seed: string): string {
+  const amount = Math.max(0, Math.min(1, progress))
+  if (effect === "word-by-word") {
+    const words = [...text.matchAll(/\S+/gu)]
+    if (!words.length) return text
+    const visibleCount = Math.ceil(words.length * amount)
+    if (visibleCount >= words.length) return text
+    const last = words[Math.max(0, visibleCount - 1)]
+    return visibleCount === 0 ? "" : text.slice(0, (last?.index ?? 0) + (last?.[0].length ?? 0))
+  }
+  if (effect !== "scramble" || amount >= 1) return text
+  const chars = Array.from(text)
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  return chars.map((char, index) => {
+    if (!/[\p{L}\p{N}]/u.test(char) || index / Math.max(1, chars.length) < amount) return char
+    let hash = 2166136261
+    for (const value of `${seed}:${index}`)
+      hash = Math.imul(hash ^ value.charCodeAt(0), 16777619)
+    return alphabet[(hash >>> 0) % alphabet.length]!
+  }).join("")
 }
 
 export const text: ShapeRenderer = {

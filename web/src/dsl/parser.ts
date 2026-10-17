@@ -52,6 +52,7 @@ export interface ASTEffect {
   phase: "enter" | "exit"
   effect: string
   duration?: ASTValue
+  words?: string[]
   token: Token
 }
 export interface ASTDuplicate {
@@ -587,14 +588,19 @@ class Parser {
     const targetId = this.readIdent("E_EXPECTED_ID", token)
     const effect = this.takeValue("E_EXPECTED_ANIMATION", token).toLowerCase()
     let duration: ASTValue | undefined
+    let words: string[] | undefined
     while (!this.atEnd() && this.peek().kind !== "newline") {
       if (this.word() === "DURATION") {
         this.take()
         duration = this.readValue()
+      } else if (this.word() === "WORDS") {
+        this.take()
+        const value = this.readValue()
+        words = typeof value === "string" ? value.split(/\s+/u).filter(Boolean) : []
       } else this.take()
     }
     this.endLine()
-    return { kind: "effect", targetId, phase: token.value.toLowerCase() as "enter" | "exit", effect, duration, token }
+    return { kind: "effect", targetId, phase: token.value.toLowerCase() as "enter" | "exit", effect, duration, words, token }
   }
 
   private parseCamera(): ASTCamera {

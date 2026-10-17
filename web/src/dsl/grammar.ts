@@ -112,6 +112,7 @@ export const PROPERTY_KEYS = [
   "MASK",
   "SHADOW",
   "GRADIENT",
+  "WORDS",
 ] as const
 
 export { ICON_NAMES, type IconName } from "@/defaults/icons.ts"

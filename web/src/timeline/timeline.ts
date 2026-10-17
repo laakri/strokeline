@@ -616,6 +616,17 @@ function resolveAnimationGroupAtTime(
           node = { ...node, revealProgress: animated.revealProgress }
       } else if (["pop", "shrink", "zoom"].includes(effect))
         node = { ...node, scale: animated.scale }
+      else if (["typewriter", "scramble", "word-by-word", "marker"].includes(effect))
+        node = {
+          ...node,
+          revealProgress: animated.revealProgress,
+          data: {
+            ...node.data,
+            textEffect: effect,
+            textEffectProgress: animated.revealProgress,
+            ...(op.anim.textWords ? { textEffectWords: op.anim.textWords } : {}),
+          },
+        }
       else node = { ...node, position: animated.position }
     }
   }
